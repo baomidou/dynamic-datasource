@@ -1,4 +1,4 @@
-package org.springframework.boot.autoconfigure.jdbc;
+package org.springframework.jdbc.datasource;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -7,7 +7,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 @Aspect
@@ -15,20 +14,20 @@ import org.springframework.util.StringUtils;
 @Slf4j
 public class DynamicDataSourceAspect {
 
-  @Before("@annotation(org.springframework.boot.autoconfigure.jdbc.TargetDataSource)")
+  @Before("@annotation(org.springframework.jdbc.datasource.DynamicDataSource)")
   public void chooseDataSource(JoinPoint point) {
-    TargetDataSource targetDataSource = ((MethodSignature) point.getSignature()).getMethod()
-        .getAnnotation(TargetDataSource.class);
-    String dsId = targetDataSource.value();
+    DynamicDataSource dynamicDataSource = ((MethodSignature) point.getSignature()).getMethod()
+        .getAnnotation(DynamicDataSource.class);
+    String dsId = dynamicDataSource.value();
     if (StringUtils.isEmpty(dsId) || !DynamicDataSourceContextHolder.containDataSource(dsId)) {
-      log.warn("数据源[{}]不存在，使用主数据源 > {}", dsId, point.getSignature());
+      log.warn("datasource [{}] is not present,use default master > {}", dsId, point.getSignature());
     } else {
-      log.debug("切换数据源 : {} > {}", dsId, point.getSignature());
+      log.debug("switch datasource to {} > {}", dsId, point.getSignature());
       DynamicDataSourceContextHolder.setDataSource(dsId);
     }
   }
 
-  @After("@annotation(org.springframework.boot.autoconfigure.jdbc.TargetDataSource)")
+  @After("@annotation(org.springframework.jdbc.datasource.DynamicDataSource)")
   public void clearDataSource(JoinPoint point) {
     DynamicDataSourceContextHolder.clearDataSource();
   }

@@ -1,4 +1,4 @@
-package org.springframework.boot.autoconfigure.jdbc;
+package org.springframework.jdbc.datasource;
 
 import java.util.ArrayList;
 import java.util.Arrays;
