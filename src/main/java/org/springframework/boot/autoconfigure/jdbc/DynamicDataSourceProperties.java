@@ -1,15 +1,18 @@
 package org.springframework.boot.autoconfigure.jdbc;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
-@ConfigurationProperties(prefix = "spring.datasource.dynamic")
 @Data
+@ConfigurationProperties(prefix = "spring.datasource.dynamic")
 public class DynamicDataSourceProperties {
 
-  private DataSourceProperties master;
+  @NestedConfigurationProperty
+  private DataSourceProperties master = new DataSourceProperties();
 
-  private List<DataSourceProperties> slaves;
+  private Map<String, DataSourceProperties> slaves = new HashMap<>();
 
 }
