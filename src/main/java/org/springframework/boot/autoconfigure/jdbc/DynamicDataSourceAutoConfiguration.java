@@ -1,21 +1,20 @@
 package org.springframework.boot.autoconfigure.jdbc;
 
-import org.springframework.jdbc.datasource.DynamicDataSourceAspect;
-import org.springframework.jdbc.datasource.DynamicDataSourceContextHolder;
-import org.springframework.jdbc.datasource.DynamicRoutingDataSource;
-import com.zaxxer.hikari.HikariDataSource;
-import java.util.HashMap;
-import java.util.Map;
-import javax.sql.DataSource;
-import org.springframework.boot.autoconfigure.jdbc.metadata.DataSourcePoolMetadataProvidersConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.jdbc.datasource.DynamicDataSourceAspect;
+import org.springframework.jdbc.datasource.DynamicDataSourceProvider;
+import org.springframework.jdbc.datasource.DynamicDataSourceStrategy;
+import org.springframework.jdbc.datasource.DynamicRoutingDataSource;
+import org.springframework.jdbc.datasource.LoadBalancDynamicDataSourceStrategy;
+import org.springframework.jdbc.datasource.YmlDynamicDataSourceProvider;
 
 @Configuration
 @EnableConfigurationProperties(DynamicDataSourceProperties.class)
-@Import({DataSourcePoolMetadataProvidersConfiguration.class, DataSourceInitializationConfiguration.class})
+@AutoConfigureBefore(DataSourceAutoConfiguration.class)
 public class DynamicDataSourceAutoConfiguration {
 
   private final DynamicDataSourceProperties properties;
@@ -25,34 +24,31 @@ public class DynamicDataSourceAutoConfiguration {
   }
 
   @Bean
-  public DynamicDataSourceAspect dynamicDataSourceAspect() {
-    return new DynamicDataSourceAspect();
+  @ConditionalOnMissingBean
+  public DynamicDataSourceStrategy dynamicDataSourceStrategy() {
+    return new LoadBalancDynamicDataSourceStrategy();
   }
 
   @Bean
-  public DataSource dynamicDataSource() {
+  @ConditionalOnMissingBean
+  public DynamicDataSourceProvider dynamicDataSourceProvider() {
+    return new YmlDynamicDataSourceProvider(properties);
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  public DynamicRoutingDataSource dynamicDataSource(DynamicDataSourceProvider dynamicDataSourceProvider,
+      DynamicDataSourceStrategy dynamicDataSourceStrategy) {
     DynamicRoutingDataSource dynamicRoutingDataSource = new DynamicRoutingDataSource();
-    Map<Object, Object> dataSourceMap = new HashMap<>();
-    // add Master
-    DataSourceProperties masterProperties = properties.getMaster();
-    DataSource masterDataSource = createDataSource(masterProperties);
-    dataSourceMap.put("master", masterDataSource);
-    DynamicDataSourceContextHolder.addDataSourceId("master");
-    // add Slaves
-    Map<String, DataSourceProperties> slavesProperties = properties.getSlaves();
-    slavesProperties.forEach((k, v) -> {
-      dataSourceMap.put(k, createDataSource(v));
-      DynamicDataSourceContextHolder.addDataSourceId(k);
-    });
-    dynamicRoutingDataSource.setDefaultTargetDataSource(masterDataSource);
-    dynamicRoutingDataSource.setTargetDataSources(dataSourceMap);
+    dynamicRoutingDataSource.setDynamicDataSourceProvider(dynamicDataSourceProvider);
+    dynamicRoutingDataSource.setDynamicDataSourceStrategy(dynamicDataSourceStrategy);
     return dynamicRoutingDataSource;
   }
 
-  private DataSource createDataSource(DataSourceProperties properties) {
-    if (properties.getType() == null) {
-      properties.setType(HikariDataSource.class);
-    }
-    return properties.initializeDataSourceBuilder().build();
+  @Bean
+  @ConditionalOnMissingBean
+  public DynamicDataSourceAspect dynamicDataSourceAspect(DynamicRoutingDataSource dynamicRoutingDataSource) {
+    return new DynamicDataSourceAspect(dynamicRoutingDataSource);
   }
+
 }
