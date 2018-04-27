@@ -47,8 +47,8 @@ public class DynamicDataSourceAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public DynamicDataSourceAspect dynamicDataSourceAspect(DynamicRoutingDataSource dynamicRoutingDataSource) {
-    return new DynamicDataSourceAspect(dynamicRoutingDataSource);
+  public DynamicDataSourceAspect dynamicDataSourceAspect() {
+    return new DynamicDataSourceAspect();
   }
 
 }

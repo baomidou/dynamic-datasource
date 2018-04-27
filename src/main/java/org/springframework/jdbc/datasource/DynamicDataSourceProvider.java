@@ -5,8 +5,8 @@ import javax.sql.DataSource;
 
 public interface DynamicDataSourceProvider {
 
- DataSource loadMasterDataSource();
+  DataSource loadMasterDataSource();
 
-  Map<String,DataSource> loadSlaveDataSource();
+  Map<String, DataSource> loadSlaveDataSource();
 
 }

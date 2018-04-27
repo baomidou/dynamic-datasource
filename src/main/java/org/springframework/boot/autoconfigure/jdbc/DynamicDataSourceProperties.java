@@ -9,7 +9,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "spring.datasource.dynamic")
 public class DynamicDataSourceProperties {
 
-  private DataSourceProperties master = new DataSourceProperties(){};
+  private DataSourceProperties master = new DataSourceProperties() {
+  };
 
   private Map<String, DataSourceProperties> slave = new HashMap<>();
 

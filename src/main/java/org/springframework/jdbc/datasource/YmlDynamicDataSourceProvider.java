@@ -21,8 +21,8 @@ public class YmlDynamicDataSourceProvider implements DynamicDataSourceProvider {
   }
 
   @Override
-  public Map<String,DataSource> loadSlaveDataSource() {
-    Map<String,DataSource> dataSourceMap = new HashMap<>(2);
+  public Map<String, DataSource> loadSlaveDataSource() {
+    Map<String, DataSource> dataSourceMap = new HashMap<>(2);
     Map<String, DataSourceProperties> slave = properties.getSlave();
     slave.forEach((k, v) -> {
       dataSourceMap.put(k, createDataSource(v));
