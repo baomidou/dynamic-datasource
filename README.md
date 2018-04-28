@@ -1,16 +1,29 @@
 # dynamic-datasource-spring-boot-starter
 [![Build Status](https://www.travis-ci.org/baomidou/dynamic-datasource-spring-boot-starter.svg?branch=master)](https://www.travis-ci.org/baomidou/dynamic-datasource-spring-boot-starter)
-[![Coverage Status](https://coveralls.io/repos/github/jsonzou/jmockdata/badge.svg)](https://coveralls.io/github/jsonzou/jmockdata)
 [![Maven central](https://maven-badges.herokuapp.com/maven-central/com.github.jsonzou/jmockdata/badge.svg)](http://mvnrepository.com/artifact/com.github.jsonzou/jmockdata)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
-dynamic-datasource-spring-boot-starter是一个基于aop切换的简单多数据快速启动器。
+## English introduction | [中文说明](README_zh.md)
 
-示例项目 [dynamic-datasource-example](https://gitee.com/baomidou/dynamic-datasource-example)
+## Introduction
 
-# 使用方法
+dynamic-datasource-spring-boot-starter based on springBoot2.0.
 
-1. 引入dynamic-datasource-spring-boot-starter。
+It can be used for Separation of reading and writing.
+
+The master database to `INSERT`   `UPDATE`  `DELETE` .
+
+The slave database to `SELECT` .
+
+If you project is complex,I will propose you use [sharding-jdbc ](https://github.com/shardingjdbc/sharding-jdbc).
+
+## Demo 
+
+[dynamic-datasource-example](https://gitee.com/baomidou/dynamic-datasource-example) a simple dynamic project that u can direct run。
+
+## How to use
+
+1. Import dynamic-datasource-spring-boot-starter。
 
 ```xml
 <dependency>
@@ -19,11 +32,11 @@ dynamic-datasource-spring-boot-starter是一个基于aop切换的简单多数据
   <version>1.0.0</version>
 </dependency>
 ```
-2. 配置主从数据源。
+2. Config your master-slave info in application.yml。
 
-spring.datasource.dynamic.master 配置唯一主数据源（写库）
+spring.datasource.dynamic.master （config the unique master database）
 
-spring.datasource.dynamic.slaves 配置每一个从数据源（读库）
+spring.datasource.dynamic.slaves （config every slave database）
 
 ```yaml
 spring:
@@ -47,17 +60,15 @@ spring:
           url: jdbc:mysql://47.100.20.186:3309/dynamic?characterEncoding=utf8&useSSL=false
 ```
 
-3. 切换数据源。
+3. Use annotation  `@DS`   to switch database.
 
-使用 **@DS**  注解切换数据源。
+>  `@DS`   can be annotation on serviceImpl method or mybatis mapper method.
 
-> 可以注解在方法上,可以注解在service实现或mapper接口方法上。
-
-|     注解     |                             结果                             |
-| :----------: | :----------------------------------------------------------: |
-|   没有@DS    |                             主库                             |
-| @DS("slave") |                存在slave指定slave，不存在主库                |
-|     @DS      | 根据DynamicDataSourceStrategy策略，选择一个从库。默认负载均衡策略。 |
+| annotation  |                            result                            |
+| :---------: | :----------------------------------------------------------: |
+| without @DS |                            master                            |
+| @DS("one")  | If exist a database named 'one' then switch to one,otherwise to master |
+|     @DS     | depensOn DynamicDataSourceStrategy to determine a slave database,the default strategy is LoadBalance. |
 
 ```java
 @Service
@@ -79,7 +90,7 @@ public class UserServiceImpl implements UserService {
 
 }
 ```
-在mybatis环境下也可注解在mapper接口层。
+In mybatis environment it can also annotation on mapper method.
 
 ```java
 public interface UserMapper {
@@ -100,13 +111,11 @@ public interface UserMapper {
 }
 ```
 
-# 自定义
+## Custom config
 
-1. 自定义数据源来源。
+1. Config DynamicDataSourceProvider .
 
-数据源来源的默认实现是YmlDynamicDataSourceProvider，其从yaml或properties中读取信息并解析出主从信息。
-
-场景：有些人想把从库信息配置到主库的某个表中，如有个表名slave_datasource。现在需要用户自己去实现以下接口并注入。
+The default DynamicDataSourceProvider is `YmlDynamicDataSourceProvider`，It read database info from `application.yaml` or `application.properties` .
 
 ```java
 public interface DynamicDataSourceProvider {
@@ -128,9 +137,11 @@ public interface DynamicDataSourceProvider {
 }
 ```
 
-2. 自定义从库选择策略。
+2. Config DynamicDataSourceStrategy.
 
-默认的策略是负载均衡的策略，LoadBalanceDynamicDataSourceStrategy。 也提供了一个随机策略，RandomDynamicDataSourceStrategy。
+The default DynamicDataSourceStrategy is `LoadBalanceDynamicDataSourceStrategy` . 
+
+The starter alse provide `RandomDynamicDataSourceStrategy`.
 
 ```java
 public interface DynamicDataSourceStrategy {
@@ -146,12 +157,17 @@ public interface DynamicDataSourceStrategy {
 }
 ```
 
-重写策略并注入。
+Demo to use `RandomDynamicDataSourceStrategy` instead of `LoadBalanceDynamicDataSourceStrategy` .
 
 ```java
+@Configuration
+public class DynamicConfiguration {
+ 
   @Bean
   public DynamicDataSourceStrategy dynamicDataSourceStrategy() {
     return new RandomDynamicDataSourceStrategy();
   }
+
+}
 ```
 
