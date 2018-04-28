@@ -1,0 +1,8 @@
+language: java
+jdk:
+  - openjdk7
+after_success:
+  - echo success
+cache:
+  directories:
+    - $HOME/.m2

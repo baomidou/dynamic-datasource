@@ -9,6 +9,41 @@
   <packaging>jar</packaging>
 
   <name>dynamic-datasource-spring-boot-starter</name>
+  <description>dynamic datasource with aop</description>
+  <inceptionYear>2018</inceptionYear>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>TaoYu</name>
+      <email>tracy5546@gmail.com</email>
+      <organization>baomidou</organization>
+      <organizationUrl>https://github.com/baomidou</organizationUrl>
+    </developer>
+    <developer>
+      <name>KanYuXia</name>
+      <email>kanyuxia@outlook.com</email>
+    </developer>
+  </developers>
+
+  <scm>
+    <url>git@github.com:baomidou/dynamic-datasource-spring-boot-starter.git</url>
+    <connection>scm:git:ssh://git@github.com:baomidou/dynamic-datasource-spring-boot-starter.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com:baomidou/dynamic-datasource-spring-boot-starter.git
+    </developerConnection>
+    <tag>HEAD</tag>
+  </scm>
+
+  <issueManagement>
+    <system>GitHub Issue Management</system>
+    <url>https://github.com/baomidou/dynamic-datasource-spring-boot-starter/issues</url>
+  </issueManagement>
 
   <parent>
     <groupId>org.springframework.boot</groupId>
@@ -54,8 +89,70 @@
           <target>1.8</target>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.mycila</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <version>3.0</version>
+        <configuration>
+          <header>${project.basedir}/license.txt</header>
+          <properties>
+            <owner>TaoYu</owner>
+            <email>tracy5546@gmail.com</email>
+          </properties>
+          <excludes>
+            <exclude>**/*.md</exclude>
+            <exclude>src/test/resources/**</exclude>
+            <exclude>src/main/resources/**</exclude>
+            <exclude>pom.xml</exclude>
+          </excludes>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>1.6</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
-
 
 </project>

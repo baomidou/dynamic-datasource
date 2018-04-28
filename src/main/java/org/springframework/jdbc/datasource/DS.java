@@ -15,19 +15,28 @@
  */
 package org.springframework.jdbc.datasource;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  * <pre>
- *   When you use @DS() and not specify value,We should determine a slave dataSource.
- *   So we can use some Strategy. The default strategy is LoadBalanceDynamicDataSourceStrategy.
+ *   Use DS annotation on service method or mybatis mapper method.
+ *   If you not specify value,We use DynamicDataSourceStrategy to determine a slave dataSource
+ *   If you specify value like @DS("slave1"),but it is not exist. It will use default masterDataSource.
  * </pre>
  *
  * @author TaoYu Kanyuxia
- * @see RandomDynamicDataSourceStrategy
- * @see LoadBalanceDynamicDataSourceStrategy
+ * @see DynamicDataSourceStrategy
  * @since 1.0.0
  */
-public interface DynamicDataSourceStrategy {
+@Target({ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface DS {
 
-  String determineSlaveDataSource(String[] slaveDataSourceLookupKeys);
+  String value() default "";
 
 }

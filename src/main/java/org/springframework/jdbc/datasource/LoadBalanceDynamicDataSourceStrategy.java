@@ -15,19 +15,20 @@
  */
 package org.springframework.jdbc.datasource;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
- * <pre>
- *   When you use @DS() and not specify value,We should determine a slave dataSource.
- *   So we can use some Strategy. The default strategy is LoadBalanceDynamicDataSourceStrategy.
- * </pre>
- *
  * @author TaoYu Kanyuxia
- * @see RandomDynamicDataSourceStrategy
- * @see LoadBalanceDynamicDataSourceStrategy
  * @since 1.0.0
  */
-public interface DynamicDataSourceStrategy {
+public class LoadBalanceDynamicDataSourceStrategy implements DynamicDataSourceStrategy {
 
-  String determineSlaveDataSource(String[] slaveDataSourceLookupKeys);
+  private AtomicInteger count = new AtomicInteger(0);
+
+  @Override
+  public String determineSlaveDataSource(String[] slaveDataSourceLookupKeys) {
+    int number = count.getAndAdd(1);
+    return slaveDataSourceLookupKeys[number % slaveDataSourceLookupKeys.length];
+  }
 
 }
