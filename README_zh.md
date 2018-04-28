@@ -1,3 +1,26 @@
+# dynamic-datasource-spring-boot-starter
+[![Build Status](https://www.travis-ci.org/baomidou/dynamic-datasource-spring-boot-starter.svg?branch=master)](https://www.travis-ci.org/baomidou/dynamic-datasource-spring-boot-starter)
+[![Maven central](https://maven-badges.herokuapp.com/maven-central/com.github.jsonzou/jmockdata/badge.svg)](http://mvnrepository.com/artifact/com.github.jsonzou/jmockdata)
+[![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+
+## [English introduction](README.md) | [中文说明](README_zh.md)
+
+## 简介
+
+dynamic-datasource-spring-boot-starter 基于 springBoot2.0.
+
+它适用于读写分离，一主多从的环境。
+
+主数据库使用 `INSERT`   `UPDATE`  `DELETE` 操作.
+
+从数据库使用 `SELECT` 操作.
+
+如果你的项目比较复杂，建议使用 [sharding-jdbc ](https://github.com/shardingjdbc/sharding-jdbc).
+
+## 示例
+
+[dynamic-datasource-example](https://gitee.com/baomidou/dynamic-datasource-example) 一个简单能直接运行的项目。
+
 # 使用方法
 
 1. 引入dynamic-datasource-spring-boot-starter。

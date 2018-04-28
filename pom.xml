@@ -9,7 +9,7 @@
   <packaging>jar</packaging>
 
   <name>dynamic-datasource-spring-boot-starter</name>
-  <description>dynamic datasource with aop</description>
+  <description>dynamic datasource with annotation</description>
   <inceptionYear>2018</inceptionYear>
 
   <licenses>
@@ -33,9 +33,9 @@
   </developers>
 
   <scm>
-    <url>git@github.com:baomidou/dynamic-datasource-spring-boot-starter.git</url>
-    <connection>scm:git:ssh://git@github.com:baomidou/dynamic-datasource-spring-boot-starter.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com:baomidou/dynamic-datasource-spring-boot-starter.git
+    <url>https://github.com/baomidou/dynamic-datasource-spring-boot-starter</url>
+    <connection>scm:git:https://github.com/baomidou/dynamic-datasource-spring-boot-starter.git</connection>
+    <developerConnection>scm:git:https://github.com/baomidou/dynamic-datasource-spring-boot-starter.git
     </developerConnection>
     <tag>HEAD</tag>
   </scm>
@@ -122,11 +122,11 @@
       <id>release</id>
       <distributionManagement>
         <snapshotRepository>
-          <id>oss</id>
+          <id>ossrh</id>
           <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
         <repository>
-          <id>oss</id>
+          <id>ossrh</id>
           <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
       </distributionManagement>
@@ -169,6 +169,17 @@
                 </goals>
               </execution>
             </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>nexus-staging-maven-plugin</artifactId>
+            <version>1.6.8</version>
+            <extensions>true</extensions>
+            <configuration>
+              <serverId>ossrh</serverId>
+              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+              <autoReleaseAfterClose>true</autoReleaseAfterClose>
+            </configuration>
           </plugin>
         </plugins>
       </build>
