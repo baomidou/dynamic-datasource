@@ -28,6 +28,12 @@ package org.springframework.jdbc.datasource;
  */
 public interface DynamicDataSourceStrategy {
 
+  /**
+   * determine a slaveId
+   *
+   * @param slaveDataSourceLookupKeys slaveKeys
+   * @return slaveId
+   */
   String determineSlaveDataSource(String[] slaveDataSourceLookupKeys);
 
 }
