@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.jdbc.datasource;
+package com.baomidou.dynamic.datasource;
 
+import com.baomidou.dynamic.datasource.spring.boot.DynamicDataSourceProperties;
 import com.zaxxer.hikari.HikariDataSource;
 import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
-import org.springframework.boot.autoconfigure.jdbc.DynamicDataSourceProperties;
 
 /**
  * @author TaoYu Kanyuxia

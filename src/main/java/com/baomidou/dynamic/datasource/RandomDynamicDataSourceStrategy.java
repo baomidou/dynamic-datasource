@@ -13,28 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.jdbc.datasource;
+package com.baomidou.dynamic.datasource;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * DynamicDataSourceContextHolder use ThreadLocal to switch dataSource in PerThread.
- *
  * @author TaoYu Kanyuxia
  * @since 1.0.0
  */
-public final class DynamicDataSourceContextHolder {
+public class RandomDynamicDataSourceStrategy implements DynamicDataSourceStrategy {
 
-  private static final ThreadLocal<String> LOOKUP_KEY_HOLDER = new ThreadLocal<>();
-
-  public static String getDataSourceLookupKey() {
-    return LOOKUP_KEY_HOLDER.get();
-  }
-
-  public static void setDataSourceLookupKey(String dataSourceLookupKey) {
-    LOOKUP_KEY_HOLDER.set(dataSourceLookupKey);
-  }
-
-  public static void clearDataSourceLookupKey() {
-    LOOKUP_KEY_HOLDER.remove();
+  @Override
+  public String determineSlaveDataSource(String[] slaveDataSourceLookupKeys) {
+    int i = ThreadLocalRandom.current().nextInt(slaveDataSourceLookupKeys.length);
+    return slaveDataSourceLookupKeys[i];
   }
 
 }
