@@ -23,6 +23,9 @@ package com.baomidou.dynamic.datasource;
  */
 public final class DynamicDataSourceContextHolder {
 
+  private DynamicDataSourceContextHolder() {
+  }
+
   private static final ThreadLocal<String> LOOKUP_KEY_HOLDER = new ThreadLocal<>();
 
   public static String getDataSourceLookupKey() {

@@ -3,6 +3,8 @@
 [![Maven central](https://maven-badges.herokuapp.com/maven-central/com.github.jsonzou/jmockdata/badge.svg)](http://mvnrepository.com/artifact/com.github.jsonzou/jmockdata)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
+#### [Github](https://github.com/baomidou/dynamic-datasource-spring-boot-starter) | [Gitee](https://gitee.com/baomidou/dynamic-datasource-spring-boot-starter)
+
 ## [English introduction](README.md) | [中文说明](README_zh.md)
 
 ## Introduction
