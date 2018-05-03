@@ -27,6 +27,7 @@ import com.baomidou.dynamic.datasource.DynamicDataSourceStrategy;
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.LoadBalanceDynamicDataSourceStrategy;
 import com.baomidou.dynamic.datasource.YmlDynamicDataSourceProvider;
+import org.springframework.context.annotation.Import;
 
 /**
  * DynamicDataSourceAutoConfiguration
@@ -41,6 +42,7 @@ import com.baomidou.dynamic.datasource.YmlDynamicDataSourceProvider;
 @Configuration
 @EnableConfigurationProperties(DynamicDataSourceProperties.class)
 @AutoConfigureBefore(DataSourceAutoConfiguration.class)
+@Import(DruidDynamicDataSourceConfiguration.class)
 public class DynamicDataSourceAutoConfiguration {
 
   private final DynamicDataSourceProperties properties;
