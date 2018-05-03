@@ -38,7 +38,7 @@ dynamic-datasource-spring-boot-starter 基于 springBoot2.0.
 
 spring.datasource.dynamic.master 配置唯一主数据源（写库）
 
-spring.datasource.dynamic.slaves 配置每一个从数据源（读库）
+spring.datasource.dynamic.slave 配置每一个从数据源（读库）
 
 ```yaml
 spring:
@@ -49,7 +49,7 @@ spring:
         password: 123456
         driver-class-name: com.mysql.jdbc.Driver
         url: jdbc:mysql://47.100.20.186:3307/dynamic?characterEncoding=utf8&useSSL=false
-      slaves:
+      slave:
         one:
           username: root
           password: 123456

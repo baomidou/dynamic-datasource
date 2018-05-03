@@ -38,7 +38,7 @@ If you project is complex,I will propose you use [sharding-jdbc ](https://github
 
 spring.datasource.dynamic.master （config the unique master database）
 
-spring.datasource.dynamic.slaves （config every slave database）
+spring.datasource.dynamic.slave （config every slave database）
 
 ```yaml
 spring:
@@ -49,7 +49,7 @@ spring:
         password: 123456
         driver-class-name: com.mysql.jdbc.Driver
         url: jdbc:mysql://47.100.20.186:3307/dynamic?characterEncoding=utf8&useSSL=false
-      slaves:
+      slave:
         one:
           username: root
           password: 123456
