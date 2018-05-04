@@ -31,7 +31,7 @@ dynamic-datasource-spring-boot-starter 基于 springBoot2.0.
 <dependency>
   <groupId>com.baomidou</groupId>
   <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
 </dependency>
 ```
 2. 配置主从数据源。
@@ -144,7 +144,7 @@ public class Application {
 
 > 为什么要排除？   
 >
-> DruidDataSourceAutoConfigure在DynamciDataSourceAutoConfiguration，其会注入一个DataSourceWrapper，会在原生的spring.datasource下找url,username,password等。而我们动态数据源的配置路径是变化的。
+> DruidDataSourceAutoConfigure在DynamciDataSourceAutoConfiguration之前，其会注入一个DataSourceWrapper，会在原生的spring.datasource下找url,username,password等。而我们动态数据源的配置路径是变化的。
 
 3. 其他属性依旧如原生`druid-spring-boot-starter`的配置。
 
