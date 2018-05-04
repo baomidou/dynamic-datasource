@@ -115,6 +115,50 @@ public interface UserMapper {
 }
 ```
 
+# 集成druid
+
+springBoot2.x默认使用HikariCP，但在国内Druid的使用者非常庞大，此项目特地对其进行了适配，完成多数据源下使用Druid进行监控。
+
+1. 项目引入`druid-spring-boot-starter`依赖。
+
+```xml
+<dependency>
+    <groupId>com.alibaba</groupId>
+    <artifactId>druid-spring-boot-starter</artifactId>
+    <version>1.1.9</version>
+</dependency>
+```
+
+2. 排除原生Druid的快速配置类。
+
+```java
+@SpringBootApplication(exclude = DruidDataSourceAutoConfigure.class)
+public class Application {
+
+  public static void main(String[] args) {
+    SpringApplication.run(Application.class, args);
+  }
+
+}
+```
+
+> 为什么要排除？   
+>
+> DruidDataSourceAutoConfigure在DynamciDataSourceAutoConfiguration，其会注入一个DataSourceWrapper，会在原生的spring.datasource下找url,username,password等。而我们动态数据源的配置路径是变化的。
+
+3. 其他属性依旧如原生`druid-spring-boot-starter`的配置。
+
+```yaml
+spring:
+  datasource:
+    druid:
+      stat-view-servlet:
+        loginUsername: admin
+        loginPassword: 123456
+```
+
+如上即可配置访问用户和密码。
+
 # 自定义
 
 1. 自定义数据源来源。
