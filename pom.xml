@@ -105,12 +105,9 @@
             <owner>TaoYu</owner>
             <email>tracy5546@gmail.com</email>
           </properties>
-          <excludes>
-            <exclude>**/*.md</exclude>
-            <exclude>src/test/resources/**</exclude>
-            <exclude>src/main/resources/**</exclude>
-            <exclude>pom.xml</exclude>
-          </excludes>
+          <includes>
+            <include>src/main/java/**</include>
+          </includes>
         </configuration>
         <executions>
           <execution>
