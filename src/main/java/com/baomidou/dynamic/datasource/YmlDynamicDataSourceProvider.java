@@ -15,14 +15,11 @@
  */
 package com.baomidou.dynamic.datasource;
 
-import com.alibaba.druid.pool.DruidDataSource;
 import com.baomidou.dynamic.datasource.spring.boot.DynamicDataSourceProperties;
-import com.zaxxer.hikari.HikariDataSource;
-import java.sql.SQLException;
+import com.baomidou.dynamic.datasource.spring.boot.DynamicItemDataSourceProperties;
 import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 
 /**
  * @author TaoYu Kanyuxia
@@ -43,7 +40,7 @@ public class YmlDynamicDataSourceProvider extends AbstractDynamicDataSourceProvi
 
   @Override
   public Map<String, DataSource> loadSlaveDataSource() {
-    Map<String, DataSourceProperties> slaves = properties.getSlave();
+    Map<String, DynamicItemDataSourceProperties> slaves = properties.getSlave();
     Map<String, DataSource> dataSourceMap = new HashMap<>(slaves.size());
     slaves.forEach((k, v) -> dataSourceMap.put(k, createDataSource(v)));
     return dataSourceMap;

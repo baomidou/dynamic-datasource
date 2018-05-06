@@ -15,27 +15,18 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot;
 
-import java.util.HashMap;
-import java.util.Map;
 import lombok.Data;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 /**
- * DynamicDataSourceProperties
- * @author TaoYu Kanyuxia
- * @since 1.0.0
- * @see DataSourceProperties
+ * @author TaoYu
+ * @since 1.2.0
  */
 @Data
-@ConfigurationProperties(prefix = "spring.datasource.dynamic")
-public class DynamicDataSourceProperties {
+public class DynamicItemDataSourceProperties extends DataSourceProperties {
 
   @NestedConfigurationProperty
-  private DynamicItemDataSourceProperties master = new DynamicItemDataSourceProperties();
-
-  @NestedConfigurationProperty
-  private Map<String, DynamicItemDataSourceProperties> slave = new HashMap<>();
+  private DruidDataSourceProperties druid = new DruidDataSourceProperties();
 
 }

@@ -15,29 +15,29 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot;
 
+import com.baomidou.dynamic.datasource.DynamicDataSourceProvider;
+import com.baomidou.dynamic.datasource.DynamicDataSourceStrategy;
+import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
+import com.baomidou.dynamic.datasource.LoadBalanceDynamicDataSourceStrategy;
+import com.baomidou.dynamic.datasource.YmlDynamicDataSourceProvider;
+import com.baomidou.dynamic.datasource.aop.DynamicDatasourceAnnotationAdvisor;
+import com.baomidou.dynamic.datasource.aop.DynamicDatasourceAnnotationInterceptor;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import com.baomidou.dynamic.datasource.DynamicDataSourceAspect;
-import com.baomidou.dynamic.datasource.DynamicDataSourceProvider;
-import com.baomidou.dynamic.datasource.DynamicDataSourceStrategy;
-import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
-import com.baomidou.dynamic.datasource.LoadBalanceDynamicDataSourceStrategy;
-import com.baomidou.dynamic.datasource.YmlDynamicDataSourceProvider;
 import org.springframework.context.annotation.Import;
 
 /**
  * DynamicDataSourceAutoConfiguration
  *
  * @author TaoYu Kanyuxia
- * @since 1.0.0
  * @see DynamicDataSourceProvider
  * @see DynamicDataSourceStrategy
  * @see DynamicRoutingDataSource
- * @see DynamicDataSourceAspect
+ * @since 1.0.0
  */
 @Configuration
 @EnableConfigurationProperties(DynamicDataSourceProperties.class)
@@ -65,7 +65,8 @@ public class DynamicDataSourceAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public DynamicRoutingDataSource dynamicDataSource(DynamicDataSourceProvider dynamicDataSourceProvider,
+  public DynamicRoutingDataSource dynamicDataSource(
+      DynamicDataSourceProvider dynamicDataSourceProvider,
       DynamicDataSourceStrategy dynamicDataSourceStrategy) {
     DynamicRoutingDataSource dynamicRoutingDataSource = new DynamicRoutingDataSource();
     dynamicRoutingDataSource.setDynamicDataSourceProvider(dynamicDataSourceProvider);
@@ -75,8 +76,11 @@ public class DynamicDataSourceAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public DynamicDataSourceAspect dynamicDataSourceAspect() {
-    return new DynamicDataSourceAspect();
+  public DynamicDatasourceAnnotationAdvisor dynamicDatasourceAnnotationAdvisor() {
+    DynamicDatasourceAnnotationAdvisor advisor = new DynamicDatasourceAnnotationAdvisor();
+    advisor.setAdvice(new DynamicDatasourceAnnotationInterceptor());
+    advisor.setOrder(Integer.MIN_VALUE);
+    return advisor;
   }
 
 }

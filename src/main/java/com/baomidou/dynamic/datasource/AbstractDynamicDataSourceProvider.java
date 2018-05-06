@@ -16,16 +16,23 @@
 package com.baomidou.dynamic.datasource;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.baomidou.dynamic.datasource.spring.boot.DruidDataSourceProperties;
+import com.baomidou.dynamic.datasource.spring.boot.DynamicItemDataSourceProperties;
 import com.zaxxer.hikari.HikariDataSource;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 
+/**
+ * AbstractDynamicDataSourceProvider to createDatasource
+ *
+ * @author TaoYu
+ * @since 1.1.0
+ */
 @Slf4j
 public abstract class AbstractDynamicDataSourceProvider implements DynamicDataSourceProvider {
 
-  protected DataSource createDataSource(DataSourceProperties properties) {
+  protected DataSource createDataSource(DynamicItemDataSourceProperties properties) {
     Class<? extends DataSource> type = properties.getType();
     if (type == null) {
       try {
@@ -40,8 +47,7 @@ public abstract class AbstractDynamicDataSourceProvider implements DynamicDataSo
       } catch (ClassNotFoundException e) {
         log.debug("dynamic not found HikariDataSource");
       }
-      throw new RuntimeException(
-          "please set master and slave type like spring.dynamic.datasource.master.type");
+      throw new RuntimeException("please set master and slave type like spring.dynamic.datasource.master.type");
     } else {
       if ("com.alibaba.druid.pool.DruidDataSource".equals(type.getName())) {
         return createDruidDataSource(properties);
@@ -51,17 +57,29 @@ public abstract class AbstractDynamicDataSourceProvider implements DynamicDataSo
     }
   }
 
-  private DataSource createHikariDataSource(DataSourceProperties properties) {
+  private DataSource createHikariDataSource(DynamicItemDataSourceProperties properties) {
     properties.setType(HikariDataSource.class);
     return properties.initializeDataSourceBuilder().build();
   }
 
-  private DataSource createDruidDataSource(DataSourceProperties properties) {
+  private DataSource createDruidDataSource(DynamicItemDataSourceProperties properties) {
     DruidDataSource druidDataSource = new DruidDataSource();
     druidDataSource.setUrl(properties.getUrl());
     druidDataSource.setUsername(properties.getUsername());
     druidDataSource.setPassword(properties.getPassword());
     druidDataSource.setDriverClassName(properties.getDriverClassName());
+    DruidDataSourceProperties druid = properties.getDruid();
+    druidDataSource.setInitialSize(druid.getInitialSize());
+    druidDataSource.setMaxActive(druid.getMaxActive());
+    druidDataSource.setMinIdle(druid.getMinIdle());
+    druidDataSource.setMaxWait(druid.getMaxWait());
+    druidDataSource.setTimeBetweenEvictionRunsMillis(druid.getTimeBetweenEvictionRunsMillis());
+    druidDataSource.setMinEvictableIdleTimeMillis(druid.getMinEvictableIdleTimeMillis());
+    druidDataSource.setMinEvictableIdleTimeMillis(druid.getMaxEvictableIdleTimeMillis());
+    druidDataSource.setValidationQuery(druid.getValidationQuery());
+    druidDataSource.setValidationQueryTimeout(druid.getValidationQueryTimeout());
+    druidDataSource.setTestOnBorrow(druid.isTestOnBorrow());
+    druidDataSource.setTestOnReturn(druid.isTestOnReturn());
     try {
       druidDataSource.setFilters("stat,wall");
       druidDataSource.init();

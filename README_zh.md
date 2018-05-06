@@ -142,9 +142,9 @@ public class Application {
 }
 ```
 
-> 为什么要排除？   
+> 为什么要排除DruidDataSourceAutoConfigure ？   
 >
-> DruidDataSourceAutoConfigure在DynamciDataSourceAutoConfiguration之前，其会注入一个DataSourceWrapper，会在原生的spring.datasource下找url,username,password等。而我们动态数据源的配置路径是变化的。
+> DruidDataSourceAutoConfigure会注入一个DataSourceWrapper，其会在原生的spring.datasource下找url,username,password等。而我们动态数据源的配置路径是变化的。
 
 3. 其他属性依旧如原生`druid-spring-boot-starter`的配置。
 
@@ -155,9 +155,28 @@ spring:
       stat-view-servlet:
         loginUsername: admin
         loginPassword: 123456
+    dynamic:
+      master:
+        username: root
+        password: 123456
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://47.100.20.186:3307/dynamic?characterEncoding=utf8&useSSL=false
+        druid:
+          initial-size: 3
+          max-active: 8
+          min-idle: 2
+          max-wait: -1
+          min-evictable-idle-time-millis: 30000
+          max-evictable-idle-time-millis: 30000
+          time-between-eviction-runs-millis: 0
+          validation-query: select 1
+          validation-query-timeout: -1
+          test-on-borrow: false
+          test-on-return: false
+          test-while-idle: true
 ```
 
-如上即可配置访问用户和密码。
+如上即可配置访问用户和密码，访问 http://localhost:8080/druid/index.html 查看druid监控。
 
 # 自定义
 
@@ -165,7 +184,7 @@ spring:
 
 数据源来源的默认实现是YmlDynamicDataSourceProvider，其从yaml或properties中读取信息并解析出主从信息。
 
-场景：有些人想把从库信息配置到主库的某个表中，如有个表名slave_datasource。现在需要用户自己去实现以下接口并注入。
+场景：有些人想把从库信息配置到主库的某个表中，如有个表名slave_datasource，用户可以自己去实现以下接口并注入。
 
 ```java
 public interface DynamicDataSourceProvider {
@@ -189,7 +208,9 @@ public interface DynamicDataSourceProvider {
 
 2. 自定义从库选择策略。
 
-默认的策略是负载均衡的策略，LoadBalanceDynamicDataSourceStrategy。 也提供了一个随机策略，RandomDynamicDataSourceStrategy。
+默认的策略是负载均衡的策略，LoadBalanceDynamicDataSourceStrategy。
+
+内部也提供了一个随机策略，RandomDynamicDataSourceStrategy。
 
 ```java
 public interface DynamicDataSourceStrategy {
@@ -205,7 +226,7 @@ public interface DynamicDataSourceStrategy {
 }
 ```
 
-重写策略并注入。
+用户可以自己重写策略并注入，这里注入自带的随机策略。
 
 ```java
   @Bean

@@ -42,11 +42,12 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
   @Override
   protected Object determineCurrentLookupKey() {
     String dataSourceLookupKey = DynamicDataSourceContextHolder.getDataSourceLookupKey();
-    if (dataSourceLookupKey != null && "".equals(dataSourceLookupKey)) {
-      String targetDataSourceLookupKey = dynamicDataSourceStrategy.determineSlaveDataSource(slaveDataSourceLookupKeys);
-      log.info("dataSourceLookupKey is empty,now switch to slave of name : {}", targetDataSourceLookupKey);
-      return targetDataSourceLookupKey;
+    if (dataSourceLookupKey == null) {
+      dataSourceLookupKey = "master";
+    } else if (dataSourceLookupKey.isEmpty()) {
+      dataSourceLookupKey = dynamicDataSourceStrategy.determineSlaveDataSource(slaveDataSourceLookupKeys);
     }
+    log.debug("determine to use datasource named : {}", dataSourceLookupKey);
     return dataSourceLookupKey;
   }
 

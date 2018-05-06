@@ -15,27 +15,23 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot;
 
-import com.alibaba.druid.filter.config.ConfigFilter;
-import com.alibaba.druid.filter.encoding.EncodingConvertFilter;
-import com.alibaba.druid.filter.logging.CommonsLogFilter;
-import com.alibaba.druid.filter.logging.Log4j2Filter;
-import com.alibaba.druid.filter.logging.Log4jFilter;
-import com.alibaba.druid.filter.logging.Slf4jLogFilter;
-import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.properties.DruidStatProperties;
 import com.alibaba.druid.spring.boot.autoconfigure.stat.DruidFilterConfiguration;
 import com.alibaba.druid.spring.boot.autoconfigure.stat.DruidSpringAopConfiguration;
 import com.alibaba.druid.spring.boot.autoconfigure.stat.DruidStatViewServletConfiguration;
 import com.alibaba.druid.spring.boot.autoconfigure.stat.DruidWebStatFilterConfiguration;
-import com.alibaba.druid.wall.WallFilter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+/**
+ * copy of DruidDataSourceAutoConfigure
+ *
+ * @author TaoYu
+ * @since 1.1.0
+ */
 @Configuration
 @ConditionalOnClass(DruidDataSource.class)
 @EnableConfigurationProperties({DruidStatProperties.class})
