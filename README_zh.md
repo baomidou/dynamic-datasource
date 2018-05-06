@@ -31,7 +31,7 @@ dynamic-datasource-spring-boot-starter 基于 springBoot2.0.
 <dependency>
   <groupId>com.baomidou</groupId>
   <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
-  <version>1.1.0</version>
+  <version>1.2.0</version>
 </dependency>
 ```
 2. 配置主从数据源。
