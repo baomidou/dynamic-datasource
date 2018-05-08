@@ -15,6 +15,7 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot;
 
+import com.baomidou.dynamic.datasource.DynamicDataSourceAspect;
 import com.baomidou.dynamic.datasource.DynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.DynamicDataSourceStrategy;
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
@@ -75,12 +76,18 @@ public class DynamicDataSourceAutoConfiguration {
   }
 
   @Bean
-  @ConditionalOnMissingBean
-  public DynamicDatasourceAnnotationAdvisor dynamicDatasourceAnnotationAdvisor() {
-    DynamicDatasourceAnnotationAdvisor advisor = new DynamicDatasourceAnnotationAdvisor();
-    advisor.setAdvice(new DynamicDatasourceAnnotationInterceptor());
-    advisor.setOrder(Integer.MIN_VALUE);
-    return advisor;
+  public DynamicDataSourceAspect dynamicDataSourceAspect(){
+    return new DynamicDataSourceAspect();
   }
+
+  //fixme 等我熟悉AOP源码再恢复，有高手看到请联系作者 332309254
+//  @Bean
+//  @ConditionalOnMissingBean
+//  public DynamicDatasourceAnnotationAdvisor dynamicDatasourceAnnotationAdvisor() {
+//    DynamicDatasourceAnnotationAdvisor advisor = new DynamicDatasourceAnnotationAdvisor();
+//    advisor.setAdvice(new DynamicDatasourceAnnotationInterceptor());
+//    advisor.setOrder(Integer.MIN_VALUE);
+//    return advisor;
+//  }
 
 }
