@@ -68,20 +68,26 @@ public abstract class AbstractDynamicDataSourceProvider implements DynamicDataSo
     druidDataSource.setUsername(properties.getUsername());
     druidDataSource.setPassword(properties.getPassword());
     druidDataSource.setDriverClassName(properties.getDriverClassName());
-    DruidDataSourceProperties druid = properties.getDruid();
-    druidDataSource.setInitialSize(druid.getInitialSize());
-    druidDataSource.setMaxActive(druid.getMaxActive());
-    druidDataSource.setMinIdle(druid.getMinIdle());
-    druidDataSource.setMaxWait(druid.getMaxWait());
-    druidDataSource.setTimeBetweenEvictionRunsMillis(druid.getTimeBetweenEvictionRunsMillis());
-    druidDataSource.setMinEvictableIdleTimeMillis(druid.getMinEvictableIdleTimeMillis());
-    druidDataSource.setMinEvictableIdleTimeMillis(druid.getMaxEvictableIdleTimeMillis());
-    druidDataSource.setValidationQuery(druid.getValidationQuery());
-    druidDataSource.setValidationQueryTimeout(druid.getValidationQueryTimeout());
-    druidDataSource.setTestOnBorrow(druid.isTestOnBorrow());
-    druidDataSource.setTestOnReturn(druid.isTestOnReturn());
+
+    DruidDataSourceProperties druidProperties = properties.getDruid();
+
+    druidDataSource.setInitialSize(druidProperties.getInitialSize());
+    druidDataSource.setMaxActive(druidProperties.getMaxActive());
+    druidDataSource.setMinIdle(druidProperties.getMinIdle());
+    druidDataSource.setMaxWait(druidProperties.getMaxWait());
+    druidDataSource.setTimeBetweenEvictionRunsMillis(druidProperties.getTimeBetweenEvictionRunsMillis());
+    druidDataSource.setMinEvictableIdleTimeMillis(druidProperties.getMinEvictableIdleTimeMillis());
+    druidDataSource.setMaxEvictableIdleTimeMillis(druidProperties.getMaxEvictableIdleTimeMillis());
+    druidDataSource.setValidationQuery(druidProperties.getValidationQuery());
+    druidDataSource.setValidationQueryTimeout(druidProperties.getValidationQueryTimeout());
+    druidDataSource.setTestOnBorrow(druidProperties.isTestOnBorrow());
+    druidDataSource.setTestOnReturn(druidProperties.isTestOnReturn());
+    druidDataSource.setPoolPreparedStatements(druidProperties.isPoolPreparedStatements());
+    druidDataSource.setMaxOpenPreparedStatements(druidProperties.getMaxOpenPreparedStatements());
+    druidDataSource.setSharePreparedStatements(druidProperties.isSharePreparedStatements());
+    druidDataSource.setConnectProperties(druidProperties.getConnectionProperties());
     try {
-      druidDataSource.setFilters("stat,wall");
+      druidDataSource.setFilters(druidProperties.getFilters());
       druidDataSource.init();
     } catch (SQLException e) {
       e.printStackTrace();

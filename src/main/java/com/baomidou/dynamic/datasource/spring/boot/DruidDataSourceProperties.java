@@ -15,6 +15,7 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot;
 
+import java.util.Properties;
 import lombok.Data;
 
 /**
@@ -31,9 +32,15 @@ public class DruidDataSourceProperties {
   private long timeBetweenEvictionRunsMillis = 60 * 1000L;
   private long minEvictableIdleTimeMillis = 1000L * 60L * 30L;
   private long maxEvictableIdleTimeMillis = 1000L * 60L * 60L * 7;
-  private String validationQuery = null;
+  private String validationQuery;
   private int validationQueryTimeout = -1;
   private boolean testOnBorrow = false;
   private boolean testOnReturn = false;
   private boolean testWhileIdle = true;
+  private boolean poolPreparedStatements = false;
+  private int maxOpenPreparedStatements = -1;
+  private boolean sharePreparedStatements = false;
+  private Properties connectionProperties;
+  private String filters = "stat,wall";
+
 }
