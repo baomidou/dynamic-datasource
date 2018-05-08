@@ -15,6 +15,8 @@
  */
 package com.baomidou.dynamic.datasource;
 
+import org.springframework.core.NamedThreadLocal;
+
 /**
  * DynamicDataSourceContextHolder use ThreadLocal to switch dataSource in PerThread.
  *
@@ -23,7 +25,7 @@ package com.baomidou.dynamic.datasource;
  */
 public final class DynamicDataSourceContextHolder {
 
-  private static final ThreadLocal<String> LOOKUP_KEY_HOLDER = new ThreadLocal<>();
+  private static final ThreadLocal<String> LOOKUP_KEY_HOLDER =  new NamedThreadLocal("current dynamic datasource");
 
   private DynamicDataSourceContextHolder() {
   }
