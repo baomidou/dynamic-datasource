@@ -13,11 +13,11 @@ dynamic-datasource-spring-boot-starter 基于 springBoot2.0.
 
 它适用于读写分离，一主多从的环境。
 
-主数据库使用 `INSERT`   `UPDATE`  `DELETE` 操作.
+主数据库使用 `INSERT`   `UPDATE`  `DELETE` 操作。
 
-从数据库使用 `SELECT` 操作.
+从数据库使用 `SELECT` 操作。
 
-如果你的项目比较复杂，建议使用 [sharding-jdbc ](https://github.com/shardingjdbc/sharding-jdbc).
+如果你的项目比较复杂，建议使用 [sharding-jdbc ](https://github.com/shardingjdbc/sharding-jdbc)。
 
 ## 示例
 
@@ -31,7 +31,7 @@ dynamic-datasource-spring-boot-starter 基于 springBoot2.0.
 <dependency>
   <groupId>com.baomidou</groupId>
   <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
-  <version>1.2.0</version>
+  <version>${version}</version>
 </dependency>
 ```
 2. 配置主从数据源。
@@ -119,6 +119,8 @@ public interface UserMapper {
 
 springBoot2.x默认使用HikariCP，但在国内Druid的使用者非常庞大，此项目特地对其进行了适配，完成多数据源下使用Druid进行监控。
 
+> 注意：主从可以使用不同的数据库连接池，如master使用Druid监控，从库使用HikariCP。 如果不配置连接池type类型，默认是Druid优先于HikariCP。
+
 1. 项目引入`druid-spring-boot-starter`依赖。
 
 ```xml
@@ -174,6 +176,10 @@ spring:
           test-on-borrow: false
           test-on-return: false
           test-while-idle: true
+          pool-prepared-statements: true
+          max-open-prepared-statements: 100
+          filters: stat,wall
+          share-prepared-statements: true
 ```
 
 如上即可配置访问用户和密码，访问 http://localhost:8080/druid/index.html 查看druid监控。

@@ -31,7 +31,7 @@ If you project is complex,I will propose you use [sharding-jdbc ](https://github
 <dependency>
   <groupId>com.baomidou</groupId>
   <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
-  <version>1.2.0</version>
+  <version>${version}</version>
 </dependency>
 ```
 2. Config your master-slave info in application.yml。
