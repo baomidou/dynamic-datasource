@@ -26,8 +26,7 @@ public class DynamicDatasourceAnnotationInterceptor extends AbstractDynamicDatas
 
   @Override
   protected String determineDatasource(Method method, Object[] args, Object target) {
-    DS ds = method.getDeclaredAnnotation(DS.class);
-    return ds.value();
+    return method.getDeclaredAnnotation(DS.class).value();
   }
 
 }

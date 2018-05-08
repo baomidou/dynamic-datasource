@@ -27,10 +27,7 @@ public class DynamicDatasourceAnnotationAdvisor extends StaticMethodMatcherPoint
 
   @Override
   public boolean matches(Method method, Class<?> targetClass) {
-    if (method.isAnnotationPresent(DS.class)) {
-      return true;
-    }
-    return false;
+    return(method.isAnnotationPresent(DS.class));
   }
 
 }
