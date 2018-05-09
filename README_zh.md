@@ -19,6 +19,8 @@ dynamic-datasource-spring-boot-starter 基于 springBoot2.0.
 
 如果你的项目比较复杂，建议使用 [sharding-jdbc ](https://github.com/shardingjdbc/sharding-jdbc)。
 
+[点击加入QQ群【苞米豆开源交流】](https://jq.qq.com/?_wv=1027&k=5tFhLhS)
+
 ## 示例
 
 [dynamic-datasource-example](https://gitee.com/baomidou/dynamic-datasource-example) 一个简单能直接运行的项目。
