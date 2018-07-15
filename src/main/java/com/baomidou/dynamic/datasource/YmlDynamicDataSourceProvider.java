@@ -17,14 +17,16 @@ package com.baomidou.dynamic.datasource;
 
 import com.baomidou.dynamic.datasource.spring.boot.DynamicDataSourceProperties;
 import com.baomidou.dynamic.datasource.spring.boot.DynamicItemDataSourceProperties;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.sql.DataSource;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author TaoYu Kanyuxia
  * @since 1.0.0
  */
+@Slf4j
 public class YmlDynamicDataSourceProvider extends AbstractDynamicDataSourceProvider implements DynamicDataSourceProvider {
 
   private DynamicDataSourceProperties properties;
@@ -41,8 +43,13 @@ public class YmlDynamicDataSourceProvider extends AbstractDynamicDataSourceProvi
   @Override
   public Map<String, DataSource> loadSlaveDataSource() {
     Map<String, DynamicItemDataSourceProperties> slaves = properties.getSlave();
-    Map<String, DataSource> dataSourceMap = new HashMap<>(slaves.size());
-    slaves.forEach((k, v) -> dataSourceMap.put(k, createDataSource(v)));
+    if (slaves.size() == 0) {
+      throw new RuntimeException("dynamic datasource ** slave ** is empty, please check your config");
+    }
+    Map<String, DataSource> dataSourceMap = new LinkedHashMap<>(slaves.size());
+    for (Map.Entry<String, DynamicItemDataSourceProperties> item : slaves.entrySet()) {
+      dataSourceMap.put(item.getKey(), createDataSource(item.getValue()));
+    }
     return dataSourceMap;
   }
 

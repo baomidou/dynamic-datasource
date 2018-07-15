@@ -32,28 +32,29 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public abstract class AbstractDynamicDataSourceProvider implements DynamicDataSourceProvider {
 
+  public static final String DRUID_DATASOURCE = "com.alibaba.druid.pool.DruidDataSource";
+  public static final String HIKARI_DATASOURCE = "com.zaxxer.hikari.HikariDataSource";
+
   protected DataSource createDataSource(DynamicItemDataSourceProperties properties) {
     Class<? extends DataSource> type = properties.getType();
     if (type == null) {
       try {
-        Class.forName("com.alibaba.druid.pool.DruidDataSource");
+        Class.forName(DRUID_DATASOURCE);
         return createDruidDataSource(properties);
       } catch (ClassNotFoundException e) {
         log.debug("dynamic not found DruidDataSource");
       }
       try {
-        Class.forName("com.zaxxer.hikari.HikariDataSource");
+        Class.forName(HIKARI_DATASOURCE);
         return createHikariDataSource(properties);
       } catch (ClassNotFoundException e) {
         log.debug("dynamic not found HikariDataSource");
       }
       throw new RuntimeException("please set master and slave type like spring.dynamic.datasource.master.type");
+    } else if (DRUID_DATASOURCE.equals(type.getName())) {
+      return createDruidDataSource(properties);
     } else {
-      if ("com.alibaba.druid.pool.DruidDataSource".equals(type.getName())) {
-        return createDruidDataSource(properties);
-      } else {
-        return properties.initializeDataSourceBuilder().build();
-      }
+      return properties.initializeDataSourceBuilder().build();
     }
   }
 

@@ -26,7 +26,6 @@ package com.baomidou.dynamic.datasource;
  * @see LoadBalanceDynamicDataSourceStrategy
  * @since 1.0.0
  */
-@FunctionalInterface
 public interface DynamicDataSourceStrategy {
 
   /**

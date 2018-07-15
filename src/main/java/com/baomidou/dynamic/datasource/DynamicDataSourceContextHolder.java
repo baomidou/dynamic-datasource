@@ -25,7 +25,7 @@ import org.springframework.core.NamedThreadLocal;
  */
 public final class DynamicDataSourceContextHolder {
 
-  private static final ThreadLocal<String> LOOKUP_KEY_HOLDER =  new NamedThreadLocal("current dynamic datasource");
+  private static final ThreadLocal<String> LOOKUP_KEY_HOLDER = new NamedThreadLocal("current dynamic datasource");
 
   private DynamicDataSourceContextHolder() {
   }

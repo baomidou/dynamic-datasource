@@ -15,7 +15,7 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import lombok.Data;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -36,6 +36,8 @@ public class DynamicDataSourceProperties {
   private DynamicItemDataSourceProperties master = new DynamicItemDataSourceProperties();
 
   @NestedConfigurationProperty
-  private Map<String, DynamicItemDataSourceProperties> slave = new HashMap<>();
+  private Map<String, DynamicItemDataSourceProperties> slave = new LinkedHashMap<>();
+
+  private Boolean forceMaster = true;
 
 }

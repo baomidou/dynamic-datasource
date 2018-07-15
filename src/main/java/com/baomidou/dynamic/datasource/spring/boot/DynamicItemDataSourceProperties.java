@@ -16,6 +16,7 @@
 package com.baomidou.dynamic.datasource.spring.boot;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
@@ -24,6 +25,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
  * @since 1.2.0
  */
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class DynamicItemDataSourceProperties extends DataSourceProperties {
 
   @NestedConfigurationProperty

@@ -23,12 +23,11 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class LoadBalanceDynamicDataSourceStrategy implements DynamicDataSourceStrategy {
 
-  private AtomicInteger count = new AtomicInteger(0);
+  private AtomicInteger index = new AtomicInteger(0);
 
   @Override
   public String determineSlaveDataSource(String[] slaveDataSourceLookupKeys) {
-    int number = count.getAndAdd(1);
-    return slaveDataSourceLookupKeys[number % slaveDataSourceLookupKeys.length];
+    return slaveDataSourceLookupKeys[Math.abs(index.getAndAdd(1)) % slaveDataSourceLookupKeys.length];
   }
 
 }

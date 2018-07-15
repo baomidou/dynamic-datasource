@@ -16,18 +16,52 @@
 package com.baomidou.dynamic.datasource.aop;
 
 import com.baomidou.dynamic.datasource.DS;
-import java.lang.reflect.Method;
-import org.springframework.aop.support.StaticMethodMatcherPointcutAdvisor;
+import lombok.NonNull;
+import org.aopalliance.aop.Advice;
+import org.springframework.aop.Pointcut;
+import org.springframework.aop.support.AbstractPointcutAdvisor;
+import org.springframework.aop.support.ComposablePointcut;
+import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
 
 /**
  * @author TaoYu
  * @since 1.2.0
  */
-public class DynamicDatasourceAnnotationAdvisor extends StaticMethodMatcherPointcutAdvisor {
+public class DynamicDatasourceAnnotationAdvisor extends AbstractPointcutAdvisor implements BeanFactoryAware {
+
+  private Advice advice;
+
+  private Pointcut pointcut;
+
+  public DynamicDatasourceAnnotationAdvisor(@NonNull DynamicDatasourceAnnotationInterceptor dynamicDatasourceAnnotationInterceptor) {
+    this.advice = dynamicDatasourceAnnotationInterceptor;
+    this.pointcut = buildPointcut();
+  }
 
   @Override
-  public boolean matches(Method method, Class<?> targetClass) {
-    return(method.isAnnotationPresent(DS.class));
+  public Pointcut getPointcut() {
+    return this.pointcut;
+  }
+
+  @Override
+  public Advice getAdvice() {
+    return this.advice;
+  }
+
+  @Override
+  public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+    if (this.advice instanceof BeanFactoryAware) {
+      ((BeanFactoryAware) this.advice).setBeanFactory(beanFactory);
+    }
+  }
+
+  private Pointcut buildPointcut() {
+    Pointcut cpc = new AnnotationMatchingPointcut(DS.class, true);
+    Pointcut mpc = AnnotationMatchingPointcut.forMethodAnnotation(DS.class);
+    return new ComposablePointcut(cpc).union(mpc);
   }
 
 }
