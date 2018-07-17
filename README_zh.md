@@ -9,17 +9,19 @@
 
 ## 简介
 
-dynamic-datasource-spring-boot-starter 基于 springBoot2.0.
+dynamic-datasource-spring-boot-starter是一个基于springboot的快速继承多数据源的启动器。
 
-它适用于读写分离，一主多从的环境。
+其支持 **Jdk 1.7+,    SpringBoot 1.4.x  1.5.x   2.0.x**。
 
-主数据库使用 `INSERT`   `UPDATE`  `DELETE` 操作。
+它主要用于读写分离，一主多从的环境。 （也可以纯粹当成多库使用）
 
-从数据库使用 `SELECT` 操作。
+主数据库  **建议**   只执行 `INSERT`   `UPDATE`  `DELETE` 操作。
+
+从数据库  **建议** 只执行 `SELECT` 操作。
 
 如果你的项目比较复杂，建议使用 [sharding-jdbc ](https://github.com/shardingjdbc/sharding-jdbc)。
 
-[点击加入QQ群【苞米豆开源交流】](https://jq.qq.com/?_wv=1027&k=5tFhLhS)
+[更多问题-点击加入QQ群【苞米豆开源交流】](https://jq.qq.com/?_wv=1027&k=5tFhLhS)
 
 ## 示例
 
@@ -46,50 +48,51 @@ spring.datasource.dynamic.slave 配置每一个从数据源（读库）
 spring:
   datasource:
     dynamic:
+      force-master: true  #遇到事物强制主库，默认值就为true。
       master:
         username: root
         password: 123456
         driver-class-name: com.mysql.jdbc.Driver
-        url: jdbc:mysql://47.100.20.186:3307/dynamic?characterEncoding=utf8&useSSL=false
+        url: jdbc:mysql://47.100.20.186:3306/dynamic?characterEncoding=utf8&useSSL=false
       slave:
         one:
           username: root
           password: 123456
           driver-class-name: com.mysql.jdbc.Driver
-          url: jdbc:mysql://47.100.20.186:3308/dynamic?characterEncoding=utf8&useSSL=false
+          url: jdbc:mysql://47.100.20.186:3307/dynamic?characterEncoding=utf8&useSSL=false
         two:
           username: root
           password: 123456
           driver-class-name: com.mysql.jdbc.Driver
-          url: jdbc:mysql://47.100.20.186:3309/dynamic?characterEncoding=utf8&useSSL=false
+          url: jdbc:mysql://47.100.20.186:3308/dynamic?characterEncoding=utf8&useSSL=false
+         #......省略
 ```
 
-3. 切换数据源。
+3. 使用  **@DS**  切换数据源。
 
-使用 **@DS**  注解切换数据源。
-
-> 可以注解在方法上,可以注解在service实现或mapper接口方法上。
+**@DS** 可以注解在方法上和类上，**同时存在方法注解优先于类上注解**,强烈建议注解在service实现或mapper接口方法上。
 
 |     注解     |                             结果                             |
 | :----------: | :----------------------------------------------------------: |
 |   没有@DS    |                             主库                             |
 | @DS("slave") |                存在slave指定slave，不存在主库                |
 |     @DS      | 根据DynamicDataSourceStrategy策略，选择一个从库。默认负载均衡策略。 |
+|     注意     | **force-master** 会判断当前方法和类上是否有@Transational注解，如果有会强制主库。 |
 
 ```java
 @Service
+@DS
 public class UserServiceImpl implements UserService {
 
   @Autowired
   private JdbcTemplate jdbcTemplate;
 
-  @DS("one")
   public List<Map<String, Object>> selectAll() {
     return  jdbcTemplate.queryForList("select * from user");
   }
   
   @Override
-  @DS
+  @DS("two")
   public List<Map<String, Object>> selectByCondition() {
     return  jdbcTemplate.queryForList("select * from user where age >10");
   }
@@ -99,6 +102,7 @@ public class UserServiceImpl implements UserService {
 在mybatis环境下也可注解在mapper接口层。
 
 ```java
+@DS("master")
 public interface UserMapper {
 
   @Insert("INSERT INTO user (name,age) values (#{name},#{age})")
@@ -121,7 +125,7 @@ public interface UserMapper {
 
 springBoot2.x默认使用HikariCP，但在国内Druid的使用者非常庞大，此项目特地对其进行了适配，完成多数据源下使用Druid进行监控。
 
-> 注意：主从可以使用不同的数据库连接池，如master使用Druid监控，从库使用HikariCP。 如果不配置连接池type类型，默认是Druid优先于HikariCP。
+> 注意：主从可以使用不同的数据库连接池，如**master使用Druid监控，从库使用HikariCP**。 如果不配置连接池type类型，默认是Druid优先于HikariCP。
 
 1. 项目引入`druid-spring-boot-starter`依赖。
 
@@ -129,11 +133,11 @@ springBoot2.x默认使用HikariCP，但在国内Druid的使用者非常庞大，
 <dependency>
     <groupId>com.alibaba</groupId>
     <artifactId>druid-spring-boot-starter</artifactId>
-    <version>1.1.9</version>
+    <version>1.1.10</version>
 </dependency>
 ```
 
-2. 排除原生Druid的快速配置类。
+2. **排除**  原生Druid的快速配置类。
 
 ```java
 @SpringBootApplication(exclude = DruidDataSourceAutoConfigure.class)
