@@ -1,6 +1,6 @@
 /**
- * Copyright © 2018 TaoYu (tracy5546@gmail.com)
- *
+ * Copyright © 2018 organization 苞米豆
+ * <pre>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,14 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * <pre/>
  */
 package com.baomidou.dynamic.datasource;
 
+import javax.sql.DataSource;
+import java.util.List;
+
 /**
- * <pre>
- *   When you use @DS() and not specify value,We should determine a slave dataSource.
- *   So we can use some Strategy. The default strategy is LoadBalanceDynamicDataSourceStrategy.
- * </pre>
+ * 多数据源选择策略接口
+ * 一般默认为负载均衡策略，默认提供了一个随机策略
  *
  * @author TaoYu Kanyuxia
  * @see RandomDynamicDataSourceStrategy
@@ -28,12 +30,12 @@ package com.baomidou.dynamic.datasource;
  */
 public interface DynamicDataSourceStrategy {
 
-  /**
-   * determine a slaveId
-   *
-   * @param slaveDataSourceLookupKeys slaveKeys
-   * @return slaveId
-   */
-  String determineSlaveDataSource(String[] slaveDataSourceLookupKeys);
+    /**
+     * 决定当前数据源
+     *
+     * @param dataSources 数据源选择库
+     * @return dataSource 所选择的数据源
+     */
+    DataSource determineDataSource(List<DataSource> dataSources);
 
 }

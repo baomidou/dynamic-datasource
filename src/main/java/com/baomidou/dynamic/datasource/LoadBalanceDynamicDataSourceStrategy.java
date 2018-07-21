@@ -1,6 +1,6 @@
 /**
- * Copyright © 2018 TaoYu (tracy5546@gmail.com)
- *
+ * Copyright © 2018 organization 苞米豆
+ * <pre>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,22 +12,27 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * <pre/>
  */
 package com.baomidou.dynamic.datasource;
 
+import javax.sql.DataSource;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * 负载均衡策略
+ *
  * @author TaoYu Kanyuxia
  * @since 1.0.0
  */
 public class LoadBalanceDynamicDataSourceStrategy implements DynamicDataSourceStrategy {
 
-  private AtomicInteger index = new AtomicInteger(0);
+    private AtomicInteger index = new AtomicInteger(0);
 
-  @Override
-  public String determineSlaveDataSource(String[] slaveDataSourceLookupKeys) {
-    return slaveDataSourceLookupKeys[Math.abs(index.getAndAdd(1)) % slaveDataSourceLookupKeys.length];
-  }
+    @Override
+    public DataSource determineDataSource(List<DataSource> dataSources) {
+        return dataSources.get(Math.abs(index.getAndAdd(1)) % dataSources.size());
+    }
 
 }

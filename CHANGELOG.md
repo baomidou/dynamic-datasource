@@ -1,3 +1,15 @@
+# v2.0.0
+
+- Breaking change：数据源配置同级，不再默认主从，支持多种方案。
+- Breaking change：使用约定大于配置，开启 多组模式 新启程。
+- Breaking change：注解包路径变更，与苞米豆其他项目保持一致写法。
+- Breaking change：不再支持@DS空注解。
+- Breaking change：不再支持强制主库force-master配置。
+- Breaking change：数据源选择策略现在如需更改需要设置配置文件的dynamicDataSourceStrategyClass。
+- Druid数据源默认validation-query 为select 1 。
+- 全部源码改为中文。
+- 增加了部分启动时和运行中的日志。
+
 # v1.4.0
 
 - 支持了在类上注解，如果方法上同时有注解则方法注解优先。

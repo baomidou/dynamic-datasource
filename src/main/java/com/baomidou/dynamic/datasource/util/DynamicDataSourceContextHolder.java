@@ -14,23 +14,31 @@
  * limitations under the License.
  * <pre/>
  */
-package com.baomidou.dynamic.datasource;
-
-import javax.sql.DataSource;
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
+package com.baomidou.dynamic.datasource.util;
 
 /**
- * 随机策略
+ * 核心基于ThreadLocal的切换数据源工具类
  *
  * @author TaoYu Kanyuxia
  * @since 1.0.0
  */
-public class RandomDynamicDataSourceStrategy implements DynamicDataSourceStrategy {
+public final class DynamicDataSourceContextHolder {
 
-    @Override
-    public DataSource determineDataSource(List<DataSource> dataSources) {
-        return dataSources.get(ThreadLocalRandom.current().nextInt(dataSources.size()));
+    private static final ThreadLocal<String> LOOKUP_KEY_HOLDER = new ThreadLocal();
+
+    private DynamicDataSourceContextHolder() {
+    }
+
+    public static String getDataSourceLookupKey() {
+        return LOOKUP_KEY_HOLDER.get();
+    }
+
+    public static void setDataSourceLookupKey(String dataSourceLookupKey) {
+        LOOKUP_KEY_HOLDER.set(dataSourceLookupKey);
+    }
+
+    public static void clearDataSourceLookupKey() {
+        LOOKUP_KEY_HOLDER.remove();
     }
 
 }

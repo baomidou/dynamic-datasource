@@ -1,6 +1,6 @@
 /**
- * Copyright © 2018 TaoYu (tracy5546@gmail.com)
- *
+ * Copyright © 2018 organization 苞米豆
+ * <pre>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,19 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * <pre/>
  */
 package com.baomidou.dynamic.datasource;
 
-import java.util.Map;
 import javax.sql.DataSource;
+import java.util.Map;
 
 /**
- * <pre>
- *   You can load masterDataSource and slaveDataSource by yourself.
- *   Like some can load slaveInfo By jdbcConfig.
- *   The default provider is YmlDynamicDataSourceProvider.It load databaseInfo from yaml or properties.
- *   The prefix is spring.datasource.dynamic  .
- * </pre>
+ * 多数据源加载接口，默认的实现为从yml信息中加载所有数据源
+ * 你可以自己实现从其他地方加载所有数据源
  *
  * @author TaoYu Kanyuxia
  * @see YmlDynamicDataSourceProvider
@@ -32,18 +29,11 @@ import javax.sql.DataSource;
  */
 public interface DynamicDataSourceProvider {
 
-  /**
-   * load master
-   *
-   * @return masterDataSource
-   */
-  DataSource loadMasterDataSource();
-
-  /**
-   * load slaves
-   *
-   * @return slaveDataSource
-   */
-  Map<String, DataSource> loadSlaveDataSource();
+    /**
+     * 加载所有数据源
+     *
+     * @return 所有数据源，key为数据源名称
+     */
+    Map<String, DataSource> loadDataSources();
 
 }
