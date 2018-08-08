@@ -29,6 +29,9 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 @EqualsAndHashCode(callSuper = false)
 public class DynamicItemDataSourceProperties extends DataSourceProperties {
 
+    /**
+     * Druid参数配置
+     */
     @NestedConfigurationProperty
     private DruidDataSourceProperties druid = new DruidDataSourceProperties();
 

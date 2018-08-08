@@ -47,8 +47,8 @@ public class DynamicDataSourceProperties {
     private Map<String, DynamicItemDataSourceProperties> datasource = new LinkedHashMap<>();
 
     /**
-     * 多数据源选择算法clazz
+     * 多数据源选择算法clazz，默认负载均衡算法
      */
-    private Class<? extends DynamicDataSourceStrategy> dynamicDataSourceStrategyClass = LoadBalanceDynamicDataSourceStrategy.class;
+    private Class<? extends DynamicDataSourceStrategy> strategy = LoadBalanceDynamicDataSourceStrategy.class;
 
 }

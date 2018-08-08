@@ -62,7 +62,7 @@ public class DynamicDataSourceAutoConfiguration {
     public DynamicRoutingDataSource dynamicDataSource(DynamicDataSourceProvider dynamicDataSourceProvider) {
         DynamicRoutingDataSource dynamicRoutingDataSource = new DynamicRoutingDataSource();
         dynamicRoutingDataSource.setDynamicDataSourceProvider(dynamicDataSourceProvider);
-        dynamicRoutingDataSource.setDynamicDataSourceStrategyClass(properties.getDynamicDataSourceStrategyClass());
+        dynamicRoutingDataSource.setDynamicDataSourceStrategyClass(properties.getStrategy());
         dynamicRoutingDataSource.setPrimary(properties.getPrimary());
         return dynamicRoutingDataSource;
     }
