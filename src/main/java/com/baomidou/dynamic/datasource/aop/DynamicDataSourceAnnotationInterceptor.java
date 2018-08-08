@@ -37,7 +37,7 @@ public class DynamicDataSourceAnnotationInterceptor implements MethodInterceptor
     /**
      * 缓存方法注解值
      */
-    private static final Map<String, String> METHOD_CACHE = new HashMap<>();
+    private static final Map<Method, String> METHOD_CACHE = new HashMap<>();
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
@@ -52,16 +52,15 @@ public class DynamicDataSourceAnnotationInterceptor implements MethodInterceptor
 
     private String determineDatasource(MethodInvocation invocation) {
         Method method = invocation.getMethod();
-        String methodName = method.getName();
-        if (METHOD_CACHE.containsKey(methodName)) {
-            return METHOD_CACHE.get(methodName);
+        if (METHOD_CACHE.containsKey(method)) {
+            return METHOD_CACHE.get(method);
         } else {
             DS ds = method.isAnnotationPresent(DS.class) ? method.getAnnotation(DS.class)
                     : AnnotationUtils.findAnnotation(method.getDeclaringClass(), DS.class);
             if (ds.value().isEmpty()) {
                 throw new RuntimeException("2.0版本必须配置每一个value");
             }
-            METHOD_CACHE.put(methodName, ds.value());
+            METHOD_CACHE.put(method, ds.value());
             return ds.value();
         }
     }
