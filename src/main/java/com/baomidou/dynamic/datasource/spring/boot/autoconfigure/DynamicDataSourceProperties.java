@@ -21,7 +21,6 @@ import com.baomidou.dynamic.datasource.LoadBalanceDynamicDataSourceStrategy;
 import lombok.Data;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -42,7 +41,9 @@ public class DynamicDataSourceProperties {
      */
     private String primary = "master";
 
-    @NestedConfigurationProperty
+    /**
+     * 每一个数据源
+     */
     private Map<String, DynamicItemDataSourceProperties> datasource = new LinkedHashMap<>();
 
     /**
