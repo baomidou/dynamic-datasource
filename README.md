@@ -226,6 +226,13 @@ public class Application {
 }
 ```
 
+```yaml
+#如果遇到DruidDataSourceAutoConfigure抛出no suitable driver表示注解排除没有生效尝试以下这种排除方法
+spring:
+  autoconfigure:
+    exclude: com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure
+```
+
 > 为什么要排除DruidDataSourceAutoConfigure ？   
 >
 > DruidDataSourceAutoConfigure会注入一个DataSourceWrapper，其会在原生的spring.datasource下找url,username,password等。而我们动态数据源的配置路径是变化的。
@@ -266,6 +273,8 @@ spring:
 ```
 
 如上即可配置访问用户和密码，访问 http://localhost:8080/druid/index.html 查看druid监控。
+
+
 
 # 自定义
 
