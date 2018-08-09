@@ -43,7 +43,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
     /**
      * 分组数据库
      */
-    private Map<String, GroupDatasource> groupDataSources = new HashMap<>();
+    private Map<String, DynamicGroupDatasource> groupDataSources = new HashMap<>();
 
     @Setter
     private DynamicDataSourceProvider dynamicDataSourceProvider;
@@ -86,12 +86,13 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
             if (dsName.contains("_")) {
                 String[] groupDs = dsName.split("_");
                 String groupName = groupDs[0];
+                DataSource dataSource = dsItem.getValue();
                 if (groupDataSources.containsKey(groupName)) {
-                    groupDataSources.get(groupName).addDatasource(dsItem.getValue());
+                    groupDataSources.get(groupName).addDatasource(dataSource);
                 } else {
                     try {
-                        GroupDatasource groupDatasource = new GroupDatasource(groupName, dynamicDataSourceStrategyClass.newInstance());
-                        groupDatasource.addDatasource(dsItem.getValue());
+                        DynamicGroupDatasource groupDatasource = new DynamicGroupDatasource(groupName, dynamicDataSourceStrategyClass.newInstance());
+                        groupDatasource.addDatasource(dataSource);
                         groupDataSources.put(groupName, groupDatasource);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -100,9 +101,9 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
             }
         }
         //检测组数据源设置
-        Iterator<Map.Entry<String, GroupDatasource>> groupIterator = groupDataSources.entrySet().iterator();
+        Iterator<Map.Entry<String, DynamicGroupDatasource>> groupIterator = groupDataSources.entrySet().iterator();
         while (groupIterator.hasNext()) {
-            Map.Entry<String, GroupDatasource> item = groupIterator.next();
+            Map.Entry<String, DynamicGroupDatasource> item = groupIterator.next();
             log.debug("组 {} 下有 {} 个数据源", item.getKey(), item.getValue().size());
             if (item.getValue().size() == 1) {
                 log.warn("请注意不要设置一个只有一个数据源的组，{} 组将被移除", item.getKey());

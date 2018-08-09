@@ -17,8 +17,8 @@
 package com.baomidou.dynamic.datasource;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DruidDataSourceProperties;
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicItemDataSourceProperties;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicItemDataSource;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidDataSourceProperties;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,7 +37,7 @@ public abstract class AbstractDynamicDataSourceProvider implements DynamicDataSo
     public static final String DRUID_DATASOURCE = "com.alibaba.druid.pool.DruidDataSource";
     public static final String HIKARI_DATASOURCE = "com.zaxxer.hikari.HikariDataSource";
 
-    protected DataSource createDataSource(DynamicItemDataSourceProperties properties) {
+    protected DataSource createDataSource(DynamicItemDataSource properties) {
         Class<? extends DataSource> type = properties.getType();
         if (type == null) {
             try {
@@ -60,12 +60,12 @@ public abstract class AbstractDynamicDataSourceProvider implements DynamicDataSo
         }
     }
 
-    private DataSource createHikariDataSource(DynamicItemDataSourceProperties properties) {
+    private DataSource createHikariDataSource(DynamicItemDataSource properties) {
         properties.setType(HikariDataSource.class);
         return properties.initializeDataSourceBuilder().build();
     }
 
-    private DataSource createDruidDataSource(DynamicItemDataSourceProperties properties) {
+    private DataSource createDruidDataSource(DynamicItemDataSource properties) {
         DruidDataSource druidDataSource = new DruidDataSource();
         druidDataSource.setUrl(properties.getUrl());
         druidDataSource.setUsername(properties.getUsername());

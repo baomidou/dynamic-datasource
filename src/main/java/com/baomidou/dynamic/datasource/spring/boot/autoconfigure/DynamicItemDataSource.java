@@ -16,8 +16,9 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidDataSourceProperties;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
@@ -25,9 +26,9 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
  * @author TaoYu
  * @since 1.2.0
  */
-@Data
-@EqualsAndHashCode(callSuper = false)
-public class DynamicItemDataSourceProperties extends DataSourceProperties {
+@Getter
+@Setter
+public class DynamicItemDataSource extends DataSourceProperties {
 
     /**
      * Druid参数配置

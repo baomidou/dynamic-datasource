@@ -18,7 +18,8 @@ package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
 import com.baomidou.dynamic.datasource.DynamicDataSourceStrategy;
 import com.baomidou.dynamic.datasource.LoadBalanceDynamicDataSourceStrategy;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -32,7 +33,8 @@ import java.util.Map;
  * @see DataSourceProperties
  * @since 1.0.0
  */
-@Data
+@Getter
+@Setter
 @ConfigurationProperties(prefix = "spring.datasource.dynamic")
 public class DynamicDataSourceProperties {
 
@@ -44,7 +46,7 @@ public class DynamicDataSourceProperties {
     /**
      * 每一个数据源
      */
-    private Map<String, DynamicItemDataSourceProperties> datasource = new LinkedHashMap<>();
+    private Map<String, DynamicItemDataSource> datasource = new LinkedHashMap<>();
 
     /**
      * 多数据源选择算法clazz，默认负载均衡算法

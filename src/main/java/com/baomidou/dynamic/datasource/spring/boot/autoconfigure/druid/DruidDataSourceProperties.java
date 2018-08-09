@@ -14,7 +14,7 @@
  * limitations under the License.
  * <pre/>
  */
-package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
+package com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid;
 
 import lombok.Data;
 

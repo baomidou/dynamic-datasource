@@ -29,7 +29,7 @@ import java.util.List;
  * @since 2.0.0
  */
 @Data
-public class GroupDatasource {
+public class DynamicGroupDatasource {
 
     /**
      * 组名
@@ -46,7 +46,7 @@ public class GroupDatasource {
      */
     private List<DataSource> dataSources = new ArrayList<>();
 
-    public GroupDatasource(String groupName, DynamicDataSourceStrategy dynamicDataSourceStrategy) {
+    public DynamicGroupDatasource(String groupName, DynamicDataSourceStrategy dynamicDataSourceStrategy) {
         this.groupName = groupName;
         this.dynamicDataSourceStrategy = dynamicDataSourceStrategy;
     }
