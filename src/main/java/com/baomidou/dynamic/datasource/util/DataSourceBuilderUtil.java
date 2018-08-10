@@ -14,26 +14,9 @@
  * limitations under the License.
  * <pre/>
  */
-package com.baomidou.dynamic.datasource.annotation;
+package com.baomidou.dynamic.datasource.util;
 
-import java.lang.annotation.*;
+public class DataSourceBuilderUtil {
 
-/**
- * 注解在类上或方法上来切换数据源
- *
- * @author TaoYu Kanyuxia
- * @since 1.0.0
- */
-@Target({ElementType.TYPE, ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface DS {
-
-    /**
-     * 组名或者某一个数据源名称
-     *
-     * @return 数据源名称
-     */
-    String value();
 
 }

@@ -17,9 +17,8 @@
 package com.baomidou.dynamic.datasource;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicItemDataSource;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSource;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidDataSourceProperties;
-import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
@@ -35,37 +34,22 @@ import java.sql.SQLException;
 public abstract class AbstractDynamicDataSourceProvider implements DynamicDataSourceProvider {
 
     public static final String DRUID_DATASOURCE = "com.alibaba.druid.pool.DruidDataSource";
-    public static final String HIKARI_DATASOURCE = "com.zaxxer.hikari.HikariDataSource";
 
-    protected DataSource createDataSource(DynamicItemDataSource properties) {
+    protected DataSource createDataSource(DynamicDataSource properties) {
         Class<? extends DataSource> type = properties.getType();
         if (type == null) {
             try {
                 Class.forName(DRUID_DATASOURCE);
                 return createDruidDataSource(properties);
             } catch (ClassNotFoundException e) {
-                log.debug("dynamic not found DruidDataSource");
             }
-            try {
-                Class.forName(HIKARI_DATASOURCE);
-                return createHikariDataSource(properties);
-            } catch (ClassNotFoundException e) {
-                log.debug("dynamic not found HikariDataSource");
-            }
-            throw new RuntimeException("please set master and slave type like spring.dynamic.datasource.master.type");
         } else if (DRUID_DATASOURCE.equals(type.getName())) {
             return createDruidDataSource(properties);
-        } else {
-            return properties.initializeDataSourceBuilder().build();
         }
+        return properties.initDataSource();
     }
 
-    private DataSource createHikariDataSource(DynamicItemDataSource properties) {
-        properties.setType(HikariDataSource.class);
-        return properties.initializeDataSourceBuilder().build();
-    }
-
-    private DataSource createDruidDataSource(DynamicItemDataSource properties) {
+    private DataSource createDruidDataSource(DynamicDataSource properties) {
         DruidDataSource druidDataSource = new DruidDataSource();
         druidDataSource.setUrl(properties.getUrl());
         druidDataSource.setUsername(properties.getUsername());

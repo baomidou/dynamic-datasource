@@ -29,7 +29,7 @@ import java.util.Properties;
 @Data
 public class DruidDataSourceProperties {
 
-    private int initialSize = 0;
+    private int initialSize = 3;
     private int maxActive = 8;
     private int minIdle = 0;
     private long maxWait = -1;
