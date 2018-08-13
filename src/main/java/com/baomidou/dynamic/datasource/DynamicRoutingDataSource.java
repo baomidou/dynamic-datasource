@@ -73,7 +73,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
             return dataSourceMap.get(lookupKey);
         }
         log.debug("从默认数据源中返回数据");
-        return groupDataSources.containsKey(primary) ? groupDataSources.get(lookupKey).determineDataSource() : dataSourceMap.get(primary);
+        return groupDataSources.containsKey(lookupKey) ? groupDataSources.get(lookupKey).determineDataSource() : dataSourceMap.get(primary);
     }
 
     @Override
