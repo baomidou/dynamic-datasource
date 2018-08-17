@@ -60,10 +60,10 @@ public class DynamicDataSourceAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public DynamicRoutingDataSource dynamicDataSource(DynamicDataSourceProvider dynamicDataSourceProvider) {
+    public DynamicRoutingDataSource dynamicRoutingDataSource(DynamicDataSourceProvider dynamicDataSourceProvider) {
         DynamicRoutingDataSource dynamicRoutingDataSource = new DynamicRoutingDataSource();
-        dynamicRoutingDataSource.setDynamicDataSourceProvider(dynamicDataSourceProvider);
-        dynamicRoutingDataSource.setDynamicDataSourceStrategyClass(properties.getStrategy());
+        dynamicRoutingDataSource.setProvider(dynamicDataSourceProvider);
+        dynamicRoutingDataSource.setStrategy(properties.getStrategy());
         dynamicRoutingDataSource.setPrimary(properties.getPrimary());
         return dynamicRoutingDataSource;
     }
@@ -71,7 +71,8 @@ public class DynamicDataSourceAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public DynamicDataSourceAnnotationAdvisor dynamicDatasourceAnnotationAdvisor() {
-        return new DynamicDataSourceAnnotationAdvisor(new DynamicDataSourceAnnotationInterceptor());
+        DynamicDataSourceAnnotationInterceptor dynamicDataSourceAnnotationInterceptor = new DynamicDataSourceAnnotationInterceptor(properties.isMpEnabled());
+        return new DynamicDataSourceAnnotationAdvisor(dynamicDataSourceAnnotationInterceptor);
     }
 
 }

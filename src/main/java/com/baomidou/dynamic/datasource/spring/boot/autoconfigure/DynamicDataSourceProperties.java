@@ -44,9 +44,14 @@ public class DynamicDataSourceProperties {
     private String primary = "master";
 
     /**
+     * 是否开启对mybatis-plus的支持，默认false
+     */
+    private boolean mpEnabled = false;
+
+    /**
      * 每一个数据源
      */
-    private Map<String, DynamicDataSource> datasource = new LinkedHashMap<>();
+    private Map<String, DataSourceProperty> datasource = new LinkedHashMap<>();
 
     /**
      * 多数据源选择算法clazz，默认负载均衡算法
