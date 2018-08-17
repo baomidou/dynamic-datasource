@@ -16,13 +16,15 @@
  */
 package com.baomidou.dynamic.datasource;
 
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSource;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.baomidou.dynamic.datasource.toolkit.DataSourceFactory.createDataSource;
 
 /**
  * YML数据源提供者
@@ -31,7 +33,7 @@ import java.util.Map;
  * @since 1.0.0
  */
 @Slf4j
-public class YmlDynamicDataSourceProvider extends AbstractDynamicDataSourceProvider implements DynamicDataSourceProvider {
+public class YmlDynamicDataSourceProvider implements DynamicDataSourceProvider {
 
     private DynamicDataSourceProperties properties;
 
@@ -41,9 +43,9 @@ public class YmlDynamicDataSourceProvider extends AbstractDynamicDataSourceProvi
 
     @Override
     public Map<String, DataSource> loadDataSources() {
-        Map<String, DynamicDataSource> dataSourcePropertiesMap = properties.getDatasource();
+        Map<String, DataSourceProperty> dataSourcePropertiesMap = properties.getDatasource();
         Map<String, DataSource> dataSourceMap = new HashMap<>(dataSourcePropertiesMap.size());
-        for (Map.Entry<String, DynamicDataSource> item : dataSourcePropertiesMap.entrySet()) {
+        for (Map.Entry<String, DataSourceProperty> item : dataSourcePropertiesMap.entrySet()) {
             dataSourceMap.put(item.getKey(), createDataSource(item.getValue()));
         }
         return dataSourceMap;

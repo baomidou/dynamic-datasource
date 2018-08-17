@@ -16,7 +16,7 @@
  */
 package com.baomidou.dynamic.datasource;
 
-import com.baomidou.dynamic.datasource.util.DynamicDataSourceContextHolder;
+import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
@@ -27,7 +27,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * The core DynamicRoutingDataSource,It use determineCurrentLookupKey to determineDatasource.
+ * 核心动态数据源组件
  *
  * @author TaoYu Kanyuxia
  * @since 1.0.0
@@ -46,10 +46,10 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
     private Map<String, DynamicGroupDatasource> groupDataSources = new HashMap<>();
 
     @Setter
-    private DynamicDataSourceProvider dynamicDataSourceProvider;
+    private DynamicDataSourceProvider provider;
 
     @Setter
-    private Class<? extends DynamicDataSourceStrategy> dynamicDataSourceStrategyClass;
+    private Class<? extends DynamicDataSourceStrategy> strategy;
 
     /**
      * 默认数据源名称，默认master，可为组数据源名，可为单数据源名
@@ -78,7 +78,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
 
     @Override
     public void afterPropertiesSet() {
-        this.dataSourceMap = dynamicDataSourceProvider.loadDataSources();
+        this.dataSourceMap = provider.loadDataSources();
         log.debug("共加载 {} 个数据源", dataSourceMap.size());
         //分组数据源
         for (Map.Entry<String, DataSource> dsItem : dataSourceMap.entrySet()) {
@@ -91,7 +91,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
                     groupDataSources.get(groupName).addDatasource(dataSource);
                 } else {
                     try {
-                        DynamicGroupDatasource groupDatasource = new DynamicGroupDatasource(groupName, dynamicDataSourceStrategyClass.newInstance());
+                        DynamicGroupDatasource groupDatasource = new DynamicGroupDatasource(groupName, strategy.newInstance());
                         groupDatasource.addDatasource(dataSource);
                         groupDataSources.put(groupName, groupDatasource);
                     } catch (Exception e) {
@@ -106,7 +106,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
             Map.Entry<String, DynamicGroupDatasource> item = groupIterator.next();
             log.debug("组 {} 下有 {} 个数据源", item.getKey(), item.getValue().size());
             if (item.getValue().size() == 1) {
-                log.warn("请注意不要设置一个只有一个数据源的组，{} 组将被移除", item.getKey());
+                log.warn("请注意不要设置一个只有一个数据源的组，{} 组将被移除，您将不能使用 {} 来切换数据源", item.getKey(), item.getKey());
                 groupIterator.remove();
             }
         }

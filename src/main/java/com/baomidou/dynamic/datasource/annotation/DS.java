@@ -30,7 +30,7 @@ import java.lang.annotation.*;
 public @interface DS {
 
     /**
-     * 组名或者某一个数据源名称
+     * 组名或者某一个数据源名称，必填
      *
      * @return 数据源名称
      */

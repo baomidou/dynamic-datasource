@@ -29,7 +29,7 @@ import javax.sql.DataSource;
  */
 @Getter
 @Setter
-public class DynamicDataSource {
+public class DataSourceProperty {
 
     /**
      * JDBC type,如果不设置自动查找 Druid > HikariCp
@@ -61,31 +61,5 @@ public class DynamicDataSource {
      */
     @NestedConfigurationProperty
     private DruidDataSourceProperties druid = new DruidDataSourceProperties();
-
-    public DataSource initDataSource() {
-        Class<?> builderClass = null;
-        try {
-            builderClass = Class.forName("org.springframework.boot.jdbc.DataSourceBuilder");
-        } catch (Exception e) {
-        }
-        if (builderClass == null) {
-            try {
-                builderClass = Class.forName("org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder");
-            } catch (Exception e) {
-            }
-        }
-        try {
-            Object o1 = builderClass.getDeclaredMethod("create").invoke(null);
-            Object o2 = builderClass.getDeclaredMethod("type", Class.class).invoke(o1, this.type);
-            Object o3 = builderClass.getDeclaredMethod("driverClassName", String.class).invoke(o2, this.driverClassName);
-            Object o4 = builderClass.getDeclaredMethod("url", String.class).invoke(o3, this.url);
-            Object o5 = builderClass.getDeclaredMethod("username", String.class).invoke(o4, this.username);
-            Object o6 = builderClass.getDeclaredMethod("password", String.class).invoke(o5, this.password);
-            return (DataSource) builderClass.getDeclaredMethod("build").invoke(o6);
-        } catch (Exception e) {
-
-        }
-        return null;
-    }
 
 }

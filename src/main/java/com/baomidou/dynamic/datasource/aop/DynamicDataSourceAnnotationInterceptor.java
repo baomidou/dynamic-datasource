@@ -17,7 +17,8 @@
 package com.baomidou.dynamic.datasource.aop;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
-import com.baomidou.dynamic.datasource.util.DynamicDataSourceContextHolder;
+import com.baomidou.dynamic.datasource.support.MybatisPlusResolver;
+import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -37,30 +38,42 @@ public class DynamicDataSourceAnnotationInterceptor implements MethodInterceptor
     /**
      * 缓存方法注解值
      */
-    private static final Map<Method, String> METHOD_CACHE = new HashMap<>();
+    private static final Map<String, String> METHOD_CACHE = new HashMap<>();
+
+    private boolean mpEnabled;
+
+    private MybatisPlusResolver mybatisPlusResolver;
+
+    public DynamicDataSourceAnnotationInterceptor(boolean mpEnabled) {
+        this.mpEnabled = mpEnabled;
+        if (mpEnabled) {
+            mybatisPlusResolver = new MybatisPlusResolver();
+        }
+    }
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
         try {
-            String datasource = determineDatasource(invocation);
-            DynamicDataSourceContextHolder.setDataSourceLookupKey(datasource);
+            DynamicDataSourceContextHolder.setDataSourceLookupKey(determineDatasource(invocation));
             return invocation.proceed();
         } finally {
             DynamicDataSourceContextHolder.clearDataSourceLookupKey();
         }
     }
 
-    private String determineDatasource(MethodInvocation invocation) {
+    private String determineDatasource(MethodInvocation invocation) throws Throwable {
         Method method = invocation.getMethod();
-        if (METHOD_CACHE.containsKey(method)) {
-            return METHOD_CACHE.get(method);
+        Class<?> declaringClass = method.getDeclaringClass();
+        if (mpEnabled) {
+            declaringClass = mybatisPlusResolver.targetClass(invocation);
+        }
+        String cacheName = declaringClass.getName() + "." + method.getName();
+        if (METHOD_CACHE.containsKey(cacheName)) {
+            return METHOD_CACHE.get(cacheName);
         } else {
             DS ds = method.isAnnotationPresent(DS.class) ? method.getAnnotation(DS.class)
-                    : AnnotationUtils.findAnnotation(method.getDeclaringClass(), DS.class);
-            if (ds.value().isEmpty()) {
-                throw new RuntimeException("2.0版本必须配置每一个value");
-            }
-            METHOD_CACHE.put(method, ds.value());
+                    : AnnotationUtils.findAnnotation(declaringClass, DS.class);
+            METHOD_CACHE.put(cacheName, ds.value());
             return ds.value();
         }
     }

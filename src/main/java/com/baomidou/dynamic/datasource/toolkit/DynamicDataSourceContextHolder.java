@@ -14,7 +14,7 @@
  * limitations under the License.
  * <pre/>
  */
-package com.baomidou.dynamic.datasource.util;
+package com.baomidou.dynamic.datasource.toolkit;
 
 /**
  * 核心基于ThreadLocal的切换数据源工具类
