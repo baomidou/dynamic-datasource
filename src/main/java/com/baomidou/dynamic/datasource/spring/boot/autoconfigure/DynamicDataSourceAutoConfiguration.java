@@ -32,7 +32,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 /**
- * DynamicDataSourceAutoConfiguration
+ * 动态数据源核心自动配置类
  *
  * @author TaoYu Kanyuxia
  * @see DynamicDataSourceProvider
@@ -71,8 +71,10 @@ public class DynamicDataSourceAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public DynamicDataSourceAnnotationAdvisor dynamicDatasourceAnnotationAdvisor() {
-        DynamicDataSourceAnnotationInterceptor dynamicDataSourceAnnotationInterceptor = new DynamicDataSourceAnnotationInterceptor(properties.isMpEnabled());
-        return new DynamicDataSourceAnnotationAdvisor(dynamicDataSourceAnnotationInterceptor);
+        DynamicDataSourceAnnotationInterceptor interceptor = new DynamicDataSourceAnnotationInterceptor(properties.isMpEnabled());
+        DynamicDataSourceAnnotationAdvisor advisor = new DynamicDataSourceAnnotationAdvisor(interceptor);
+        advisor.setOrder(properties.getOrder());
+        return advisor;
     }
 
 }

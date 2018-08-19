@@ -22,6 +22,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.core.Ordered;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -57,5 +58,10 @@ public class DynamicDataSourceProperties {
      * 多数据源选择算法clazz，默认负载均衡算法
      */
     private Class<? extends DynamicDataSourceStrategy> strategy = LoadBalanceDynamicDataSourceStrategy.class;
+
+    /**
+     * aop切面顺序，默认优先级最高
+     */
+    private Integer order = Ordered.HIGHEST_PRECEDENCE;
 
 }
