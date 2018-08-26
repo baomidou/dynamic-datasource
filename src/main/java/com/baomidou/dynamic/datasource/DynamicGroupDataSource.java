@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 organization 苞米豆
+ * Copyright © 2018 organization baomidou
  * <pre>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
  */
 package com.baomidou.dynamic.datasource;
 
+import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
 import lombok.Data;
 
 import javax.sql.DataSource;
@@ -29,7 +30,7 @@ import java.util.List;
  * @since 2.0.0
  */
 @Data
-public class DynamicGroupDatasource {
+public class DynamicGroupDataSource {
 
     /**
      * 组名
@@ -46,7 +47,7 @@ public class DynamicGroupDatasource {
      */
     private List<DataSource> dataSources = new ArrayList<>();
 
-    public DynamicGroupDatasource(String groupName, DynamicDataSourceStrategy dynamicDataSourceStrategy) {
+    public DynamicGroupDataSource(String groupName, DynamicDataSourceStrategy dynamicDataSourceStrategy) {
         this.groupName = groupName;
         this.dynamicDataSourceStrategy = dynamicDataSourceStrategy;
     }

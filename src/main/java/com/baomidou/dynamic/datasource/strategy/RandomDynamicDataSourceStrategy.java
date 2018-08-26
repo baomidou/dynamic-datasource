@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 organization 苞米豆
+ * Copyright © 2018 organization baomidou
  * <pre>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,28 +14,23 @@
  * limitations under the License.
  * <pre/>
  */
-package com.baomidou.dynamic.datasource;
+package com.baomidou.dynamic.datasource.strategy;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * 多数据源选择策略接口
- * 一般默认为负载均衡策略，默认提供了一个随机策略
+ * 随机策略
  *
  * @author TaoYu Kanyuxia
- * @see RandomDynamicDataSourceStrategy
- * @see LoadBalanceDynamicDataSourceStrategy
  * @since 1.0.0
  */
-public interface DynamicDataSourceStrategy {
+public class RandomDynamicDataSourceStrategy implements DynamicDataSourceStrategy {
 
-    /**
-     * 决定当前数据源
-     *
-     * @param dataSources 数据源选择库
-     * @return dataSource 所选择的数据源
-     */
-    DataSource determineDataSource(List<DataSource> dataSources);
+    @Override
+    public DataSource determineDataSource(List<DataSource> dataSources) {
+        return dataSources.get(ThreadLocalRandom.current().nextInt(dataSources.size()));
+    }
 
 }

@@ -275,7 +275,7 @@ spring:
 
 # 集成MybatisPlus
 
-从2.1.0开始提供对mp的集成，在以前的版本你直接调用的方法是mp提供的内置方法，因其不是我们自己的方法不能切换数据源，你会得到一个NP异常。
+从2.1.0开始提供对mp3.0+的集成，在以前的版本你直接调用的方法是mp提供的内置方法，因其不是我们自己的方法不能切换数据源，你会得到一个NP异常。
 
 ```yaml
 spring:
@@ -321,7 +321,7 @@ public interface DynamicDataSourceProvider {
 
 <https://gitee.com/baomidou/mybatis-plus> mybatis单表快速开发，3.0已支持lamdba写法 。
 
-https://gitee.com/baomidou/kisso 基于cookie的SSO中间件。
+<https://gitee.com/baomidou/kisso> 基于cookie的SSO中间件。
 
 <https://gitee.com/baomidou/dynamic-datasource-spring-boot-starter> 多数据源，动态数据源，主从分离 快速启动器。
 

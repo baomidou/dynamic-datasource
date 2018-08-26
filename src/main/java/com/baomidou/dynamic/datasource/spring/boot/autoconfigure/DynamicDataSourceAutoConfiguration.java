@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 organization 苞米豆
+ * Copyright © 2018 organization baomidou
  * <pre>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,13 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
-import com.baomidou.dynamic.datasource.DynamicDataSourceProvider;
-import com.baomidou.dynamic.datasource.DynamicDataSourceStrategy;
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
-import com.baomidou.dynamic.datasource.YmlDynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationInterceptor;
+import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
+import com.baomidou.dynamic.datasource.provider.YmlDynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidDynamicDataSourceConfiguration;
+import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -62,9 +62,9 @@ public class DynamicDataSourceAutoConfiguration {
     @ConditionalOnMissingBean
     public DynamicRoutingDataSource dynamicRoutingDataSource(DynamicDataSourceProvider dynamicDataSourceProvider) {
         DynamicRoutingDataSource dynamicRoutingDataSource = new DynamicRoutingDataSource();
-        dynamicRoutingDataSource.setProvider(dynamicDataSourceProvider);
-        dynamicRoutingDataSource.setStrategy(properties.getStrategy());
         dynamicRoutingDataSource.setPrimary(properties.getPrimary());
+        dynamicRoutingDataSource.setStrategy(properties.getStrategy());
+        dynamicRoutingDataSource.setProvider(dynamicDataSourceProvider);
         return dynamicRoutingDataSource;
     }
 

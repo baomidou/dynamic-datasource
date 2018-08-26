@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 organization 苞米豆
+ * Copyright © 2018 organization baomidou
  * <pre>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,6 @@ public class MybatisPlusResolver {
     public Class<?> targetClass(MethodInvocation invocation) throws IllegalAccessException {
         Object target = invocation.getThis();
         return Proxy.isProxyClass(target.getClass()) ? (Class) field.get(Proxy.getInvocationHandler(target)) : target.getClass();
-
     }
 
 }

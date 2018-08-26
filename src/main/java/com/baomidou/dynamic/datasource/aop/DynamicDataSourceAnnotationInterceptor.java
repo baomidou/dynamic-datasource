@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 organization 苞米豆
+ * Copyright © 2018 organization baomidou
  * <pre>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,6 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.core.annotation.AnnotationUtils;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 动态数据源AOP核心拦截器
@@ -34,11 +32,6 @@ import java.util.Map;
  * @since 1.2.0
  */
 public class DynamicDataSourceAnnotationInterceptor implements MethodInterceptor {
-
-    /**
-     * 缓存方法注解值
-     */
-    private static final Map<String, String> METHOD_CACHE = new HashMap<>();
 
     private boolean mpEnabled;
 
@@ -67,15 +60,9 @@ public class DynamicDataSourceAnnotationInterceptor implements MethodInterceptor
         if (mpEnabled) {
             declaringClass = mybatisPlusResolver.targetClass(invocation);
         }
-        String cacheName = declaringClass.getName() + "." + method.getName();
-        if (METHOD_CACHE.containsKey(cacheName)) {
-            return METHOD_CACHE.get(cacheName);
-        } else {
-            DS ds = method.isAnnotationPresent(DS.class) ? method.getAnnotation(DS.class)
-                    : AnnotationUtils.findAnnotation(declaringClass, DS.class);
-            METHOD_CACHE.put(cacheName, ds.value());
-            return ds.value();
-        }
+        DS ds = method.isAnnotationPresent(DS.class) ? method.getAnnotation(DS.class)
+                : AnnotationUtils.findAnnotation(declaringClass, DS.class);
+        return ds.value();
     }
 
 }

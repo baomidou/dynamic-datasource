@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 organization 苞米豆
+ * Copyright © 2018 organization baomidou
  * <pre>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ import javax.sql.DataSource;
 public class DataSourceProperty {
 
     /**
-     * JDBC type,如果不设置自动查找 Druid > HikariCp
+     * 连接池类型，如果不设置自动查找 Druid > HikariCp
      */
     private Class<? extends DataSource> type;
 

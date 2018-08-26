@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 organization 苞米豆
+ * Copyright © 2018 organization baomidou
  * <pre>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
  */
 package com.baomidou.dynamic.datasource.annotation;
 
+
 import java.lang.annotation.*;
 
 /**
@@ -30,7 +31,7 @@ import java.lang.annotation.*;
 public @interface DS {
 
     /**
-     * 组名或者某一个数据源名称，必填
+     * 组名或者具体数据源名称
      *
      * @return 数据源名称
      */

@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 organization 苞米豆
+ * Copyright © 2018 organization baomidou
  * <pre>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  * <pre/>
  */
-package com.baomidou.dynamic.datasource;
+package com.baomidou.dynamic.datasource.provider;
 
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;

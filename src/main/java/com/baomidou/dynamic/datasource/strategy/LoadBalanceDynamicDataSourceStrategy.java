@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 organization 苞米豆
+ * Copyright © 2018 organization baomidou
  * <pre>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,25 @@
  * limitations under the License.
  * <pre/>
  */
-package com.baomidou.dynamic.datasource;
+package com.baomidou.dynamic.datasource.strategy;
 
 import javax.sql.DataSource;
-import java.util.Map;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 多数据源加载接口，默认的实现为从yml信息中加载所有数据源
- * 你可以自己实现从其他地方加载所有数据源
+ * 负载均衡策略
  *
  * @author TaoYu Kanyuxia
- * @see YmlDynamicDataSourceProvider
  * @since 1.0.0
  */
-public interface DynamicDataSourceProvider {
+public class LoadBalanceDynamicDataSourceStrategy implements DynamicDataSourceStrategy {
 
-    /**
-     * 加载所有数据源
-     *
-     * @return 所有数据源，key为数据源名称
-     */
-    Map<String, DataSource> loadDataSources();
+    private AtomicInteger index = new AtomicInteger(0);
+
+    @Override
+    public DataSource determineDataSource(List<DataSource> dataSources) {
+        return dataSources.get(Math.abs(index.getAndAdd(1)) % dataSources.size());
+    }
 
 }

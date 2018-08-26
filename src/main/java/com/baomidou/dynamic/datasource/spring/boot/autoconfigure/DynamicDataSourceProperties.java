@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 organization 苞米豆
+ * Copyright © 2018 organization baomidou
  * <pre>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
-import com.baomidou.dynamic.datasource.DynamicDataSourceStrategy;
-import com.baomidou.dynamic.datasource.LoadBalanceDynamicDataSourceStrategy;
+import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
+import com.baomidou.dynamic.datasource.strategy.LoadBalanceDynamicDataSourceStrategy;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;

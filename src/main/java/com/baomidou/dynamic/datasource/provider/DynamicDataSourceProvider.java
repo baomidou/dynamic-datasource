@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 organization 苞米豆
+ * Copyright © 2018 organization baomidou
  * <pre>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,27 @@
  * limitations under the License.
  * <pre/>
  */
-package com.baomidou.dynamic.datasource;
+package com.baomidou.dynamic.datasource.provider;
 
 import javax.sql.DataSource;
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Map;
 
 /**
- * 随机策略
+ * 多数据源加载接口，默认的实现为从yml信息中加载所有数据源
+ * 你可以自己实现从其他地方加载所有数据源
  *
  * @author TaoYu Kanyuxia
+ * @see YmlDynamicDataSourceProvider
+ * @see AbstractJdbcDataSourceProvider
  * @since 1.0.0
  */
-public class RandomDynamicDataSourceStrategy implements DynamicDataSourceStrategy {
+public interface DynamicDataSourceProvider {
 
-    @Override
-    public DataSource determineDataSource(List<DataSource> dataSources) {
-        return dataSources.get(ThreadLocalRandom.current().nextInt(dataSources.size()));
-    }
+    /**
+     * 加载所有数据源
+     *
+     * @return 所有数据源，key为数据源名称
+     */
+    Map<String, DataSource> loadDataSources();
 
 }

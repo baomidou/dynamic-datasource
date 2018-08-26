@@ -1,4 +1,4 @@
-Copyright © ${project.inceptionYear} organization 苞米豆
+Copyright © ${project.inceptionYear} organization baomidou
 <pre>
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 organization 苞米豆
+ * Copyright © 2018 organization baomidou
  * <pre>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ package com.baomidou.dynamic.datasource.toolkit;
  * @author TaoYu Kanyuxia
  * @since 1.0.0
  */
+@SuppressWarnings("unchecked")
 public final class DynamicDataSourceContextHolder {
 
     private static final ThreadLocal<String> LOOKUP_KEY_HOLDER = new ThreadLocal();
