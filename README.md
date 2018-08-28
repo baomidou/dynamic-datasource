@@ -36,6 +36,8 @@ dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成�
 
 其支持 **Jdk 1.7+,    SpringBoot 1.4.x  1.5.x   2.0.x**。最新版为<img src="https://maven-badges.herokuapp.com/maven-central/com.baomidou/dynamic-datasource-spring-boot-starter/badge.svg" >
 
+**演示例子** 可参考项目下的samples目录。
+
 从 **2.0.0** 开始它适用于多种场景，常见的场景如下。
 
 - 纯粹多库，各个库甚至可以是不同的数据库。
@@ -334,3 +336,7 @@ public interface DynamicDataSourceProvider {
 1. 多个库的事物如何处理？
 
 处理不了，一个业务操作涉及多个库不要加事物。PS (如果能处理作者早就进BAT好了么)
+
+2. 是否支持JPA？
+
+不完全支持，受限于JPA底层，你只能在一个controller下切换第一个库，第二个库不能切换。（如有解决办法请联系作者）
