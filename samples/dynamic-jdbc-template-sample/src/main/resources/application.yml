@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    dynamic:
+      datasource:
+        master:
+          username: root
+          password: 123456
+          url: jdbc:mysql://47.100.20.186:3306/dynamic?useSSL=false
+          driver-class-name: com.mysql.jdbc.Driver
+        slave_1:
+          username: root
+          password: 123456
+          url: jdbc:mysql://47.100.20.186:3307/dynamic?useSSL=false
+          driver-class-name: com.mysql.jdbc.Driver
+        slave_2:
+          username: root
+          password: 123456
+          url: jdbc:mysql://47.100.20.186:3308/dynamic?useSSL=false
+          driver-class-name: com.mysql.jdbc.Driver
+        slave_3:
+          username: root
+          password: 123456
+          url: jdbc:mysql://47.100.20.186:3308/dynamic?useSSL=false
+          driver-class-name: com.mysql.jdbc.Driver
+logging:
+  level:
+    com.baomidou: debug
