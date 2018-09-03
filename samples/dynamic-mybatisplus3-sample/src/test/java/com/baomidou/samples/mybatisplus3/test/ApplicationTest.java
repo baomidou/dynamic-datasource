@@ -1,4 +1,4 @@
-package com.baomidou.samples.mybatisplus.test;
+package com.baomidou.samples.mybatisplus3.test;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.samples.mybatisplus.Application;
