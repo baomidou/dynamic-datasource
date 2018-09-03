@@ -16,8 +16,9 @@
  */
 package com.baomidou.dynamic.datasource.support;
 
-import com.baomidou.mybatisplus.core.override.PageMapperProxy;
+import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInvocation;
+import org.apache.ibatis.binding.MapperProxy;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
@@ -28,13 +29,21 @@ import java.lang.reflect.Proxy;
  * @author TaoYu
  * @since 2.1.0
  */
+@Slf4j
 public class MybatisPlusResolver {
 
     private static Field field;
 
     static {
+        Class<?> proxyClass;
         try {
-            field = PageMapperProxy.class.getDeclaredField("mapperInterface");
+            proxyClass = Class.forName("com.baomidou.mybatisplus.core.override");
+        } catch (ClassNotFoundException e) {
+            log.debug("未适配 mybatis-plus3");
+            proxyClass = MapperProxy.class;
+        }
+        try {
+            field = proxyClass.getDeclaredField("mapperInterface");
             field.setAccessible(true);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
