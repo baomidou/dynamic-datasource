@@ -9,13 +9,13 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>dynamic-mybatisplus-sample</artifactId>
+    <artifactId>dynamic-mybatisplus2-sample</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.0-RC3</version>
+            <version>2.3.1</version>
         </dependency>
     </dependencies>
 
