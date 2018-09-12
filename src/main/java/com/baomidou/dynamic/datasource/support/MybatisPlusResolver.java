@@ -37,9 +37,9 @@ public class MybatisPlusResolver {
     static {
         Class<?> proxyClass;
         try {
-            proxyClass = Class.forName("com.baomidou.mybatisplus.core.override");
+            proxyClass = Class.forName("com.baomidou.mybatisplus.core.override.PageMapperProxy");
         } catch (ClassNotFoundException e) {
-            log.debug("未适配 mybatis-plus3");
+            log.debug("未适配 mybatis-plus3,适配 mybatis-plus2");
             proxyClass = MapperProxy.class;
         }
         try {
