@@ -1,9 +1,8 @@
-package com.baomidou.samples.mybatisplus2.test;
+package com.baomidou.samples.druid.mybatis.test;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.samples.mybatisplus2.Application;
-import com.baomidou.samples.mybatisplus2.entity.User;
-import com.baomidou.samples.mybatisplus2.service.UserService;
+import com.baomidou.samples.druid.mybatis.Application;
+import com.baomidou.samples.druid.mybatis.entity.User;
+import com.baomidou.samples.druid.mybatis.service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +20,7 @@ public class ApplicationTest {
     @Autowired
     private UserService userService;
 
+
     @Test
     public void testAddUser() {
         User user = new User();
@@ -30,8 +30,17 @@ public class ApplicationTest {
     }
 
     @Test
-    public void testSelectUser() {
-        userService.selectList(new EntityWrapper<>());
+    public void testSelectUser1() {
+        userService.selectUser1();
     }
 
+    @Test
+    public void testSelectUser2() {
+        userService.selectUser2();
+    }
+
+    @Test
+    public void testSelectUser3() {
+        userService.selectUser3();
+    }
 }

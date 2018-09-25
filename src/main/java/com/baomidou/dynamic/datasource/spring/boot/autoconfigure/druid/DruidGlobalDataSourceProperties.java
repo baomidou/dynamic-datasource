@@ -27,24 +27,24 @@ import java.util.Properties;
  * @since 1.2.0
  */
 @Data
-public class DruidDataSourceProperties {
+public class DruidGlobalDataSourceProperties {
 
-    private Integer initialSize;
-    private Integer maxActive;
-    private Integer minIdle;
-    private Long maxWait;
-    private Long timeBetweenEvictionRunsMillis;
-    private Long minEvictableIdleTimeMillis;
-    private Long maxEvictableIdleTimeMillis;
-    private String validationQuery;
-    private Integer validationQueryTimeout;
-    private Boolean testOnBorrow;
-    private Boolean testOnReturn;
-    private Boolean testWhileIdle;
-    private Boolean poolPreparedStatements;
-    private Integer maxOpenPreparedStatements;
-    private Boolean sharePreparedStatements;
+    private int initialSize = 0;
+    private int maxActive = 8;
+    private int minIdle = 0;
+    private long maxWait = -1;
+    private long timeBetweenEvictionRunsMillis = 60 * 1000L;
+    private long minEvictableIdleTimeMillis = 1000L * 60L * 30L;
+    private long maxEvictableIdleTimeMillis = 1000L * 60L * 60L * 7;
+    private String validationQuery = "select 1";
+    private int validationQueryTimeout = -1;
+    private boolean testOnBorrow = false;
+    private boolean testOnReturn = false;
+    private boolean testWhileIdle = true;
+    private boolean poolPreparedStatements = false;
+    private int maxOpenPreparedStatements = -1;
+    private boolean sharePreparedStatements = false;
     private Properties connectionProperties;
-    private String filters;
+    private String filters = "stat,wall";
 
 }

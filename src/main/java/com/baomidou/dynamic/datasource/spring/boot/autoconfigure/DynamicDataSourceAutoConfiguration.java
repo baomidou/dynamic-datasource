@@ -76,5 +76,4 @@ public class DynamicDataSourceAutoConfiguration {
         advisor.setOrder(properties.getOrder());
         return advisor;
     }
-
 }

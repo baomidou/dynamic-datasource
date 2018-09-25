@@ -248,29 +248,46 @@ spring:
         loginUsername: admin
         loginPassword: 123456
     dynamic:
+      druid: # 2.2.3开始提供全局druid参数，以下是默认值和druid原生保持一致
+        initial-size: 0
+        max-active: 8
+        min-idle: 2
+        max-wait: -1
+        min-evictable-idle-time-millis: 30000
+        max-evictable-idle-time-millis: 30000
+        time-between-eviction-runs-millis: 0
+        validation-query: select 1
+        validation-query-timeout: -1
+        test-on-borrow: false
+        test-on-return: false
+        test-while-idle: true
+        pool-prepared-statements: true
+        max-open-prepared-statements: 100
+        filters: stat,wall
+        share-prepared-statements: true
       datasource:
         master:
           username: root
           password: 123456
           driver-class-name: com.mysql.jdbc.Driver
           url: jdbc:mysql://47.100.20.186:3306/dynamic?characterEncoding=utf8&useSSL=false
-          druid: #以下均为默认值
-            initial-size: 3
-            max-active: 8
-            min-idle: 2
-            max-wait: -1
-            min-evictable-idle-time-millis: 30000
-            max-evictable-idle-time-millis: 30000
-            time-between-eviction-runs-millis: 0
-            validation-query: select 1
-            validation-query-timeout: -1
-            test-on-borrow: false
-            test-on-return: false
-            test-while-idle: true
-            pool-prepared-statements: true
-            max-open-prepared-statements: 100
-            filters: stat,wall
-            share-prepared-statements: true
+          druid: # 以下参数针对每个库可以重新设置druid参数
+            initial-size:
+            max-active:
+            min-idle:
+            max-wait:
+            min-evictable-idle-time-millis:
+            max-evictable-idle-time-millis:
+            time-between-eviction-runs-millis:
+            validation-query: select 1 FROM DUAL #比如oracle就需要重新设置这个
+            validation-query-timeout:
+            test-on-borrow:
+            test-on-return:
+            test-while-idle:
+            pool-prepared-statements:
+            max-open-prepared-statements:
+            filters:
+            share-prepared-statements:
 ```
 
 如上即可配置访问用户和密码，访问 http://localhost:8080/druid/index.html 查看druid监控。

@@ -17,7 +17,9 @@
 package com.baomidou.dynamic.datasource.provider;
 
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.support.JdbcUtils;
 
 import javax.sql.DataSource;
@@ -38,6 +40,9 @@ import static com.baomidou.dynamic.datasource.toolkit.DataSourceFactory.createDa
  */
 @Slf4j
 public abstract class AbstractJdbcDataSourceProvider implements DynamicDataSourceProvider {
+
+    @Autowired(required = false)
+    protected DynamicDataSourceProperties dynamicDataSourceProperties;
 
     /**
      * JDBC driver
@@ -79,7 +84,7 @@ public abstract class AbstractJdbcDataSourceProvider implements DynamicDataSourc
             Map<String, DataSourceProperty> dataSourcePropertiesMap = executeStmt(stmt);
             Map<String, DataSource> dataSourceMap = new HashMap<>(dataSourcePropertiesMap.size());
             for (Map.Entry<String, DataSourceProperty> item : dataSourcePropertiesMap.entrySet()) {
-                dataSourceMap.put(item.getKey(), createDataSource(item.getValue()));
+                dataSourceMap.put(item.getKey(), createDataSource(item.getValue(), dynamicDataSourceProperties.getDruid()));
             }
             return dataSourceMap;
         } catch (Exception e) {

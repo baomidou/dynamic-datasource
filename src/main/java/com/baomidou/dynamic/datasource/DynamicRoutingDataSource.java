@@ -26,7 +26,6 @@ import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -99,16 +98,6 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
                         e.printStackTrace();
                     }
                 }
-            }
-        }
-        //检测组数据源设置
-        Iterator<Map.Entry<String, DynamicGroupDataSource>> groupIterator = groupDataSources.entrySet().iterator();
-        while (groupIterator.hasNext()) {
-            Map.Entry<String, DynamicGroupDataSource> item = groupIterator.next();
-            log.debug("组 {} 下有 {} 个数据源", item.getKey(), item.getValue().size());
-            if (item.getValue().size() == 1) {
-                log.warn("请注意不要设置一个只有一个数据源的组，{} 组将被移除，您将不能使用 {} 来切换数据源", item.getKey(), item.getKey());
-                groupIterator.remove();
             }
         }
         //检测默认数据源设置

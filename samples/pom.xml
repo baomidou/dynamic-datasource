@@ -26,7 +26,8 @@
         <module>dynamic-jdbc-template-sample</module>
         <module>dynamic-mybatis-sample</module>
         <module>dynamic-mybatisplus2-sample</module>
-		<module>dynamic-mybatisplus3-sample</module>
+        <module>dynamic-mybatisplus3-sample</module>
+        <module>dynamic-druid-mybatis-sample</module>
     </modules>
 
     <dependencies>
@@ -37,7 +38,7 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
-            <version>2.2.2</version>
+            <version>2.2.3</version>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
