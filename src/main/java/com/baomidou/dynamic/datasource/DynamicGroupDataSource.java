@@ -56,6 +56,10 @@ public class DynamicGroupDataSource {
         dataSources.add(dataSource);
     }
 
+    public void removeDatasource(DataSource dataSource) {
+        dataSources.remove(dataSource);
+    }
+
     public DataSource determineDataSource() {
         return dynamicDataSourceStrategy.determineDataSource(dataSources);
     }

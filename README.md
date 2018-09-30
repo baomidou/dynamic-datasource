@@ -294,7 +294,9 @@ spring:
 
 # 集成MybatisPlus
 
-从2.1.0开始提供对mp3.x的集成，在以前的版本你直接调用的方法是mp提供的内置方法，因其不是我们自己的方法不能切换数据源，你会得到一个NP异常。
+在以前的版本你直接调用的方法是mp提供的内置方法，因其不是我们自己的方法不能切换数据源，你会得到一个NP异常。
+
+从2.1.0开始提供对mp3.x的集成。
 
 从2.2.1开始提供对mp2.x的集成。
 
@@ -354,8 +356,26 @@ public interface DynamicDataSourceProvider {
 
 1. 多个库的事物如何处理？
 
-**不能 不能 不能**，一个业务操作涉及多个库不要加事物。PS (如果能处理作者早就进BAT了)
+**不能 不能 不能**，一个业务操作涉及多个库不要加事物。
 
 2. 是否支持JPA？
 
 不完全支持，受限于JPA底层，你只能在一个controller下切换第一个库，第二个库不能切换。（如有解决办法请联系作者）
+
+3. 如何实现动态增加或删除数据源？
+
+需要自己实现，从2.2.3开始DynamicRoutingDataSource核心数据源类对外暴露了`addDataSource` `removeDataSource` 方法。
+
+你可以在需要的地方@Autowired DynamicRoutingDataSource 调用相关方法增减数据源。
+
+4. 如何解析自己的数据源？
+
+默认的数据源是通过配置文件`DataSourceFactory`工厂类解析，因需要兼容springboot 1.x 和2.x做了很多适配。
+
+如果你不需要使用druid可以直接使用springboot原生`DataSourceBuilder`来构建一个新的DataSource。
+
+5. 如何在启动的时候就用外部配置而不是默认的yml配置？
+
+实现`DynamicDataSourceProvider` 可参考`AbstractJdbcDataSourceProvider`从JDBC实现(未真正实现，不可用于生产)。
+
+各位已有的实现欢迎提交PR，例如从数据库,ldap,zookeeper,redis等等。
