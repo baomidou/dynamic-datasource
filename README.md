@@ -305,6 +305,7 @@ spring:
   datasource:
     dynamic:
       mp-enabled: true #默认为false，不要随便开启，有微小的性能损失
+      #注意从2.3.0开始不再需要mp-enabled自动识别mybatisPlus
 ```
 
 ```java
@@ -321,11 +322,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 }
 ```
 
-# 自定义
+# 高级
 
-- 自定义数据源来源。
+## 自定义数据源来源。
 
-数据源来源的默认实现是YmlDynamicDataSourceProvider，其从yaml或properties中读取信息并解析出所有数据源信息。
+数据源来源的默认实现是`YmlDynamicDataSourceProvider`，其从yaml或properties中读取信息并解析出所有数据源信息。
 
 ```java
 public interface DynamicDataSourceProvider {
@@ -339,6 +340,37 @@ public interface DynamicDataSourceProvider {
 
 }
 ```
+
+## 从参数动态获取数据源(spel)
+
+从2.3.0开始提供从参数获取数据源。所有以`#`开头的参数都会使用spel从参数中获取数据源。
+
+下面的例子模拟从不同地方获取数据源名称。
+
+```java
+    @DS("#session.tenantName")//从session获取
+    public List selectSpelBySession() {
+        return userMapper.selectUsers();
+    }
+
+    @DS("#header.tenantName")//从header获取
+    public List selectSpelByHeader() {
+        return userMapper.selectUsers();
+    }
+
+    @DS("#tenantName")//使用spel从参数获取
+    public List selectSpelByKey(String tenantName) {
+        return userMapper.selectUsers();
+    }
+
+    @DS("#user.tenantName")//使用spel从复杂参数获取
+    public List selecSpelByTenant(User user) {
+        return userMapper.selectUsers();
+    }
+```
+如果你还想对spel解析的参数进行进一步处理，请注入`DynamicDataSourceSpelResolver`。
+
+默认的`DefaultDynamicDataSourceSpelResolver` 没有对解析到的参数进行处理直接返回。
 
 # 苞米豆开源项目
 
@@ -370,7 +402,7 @@ public interface DynamicDataSourceProvider {
 
 4. 如何解析自己的数据源？
 
-默认的数据源是通过配置文件`DataSourceFactory`工厂类解析，因需要兼容springboot 1.x 和2.x做了很多适配。
+默认的数据源是通过配置文件`DataSourceCreator`解析，因需要兼容springboot 1.x 和2.x做了很多适配。
 
 如果你不需要使用druid可以直接使用springboot原生`DataSourceBuilder`来构建一个新的DataSource。
 

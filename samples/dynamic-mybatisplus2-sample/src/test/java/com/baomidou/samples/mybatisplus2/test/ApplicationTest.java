@@ -1,6 +1,5 @@
 package com.baomidou.samples.mybatisplus2.test;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.samples.mybatisplus2.Application;
 import com.baomidou.samples.mybatisplus2.entity.User;
 import com.baomidou.samples.mybatisplus2.service.UserService;
@@ -31,7 +30,7 @@ public class ApplicationTest {
 
     @Test
     public void testSelectUser() {
-        userService.selectList(new EntityWrapper<>());
+        userService.selectList(null);
     }
 
 }

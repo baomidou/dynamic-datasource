@@ -1,4 +1,4 @@
-package com.baomidou.samples.jdbc.service;
+package com.baomidou.samples.mybatis.service;
 
 
 import com.baomidou.samples.mybatis.entity.User;

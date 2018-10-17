@@ -16,12 +16,15 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
-import com.baomidou.dynamic.datasource.DataSourceCreator;
+import com.baomidou.dynamic.datasource.DynamicDataSourceCreator;
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationInterceptor;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.provider.YmlDynamicDataSourceProvider;
+import com.baomidou.dynamic.datasource.spel.DefaultDynamicDataSourceSpelResolver;
+import com.baomidou.dynamic.datasource.spel.DynamicDataSourceSpelParser;
+import com.baomidou.dynamic.datasource.spel.DynamicDataSourceSpelResolver;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidDynamicDataSourceConfiguration;
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,14 +56,14 @@ public class DynamicDataSourceAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public DynamicDataSourceProvider dynamicDataSourceProvider(DataSourceCreator dataSourceCreator) {
-        return new YmlDynamicDataSourceProvider(properties, dataSourceCreator);
+    public DynamicDataSourceProvider dynamicDataSourceProvider(DynamicDataSourceCreator dynamicDataSourceCreator) {
+        return new YmlDynamicDataSourceProvider(properties, dynamicDataSourceCreator);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public DataSourceCreator dataSourceCreater() {
-        return new DataSourceCreator();
+    public DynamicDataSourceCreator dynamicDataSourceCreator() {
+        return new DynamicDataSourceCreator();
     }
 
     @Bean
@@ -75,10 +78,25 @@ public class DynamicDataSourceAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public DynamicDataSourceAnnotationAdvisor dynamicDatasourceAnnotationAdvisor() {
-        DynamicDataSourceAnnotationInterceptor interceptor = new DynamicDataSourceAnnotationInterceptor(properties.isMpEnabled());
+    public DynamicDataSourceAnnotationAdvisor dynamicDatasourceAnnotationAdvisor(DynamicDataSourceSpelParser dynamicDataSourceSpelParser, DynamicDataSourceSpelResolver dynamicDataSourceSpelResolver) {
+        DynamicDataSourceAnnotationInterceptor interceptor = new DynamicDataSourceAnnotationInterceptor();
+        interceptor.setDynamicDataSourceSpelParser(dynamicDataSourceSpelParser);
+        interceptor.setDynamicDataSourceSpelResolver(dynamicDataSourceSpelResolver);
         DynamicDataSourceAnnotationAdvisor advisor = new DynamicDataSourceAnnotationAdvisor(interceptor);
         advisor.setOrder(properties.getOrder());
         return advisor;
     }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public DynamicDataSourceSpelParser dynamicDataSourceSpelParser() {
+        return new DynamicDataSourceSpelParser();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public DynamicDataSourceSpelResolver dynamicDataSourceSpelResolver() {
+        return new DefaultDynamicDataSourceSpelResolver();
+    }
+
 }

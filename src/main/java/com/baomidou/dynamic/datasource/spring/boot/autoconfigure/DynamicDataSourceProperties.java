@@ -47,11 +47,6 @@ public class DynamicDataSourceProperties {
     private String primary = "master";
 
     /**
-     * 是否开启对mybatis-plus的支持，默认false
-     */
-    private boolean mpEnabled = false;
-
-    /**
      * 每一个数据源
      */
     private Map<String, DataSourceProperty> datasource = new LinkedHashMap<>();

@@ -1,6 +1,5 @@
 package com.baomidou.samples.mybatisplus3.test;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.samples.mybatisplus.Application;
 import com.baomidou.samples.mybatisplus.entity.User;
 import com.baomidou.samples.mybatisplus.service.UserService;
@@ -31,7 +30,7 @@ public class ApplicationTest {
 
     @Test
     public void testSelectUser() {
-        userService.list(new QueryWrapper<>());
+        userService.list(null);
     }
 
 }

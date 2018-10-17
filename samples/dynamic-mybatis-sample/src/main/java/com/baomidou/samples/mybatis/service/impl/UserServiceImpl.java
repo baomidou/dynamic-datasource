@@ -2,9 +2,9 @@ package com.baomidou.samples.mybatis.service.impl;
 
 
 import com.baomidou.dynamic.datasource.annotation.DS;
-import com.baomidou.samples.jdbc.service.UserService;
 import com.baomidou.samples.mybatis.entity.User;
 import com.baomidou.samples.mybatis.mapper.UserMapper;
+import com.baomidou.samples.mybatis.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

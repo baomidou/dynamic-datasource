@@ -1,3 +1,9 @@
+# v.2.3.0
+
+- 重构创建数据源类。废弃DataSourceFactory，改为Bean的DynamicDataSourceCreator。
+- 自动适配mybatisPlus。 移除参数的mp-enabled。
+- 新特性支持spel参数获取数据源。
+
 # v2.2.3
 
 - 支持druid参数全局配置。

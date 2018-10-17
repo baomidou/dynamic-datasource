@@ -14,30 +14,21 @@
  * limitations under the License.
  * <pre/>
  */
-package com.baomidou.dynamic.datasource.annotation;
-
-
-import java.lang.annotation.*;
+package com.baomidou.dynamic.datasource.spel;
 
 /**
- * 注解在类上或方法上来切换数据源
+ * 动态数据源spel处理器
  *
- * @author TaoYu Kanyuxia
- * @since 1.0.0
+ * @author TaoYu
+ * @since 2.3.0
  */
-@Target({ElementType.TYPE, ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface DS {
+public interface DynamicDataSourceSpelResolver {
 
     /**
-     * <pre>
-     * 组名或者具体数据源名称或者spel参数(#开头)
-     * @DS("master")    @DS("group1")   @DS("#user.id")
-     * </pre>
+     * 处理spel解析后的参数
      *
-     * @return 数据源名称
+     * @param spelValue spel参数
+     * @return 返回数据源名称
      */
-    String value();
-
+    String resolve(String spelValue);
 }

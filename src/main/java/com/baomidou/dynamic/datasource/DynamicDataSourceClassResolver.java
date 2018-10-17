@@ -14,45 +14,54 @@
  * limitations under the License.
  * <pre/>
  */
-package com.baomidou.dynamic.datasource.support;
+package com.baomidou.dynamic.datasource;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInvocation;
-import org.apache.ibatis.binding.MapperProxy;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
 
 /**
- * 对mybatis-plus的支持
+ * 获取对mybatis-plus的支持
  *
  * @author TaoYu
- * @since 2.1.0
+ * @since 2.3.0
  */
 @Slf4j
-public class MybatisPlusResolver {
+public class DynamicDataSourceClassResolver {
 
-    private static Field field;
+    private boolean mpEnabled = false;
 
-    static {
-        Class<?> proxyClass;
+    private Field mapperInterfaceField;
+
+    public DynamicDataSourceClassResolver() {
+        Class<?> proxyClass = null;
         try {
             proxyClass = Class.forName("com.baomidou.mybatisplus.core.override.PageMapperProxy");
         } catch (ClassNotFoundException e) {
-            log.debug("未适配 mybatis-plus3,适配 mybatis-plus2");
-            proxyClass = MapperProxy.class;
+            try {
+                proxyClass = Class.forName("org.apache.ibatis.binding.MapperProxy");
+            } catch (ClassNotFoundException e1) {
+            }
         }
-        try {
-            field = proxyClass.getDeclaredField("mapperInterface");
-            field.setAccessible(true);
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+        if (proxyClass != null) {
+            try {
+                mapperInterfaceField = proxyClass.getDeclaredField("mapperInterface");
+                mapperInterfaceField.setAccessible(true);
+                mpEnabled = true;
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public Class<?> targetClass(MethodInvocation invocation) throws IllegalAccessException {
-        Object target = invocation.getThis();
-        return Proxy.isProxyClass(target.getClass()) ? (Class) field.get(Proxy.getInvocationHandler(target)) : target.getClass();
+        if (mpEnabled) {
+            Object target = invocation.getThis();
+            return Proxy.isProxyClass(target.getClass()) ? (Class) mapperInterfaceField.get(Proxy.getInvocationHandler(target)) : target.getClass();
+        }
+        return invocation.getMethod().getDeclaringClass();
     }
 
 }

@@ -22,7 +22,6 @@ spring:
           password: 123456
           url: jdbc:mysql://47.100.20.186:3308/dynamic?useSSL=false
           driver-class-name: com.mysql.jdbc.Driver
-      mp-enabled: true
 logging:
   level:
     com.baomidou: debug

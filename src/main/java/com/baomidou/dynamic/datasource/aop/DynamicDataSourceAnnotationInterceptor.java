@@ -16,9 +16,12 @@
  */
 package com.baomidou.dynamic.datasource.aop;
 
+import com.baomidou.dynamic.datasource.DynamicDataSourceClassResolver;
 import com.baomidou.dynamic.datasource.annotation.DS;
-import com.baomidou.dynamic.datasource.support.MybatisPlusResolver;
+import com.baomidou.dynamic.datasource.spel.DynamicDataSourceSpelParser;
+import com.baomidou.dynamic.datasource.spel.DynamicDataSourceSpelResolver;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
+import lombok.Setter;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -33,16 +36,13 @@ import java.lang.reflect.Method;
  */
 public class DynamicDataSourceAnnotationInterceptor implements MethodInterceptor {
 
-    private boolean mpEnabled;
+    @Setter
+    private DynamicDataSourceSpelResolver dynamicDataSourceSpelResolver;
 
-    private MybatisPlusResolver mybatisPlusResolver;
+    @Setter
+    private DynamicDataSourceSpelParser dynamicDataSourceSpelParser;
 
-    public DynamicDataSourceAnnotationInterceptor(boolean mpEnabled) {
-        this.mpEnabled = mpEnabled;
-        if (mpEnabled) {
-            mybatisPlusResolver = new MybatisPlusResolver();
-        }
-    }
+    private DynamicDataSourceClassResolver dynamicDataSourceClassResolver = new DynamicDataSourceClassResolver();
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
@@ -56,13 +56,15 @@ public class DynamicDataSourceAnnotationInterceptor implements MethodInterceptor
 
     private String determineDatasource(MethodInvocation invocation) throws Throwable {
         Method method = invocation.getMethod();
-        Class<?> declaringClass = method.getDeclaringClass();
-        if (mpEnabled) {
-            declaringClass = mybatisPlusResolver.targetClass(invocation);
-        }
+        Class<?> declaringClass = dynamicDataSourceClassResolver.targetClass(invocation);
         DS ds = method.isAnnotationPresent(DS.class) ? method.getAnnotation(DS.class)
                 : AnnotationUtils.findAnnotation(declaringClass, DS.class);
-        return ds.value();
+        String value = ds.value();
+        if (!value.isEmpty() && value.startsWith("#")) {
+            String spelValue = dynamicDataSourceSpelParser.parse(invocation, value);
+            return dynamicDataSourceSpelResolver.resolve(spelValue);
+        }
+        return value;
     }
 
 }

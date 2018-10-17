@@ -1,9 +1,9 @@
 package com.baomidou.samples.mybatis.test;
 
 
-import com.baomidou.samples.jdbc.service.UserService;
 import com.baomidou.samples.mybatis.Application;
 import com.baomidou.samples.mybatis.entity.User;
+import com.baomidou.samples.mybatis.service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
