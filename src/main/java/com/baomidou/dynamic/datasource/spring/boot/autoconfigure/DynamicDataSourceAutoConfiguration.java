@@ -16,6 +16,7 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
+import com.baomidou.dynamic.datasource.DataSourceCreator;
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationInterceptor;
@@ -23,6 +24,7 @@ import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.provider.YmlDynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidDynamicDataSourceConfiguration;
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -46,16 +48,19 @@ import org.springframework.context.annotation.Import;
 @Import(DruidDynamicDataSourceConfiguration.class)
 public class DynamicDataSourceAutoConfiguration {
 
-    private final DynamicDataSourceProperties properties;
+    @Autowired
+    private DynamicDataSourceProperties properties;
 
-    public DynamicDataSourceAutoConfiguration(DynamicDataSourceProperties properties) {
-        this.properties = properties;
+    @Bean
+    @ConditionalOnMissingBean
+    public DynamicDataSourceProvider dynamicDataSourceProvider(DataSourceCreator dataSourceCreator) {
+        return new YmlDynamicDataSourceProvider(properties, dataSourceCreator);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public DynamicDataSourceProvider dynamicDataSourceProvider() {
-        return new YmlDynamicDataSourceProvider(properties);
+    public DataSourceCreator dataSourceCreater() {
+        return new DataSourceCreator();
     }
 
     @Bean

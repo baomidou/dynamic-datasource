@@ -1,20 +1,4 @@
-/**
- * Copyright © 2018 organization baomidou
- * <pre>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * <pre/>
- */
-package com.baomidou.dynamic.datasource.toolkit;
+package com.baomidou.dynamic.datasource;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
@@ -27,27 +11,24 @@ import java.lang.reflect.Method;
 import java.sql.SQLException;
 
 /**
- * 数据源工厂
+ * 数据源创建器
  *
  * @author TaoYu
- * @since 2.1.0
+ * @since 2.3.0
  */
-public class DataSourceFactory {
+public class DataSourceCreator {
 
-    /**
-     * Ali DruidD 数据源
-     */
-    public static final String DRUID_DATASOURCE = "com.alibaba.druid.pool.DruidDataSource";
+    private static final String DRUID_DATASOURCE = "com.alibaba.druid.pool.DruidDataSource";
 
-    private static Method createMethod;
-    private static Method typeMethod;
-    private static Method urlMethod;
-    private static Method usernameMethod;
-    private static Method passwordMethod;
-    private static Method driverClassNameMethod;
-    private static Method buildMethod;
+    private Method createMethod;
+    private Method typeMethod;
+    private Method urlMethod;
+    private Method usernameMethod;
+    private Method passwordMethod;
+    private Method driverClassNameMethod;
+    private Method buildMethod;
 
-    static {
+    public DataSourceCreator() {
         Class builderClass = null;
         try {
             builderClass = Class.forName("org.springframework.boot.jdbc.DataSourceBuilder");
@@ -76,7 +57,7 @@ public class DataSourceFactory {
      * @param dataSourceProperty 数据源信息
      * @return 数据源
      */
-    public static DataSource createDataSource(DataSourceProperty dataSourceProperty, DruidGlobalDataSourceProperties druidDataSourceProperties) {
+    public DataSource createDataSource(DataSourceProperty dataSourceProperty, DruidGlobalDataSourceProperties druidDataSourceProperties) {
         Class<? extends DataSource> type = dataSourceProperty.getType();
         if (type == null) {
             try {
@@ -90,7 +71,7 @@ public class DataSourceFactory {
         return createBasicDataSource(dataSourceProperty);
     }
 
-    public static DataSource createBasicDataSource(DataSourceProperty dataSourceProperty) {
+    public DataSource createBasicDataSource(DataSourceProperty dataSourceProperty) {
         try {
             Object o1 = createMethod.invoke(null);
             Object o2 = typeMethod.invoke(o1, dataSourceProperty.getType());
@@ -107,7 +88,7 @@ public class DataSourceFactory {
         return null;
     }
 
-    public static DataSource createDruidDataSource(DataSourceProperty dataSourceProperty, DruidGlobalDataSourceProperties druid) {
+    public DataSource createDruidDataSource(DataSourceProperty dataSourceProperty, DruidGlobalDataSourceProperties druid) {
         DruidDataSource druidDataSource = new DruidDataSource();
         druidDataSource.setUrl(dataSourceProperty.getUrl());
         druidDataSource.setUsername(dataSourceProperty.getUsername());
@@ -141,5 +122,4 @@ public class DataSourceFactory {
         }
         return druidDataSource;
     }
-
 }
