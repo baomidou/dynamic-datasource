@@ -31,10 +31,7 @@ import java.lang.annotation.*;
 public @interface DS {
 
     /**
-     * <pre>
      * 组名或者具体数据源名称或者spel参数(#开头)
-     * @DS("master")    @DS("group1")   @DS("#user.id")
-     * </pre>
      *
      * @return 数据源名称
      */
