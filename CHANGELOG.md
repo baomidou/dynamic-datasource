@@ -1,3 +1,6 @@
+#v2.3.1
+- 修复2.3.0中使用spel session 和header的取值错误。
+
 # v.2.3.0
 
 - 重构创建数据源类。废弃DataSourceFactory，改为Bean的DynamicDataSourceCreator。

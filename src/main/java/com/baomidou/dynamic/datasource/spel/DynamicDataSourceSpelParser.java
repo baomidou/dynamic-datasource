@@ -55,9 +55,9 @@ public class DynamicDataSourceSpelParser {
      */
     public String parse(MethodInvocation invocation, String key) {
         if (key.startsWith("#session")) {
-            return session.getAttribute(key).toString();
+            return session.getAttribute(key.split(".")[1]).toString();
         } else if (key.startsWith("#header")) {
-            return request.getHeader(key);
+            return request.getHeader(key.split(".")[1]);
         } else {
             EvaluationContext context = new MethodBasedEvaluationContext(null, invocation.getMethod(), invocation.getArguments(), NAME_DISCOVERER);
             return PARSER.parseExpression(key).getValue(context).toString();
