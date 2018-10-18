@@ -1,3 +1,6 @@
+#v2.3.2
+- 修复在不需要session的场景中自动注入session。
+
 #v2.3.1
 - 修复2.3.0中使用spel session 和header的取值错误。
 

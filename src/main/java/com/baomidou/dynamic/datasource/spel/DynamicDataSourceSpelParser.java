@@ -40,10 +40,10 @@ public class DynamicDataSourceSpelParser {
 
     private static final ExpressionParser PARSER = new SpelExpressionParser();
 
-    @Autowired
+    @Autowired(required = false)
     private HttpSession session;
 
-    @Autowired
+    @Autowired(required = false)
     private HttpServletRequest request;
 
     /**
