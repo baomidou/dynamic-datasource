@@ -62,7 +62,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
         String lookupKey = DynamicDataSourceContextHolder.getDataSourceLookupKey();
         if (StringUtils.isEmpty(lookupKey)) {
             return determinePrimaryDataSource();
-        } else if (groupDataSources.containsKey(lookupKey) && !groupDataSources.isEmpty()) {
+        } else if (!groupDataSources.isEmpty()&&groupDataSources.containsKey(lookupKey)) {
             log.debug("从 {} 组数据源中返回数据源", lookupKey);
             return groupDataSources.get(lookupKey).determineDataSource();
         } else if (dataSourceMap.containsKey(lookupKey)) {
