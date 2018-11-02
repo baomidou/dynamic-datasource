@@ -9,7 +9,7 @@ public interface UserService {
 
     List selectSpelBySession();
 
-    List selectSpelByHeader( );
+    List selectSpelByHeader();
 
     List selectSpelByKey(String tenantName);
 

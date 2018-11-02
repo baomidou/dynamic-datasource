@@ -1,7 +1,14 @@
-#v2.3.2
+# v2.3.3
+- 支持嵌套下多级的数据源切换(service1 mysql调用service2 oracle)
+
+https://gitee.com/baomidou/dynamic-datasource-spring-boot-starter/issues/IO33C
+
+- 修复spel对request和session的支持
+
+# v2.3.2
 - 修复在不需要session的场景中自动注入session。
 
-#v2.3.1
+# v2.3.1
 - 修复2.3.0中使用spel session 和header的取值错误。
 
 # v.2.3.0

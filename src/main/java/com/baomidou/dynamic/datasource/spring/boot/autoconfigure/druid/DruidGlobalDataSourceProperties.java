@@ -17,6 +17,7 @@
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.util.Properties;
 
@@ -27,6 +28,7 @@ import java.util.Properties;
  * @since 1.2.0
  */
 @Data
+@Accessors(chain = true)
 public class DruidGlobalDataSourceProperties {
 
     private int initialSize = 0;

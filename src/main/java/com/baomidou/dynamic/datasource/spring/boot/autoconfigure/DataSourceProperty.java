@@ -17,8 +17,8 @@
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidDataSourceProperties;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.experimental.Accessors;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 import javax.sql.DataSource;
@@ -27,8 +27,8 @@ import javax.sql.DataSource;
  * @author TaoYu
  * @since 1.2.0
  */
-@Getter
-@Setter
+@Data
+@Accessors(chain = true)
 public class DataSourceProperty {
 
     /**

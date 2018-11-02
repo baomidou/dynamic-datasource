@@ -20,29 +20,29 @@ spring:
         share-prepared-statements: true
       datasource:
         master:
-          username: root
-          password: 123456
-          url: jdbc:mysql://47.100.20.186:3306/dynamic?useSSL=false
-          driver-class-name: com.mysql.jdbc.Driver
+          username: sa
+          password: ""
+          url: jdbc:h2:mem:test
+          driver-class-name: org.h2.Driver
           druid: #这里可以重写默认值
             initial-size: 5
         slave_1:
-          username: root
-          password: 123456
-          url: jdbc:mysql://47.100.20.186:3307/dynamic?useSSL=false
-          driver-class-name: com.mysql.jdbc.Driver
+          username: sa
+          password: ""
+          url: jdbc:h2:mem:test
+          driver-class-name: org.h2.Driver
           druid:
             initial-size: 6
         slave_2:
-          username: root
-          password: 123456
-          url: jdbc:mysql://47.100.20.186:3308/dynamic?useSSL=false
-          driver-class-name: com.mysql.jdbc.Driver
+          username: sa
+          password: ""
+          url: jdbc:h2:mem:test
+          driver-class-name: org.h2.Driver
         slave_3:
-          username: root
-          password: 123456
-          url: jdbc:mysql://47.100.20.186:3308/dynamic?useSSL=false
-          driver-class-name: com.mysql.jdbc.Driver
+          username: sa
+          password: ""
+          url: jdbc:h2:mem:test
+          driver-class-name: org.h2.Driver
 logging:
   level:
     com.baomidou: debug

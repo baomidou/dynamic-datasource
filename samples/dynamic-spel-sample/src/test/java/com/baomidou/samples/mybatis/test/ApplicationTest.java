@@ -27,7 +27,7 @@ public class ApplicationTest {
 
     @Test
     public void testselectSpelBySession() {
-        session.setAttribute("tenantName","tenant1");
+        session.setAttribute("tenantName", "tenant1");
         userService.selectSpelBySession();
     }
 

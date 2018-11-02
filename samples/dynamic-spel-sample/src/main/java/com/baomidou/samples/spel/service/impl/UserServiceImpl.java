@@ -14,6 +14,12 @@ import java.util.List;
 @DS("slave")
 public class UserServiceImpl implements UserService {
 
+    public static void main(String[] args) {
+        String s="#session.tenantName";
+        String substring = s.substring(9);
+        System.out.println(1);
+    }
+
     @Autowired
     private UserMapper userMapper;
 

@@ -16,6 +16,9 @@
  */
 package com.baomidou.dynamic.datasource.toolkit;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * 核心基于ThreadLocal的切换数据源工具类
  *
@@ -25,21 +28,35 @@ package com.baomidou.dynamic.datasource.toolkit;
 @SuppressWarnings("unchecked")
 public final class DynamicDataSourceContextHolder {
 
-    private static final ThreadLocal<String> LOOKUP_KEY_HOLDER = new ThreadLocal();
+    private static final ThreadLocal<List<String>> LOOKUP_KEY_HOLDER = new ThreadLocal();
 
     private DynamicDataSourceContextHolder() {
     }
 
     public static String getDataSourceLookupKey() {
-        return LOOKUP_KEY_HOLDER.get();
+        List<String> lookupKeys = LOOKUP_KEY_HOLDER.get();
+        if (lookupKeys == null || lookupKeys.isEmpty()) {
+            return null;
+        }
+        return lookupKeys.get(0);
     }
 
     public static void setDataSourceLookupKey(String dataSourceLookupKey) {
-        LOOKUP_KEY_HOLDER.set(dataSourceLookupKey);
+        List<String> lookupKeys = LOOKUP_KEY_HOLDER.get();
+        if (lookupKeys == null) {
+            lookupKeys = new LinkedList<>();
+        }
+        lookupKeys.add(dataSourceLookupKey);
+        LOOKUP_KEY_HOLDER.set(lookupKeys);
     }
 
     public static void clearDataSourceLookupKey() {
-        LOOKUP_KEY_HOLDER.remove();
+        List<String> lookupKeys = LOOKUP_KEY_HOLDER.get();
+        if (lookupKeys.isEmpty()) {
+            LOOKUP_KEY_HOLDER.remove();
+        } else {
+            lookupKeys.remove(0);
+        }
     }
 
 }
