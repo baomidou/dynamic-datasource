@@ -28,6 +28,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class LoadBalanceDynamicDataSourceStrategy implements DynamicDataSourceStrategy {
 
+    /**
+     * 负载均衡计数器
+     */
     private AtomicInteger index = new AtomicInteger(0);
 
     @Override

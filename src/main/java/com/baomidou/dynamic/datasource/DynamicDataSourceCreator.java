@@ -45,7 +45,7 @@ public class DynamicDataSourceCreator {
     private Method buildMethod;
 
     public DynamicDataSourceCreator() {
-        Class builderClass = null;
+        Class<?> builderClass = null;
         try {
             builderClass = Class.forName("org.springframework.boot.jdbc.DataSourceBuilder");
         } catch (Exception e) {

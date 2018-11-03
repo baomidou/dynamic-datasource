@@ -37,12 +37,22 @@ import java.lang.reflect.Method;
  */
 public class DefaultDynamicDataSourceSpelParser implements DynamicDataSourceSpelParser {
 
+    /**
+     * 参数发现器
+     */
     private static final ParameterNameDiscoverer NAME_DISCOVERER = new DefaultParameterNameDiscoverer();
-
+    /**
+     * Express语法解析器
+     */
     private static final ExpressionParser PARSER = new SpelExpressionParser();
-
-    private static final String SESSION = "#session";
-    private static final String HEADER = "#header";
+    /**
+     * session开头
+     */
+    private static final String SESSION_PREFIX = "#session";
+    /**
+     * header开头
+     */
+    private static final String HEADER_PREFIX = "#header";
 
 
     /**
@@ -54,10 +64,10 @@ public class DefaultDynamicDataSourceSpelParser implements DynamicDataSourceSpel
      */
     @Override
     public String parse(MethodInvocation invocation, String key) {
-        if (key.startsWith(SESSION)) {
+        if (key.startsWith(SESSION_PREFIX)) {
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
             return request.getSession().getAttribute(key.substring(9)).toString();
-        } else if (key.startsWith(HEADER)) {
+        } else if (key.startsWith(HEADER_PREFIX)) {
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
             return request.getHeader(key.substring(8));
         } else {

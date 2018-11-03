@@ -34,8 +34,13 @@ import java.util.Map;
 @Slf4j
 public class YmlDynamicDataSourceProvider implements DynamicDataSourceProvider {
 
+    /**
+     * 多数据源参数
+     */
     private DynamicDataSourceProperties properties;
-
+    /**
+     * 多数据源创建器
+     */
     private DynamicDataSourceCreator dynamicDataSourceCreator;
 
     public YmlDynamicDataSourceProvider(DynamicDataSourceProperties properties, DynamicDataSourceCreator dynamicDataSourceCreator) {

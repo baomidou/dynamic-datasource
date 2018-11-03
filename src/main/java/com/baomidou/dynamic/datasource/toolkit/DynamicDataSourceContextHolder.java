@@ -25,9 +25,9 @@ import java.util.List;
  * @author TaoYu Kanyuxia
  * @since 1.0.0
  */
-@SuppressWarnings("unchecked")
 public final class DynamicDataSourceContextHolder {
 
+    @SuppressWarnings("unchecked")
     private static final ThreadLocal<List<String>> LOOKUP_KEY_HOLDER = new ThreadLocal();
 
     private DynamicDataSourceContextHolder() {

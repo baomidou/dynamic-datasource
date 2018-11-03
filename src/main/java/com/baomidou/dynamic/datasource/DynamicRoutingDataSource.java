@@ -45,7 +45,6 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
      * 所有数据库
      */
     protected Map<String, DataSource> dataSourceMap = new LinkedHashMap<>();
-
     /**
      * 分组数据库
      */

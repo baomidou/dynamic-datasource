@@ -36,6 +36,9 @@ import java.lang.reflect.Method;
  */
 public class DynamicDataSourceAnnotationInterceptor implements MethodInterceptor {
 
+    /**
+     * SPEL参数标识
+     */
     private static final String SPEL_PREFIX = "#";
 
     @Setter
