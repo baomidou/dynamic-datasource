@@ -66,5 +66,4 @@ public class DynamicDataSourceAnnotationAdvisor extends AbstractPointcutAdvisor 
         Pointcut mpc = AnnotationMatchingPointcut.forMethodAnnotation(DS.class);
         return new ComposablePointcut(cpc).union(mpc);
     }
-
 }

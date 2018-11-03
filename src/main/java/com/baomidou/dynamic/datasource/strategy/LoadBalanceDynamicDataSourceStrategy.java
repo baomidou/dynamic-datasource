@@ -34,5 +34,4 @@ public class LoadBalanceDynamicDataSourceStrategy implements DynamicDataSourceSt
     public DataSource determineDataSource(List<DataSource> dataSources) {
         return dataSources.get(Math.abs(index.getAndAdd(1)) % dataSources.size());
     }
-
 }

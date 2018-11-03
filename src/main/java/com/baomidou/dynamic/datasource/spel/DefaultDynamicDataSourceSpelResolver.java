@@ -29,5 +29,4 @@ public class DefaultDynamicDataSourceSpelResolver implements DynamicDataSourceSp
     public String resolve(String spelValue) {
         return spelValue;
     }
-
 }

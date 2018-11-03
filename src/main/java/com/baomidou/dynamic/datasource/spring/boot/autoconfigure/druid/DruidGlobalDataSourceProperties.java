@@ -48,5 +48,4 @@ public class DruidGlobalDataSourceProperties {
     private boolean sharePreparedStatements = false;
     private Properties connectionProperties;
     private String filters = "stat,wall";
-
 }

@@ -61,5 +61,4 @@ public class DataSourceProperty {
      */
     @NestedConfigurationProperty
     private DruidDataSourceProperties druid = new DruidDataSourceProperties();
-
 }

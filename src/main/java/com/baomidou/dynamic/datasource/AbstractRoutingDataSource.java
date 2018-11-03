@@ -60,5 +60,4 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource {
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
         return (iface.isInstance(this) || determineDataSource().isWrapperFor(iface));
     }
-
 }

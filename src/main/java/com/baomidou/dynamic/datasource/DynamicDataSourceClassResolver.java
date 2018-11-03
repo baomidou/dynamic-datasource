@@ -63,5 +63,4 @@ public class DynamicDataSourceClassResolver {
         }
         return invocation.getMethod().getDeclaringClass();
     }
-
 }

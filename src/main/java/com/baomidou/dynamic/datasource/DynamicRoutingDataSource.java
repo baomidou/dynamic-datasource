@@ -38,6 +38,9 @@ import java.util.Map;
 @Slf4j
 public class DynamicRoutingDataSource extends AbstractRoutingDataSource implements InitializingBean {
 
+
+    private static final String UNDERLINE = "_";
+
     /**
      * 所有数据库
      */
@@ -62,7 +65,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
         String lookupKey = DynamicDataSourceContextHolder.getDataSourceLookupKey();
         if (StringUtils.isEmpty(lookupKey)) {
             return determinePrimaryDataSource();
-        } else if (!groupDataSources.isEmpty()&&groupDataSources.containsKey(lookupKey)) {
+        } else if (!groupDataSources.isEmpty() && groupDataSources.containsKey(lookupKey)) {
             log.debug("从 {} 组数据源中返回数据源", lookupKey);
             return groupDataSources.get(lookupKey).determineDataSource();
         } else if (dataSourceMap.containsKey(lookupKey)) {
@@ -79,7 +82,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
 
     public synchronized void addDataSource(String dsName, DataSource dataSource) {
         dataSourceMap.put(dsName, dataSource);
-        if (dsName.contains("_")) {
+        if (dsName.contains(UNDERLINE)) {
             String groupName = dsName.split("_")[0];
             if (groupDataSources.containsKey(groupName)) {
                 groupDataSources.get(groupName).addDatasource(dataSource);
@@ -99,7 +102,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
 
     public synchronized void removeDataSource(String dsName, DataSource dataSource) {
         dataSourceMap.remove(dataSource);
-        if (dsName.contains("_")) {
+        if (dsName.contains(UNDERLINE)) {
             String groupName = dsName.split("_")[0];
             if (groupDataSources.containsKey(groupName)) {
                 groupDataSources.get(groupName).removeDatasource(dataSource);
@@ -125,5 +128,4 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
             throw new RuntimeException("请检查primary默认数据库设置，当前未找到" + primary + "数据源");
         }
     }
-
 }

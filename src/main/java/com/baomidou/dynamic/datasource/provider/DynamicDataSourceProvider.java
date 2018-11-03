@@ -36,5 +36,4 @@ public interface DynamicDataSourceProvider {
      * @return 所有数据源，key为数据源名称
      */
     Map<String, DataSource> loadDataSources();
-
 }

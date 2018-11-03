@@ -36,5 +36,4 @@ public @interface DS {
      * @return 数据源名称
      */
     String value();
-
 }

@@ -66,5 +66,4 @@ public class DynamicDataSourceProperties {
      */
     @NestedConfigurationProperty
     private DruidGlobalDataSourceProperties druid = new DruidGlobalDataSourceProperties();
-
 }

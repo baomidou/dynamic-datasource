@@ -35,7 +35,7 @@ import java.lang.reflect.Method;
  * @author TaoYu
  * @since 2.3.0
  */
-public class DefaultDynamicDataSourceSpelParser implements DynamicDataSurceSpelParser {
+public class DefaultDynamicDataSourceSpelParser implements DynamicDataSourceSpelParser {
 
     private static final ParameterNameDiscoverer NAME_DISCOVERER = new DefaultParameterNameDiscoverer();
 

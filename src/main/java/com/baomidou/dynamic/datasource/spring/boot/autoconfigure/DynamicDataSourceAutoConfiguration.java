@@ -24,8 +24,8 @@ import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.provider.YmlDynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.spel.DefaultDynamicDataSourceSpelParser;
 import com.baomidou.dynamic.datasource.spel.DefaultDynamicDataSourceSpelResolver;
+import com.baomidou.dynamic.datasource.spel.DynamicDataSourceSpelParser;
 import com.baomidou.dynamic.datasource.spel.DynamicDataSourceSpelResolver;
-import com.baomidou.dynamic.datasource.spel.DynamicDataSurceSpelParser;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidDynamicDataSourceConfiguration;
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,9 +79,9 @@ public class DynamicDataSourceAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public DynamicDataSourceAnnotationAdvisor dynamicDatasourceAnnotationAdvisor(DynamicDataSurceSpelParser dynamicDataSurceSpelParser, DynamicDataSourceSpelResolver dynamicDataSourceSpelResolver) {
+    public DynamicDataSourceAnnotationAdvisor dynamicDatasourceAnnotationAdvisor(DynamicDataSourceSpelParser dynamicDataSourceSpelParser, DynamicDataSourceSpelResolver dynamicDataSourceSpelResolver) {
         DynamicDataSourceAnnotationInterceptor interceptor = new DynamicDataSourceAnnotationInterceptor();
-        interceptor.setDynamicDataSurceSpelParser(dynamicDataSurceSpelParser);
+        interceptor.setDynamicDataSourceSpelParser(dynamicDataSourceSpelParser);
         interceptor.setDynamicDataSourceSpelResolver(dynamicDataSourceSpelResolver);
         DynamicDataSourceAnnotationAdvisor advisor = new DynamicDataSourceAnnotationAdvisor(interceptor);
         advisor.setOrder(properties.getOrder());
@@ -90,7 +90,7 @@ public class DynamicDataSourceAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public DynamicDataSurceSpelParser dynamicDataSourceSpelParser() {
+    public DynamicDataSourceSpelParser dynamicDataSourceSpelParser() {
         return new DefaultDynamicDataSourceSpelParser();
     }
 
@@ -99,5 +99,4 @@ public class DynamicDataSourceAutoConfiguration {
     public DynamicDataSourceSpelResolver dynamicDataSourceSpelResolver() {
         return new DefaultDynamicDataSourceSpelResolver();
     }
-
 }

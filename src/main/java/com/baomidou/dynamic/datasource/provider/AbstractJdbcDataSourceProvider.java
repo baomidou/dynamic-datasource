@@ -98,6 +98,12 @@ public abstract class AbstractJdbcDataSourceProvider implements DynamicDataSourc
         return null;
     }
 
+    /**
+     * 执行语句获得数据源参数
+     *
+     * @param statement 语句
+     * @return 数据源参数
+     * @throws SQLException
+     */
     protected abstract Map<String, DataSourceProperty> executeStmt(Statement statement) throws SQLException;
-
 }

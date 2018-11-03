@@ -48,5 +48,4 @@ public class DruidDataSourceProperties {
     private Boolean sharePreparedStatements;
     private Properties connectionProperties;
     private String filters;
-
 }

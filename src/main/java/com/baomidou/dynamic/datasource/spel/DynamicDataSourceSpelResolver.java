@@ -17,7 +17,7 @@
 package com.baomidou.dynamic.datasource.spel;
 
 /**
- * 动态数据源spel处理器
+ * 动态数据源SPEL处理器
  *
  * @author TaoYu
  * @since 2.3.0

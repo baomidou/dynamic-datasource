@@ -37,5 +37,4 @@ public interface DynamicDataSourceStrategy {
      * @return dataSource 所选择的数据源
      */
     DataSource determineDataSource(List<DataSource> dataSources);
-
 }

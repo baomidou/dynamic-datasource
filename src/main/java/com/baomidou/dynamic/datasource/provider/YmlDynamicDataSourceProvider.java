@@ -52,5 +52,4 @@ public class YmlDynamicDataSourceProvider implements DynamicDataSourceProvider {
         }
         return dataSourceMap;
     }
-
 }
