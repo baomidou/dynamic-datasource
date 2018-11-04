@@ -33,6 +33,11 @@ public final class DynamicDataSourceContextHolder {
     private DynamicDataSourceContextHolder() {
     }
 
+    /**
+     * 获得当前线程数据源
+     *
+     * @return 数据源名称
+     */
     public static String getDataSourceLookupKey() {
         List<String> lookupKeys = LOOKUP_KEY_HOLDER.get();
         if (lookupKeys == null || lookupKeys.isEmpty()) {
@@ -41,6 +46,9 @@ public final class DynamicDataSourceContextHolder {
         return lookupKeys.get(0);
     }
 
+    /**
+     * 设置当前线程数据源
+     */
     public static void setDataSourceLookupKey(String dataSourceLookupKey) {
         List<String> lookupKeys = LOOKUP_KEY_HOLDER.get();
         if (lookupKeys == null) {
@@ -50,6 +58,13 @@ public final class DynamicDataSourceContextHolder {
         LOOKUP_KEY_HOLDER.set(lookupKeys);
     }
 
+    /**
+     * 清空当前线程数据源
+     * <p>
+     * 如果当前线程是连续切换数据源
+     * 只会移除掉当前线程的数据源名称
+     * </p>
+     */
     public static void clearDataSourceLookupKey() {
         List<String> lookupKeys = LOOKUP_KEY_HOLDER.get();
         if (lookupKeys.isEmpty()) {

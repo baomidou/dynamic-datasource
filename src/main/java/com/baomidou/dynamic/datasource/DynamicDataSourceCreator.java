@@ -20,6 +20,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidDataSourceProperties;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidGlobalDataSourceProperties;
+import lombok.Setter;
 
 import javax.sql.DataSource;
 import java.lang.reflect.InvocationTargetException;
@@ -34,7 +35,11 @@ import java.sql.SQLException;
  */
 public class DynamicDataSourceCreator {
 
-    private static final String DRUID_DATASOURCE = "com.alibaba.druid.pool.DruidDataSource";
+
+    /**
+     * DRUID数据源类
+     */
+    private static final String DRUID_DATASOURCE = "com.alibaba.druidProperties.pool.DruidDataSource";
 
     private Method createMethod;
     private Method typeMethod;
@@ -43,6 +48,9 @@ public class DynamicDataSourceCreator {
     private Method passwordMethod;
     private Method driverClassNameMethod;
     private Method buildMethod;
+
+    @Setter
+    private DruidGlobalDataSourceProperties druidProperties;
 
     public DynamicDataSourceCreator() {
         Class<?> builderClass = null;
@@ -73,20 +81,26 @@ public class DynamicDataSourceCreator {
      * @param dataSourceProperty 数据源信息
      * @return 数据源
      */
-    public DataSource createDataSource(DataSourceProperty dataSourceProperty, DruidGlobalDataSourceProperties druidDataSourceProperties) {
+    public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
         Class<? extends DataSource> type = dataSourceProperty.getType();
         if (type == null) {
             try {
                 Class.forName(DRUID_DATASOURCE);
-                return createDruidDataSource(dataSourceProperty, druidDataSourceProperties);
+                return createDruidDataSource(dataSourceProperty);
             } catch (ClassNotFoundException e) {
             }
         } else if (DRUID_DATASOURCE.equals(type.getName())) {
-            return createDruidDataSource(dataSourceProperty, druidDataSourceProperties);
+            return createDruidDataSource(dataSourceProperty);
         }
         return createBasicDataSource(dataSourceProperty);
     }
 
+    /**
+     * 创建基础数据源
+     *
+     * @param dataSourceProperty 数据源参数
+     * @return 数据源
+     */
     public DataSource createBasicDataSource(DataSourceProperty dataSourceProperty) {
         try {
             Object o1 = createMethod.invoke(null);
@@ -104,7 +118,13 @@ public class DynamicDataSourceCreator {
         return null;
     }
 
-    public DataSource createDruidDataSource(DataSourceProperty dataSourceProperty, DruidGlobalDataSourceProperties druid) {
+    /**
+     * 创建DRUID数据源
+     *
+     * @param dataSourceProperty 数据源参数
+     * @return 数据源
+     */
+    public DataSource createDruidDataSource(DataSourceProperty dataSourceProperty) {
         DruidDataSource druidDataSource = new DruidDataSource();
         druidDataSource.setUrl(dataSourceProperty.getUrl());
         druidDataSource.setUsername(dataSourceProperty.getUsername());
@@ -113,25 +133,25 @@ public class DynamicDataSourceCreator {
 
         DruidDataSourceProperties properties = dataSourceProperty.getDruid();
 
-        druidDataSource.setInitialSize(properties.getInitialSize() != null ? properties.getInitialSize() : druid.getInitialSize());
+        druidDataSource.setInitialSize(properties.getInitialSize() != null ? properties.getInitialSize() : druidProperties.getInitialSize());
 
-        druidDataSource.setMaxActive(properties.getMaxActive() != null ? properties.getMaxActive() : druid.getMaxActive());
-        druidDataSource.setMinIdle(properties.getMinIdle() != null ? properties.getMinIdle() : druid.getMinIdle());
-        druidDataSource.setMaxWait(properties.getMaxWait() != null ? properties.getMaxWait() : druid.getMaxWait());
-        druidDataSource.setTimeBetweenEvictionRunsMillis(properties.getTimeBetweenEvictionRunsMillis() != null ? properties.getTimeBetweenEvictionRunsMillis() : druid.getTimeBetweenEvictionRunsMillis());
-        druidDataSource.setMinEvictableIdleTimeMillis(properties.getMinEvictableIdleTimeMillis() != null ? properties.getMinEvictableIdleTimeMillis() : druid.getMinEvictableIdleTimeMillis());
-        druidDataSource.setMaxEvictableIdleTimeMillis(properties.getMaxEvictableIdleTimeMillis() != null ? properties.getMaxEvictableIdleTimeMillis() : druid.getMaxEvictableIdleTimeMillis());
-        druidDataSource.setValidationQuery(properties.getValidationQuery() != null ? properties.getValidationQuery() : druid.getValidationQuery());
-        druidDataSource.setValidationQueryTimeout(properties.getValidationQueryTimeout() != null ? properties.getValidationQueryTimeout() : druid.getValidationQueryTimeout());
-        druidDataSource.setTestOnBorrow(properties.getTestOnBorrow() != null ? properties.getTestOnBorrow() : druid.isTestOnBorrow());
-        druidDataSource.setTestOnReturn(properties.getTestOnReturn() != null ? properties.getTestOnReturn() : druid.isTestOnReturn());
-        druidDataSource.setTestWhileIdle(properties.getTestWhileIdle() != null ? properties.getTestWhileIdle() : druid.isTestWhileIdle());
-        druidDataSource.setPoolPreparedStatements(properties.getPoolPreparedStatements() != null ? properties.getPoolPreparedStatements() : druid.isPoolPreparedStatements());
-        druidDataSource.setMaxOpenPreparedStatements(properties.getMaxOpenPreparedStatements() != null ? properties.getMaxOpenPreparedStatements() : druid.getMaxOpenPreparedStatements());
-        druidDataSource.setSharePreparedStatements(properties.getSharePreparedStatements() != null ? properties.getSharePreparedStatements() : druid.isSharePreparedStatements());
-        druidDataSource.setConnectProperties(properties.getConnectionProperties() != null ? properties.getConnectionProperties() : druid.getConnectionProperties());
+        druidDataSource.setMaxActive(properties.getMaxActive() != null ? properties.getMaxActive() : druidProperties.getMaxActive());
+        druidDataSource.setMinIdle(properties.getMinIdle() != null ? properties.getMinIdle() : druidProperties.getMinIdle());
+        druidDataSource.setMaxWait(properties.getMaxWait() != null ? properties.getMaxWait() : druidProperties.getMaxWait());
+        druidDataSource.setTimeBetweenEvictionRunsMillis(properties.getTimeBetweenEvictionRunsMillis() != null ? properties.getTimeBetweenEvictionRunsMillis() : druidProperties.getTimeBetweenEvictionRunsMillis());
+        druidDataSource.setMinEvictableIdleTimeMillis(properties.getMinEvictableIdleTimeMillis() != null ? properties.getMinEvictableIdleTimeMillis() : druidProperties.getMinEvictableIdleTimeMillis());
+        druidDataSource.setMaxEvictableIdleTimeMillis(properties.getMaxEvictableIdleTimeMillis() != null ? properties.getMaxEvictableIdleTimeMillis() : druidProperties.getMaxEvictableIdleTimeMillis());
+        druidDataSource.setValidationQuery(properties.getValidationQuery() != null ? properties.getValidationQuery() : druidProperties.getValidationQuery());
+        druidDataSource.setValidationQueryTimeout(properties.getValidationQueryTimeout() != null ? properties.getValidationQueryTimeout() : druidProperties.getValidationQueryTimeout());
+        druidDataSource.setTestOnBorrow(properties.getTestOnBorrow() != null ? properties.getTestOnBorrow() : druidProperties.isTestOnBorrow());
+        druidDataSource.setTestOnReturn(properties.getTestOnReturn() != null ? properties.getTestOnReturn() : druidProperties.isTestOnReturn());
+        druidDataSource.setTestWhileIdle(properties.getTestWhileIdle() != null ? properties.getTestWhileIdle() : druidProperties.isTestWhileIdle());
+        druidDataSource.setPoolPreparedStatements(properties.getPoolPreparedStatements() != null ? properties.getPoolPreparedStatements() : druidProperties.isPoolPreparedStatements());
+        druidDataSource.setMaxOpenPreparedStatements(properties.getMaxOpenPreparedStatements() != null ? properties.getMaxOpenPreparedStatements() : druidProperties.getMaxOpenPreparedStatements());
+        druidDataSource.setSharePreparedStatements(properties.getSharePreparedStatements() != null ? properties.getSharePreparedStatements() : druidProperties.isSharePreparedStatements());
+        druidDataSource.setConnectProperties(properties.getConnectionProperties() != null ? properties.getConnectionProperties() : druidProperties.getConnectionProperties());
         try {
-            druidDataSource.setFilters(properties.getFilters() != null ? properties.getFilters() : druid.getFilters());
+            druidDataSource.setFilters(properties.getFilters() != null ? properties.getFilters() : druidProperties.getFilters());
             druidDataSource.init();
         } catch (SQLException e) {
             e.printStackTrace();

@@ -53,7 +53,7 @@ public class YmlDynamicDataSourceProvider implements DynamicDataSourceProvider {
         Map<String, DataSourceProperty> dataSourcePropertiesMap = properties.getDatasource();
         Map<String, DataSource> dataSourceMap = new HashMap<>(dataSourcePropertiesMap.size());
         for (Map.Entry<String, DataSourceProperty> item : dataSourcePropertiesMap.entrySet()) {
-            dataSourceMap.put(item.getKey(), dynamicDataSourceCreator.createDataSource(item.getValue(), properties.getDruid()));
+            dataSourceMap.put(item.getKey(), dynamicDataSourceCreator.createDataSource(item.getValue()));
         }
         return dataSourceMap;
     }

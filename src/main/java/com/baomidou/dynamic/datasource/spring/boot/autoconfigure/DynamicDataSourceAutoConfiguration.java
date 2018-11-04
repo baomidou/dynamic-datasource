@@ -64,7 +64,9 @@ public class DynamicDataSourceAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public DynamicDataSourceCreator dynamicDataSourceCreator() {
-        return new DynamicDataSourceCreator();
+        DynamicDataSourceCreator dynamicDataSourceCreator = new DynamicDataSourceCreator();
+        dynamicDataSourceCreator.setDruidProperties(properties.getDruid());
+        return dynamicDataSourceCreator;
     }
 
     @Bean

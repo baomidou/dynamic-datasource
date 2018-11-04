@@ -38,7 +38,7 @@ public class DynamicGroupDataSource {
     private String groupName;
 
     /**
-     * 策略
+     * 数据源切换策略
      */
     private DynamicDataSourceStrategy dynamicDataSourceStrategy;
 

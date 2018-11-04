@@ -83,7 +83,7 @@ public abstract class AbstractJdbcDataSourceProvider implements DynamicDataSourc
             Map<String, DataSourceProperty> dataSourcePropertiesMap = executeStmt(stmt);
             Map<String, DataSource> dataSourceMap = new HashMap<>(dataSourcePropertiesMap.size());
             for (Map.Entry<String, DataSourceProperty> item : dataSourcePropertiesMap.entrySet()) {
-                dataSourceMap.put(item.getKey(), dynamicDataSourceCreator.createDataSource(item.getValue(), dynamicDataSourceProperties.getDruid()));
+                dataSourceMap.put(item.getKey(), dynamicDataSourceCreator.createDataSource(item.getValue()));
             }
             return dataSourceMap;
         } catch (Exception e) {
@@ -100,7 +100,7 @@ public abstract class AbstractJdbcDataSourceProvider implements DynamicDataSourc
      *
      * @param statement 语句
      * @return 数据源参数
-     * @throws SQLException
+     * @throws SQLException sql异常
      */
     protected abstract Map<String, DataSourceProperty> executeStmt(Statement statement) throws SQLException;
 }
