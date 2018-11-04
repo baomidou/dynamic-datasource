@@ -39,7 +39,7 @@ public class DynamicDataSourceCreator {
     /**
      * DRUID数据源类
      */
-    private static final String DRUID_DATASOURCE = "com.alibaba.druidProperties.pool.DruidDataSource";
+    private static final String DRUID_DATASOURCE = "com.alibaba.druid.pool.DruidDataSource";
 
     private Method createMethod;
     private Method typeMethod;
