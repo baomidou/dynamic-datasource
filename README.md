@@ -36,7 +36,7 @@ dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成�
 
 其支持 **Jdk 1.7+,    SpringBoot 1.4.x  1.5.x   2.0.x**。最新版为<img src="https://maven-badges.herokuapp.com/maven-central/com.baomidou/dynamic-datasource-spring-boot-starter/badge.svg" >
 
-**演示例子** 可参考项目下的samples目录。
+<font color=red size=20> 演示例子</font> 可参考项目下的samples目录。
 
 从 **2.0.0** 开始它适用于多种场景，常见的场景如下。
 

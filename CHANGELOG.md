@@ -1,20 +1,25 @@
-# v2.3.3
-- 支持嵌套下多级的数据源切换(service1 mysql调用service2 oracle)
+# v2.3.4
+- 底层细节优化。
+- 重构多级数据源切换。
+- 示例项目重构。
+
+# v2.3.3 问题版本-不能使用
+- 支持嵌套下多级的数据源切换(service1 mysql调用service2 oracle)。
 
 https://gitee.com/baomidou/dynamic-datasource-spring-boot-starter/issues/IO33C
 
-- 修复spel对request和session的支持
+- 修复spel对request和session的支持。
 
-# v2.3.2
+# v2.3.2 问题版本-不能使用
 - 修复在不需要session的场景中自动注入session。
 
-# v2.3.1
+# v2.3.1 问题版本-不能使用
 - 修复2.3.0中使用spel session 和header的取值错误。
 
 # v.2.3.0
 
 - 重构创建数据源类。废弃DataSourceFactory，改为Bean的DynamicDataSourceCreator。
-- 自动适配mybatisPlus。 移除参数的mp-enabled。
+- 自动适配mybatisPlus，移除参数的mp-enabled。
 - 新特性支持spel参数获取数据源。
 
 # v2.2.3
@@ -24,7 +29,7 @@ https://gitee.com/baomidou/dynamic-datasource-spring-boot-starter/issues/IO33C
 - 增加在组内数据源为空时使用默认数据源。
 - 去除启动时校验组内只有单个数据源。
 
-# v2.2.2
+# v2.2.2 问题版本-不能使用
 
 - 修复上个版本mp3适配失败的Bug。
 
