@@ -36,13 +36,34 @@ dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成�
 
 其支持 **Jdk 1.7+,    SpringBoot 1.4.x  1.5.x   2.0.x**。最新版为<img src="https://maven-badges.herokuapp.com/maven-central/com.baomidou/dynamic-datasource-spring-boot-starter/badge.svg" >
 
-<font color=red size=20> 演示例子</font> 可参考项目下的samples目录。
+**示例项目** 可参考项目下的samples目录。
 
-从 **2.0.0** 开始它适用于多种场景，常见的场景如下。
+**示例项目** 可参考项目下的samples目录。
+
+**示例项目** 可参考项目下的samples目录。
+
+# 优势
+
+网上关于动态数据源的切换的文档有很多，核心只有两种。1是构建多套环境，2是基于spring原生的、`AbstractRoutingDataSource` 切换。  
+
+如果你的数据源较少，场景不复杂，选择以上任意一种都可以。如果你需要更多特性，请试着尝试本数据源。
+
+1. 数据源分组，适用于多种场景，常见的场景如下。
 
 - 纯粹多库，各个库甚至可以是不同的数据库。
 - 读写分离，一主多从，多主多从。
 - 混合模式，既有主从也有单库。
+
+2.  自动集成Druid数据源，方便监控管理。
+3.  自动集成Mybatis-Plus。
+4.  自定义数据源来源。（如从数据库的配置中加载数据源）
+5.  动态增减数据源。
+6.  使用spel从session，header和参数中获取数据源。
+7.  多层数据源嵌套切换。（一个业务ServiceA调用ServiceB，ServiceB调用ServiceC，每个Service都是不同的数据源）
+
+不足在于不能使用事物，当然你在网上查的其他方案也都不能提供。 
+
+如果你需要使用到分布式事物，那么你的架构应该到了微服务化的时候了。
 
 # 约定
 
