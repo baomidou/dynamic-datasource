@@ -16,8 +16,7 @@
  */
 package com.baomidou.dynamic.datasource.toolkit;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.concurrent.LinkedBlockingDeque;
 
 /**
  * 核心基于ThreadLocal的切换数据源工具类
@@ -28,7 +27,12 @@ import java.util.List;
 public final class DynamicDataSourceContextHolder {
 
     @SuppressWarnings("unchecked")
-    private static final ThreadLocal<List<String>> LOOKUP_KEY_HOLDER = new ThreadLocal();
+    private static final ThreadLocal<LinkedBlockingDeque<String>> LOOKUP_KEY_HOLDER = new ThreadLocal() {
+        @Override
+        protected Object initialValue() {
+            return new LinkedBlockingDeque();
+        }
+    };
 
     private DynamicDataSourceContextHolder() {
     }
@@ -39,23 +43,15 @@ public final class DynamicDataSourceContextHolder {
      * @return 数据源名称
      */
     public static String getDataSourceLookupKey() {
-        List<String> lookupKeys = LOOKUP_KEY_HOLDER.get();
-        if (lookupKeys == null || lookupKeys.isEmpty()) {
-            return null;
-        }
-        return lookupKeys.get(0);
+        LinkedBlockingDeque<String> deque = LOOKUP_KEY_HOLDER.get();
+        return deque.isEmpty() ? null : deque.pollFirst();
     }
 
     /**
      * 设置当前线程数据源
      */
     public static void setDataSourceLookupKey(String dataSourceLookupKey) {
-        List<String> lookupKeys = LOOKUP_KEY_HOLDER.get();
-        if (lookupKeys == null) {
-            lookupKeys = new LinkedList<>();
-        }
-        lookupKeys.add(dataSourceLookupKey);
-        LOOKUP_KEY_HOLDER.set(lookupKeys);
+        LOOKUP_KEY_HOLDER.get().addFirst(dataSourceLookupKey);
     }
 
     /**
@@ -66,11 +62,9 @@ public final class DynamicDataSourceContextHolder {
      * </p>
      */
     public static void clearDataSourceLookupKey() {
-        List<String> lookupKeys = LOOKUP_KEY_HOLDER.get();
-        if (lookupKeys.isEmpty()) {
+        LinkedBlockingDeque<String> deque = LOOKUP_KEY_HOLDER.get();
+        if (deque.isEmpty()) {
             LOOKUP_KEY_HOLDER.remove();
-        } else {
-            lookupKeys.remove(0);
         }
     }
 }
