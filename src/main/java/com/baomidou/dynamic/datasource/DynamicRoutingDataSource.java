@@ -79,35 +79,50 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
         return groupDataSources.containsKey(primary) ? groupDataSources.get(primary).determineDataSource() : dataSourceMap.get(primary);
     }
 
-    public synchronized void addDataSource(String dsName, DataSource dataSource) {
-        dataSourceMap.put(dsName, dataSource);
-        if (dsName.contains(UNDERLINE)) {
-            String groupName = dsName.split("_")[0];
-            if (groupDataSources.containsKey(groupName)) {
-                groupDataSources.get(groupName).addDatasource(dataSource);
+    /**
+     * 添加数据源
+     *
+     * @param ds         数据源名称
+     * @param dataSource 数据源
+     */
+    public synchronized void addDataSource(String ds, DataSource dataSource) {
+        dataSourceMap.put(ds, dataSource);
+        if (ds.contains(UNDERLINE)) {
+            String group = ds.split(UNDERLINE)[0];
+            if (groupDataSources.containsKey(group)) {
+                groupDataSources.get(group).addDatasource(dataSource);
             } else {
                 try {
-                    DynamicGroupDataSource groupDatasource = new DynamicGroupDataSource(groupName, strategy.newInstance());
+                    DynamicGroupDataSource groupDatasource = new DynamicGroupDataSource(group, strategy.newInstance());
                     groupDatasource.addDatasource(dataSource);
-                    groupDataSources.put(groupName, groupDatasource);
+                    groupDataSources.put(group, groupDatasource);
                 } catch (Exception e) {
                     log.error("添加数据源失败", e);
-                    dataSourceMap.remove(dsName);
+                    dataSourceMap.remove(ds);
                 }
             }
         }
-        log.info("添加数据源 {} 成功", dsName);
+        log.info("动态数据源-加载 {} 成功", ds);
     }
 
-    public synchronized void removeDataSource(String dsName, DataSource dataSource) {
-        dataSourceMap.remove(dataSource);
-        if (dsName.contains(UNDERLINE)) {
-            String groupName = dsName.split("_")[0];
-            if (groupDataSources.containsKey(groupName)) {
-                groupDataSources.get(groupName).removeDatasource(dataSource);
+    /**
+     * 删除数据源
+     *
+     * @param ds 数据源名称
+     */
+    public synchronized void removeDataSource(String ds) {
+        if (dataSourceMap.containsKey(ds)) {
+            DataSource dataSource = dataSourceMap.get(ds);
+            dataSourceMap.remove(ds);
+            if (ds.contains(UNDERLINE)) {
+                String group = ds.split(UNDERLINE)[0];
+                if (groupDataSources.containsKey(group)) {
+                    groupDataSources.get(group).removeDatasource(dataSource);
+                }
             }
+            log.info("动态数据源-删除 {} 成功", ds);
         }
-        log.info("删除数据源 {} 成功", dsName);
+        log.warn("动态数据源-未找到 {} 数据源");
     }
 
     @Override
@@ -122,9 +137,9 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
         if (groupDataSources.containsKey(primary)) {
             log.info("当前的默认数据源是组数据源,组名为 {} ，其下有 {} 个数据源", primary, groupDataSources.size());
         } else if (dataSourceMap.containsKey(primary)) {
-            log.info("当前的默认数据源是单数据源，数据源名为{}", primary);
+            log.info("当前的默认数据源是单数据源，数据源名为 {}", primary);
         } else {
-            throw new RuntimeException("请检查primary默认数据库设置，当前未找到" + primary + "数据源");
+            throw new RuntimeException("请检查primary默认数据库设置");
         }
     }
 }
