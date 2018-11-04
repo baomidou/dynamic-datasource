@@ -1,8 +1,8 @@
 # 演示例子
 
-所有数据库连接为真实连接，仅供测试。
+所有数据库连接为h2数据库，仅供测试。
 
-可跑测试，注意启动的日志。
+所有测试可直接跑，注意启动的日志。
 
 1. dynamic-jdbc-template-sample 原生jdbcTemplate下使用的示范
 2. dynamic-mybatis-sample 原生mybatis下使用的示范

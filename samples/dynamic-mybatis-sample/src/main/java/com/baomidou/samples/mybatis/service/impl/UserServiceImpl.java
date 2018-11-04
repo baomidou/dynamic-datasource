@@ -5,19 +5,17 @@ import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.samples.mybatis.entity.User;
 import com.baomidou.samples.mybatis.mapper.UserMapper;
 import com.baomidou.samples.mybatis.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 @Service
-@DS("slave")
 public class UserServiceImpl implements UserService {
 
-    @Autowired
+    @Resource
     private UserMapper userMapper;
 
-    @DS("master") //默认是master可以省略这个注解,如果在类上注解了其他库，则@DS("master")不能省略
     @Override
     public void addUser(User user) {
         userMapper.addUser(user.getName(), user.getAge());
@@ -25,20 +23,13 @@ public class UserServiceImpl implements UserService {
 
     @DS("slave_1")
     @Override
-    public List selectUser1() {
+    public List selectUsersFromDs() {
         return userMapper.selectUsers();
     }
 
-    @DS("slave_2")
+    @DS("slave")
     @Override
-    public List selectUser2() {
+    public List selectUserFromDsGroup() {
         return userMapper.selectUsers();
     }
-
-    //这个slave随机库
-    @Override
-    public List selectUser3() {
-        return userMapper.selectUsers();
-    }
-
 }

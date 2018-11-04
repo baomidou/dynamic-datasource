@@ -20,11 +20,10 @@ public class UserController {
         return userService.selectSpelBySession();
     }
 
-//    @Autowired
-//    private Kaptcha kaptcha;
-//
-//    @GetMapping("/render")
-//    public void render() {
-//        kaptcha.render();
-//    }
+    @GetMapping("/users/header")
+    public String usersFromHeader() {
+        userService.selectSpelByHeader();
+        return "success";
+    }
+
 }
