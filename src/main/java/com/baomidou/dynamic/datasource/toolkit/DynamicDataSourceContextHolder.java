@@ -16,7 +16,7 @@
  */
 package com.baomidou.dynamic.datasource.toolkit;
 
-import java.util.concurrent.LinkedBlockingDeque;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 核心基于ThreadLocal的切换数据源工具类
@@ -24,47 +24,42 @@ import java.util.concurrent.LinkedBlockingDeque;
  * @author TaoYu Kanyuxia
  * @since 1.0.0
  */
+@Slf4j
 public final class DynamicDataSourceContextHolder {
 
-    @SuppressWarnings("unchecked")
-    private static final ThreadLocal<LinkedBlockingDeque<String>> LOOKUP_KEY_HOLDER = new ThreadLocal() {
-        @Override
-        protected Object initialValue() {
-            return new LinkedBlockingDeque();
-        }
-    };
+	private static final ThreadLocal<String> LOOKUP_KEY_HOLDER = new ThreadLocal<>();
 
-    private DynamicDataSourceContextHolder() {
-    }
+	private DynamicDataSourceContextHolder() {
+	}
 
-    /**
-     * 获得当前线程数据源
-     *
-     * @return 数据源名称
-     */
-    public static String getDataSourceLookupKey() {
-        LinkedBlockingDeque<String> deque = LOOKUP_KEY_HOLDER.get();
-        return deque.isEmpty() ? null : deque.pollFirst();
-    }
+	/**
+	 * 获得当前线程数据源
+	 *
+	 * @return 数据源名称
+	 */
+	public static String getDataSourceLookupKey() {
+		String name = LOOKUP_KEY_HOLDER.get();
+		log.debug("获取DS:" + name);
+		return name;
+	}
 
-    /**
-     * 设置当前线程数据源
-     */
-    public static void setDataSourceLookupKey(String dataSourceLookupKey) {
-        LOOKUP_KEY_HOLDER.get().addFirst(dataSourceLookupKey);
-    }
+	/**
+	 * 设置当前线程数据源
+	 */
+	public static void setDataSourceLookupKey(String dataSourceLookupKey) {
+		log.debug("设置DS:" + dataSourceLookupKey);
+		LOOKUP_KEY_HOLDER.set(dataSourceLookupKey);
+	}
 
-    /**
-     * 清空当前线程数据源
-     * <p>
-     * 如果当前线程是连续切换数据源
-     * 只会移除掉当前线程的数据源名称
-     * </p>
-     */
-    public static void clearDataSourceLookupKey() {
-        LinkedBlockingDeque<String> deque = LOOKUP_KEY_HOLDER.get();
-        if (deque.isEmpty()) {
-            LOOKUP_KEY_HOLDER.remove();
-        }
-    }
+	/**
+	 * 清空当前线程数据源
+	 * <p>
+	 * 如果当前线程是连续切换数据源 只会移除掉当前线程的数据源名称
+	 * </p>
+	 */
+	public static void clearDataSourceLookupKey() {
+		String name = LOOKUP_KEY_HOLDER.get();
+		log.debug("清除DS:" + name);
+		LOOKUP_KEY_HOLDER.remove();
+	}
 }
