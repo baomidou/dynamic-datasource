@@ -1,0 +1,410 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties",
+      "name": "spring.datasource.dynamic",
+      "type": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties",
+      "name": "spring.datasource.dynamic.druid",
+      "type": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties",
+      "name": "spring.datasource.dynamic.hikari",
+      "type": "com.zaxxer.hikari.HikariConfig"
+    }
+  ],
+  "properties": [
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties",
+      "name": "spring.datasource.dynamic.datasource",
+      "description": "每一个数据源",
+      "type": "java.util.Map<java.lang.String,com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty>"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.async-init",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.break-after-acquire-failure",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.clear-filters-enable",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.connection-error-retry-attempts",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.connection-properties",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.fail-fast",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.filters",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.init-connection-sqls",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.init-global-variants",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.init-variants",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.initial-size",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.keep-alive",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.kill-when-socket-read-timeout",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.max-active",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.max-evictable-idle-time-millis",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.max-pool-prepared-statement-per-connection-size",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.max-wait",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.max-wait-thread-count",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.min-evictable-idle-time-millis",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.min-idle",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.not-full-timeout-retry-count",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.phy-timeout-millis",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.pool-prepared-statements",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.public-key",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.reset-stat-enable",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.share-prepared-statements",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.stat-sql-max-size",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.test-on-borrow",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.test-on-return",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.test-while-idle",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.time-between-eviction-runs-millis",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.time-between-log-stats-millis",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.use-global-data-source-stat",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.use-unfair-lock",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.validation-query",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig",
+      "name": "spring.datasource.dynamic.druid.validation-query-timeout",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "name": "spring.datasource.dynamic.hikari.allow-pool-suspension",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "name": "spring.datasource.dynamic.hikari.auto-commit",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "name": "spring.datasource.dynamic.hikari.catalog",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "name": "spring.datasource.dynamic.hikari.connection-init-sql",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "name": "spring.datasource.dynamic.hikari.connection-test-query",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "name": "spring.datasource.dynamic.hikari.connection-timeout",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "name": "spring.datasource.dynamic.hikari.data-source-class-name",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "name": "spring.datasource.dynamic.hikari.data-source-j-n-d-i",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "name": "spring.datasource.dynamic.hikari.data-source-properties",
+      "type": "java.util.Properties"
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "name": "spring.datasource.dynamic.hikari.driver-class-name",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "name": "spring.datasource.dynamic.hikari.health-check-properties",
+      "type": "java.util.Properties"
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "name": "spring.datasource.dynamic.hikari.health-check-registry",
+      "type": "java.lang.Object"
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "name": "spring.datasource.dynamic.hikari.idle-timeout",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "deprecated": true,
+      "name": "spring.datasource.dynamic.hikari.initialization-fail-fast",
+      "type": "java.lang.Boolean",
+      "deprecation": {}
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "name": "spring.datasource.dynamic.hikari.initialization-fail-timeout",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "name": "spring.datasource.dynamic.hikari.isolate-internal-queries",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "name": "spring.datasource.dynamic.hikari.jdbc-url",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "deprecated": true,
+      "name": "spring.datasource.dynamic.hikari.jdbc4-connection-test",
+      "type": "java.lang.Boolean",
+      "deprecation": {}
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "name": "spring.datasource.dynamic.hikari.leak-detection-threshold",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "name": "spring.datasource.dynamic.hikari.max-lifetime",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "name": "spring.datasource.dynamic.hikari.maximum-pool-size",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "name": "spring.datasource.dynamic.hikari.metric-registry",
+      "type": "java.lang.Object"
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "name": "spring.datasource.dynamic.hikari.metrics-tracker-factory",
+      "type": "com.zaxxer.hikari.metrics.MetricsTrackerFactory"
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "name": "spring.datasource.dynamic.hikari.minimum-idle",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "name": "spring.datasource.dynamic.hikari.password",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "name": "spring.datasource.dynamic.hikari.pool-name",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "name": "spring.datasource.dynamic.hikari.read-only",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "name": "spring.datasource.dynamic.hikari.register-mbeans",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "name": "spring.datasource.dynamic.hikari.scheduled-executor",
+      "type": "java.util.concurrent.ScheduledExecutorService"
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "deprecated": true,
+      "name": "spring.datasource.dynamic.hikari.scheduled-executor-service",
+      "type": "java.util.concurrent.ScheduledThreadPoolExecutor",
+      "deprecation": {}
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "name": "spring.datasource.dynamic.hikari.schema",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "name": "spring.datasource.dynamic.hikari.transaction-isolation",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "name": "spring.datasource.dynamic.hikari.username",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.zaxxer.hikari.HikariConfig",
+      "name": "spring.datasource.dynamic.hikari.validation-timeout",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties",
+      "name": "spring.datasource.dynamic.order",
+      "description": "aop切面顺序，默认优先级最高",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties",
+      "defaultValue": false,
+      "name": "spring.datasource.dynamic.p6spy",
+      "description": "是否使用p6spy输出，默认不输出",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties",
+      "defaultValue": "master",
+      "name": "spring.datasource.dynamic.primary",
+      "description": "必须设置默认的库,默认master",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties",
+      "name": "spring.datasource.dynamic.strategy",
+      "description": "多数据源选择算法clazz，默认负载均衡算法",
+      "type": "java.lang.Class<? extends com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy>"
+    }
+  ]
+}

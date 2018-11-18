@@ -1,0 +1,69 @@
+spring:
+  datasource:
+    dynamic:
+      p6spy: true
+      #      druid: #以下是全局默认值，可以全局更改
+      #        initial-size:
+      #        max-active:
+      #        min-idle:
+      #        max-wait:
+      #        time-between-eviction-runs-millis:
+      #        time-between-log-stats-millis:
+      #        stat-sqlmax-size:
+      #        min-evictable-idle-time-millis:
+      #        max-evictable-idle-time-millis:
+      #        test-while-idle:
+      #        test-on-borrow:
+      #        test-on-return:
+      #        validation-query:
+      #        validation-query-timeout:
+      #        use-global-datasource-stat:
+      #        async-init:
+      #        clear-filters-enable:
+      #        reset-stat-enable:
+      #        not-full-timeout-retry-count:
+      #        max-wait-thread-count:
+      #        fail-fast:
+      #        phyTimeout-millis:
+      #        keep-alive:
+      #        pool-prepared-statements:
+      #        init-variants:
+      #        init-global-variants:
+      #        use-unfair-lock:
+      #        kill-when-socket-read-timeout:
+      #        connection-properties:
+      #        max-pool-prepared-statement-per-connection-size:
+      #        init-connection-sqls:
+      #        share-prepared-statements:
+      #        connection-errorretry-attempts:
+      #        break-after-acquire-failure:
+      #        filters: stat,wall # 注意这个值和druid原生不一致，默认启动了stat,wall
+      datasource:
+        master:
+          username: sa
+          password: "LYIXYTfaq9ug7bqAfcoU1gQovp/Atx7wsdJ5D7oFN5QMqZUI4OGHyMkCA7IxtYAIQr/8cMVFGo9oa/mqtMrzmQ=="
+          url: jdbc:h2:mem:test
+          driver-class-name: org.h2.Driver
+          druid: #这里可以重写默认值
+            initial-size: 5
+            public-key: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKUVA/IL/iON8f63bv2i/pIAK+1sXY228slLkTKrI9axwBMIoPV7+PqdRTv6uqMl3j6nei0EDBWEu/Wp/qOQ/ScCAwEAAQ==
+        slave_1:
+          username: sa
+          password: "123456"
+          url: jdbc:h2:mem:test
+          driver-class-name: org.h2.Driver
+          druid:
+            initial-size: 6
+        slave_2:
+          username: sa
+          password: "123456"
+          url: jdbc:h2:mem:test
+          driver-class-name: org.h2.Driver
+        slave_3:
+          username: sa
+          password: "123456"
+          url: jdbc:h2:mem:test
+          driver-class-name: org.h2.Driver
+logging:
+  level:
+    com.baomidou: debug

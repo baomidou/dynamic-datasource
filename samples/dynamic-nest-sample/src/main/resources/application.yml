@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    dynamic:
+      datasource:
+        master:
+          username: sa
+          password: ""
+          url: jdbc:h2:mem:test;DB_CLOSE_ON_EXIT=FALSE
+          driver-class-name: org.h2.Driver
+        salve:
+          username: sa
+          password: ""
+          url: jdbc:h2:mem:test;DB_CLOSE_ON_EXIT=FALSE
+          driver-class-name: org.h2.Driver
+        teacher:
+          username: sa
+          password: ""
+          url: jdbc:h2:mem:test;DB_CLOSE_ON_EXIT=FALSE
+          driver-class-name: org.h2.Driver
+        student:
+          username: sa
+          password: ""
+          url: jdbc:h2:mem:test;DB_CLOSE_ON_EXIT=FALSE
+          driver-class-name: org.h2.Driver
+logging:
+  level:
+    com.baomidou: debug
