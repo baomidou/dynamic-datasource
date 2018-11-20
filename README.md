@@ -41,16 +41,20 @@ dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成�
 
 # 优势
 
-网上关于动态数据源的切换的文档有很多，核心只有两种。1是构建多套环境，2是基于spring原生的 `AbstractRoutingDataSource` 切换。  
+网上关于动态数据源的切换的文档有很多，核心只有两种。
 
-如果你的数据源较少，场景不复杂，选择以上任意一种都可以。如果你需要更多特性，请试着尝试本数据源。
+1. 构建多套环境，优势是方便控制也容易集成一些简单的分布式事物，缺点是非动态同时代码量较多,配置难度大。
+2. 基于spring提供原生的 `AbstractRoutingDataSource` ，参考一些文档自己实现切换。
+
+如果你的数据源较少，场景不复杂，选择以上任意一种都可以。如果你需要更多特性，请尝试本动态数据源。
 
 1. 数据源分组，适用于多种场景 纯粹多库  读写分离  一主多从  混合模式。
 2. 简单集成Druid数据源监控多数据源，简单集成Mybatis-Plus简化单表，简单集成P6sy格式化sql，简单集成Jndi数据源。
-3. 自定义数据源来源。
-4. 动态增减数据源。
-5. 使用spel动态参数解析数据源，如从session，header和参数中获取数据源。（多租户架构神器）
-6. 多层数据源嵌套切换。（一个业务ServiceA调用ServiceB，ServiceB调用ServiceC，每个Service都是不同的数据源）
+3. 简化Druid和HikariCp配置，提供全局参数配置。
+4. 提供自定义数据源来源(默认使用yml或properties配置)。
+5. 项目启动后能动态增减数据源。
+6. 使用spel动态参数解析数据源，如从session，header和参数中获取数据源。（多租户架构神器）
+7. 多层数据源嵌套切换。（一个业务ServiceA调用ServiceB，ServiceB调用ServiceC，每个Service都是不同的数据源）
 
 # 劣势
 
@@ -117,16 +121,16 @@ spring:
 ```
 
 ```yaml
-# 多主多从                      纯粹多库（记得设置primary）         混合配置
-spring:                        spring:                           spring:
-  datasource:                    datasource:                       datasource:
-    dynamic:                       dynamic:                          dynamic:
-      datasource:                    datasource:                       datasource:
-        master_1:                       mysql:                           master:  
-        master_2:                       oracle:                          slave_1:
-        slave_1:                        sqlserver:                       slave_2:
-        slave_2:                        postgresql:                      oracle_1:
-        slave_3:                        h2:                              oracle_2:
+# 多主多从                      纯粹多库（记得设置primary）        混合配置
+spring:                        spring:                        spring:
+  datasource:                    datasource:                    datasource:
+    dynamic:                       dynamic:                       dynamic:
+      datasource:                    datasource:                    datasource:
+        master_1:                      mysql:                         master:
+        master_2:                      oracle:                        slave_1:
+        slave_1:                       sqlserver:                     slave_2:
+        slave_2:                       postgresql:                    oracle_1:
+        slave_3:                       h2:                            oracle_2:
 ```
 
 3. 使用  **@DS**  切换数据源。
@@ -298,7 +302,7 @@ HikariCP官方地址  https://github.com/brettwooldridge/HikariCP 。
 
 SpringBoot 2.+ 默认引入了HikariCP，除非对版本有要求无需再次引入。
 
-使用SpringBoot 1.5.x的版本需手动引入，对应的版本参考官方地址。
+使用SpringBoot 1.5.x的版本需手动引入，对应的版本请根据自己环境和HikariCP官方地址自行选择。
 
 ```yaml
 spring:
@@ -440,7 +444,6 @@ public interface DynamicDataSourceProvider {
      * @return 所有数据源，key为数据源名称
      */
     Map<String, DataSource> loadDataSources();
-
 }
 ```
 
