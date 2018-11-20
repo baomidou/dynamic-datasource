@@ -57,7 +57,7 @@ public class DruidConfig {
     private Boolean clearFiltersEnable;
     private Boolean resetStatEnable;
     private Integer notFullTimeoutRetryCount;
-    private Long maxWaitThreadCount;
+    private Integer maxWaitThreadCount;
     private Boolean failFast;
     private Integer phyTimeoutMillis;
     private Boolean keepAlive;
@@ -172,8 +172,8 @@ public class DruidConfig {
             properties.setProperty("druid.notFullTimeoutRetryCount", String.valueOf(tempNotFullTimeoutRetryCount));
         }
 
-        Long tempMaxWaitThreadCount = maxWaitThreadCount == null ? globalConfig.getMaxWaitThreadCount() : maxWaitThreadCount;
-        if (tempMaxWaitThreadCount != null && !tempMaxWaitThreadCount.equals(DEFAULT_MAX_WAIT)) {
+        Integer tempMaxWaitThreadCount = maxWaitThreadCount == null ? globalConfig.getMaxWaitThreadCount() : maxWaitThreadCount;
+        if (tempMaxWaitThreadCount != null && !tempMaxWaitThreadCount.equals(-1)) {
             properties.setProperty("druid.maxWaitThreadCount", String.valueOf(tempMaxWaitThreadCount));
         }
 

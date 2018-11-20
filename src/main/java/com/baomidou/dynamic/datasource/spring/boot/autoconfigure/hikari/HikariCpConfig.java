@@ -129,7 +129,7 @@ public class HikariCpConfig {
         }
 
         Long tempInitializationFailTimeout = initializationFailTimeout == null ? globalConfig.getInitializationFailTimeout() : initializationFailTimeout;
-        if (tempInitializationFailTimeout != null && !tempInitializationFailTimeout.equals(1)) {
+        if (tempInitializationFailTimeout != null && !tempInitializationFailTimeout.equals(1L)) {
             config.setInitializationFailTimeout(tempInitializationFailTimeout);
         }
 
