@@ -26,7 +26,7 @@ import java.util.Properties;
 import static com.alibaba.druid.pool.DruidAbstractDataSource.*;
 
 /**
- * Druid常用参数
+ * Druid参数配置
  *
  * @author TaoYu
  * @since 1.2.0
@@ -66,7 +66,7 @@ public class DruidConfig {
     private Boolean initGlobalVariants;
     private Boolean useUnfairLock;
     private Boolean killWhenSocketReadTimeout;
-    private String connectionProperties;
+    private Properties connectionProperties;
     private Integer maxPoolPreparedStatementPerConnectionSize;
     private String initConnectionSqls;
     private Boolean sharePreparedStatements;
@@ -75,169 +75,168 @@ public class DruidConfig {
 
     private String publicKey;
 
-    public Properties toProperties(DruidConfig config) {
+    public Properties toProperties(DruidConfig globalConfig) {
         Properties properties = new Properties();
-        Integer initialSize = this.initialSize == null ? config.getInitialSize() : this.initialSize;
-        if (initialSize != null && !initialSize.equals(DEFAULT_INITIAL_SIZE)) {
-            properties.setProperty("druid.initialSize", String.valueOf(initialSize));
+        Integer tempInitialSize = initialSize == null ? globalConfig.getInitialSize() : initialSize;
+        if (tempInitialSize != null && !tempInitialSize.equals(DEFAULT_INITIAL_SIZE)) {
+            properties.setProperty("druid.initialSize", String.valueOf(tempInitialSize));
         }
 
-        Integer maxActive = this.maxActive == null ? config.getMaxActive() : this.maxActive;
-        if (maxActive != null && !maxActive.equals(DEFAULT_MAX_WAIT)) {
-            properties.setProperty("druid.maxActive", String.valueOf(maxActive));
+        Integer tempMaxActive = maxActive == null ? globalConfig.getMaxActive() : maxActive;
+        if (tempMaxActive != null && !tempMaxActive.equals(DEFAULT_MAX_WAIT)) {
+            properties.setProperty("druid.maxActive", String.valueOf(tempMaxActive));
         }
 
-        Integer minIdle = this.minIdle == null ? config.getMinIdle() : this.minIdle;
-        if (minIdle != null && !minIdle.equals(DEFAULT_MIN_IDLE)) {
-            properties.setProperty("druid.minIdle", String.valueOf(minIdle));
+        Integer tempMinIdle = minIdle == null ? globalConfig.getMinIdle() : minIdle;
+        if (tempMinIdle != null && !tempMinIdle.equals(DEFAULT_MIN_IDLE)) {
+            properties.setProperty("druid.minIdle", String.valueOf(tempMinIdle));
         }
 
-        Long maxWait = this.maxWait == null ? config.getMaxWait() : this.maxWait;
-        if (maxWait != null && !maxWait.equals(DEFAULT_MAX_WAIT)) {
-            properties.setProperty("druid.maxWait", String.valueOf(maxWait));
+        Long tempMaxWait = maxWait == null ? globalConfig.getMaxWait() : maxWait;
+        if (tempMaxWait != null && !tempMaxWait.equals(DEFAULT_MAX_WAIT)) {
+            properties.setProperty("druid.maxWait", String.valueOf(tempMaxWait));
         }
 
-        Long timeBetweenEvictionRunsMillis = this.timeBetweenEvictionRunsMillis == null ? config.getTimeBetweenEvictionRunsMillis() : this.timeBetweenEvictionRunsMillis;
-        if (timeBetweenEvictionRunsMillis != null && !timeBetweenEvictionRunsMillis.equals(DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS)) {
-            properties.setProperty("druid.timeBetweenEvictionRunsMillis", String.valueOf(timeBetweenEvictionRunsMillis));
+        Long tempTimeBetweenEvictionRunsMillis = timeBetweenEvictionRunsMillis == null ? globalConfig.getTimeBetweenEvictionRunsMillis() : timeBetweenEvictionRunsMillis;
+        if (tempTimeBetweenEvictionRunsMillis != null && !tempTimeBetweenEvictionRunsMillis.equals(DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS)) {
+            properties.setProperty("druid.timeBetweenEvictionRunsMillis", String.valueOf(tempTimeBetweenEvictionRunsMillis));
         }
 
-        Long timeBetweenLogStatsMillis = this.timeBetweenLogStatsMillis == null ? config.getTimeBetweenLogStatsMillis() : this.timeBetweenLogStatsMillis;
-        if (timeBetweenLogStatsMillis != null && timeBetweenLogStatsMillis > 0) {
-            properties.setProperty("druid.timeBetweenLogStatsMillis", String.valueOf(timeBetweenLogStatsMillis));
+        Long tempTimeBetweenLogStatsMillis = timeBetweenLogStatsMillis == null ? globalConfig.getTimeBetweenLogStatsMillis() : timeBetweenLogStatsMillis;
+        if (tempTimeBetweenLogStatsMillis != null && tempTimeBetweenLogStatsMillis > 0) {
+            properties.setProperty("druid.timeBetweenLogStatsMillis", String.valueOf(tempTimeBetweenLogStatsMillis));
         }
 
-        Integer statSqlMaxSize = this.statSqlMaxSize == null ? config.getStatSqlMaxSize() : this.statSqlMaxSize;
-        if (statSqlMaxSize != null) {
-            properties.setProperty("druid.stat.sql.MaxSize", String.valueOf(statSqlMaxSize));
+        Integer tempStatSqlMaxSize = statSqlMaxSize == null ? globalConfig.getStatSqlMaxSize() : statSqlMaxSize;
+        if (tempStatSqlMaxSize != null) {
+            properties.setProperty("druid.stat.sql.MaxSize", String.valueOf(tempStatSqlMaxSize));
         }
 
-        Long minEvictableIdleTimeMillis = this.minEvictableIdleTimeMillis == null ? config.getMinEvictableIdleTimeMillis() : this.minEvictableIdleTimeMillis;
-        if (minEvictableIdleTimeMillis != null && !minEvictableIdleTimeMillis.equals(DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS)) {
-            properties.setProperty("druid.minEvictableIdleTimeMillis", String.valueOf(minEvictableIdleTimeMillis));
+        Long tempMinEvictableIdleTimeMillis = minEvictableIdleTimeMillis == null ? globalConfig.getMinEvictableIdleTimeMillis() : minEvictableIdleTimeMillis;
+        if (tempMinEvictableIdleTimeMillis != null && !tempMinEvictableIdleTimeMillis.equals(DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS)) {
+            properties.setProperty("druid.minEvictableIdleTimeMillis", String.valueOf(tempMinEvictableIdleTimeMillis));
         }
 
-        Long maxEvictableIdleTimeMillis = this.maxEvictableIdleTimeMillis == null ? config.getMaxEvictableIdleTimeMillis() : this.maxEvictableIdleTimeMillis;
-        if (maxEvictableIdleTimeMillis != null && !maxEvictableIdleTimeMillis.equals(DEFAULT_MAX_EVICTABLE_IDLE_TIME_MILLIS)) {
-            properties.setProperty("druid.maxEvictableIdleTimeMillis", String.valueOf(maxEvictableIdleTimeMillis));
+        Long tempMaxEvictableIdleTimeMillis = maxEvictableIdleTimeMillis == null ? globalConfig.getMaxEvictableIdleTimeMillis() : maxEvictableIdleTimeMillis;
+        if (tempMaxEvictableIdleTimeMillis != null && !tempMaxEvictableIdleTimeMillis.equals(DEFAULT_MAX_EVICTABLE_IDLE_TIME_MILLIS)) {
+            properties.setProperty("druid.maxEvictableIdleTimeMillis", String.valueOf(tempMaxEvictableIdleTimeMillis));
         }
 
-        Boolean testWhileIdle = this.testWhileIdle == null ? config.getTestWhileIdle() : this.testWhileIdle;
-        if (testWhileIdle != null && !testWhileIdle.equals(DEFAULT_WHILE_IDLE)) {
+        Boolean tempTestWhileIdle = testWhileIdle == null ? globalConfig.getTestWhileIdle() : testWhileIdle;
+        if (tempTestWhileIdle != null && !tempTestWhileIdle.equals(DEFAULT_WHILE_IDLE)) {
             properties.setProperty("druid.testWhileIdle", "false");
         }
 
-        Boolean testOnBorrow = this.testOnBorrow == null ? config.getTestOnBorrow() : this.testOnBorrow;
-        if (testOnBorrow != null && !testOnBorrow.equals(DEFAULT_TEST_ON_BORROW)) {
+        Boolean tempTestOnBorrow = testOnBorrow == null ? globalConfig.getTestOnBorrow() : testOnBorrow;
+        if (tempTestOnBorrow != null && !tempTestOnBorrow.equals(DEFAULT_TEST_ON_BORROW)) {
             properties.setProperty("druid.testOnBorrow", "true");
         }
 
-        String validationQuery = this.validationQuery == null ? config.getValidationQuery() : this.validationQuery;
-        if (validationQuery != null && validationQuery.length() > 0) {
-            properties.setProperty("druid.validationQuery", validationQuery);
+        String tempValidationQuery = validationQuery == null ? globalConfig.getValidationQuery() : validationQuery;
+        if (tempValidationQuery != null && tempValidationQuery.length() > 0) {
+            properties.setProperty("druid.validationQuery", tempValidationQuery);
         }
 
-        Boolean useGlobalDataSourceStat = this.useGlobalDataSourceStat == null ? config.getUseGlobalDataSourceStat() : this.useGlobalDataSourceStat;
-        if (useGlobalDataSourceStat != null && useGlobalDataSourceStat.equals(Boolean.TRUE)) {
+        Boolean tempUseGlobalDataSourceStat = useGlobalDataSourceStat == null ? globalConfig.getUseGlobalDataSourceStat() : useGlobalDataSourceStat;
+        if (tempUseGlobalDataSourceStat != null && tempUseGlobalDataSourceStat.equals(Boolean.TRUE)) {
             properties.setProperty("druid.useGlobalDataSourceStat", "true");
         }
 
-        Boolean asyncInit = this.asyncInit == null ? config.getAsyncInit() : this.asyncInit;
-        if (asyncInit != null && asyncInit.equals(Boolean.TRUE)) {
+        Boolean tempAsyncInit = asyncInit == null ? globalConfig.getAsyncInit() : asyncInit;
+        if (tempAsyncInit != null && tempAsyncInit.equals(Boolean.TRUE)) {
             properties.setProperty("druid.asyncInit", "true");
         }
 
         //filters单独处理，默认了stat,wall
-        String filters = this.filters == null ? config.getFilters() : this.filters;
-        if (filters == null) {
-            filters = "stat,wall";
+        String tempFilters = filters == null ? globalConfig.getFilters() : filters;
+        if (tempFilters == null) {
+            tempFilters = "stat,wall";
         }
-        if (publicKey != null && publicKey.length() > 0 && !filters.contains("config")) {
-            filters += ",config";
+        if (publicKey != null && publicKey.length() > 0 && !tempFilters.contains("config")) {
+            tempFilters += ",config";
         }
-        properties.setProperty("druid.filters", filters);
+        properties.setProperty("druid.filters", tempFilters);
 
-        Boolean clearFiltersEnable = this.clearFiltersEnable == null ? config.getClearFiltersEnable() : this.clearFiltersEnable;
-        if (clearFiltersEnable != null && clearFiltersEnable.equals(Boolean.FALSE)) {
+        Boolean tempClearFiltersEnable = clearFiltersEnable == null ? globalConfig.getClearFiltersEnable() : clearFiltersEnable;
+        if (tempClearFiltersEnable != null && tempClearFiltersEnable.equals(Boolean.FALSE)) {
             properties.setProperty("druid.clearFiltersEnable", "false");
         }
 
-        Boolean resetStatEnable = this.resetStatEnable == null ? config.getResetStatEnable() : this.resetStatEnable;
-        if (resetStatEnable != null && resetStatEnable.equals(Boolean.FALSE)) {
+        Boolean tempResetStatEnable = resetStatEnable == null ? globalConfig.getResetStatEnable() : resetStatEnable;
+        if (tempResetStatEnable != null && tempResetStatEnable.equals(Boolean.FALSE)) {
             properties.setProperty("druid.resetStatEnable", "false");
         }
 
-        Integer notFullTimeoutRetryCount = this.notFullTimeoutRetryCount == null ? config.getNotFullTimeoutRetryCount() : this.notFullTimeoutRetryCount;
-        if (notFullTimeoutRetryCount != null && !notFullTimeoutRetryCount.equals(0)) {
-            properties.setProperty("druid.notFullTimeoutRetryCount", String.valueOf(notFullTimeoutRetryCount));
+        Integer tempNotFullTimeoutRetryCount = notFullTimeoutRetryCount == null ? globalConfig.getNotFullTimeoutRetryCount() : notFullTimeoutRetryCount;
+        if (tempNotFullTimeoutRetryCount != null && !tempNotFullTimeoutRetryCount.equals(0)) {
+            properties.setProperty("druid.notFullTimeoutRetryCount", String.valueOf(tempNotFullTimeoutRetryCount));
         }
 
-        Long maxWaitThreadCount = this.maxWaitThreadCount == null ? config.getMaxWaitThreadCount() : this.maxWaitThreadCount;
-        if (maxWaitThreadCount != null && !maxWaitThreadCount.equals(DEFAULT_MAX_WAIT)) {
-            properties.setProperty("druid.maxWaitThreadCount", String.valueOf(maxWaitThreadCount));
+        Long tempMaxWaitThreadCount = maxWaitThreadCount == null ? globalConfig.getMaxWaitThreadCount() : maxWaitThreadCount;
+        if (tempMaxWaitThreadCount != null && !tempMaxWaitThreadCount.equals(DEFAULT_MAX_WAIT)) {
+            properties.setProperty("druid.maxWaitThreadCount", String.valueOf(tempMaxWaitThreadCount));
         }
 
-        Boolean failFast = this.failFast == null ? config.getFailFast() : this.failFast;
-        if (failFast != null && failFast.equals(Boolean.TRUE)) {
+        Boolean tempFailFast = failFast == null ? globalConfig.getFailFast() : failFast;
+        if (tempFailFast != null && tempFailFast.equals(Boolean.TRUE)) {
             properties.setProperty("druid.failFast", "true");
         }
 
-        Integer phyTimeoutMillis = this.phyTimeoutMillis == null ? config.getPhyTimeoutMillis() : this.phyTimeoutMillis;
-        if (phyTimeoutMillis != null && !phyTimeoutMillis.equals(DEFAULT_PHY_TIMEOUT_MILLIS)) {
-            properties.setProperty("druid.phyTimeoutMillis", String.valueOf(phyTimeoutMillis));
+        Integer tempPhyTimeoutMillis = phyTimeoutMillis == null ? globalConfig.getPhyTimeoutMillis() : phyTimeoutMillis;
+        if (tempPhyTimeoutMillis != null && !tempPhyTimeoutMillis.equals(DEFAULT_PHY_TIMEOUT_MILLIS)) {
+            properties.setProperty("druid.phyTimeoutMillis", String.valueOf(tempPhyTimeoutMillis));
         }
 
-        Boolean keepAlive = this.keepAlive == null ? config.getKeepAlive() : this.keepAlive;
-        if (keepAlive != null && keepAlive.equals(Boolean.TRUE)) {
+        Boolean tempKeepAlive = keepAlive == null ? globalConfig.getKeepAlive() : keepAlive;
+        if (tempKeepAlive != null && tempKeepAlive.equals(Boolean.TRUE)) {
             properties.setProperty("druid.keepAlive", "true");
         }
 
-        Boolean poolPreparedStatements = this.poolPreparedStatements == null ? config.getPoolPreparedStatements() : this.poolPreparedStatements;
-        if (poolPreparedStatements != null && poolPreparedStatements.equals(Boolean.TRUE)) {
+        Boolean tempPoolPreparedStatements = poolPreparedStatements == null ? globalConfig.getPoolPreparedStatements() : poolPreparedStatements;
+        if (tempPoolPreparedStatements != null && tempPoolPreparedStatements.equals(Boolean.TRUE)) {
             properties.setProperty("druid.poolPreparedStatements", "true");
         }
 
-        Boolean initVariants = this.initVariants == null ? config.getInitVariants() : this.initVariants;
-        if (initVariants != null && initVariants.equals(Boolean.TRUE)) {
+        Boolean tempInitVariants = initVariants == null ? globalConfig.getInitVariants() : initVariants;
+        if (tempInitVariants != null && tempInitVariants.equals(Boolean.TRUE)) {
             properties.setProperty("druid.initVariants", "true");
         }
 
-        Boolean initGlobalVariants = this.initGlobalVariants == null ? config.getInitGlobalVariants() : this.initGlobalVariants;
-        if (initGlobalVariants != null && initGlobalVariants.equals(Boolean.TRUE)) {
+        Boolean tempInitGlobalVariants = initGlobalVariants == null ? globalConfig.getInitGlobalVariants() : initGlobalVariants;
+        if (tempInitGlobalVariants != null && tempInitGlobalVariants.equals(Boolean.TRUE)) {
             properties.setProperty("druid.initGlobalVariants", "true");
         }
 
-        Boolean useUnfairLock = this.useUnfairLock == null ? config.getUseUnfairLock() : this.useUnfairLock;
-        if (useUnfairLock != null) {
-            properties.setProperty("druid.useUnfairLock", String.valueOf(useUnfairLock));
+        Boolean tempUseUnfairLock = useUnfairLock == null ? globalConfig.getUseUnfairLock() : useUnfairLock;
+        if (tempUseUnfairLock != null) {
+            properties.setProperty("druid.useUnfairLock", String.valueOf(tempUseUnfairLock));
         }
 
-        Boolean killWhenSocketReadTimeout = this.killWhenSocketReadTimeout == null ? config.getKillWhenSocketReadTimeout() : this.killWhenSocketReadTimeout;
-        if (killWhenSocketReadTimeout != null && killWhenSocketReadTimeout.equals(Boolean.TRUE)) {
+        Boolean tempKillWhenSocketReadTimeout = killWhenSocketReadTimeout == null ? globalConfig.getKillWhenSocketReadTimeout() : killWhenSocketReadTimeout;
+        if (tempKillWhenSocketReadTimeout != null && tempKillWhenSocketReadTimeout.equals(Boolean.TRUE)) {
             properties.setProperty("druid.killWhenSocketReadTimeout", "true");
         }
 
-        String connectProperties = this.connectionProperties == null ? config.getConnectionProperties() : this.connectionProperties;
+        Properties tempConnectProperties = connectionProperties == null ? globalConfig.getConnectionProperties() : connectionProperties;
 
-        if (this.publicKey != null && this.publicKey.length() > 0) {
-            if (connectProperties == null) {
-                connectProperties = "";
+        if (publicKey != null && publicKey.length() > 0) {
+            if (tempConnectProperties == null) {
+                tempConnectProperties = new Properties();
             }
             log.info("动态数据源-检测到您配置了druid加密,加密所需连接参数已为您自动配置");
-            connectProperties += "config.decrypt=true;config.decrypt.key=" + this.publicKey;
+            tempConnectProperties.setProperty("config.decrypt", "true");
+            tempConnectProperties.setProperty("config.decrypt.key", publicKey);
         }
-        if (connectProperties != null && connectProperties.length() > 0) {
-            properties.setProperty("druid.connectProperties", connectProperties);
+        connectionProperties = tempConnectProperties;
+
+        Integer tempMaxPoolPreparedStatementPerConnectionSize = maxPoolPreparedStatementPerConnectionSize == null ? globalConfig.getMaxPoolPreparedStatementPerConnectionSize() : maxPoolPreparedStatementPerConnectionSize;
+        if (tempMaxPoolPreparedStatementPerConnectionSize != null && !tempMaxPoolPreparedStatementPerConnectionSize.equals(10)) {
+            properties.setProperty("druid.maxPoolPreparedStatementPerConnectionSize", String.valueOf(tempMaxPoolPreparedStatementPerConnectionSize));
         }
 
-        Integer maxPoolPreparedStatementPerConnectionSize = this.maxPoolPreparedStatementPerConnectionSize == null ? config.getMaxPoolPreparedStatementPerConnectionSize() : this.maxPoolPreparedStatementPerConnectionSize;
-        if (maxPoolPreparedStatementPerConnectionSize != null && !maxPoolPreparedStatementPerConnectionSize.equals(10)) {
-            properties.setProperty("druid.maxPoolPreparedStatementPerConnectionSize", String.valueOf(maxPoolPreparedStatementPerConnectionSize));
-        }
-
-        String initConnectionSqls = this.initConnectionSqls == null ? config.getInitConnectionSqls() : this.initConnectionSqls;
-        if (initConnectionSqls != null && initConnectionSqls.length() > 0) {
-            properties.setProperty("druid.initConnectionSqls", initConnectionSqls);
+        String tempInitConnectionSqls = initConnectionSqls == null ? globalConfig.getInitConnectionSqls() : initConnectionSqls;
+        if (tempInitConnectionSqls != null && tempInitConnectionSqls.length() > 0) {
+            properties.setProperty("druid.initConnectionSqls", tempInitConnectionSqls);
         }
         return properties;
     }

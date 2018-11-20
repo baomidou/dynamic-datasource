@@ -279,19 +279,81 @@ spring:
           username: root
           password: 123456
           driver-class-name: com.mysql.jdbc.Driver
-          url: jdbc:mysql://47.100.20.186:3306/dynamic?characterEncoding=utf8&useSSL=false
+          url: jdbc:mysql://xx.xx.xx.xx:3306/dynamic?characterEncoding=utf8&useSSL=false
           druid: # 以下参数针对每个库可以重新设置druid参数
             initial-size:
             validation-query: select 1 FROM DUAL #比如oracle就需要重新设置这个
             public-key: #（非全局参数）设置即表示启用加密,底层会自动帮你配置相关的连接参数和filter。
 #           ......
 
-
 # 生成 publickey 和密码 
 # java -cp druid-1.1.10.jar com.alibaba.druid.filter.config.ConfigTools youpassword
 ```
 
 如上即可配置访问用户和密码，访问 http://localhost:8080/druid/index.html 查看druid监控。
+
+## 集成 HikariCP
+
+HikariCP官方地址  https://github.com/brettwooldridge/HikariCP 。
+
+SpringBoot 2.+ 默认引入了HikariCP，除非对版本有要求无需再次引入。
+
+使用SpringBoot 1.5.x的版本需手动引入，对应的版本参考官方地址。
+
+```yaml
+spring:
+  datasource:
+    dynamic:
+      hikari:  # 全局hikariCP参数，所有值和默认保持一致。(现已支持的参数如下,不清楚含义不要乱设置)
+        catalog:
+        connection-timeout:
+        validation-timeout:
+        idle-timeout:
+        leak-detection-threshold:
+        max-lifetime:
+        max-pool-size:
+        min-idle:
+        initialization-fail-timeout:
+        connection-init-sql:
+        connection-test-query:
+        dataSource-class-name:
+        dataSource-jndi-name:
+        schema:
+        transaction-isolation-name:
+        is-auto-commit:
+        is-read-only:
+        is-isolate-internal-queries:
+        is-register-mbeans:
+        is-allow-pool-suspension:
+        data-source-properties: #以下属性仅为演示（默认不会引入）
+          serverTimezone: Asia/Shanghai
+          characterEncoding: utf-8
+          useUnicode: true
+          useSSL: false
+          autoReconnect: true
+          cachePrepStmts: true
+          prepStmtCacheSize: 250
+          prepStmtCacheSqlLimit: 2048
+          useServerPrepStmts: true
+          useLocalSessionState: true
+          rewriteBatchedStatements: true
+          cacheResultSetMetadata: true
+          cacheServerConfiguration: true
+          elideSetAutoCommits: true
+          maintainTimeStats: false
+          allowPublicKeyRetrieval: true
+        health-check-properties:
+      datasource:
+        master:
+          username: root
+          password: 123456
+          driver-class-name: com.mysql.jdbc.Driver
+          url: jdbc:mysql://xx.xx.xx.xx:3306/dynamic?characterEncoding=utf8&useSSL=false
+          hikari: # 以下参数针对每个库可以重新设置hikari参数
+            max-pool-size:
+            idle-timeout:
+#           ......
+```
 
 ## 集成 MybatisPlus
 
@@ -316,7 +378,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
 p6sy大部分人最常用的功能就是格式化你的sql语句。
 
-```mysql
+```sql
 # 如在使用mybatis的过程中，原生输出的语句是带?号的。在需要复制到其他地方执行看效果的时候很不方便。
 select * from user where age>?
 # 在使用了p6sy后，其会帮你格式化成真正的执行语句。

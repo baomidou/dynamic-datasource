@@ -17,9 +17,9 @@
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.hikari.HikariCpConfig;
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
 import com.baomidou.dynamic.datasource.strategy.LoadBalanceDynamicDataSourceStrategy;
-import com.zaxxer.hikari.HikariConfig;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -71,5 +71,5 @@ public class DynamicDataSourceProperties {
      * HikariCp全局参数配置
      */
     @NestedConfigurationProperty
-    private HikariConfig hikari = new HikariConfig();
+    private HikariCpConfig hikari = new HikariCpConfig();
 }

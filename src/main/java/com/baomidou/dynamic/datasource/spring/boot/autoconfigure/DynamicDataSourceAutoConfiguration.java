@@ -71,7 +71,7 @@ public class DynamicDataSourceAutoConfiguration {
     public DynamicDataSourceCreator dynamicDataSourceCreator() {
         DynamicDataSourceCreator dynamicDataSourceCreator = new DynamicDataSourceCreator();
         dynamicDataSourceCreator.setDruidGlobalConfig(properties.getDruid());
-        dynamicDataSourceCreator.setGlobalHikariConfig(properties.getHikari());
+        dynamicDataSourceCreator.setHikariGlobalConfig(properties.getHikari());
         return dynamicDataSourceCreator;
     }
 

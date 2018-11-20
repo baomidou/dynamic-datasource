@@ -19,6 +19,7 @@ package com.baomidou.dynamic.datasource;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.hikari.HikariCpConfig;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.Setter;
@@ -72,7 +73,7 @@ public class DynamicDataSourceCreator {
     private DruidConfig druidGlobalConfig;
 
     @Setter
-    private HikariConfig globalHikariConfig;
+    private HikariCpConfig hikariGlobalConfig;
 
     public DynamicDataSourceCreator() {
         Class<?> builderClass = null;
@@ -173,15 +174,16 @@ public class DynamicDataSourceCreator {
      */
     public DataSource createDruidDataSource(DataSourceProperty dataSourceProperty) {
         DruidDataSource dataSource = new DruidDataSource();
-        dataSource.setName(dataSourceProperty.getPollName());
-        dataSource.setUrl(dataSourceProperty.getUrl());
         dataSource.setUsername(dataSourceProperty.getUsername());
         dataSource.setPassword(dataSourceProperty.getPassword());
+        dataSource.setUrl(dataSourceProperty.getUrl());
         dataSource.setDriverClassName(dataSourceProperty.getDriverClassName());
+        dataSource.setName(dataSourceProperty.getPollName());
 
         DruidConfig config = dataSourceProperty.getDruid();
         dataSource.configFromPropety(config.toProperties(druidGlobalConfig));
-
+        //连接参数单独设置
+        dataSource.setConnectProperties(config.getConnectionProperties());
         //设置druid内置properties不支持的的参数
         Boolean testOnReturn = config.getTestOnReturn() == null ? druidGlobalConfig.getTestOnReturn() : config.getTestOnReturn();
         if (testOnReturn != null && testOnReturn.equals(true)) {
@@ -217,22 +219,16 @@ public class DynamicDataSourceCreator {
      *
      * @param dataSourceProperty 数据源参数
      * @return 数据源
-     * @author 离世庭院
+     * @author 离世庭院 小锅盖
      */
     public DataSource createHikariDataSource(DataSourceProperty dataSourceProperty) {
-        HikariConfig hikariConfig = dataSourceProperty.getHikari();
-        if (hikariConfig == null) {
-            //自己没设置就copy全局参数
-            hikariConfig.copyState(globalHikariConfig);
-        }
-        hikariConfig.setJdbcUrl(dataSourceProperty.getUrl());
-        hikariConfig.setUsername(dataSourceProperty.getUsername());
-        hikariConfig.setPassword(dataSourceProperty.getPassword());
-        hikariConfig.setDriverClassName(dataSourceProperty.getDriverClassName());
-        //暂时不支持设置监控
-//        hikariConfig.setMetricRegistry(metricRegistry);
-//        hikariConfig.setHealthCheckRegistry(healthCheckRegistry);
-        hikariConfig.setPoolName(dataSourceProperty.getPollName());
-        return new HikariDataSource(hikariConfig);
+        HikariCpConfig hikariCpConfig = dataSourceProperty.getHikari();
+        HikariConfig config = hikariCpConfig.toHikariConfig(hikariGlobalConfig);
+        config.setUsername(dataSourceProperty.getUsername());
+        config.setPassword(dataSourceProperty.getPassword());
+        config.setJdbcUrl(dataSourceProperty.getUrl());
+        config.setDriverClassName(dataSourceProperty.getDriverClassName());
+        config.setPoolName(dataSourceProperty.getPollName());
+        return new HikariDataSource(config);
     }
 }
