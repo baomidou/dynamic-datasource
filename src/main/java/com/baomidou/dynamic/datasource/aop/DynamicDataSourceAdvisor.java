@@ -29,6 +29,7 @@ import org.springframework.aop.support.ComposablePointcut;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.core.Ordered;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -109,5 +110,10 @@ public class DynamicDataSourceAdvisor extends AbstractPointcutAdvisor implements
             }
         }
         return composablePointcut;
+    }
+
+    @Override
+    public void setOrder(int order) {
+        super.setOrder(Ordered.HIGHEST_PRECEDENCE);
     }
 }

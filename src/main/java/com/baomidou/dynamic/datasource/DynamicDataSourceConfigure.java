@@ -29,6 +29,13 @@ public class DynamicDataSourceConfigure {
     @Getter
     private List<Matcher> matchers = new LinkedList<>();
 
+    private DynamicDataSourceConfigure() {
+    }
+
+    public static DynamicDataSourceConfigure config() {
+        return new DynamicDataSourceConfigure();
+    }
+
     public DynamicDataSourceConfigure regexMatchers(String pattern, String ds) {
         matchers.add(new RegexMatcher(pattern, ds));
         return this;
@@ -37,13 +44,6 @@ public class DynamicDataSourceConfigure {
     public DynamicDataSourceConfigure expressionMatchers(String expression, String ds) {
         matchers.add(new ExpressionMatcher(expression, ds));
         return this;
-    }
-
-    private DynamicDataSourceConfigure() {
-    }
-
-    public static DynamicDataSourceConfigure config() {
-        return new DynamicDataSourceConfigure();
     }
 
 }

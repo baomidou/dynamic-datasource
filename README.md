@@ -55,6 +55,7 @@ dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成�
 5. 项目启动后能动态增减数据源。
 6. 使用spel动态参数解析数据源，如从session，header和参数中获取数据源。（多租户架构神器）
 7. 多层数据源嵌套切换。（一个业务ServiceA调用ServiceB，ServiceB调用ServiceC，每个Service都是不同的数据源）
+8. 不适用注解，适用正则匹配或spel表达式来切换数据源。
 
 # 劣势
 
@@ -361,7 +362,7 @@ spring:
 
 ## 集成 MybatisPlus
 
-只要进入mybatisPlus相关jar包，项目自动集成。 兼容mybatisPlus 2.x和3.x的版本。
+只要引入了mybatisPlus相关jar包，项目自动集成。 兼容mybatisPlus 2.x和3.x的版本。
 
 只要注解在mybatisPlus的mapper或serviceImpl上即可完成mp内置方法切换。
 
@@ -382,7 +383,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
 p6sy大部分人最常用的功能就是格式化你的sql语句。
 
-```sql
+```shell
 # 如在使用mybatis的过程中，原生输出的语句是带?号的。在需要复制到其他地方执行看效果的时候很不方便。
 select * from user where age>?
 # 在使用了p6sy后，其会帮你格式化成真正的执行语句。
@@ -428,6 +429,29 @@ spring:
       master:
         jndi_name: xxx #只要配置即表示启用。
 ```
+
+# 实验性功能
+
+不适用注解而是适用正则或spel表达式来指定匹配规则的数据源。
+
+所谓实现性功能表示初步功能开发完毕，但后期很可能会有方法或构建方式的调整，也会有一些BUG存在。
+
+想要体验该功能只需要手动注入DynamicDataSourceConfigure，进行如下配置。
+
+```java
+@Configuration
+public class DynamicConfiguration {
+    @Bean
+    public DynamicDataSourceConfigure dynamicDataSourceConfigure() {
+        return DynamicDataSourceConfigure.config()
+                .regexMatchers("com.baomidou.samples.nest.service.impl.*select.*", "mysql")
+                .regexMatchers("com.baomidou.samples.nest.service.impl.*find.*", "oracle")
+                .expressionMatchers("execution(* com.baomidou.samples.nest.service.impl.*.select*(..))", "mysql");
+    }
+}
+```
+
+欢迎反馈问题。
 
 # 高级
 

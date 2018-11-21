@@ -16,8 +16,10 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
+import com.baomidou.dynamic.datasource.DynamicDataSourceConfigure;
 import com.baomidou.dynamic.datasource.DynamicDataSourceCreator;
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
+import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAdvisor;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationInterceptor;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
@@ -32,6 +34,7 @@ import com.p6spy.engine.spy.P6DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -116,5 +119,11 @@ public class DynamicDataSourceAutoConfiguration {
     @ConditionalOnMissingBean
     public DynamicDataSourceSpelResolver dynamicDataSourceSpelResolver() {
         return new DefaultDynamicDataSourceSpelResolver();
+    }
+
+    @Bean
+    @ConditionalOnBean(DynamicDataSourceConfigure.class)
+    public DynamicDataSourceAdvisor dynamicAdvisor(DynamicDataSourceConfigure dynamicDataSourceConfigure) {
+        return new DynamicDataSourceAdvisor(dynamicDataSourceConfigure.getMatchers());
     }
 }
