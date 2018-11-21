@@ -55,7 +55,7 @@ dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成�
 5. 项目启动后能动态增减数据源。
 6. 使用spel动态参数解析数据源，如从session，header和参数中获取数据源。（多租户架构神器）
 7. 多层数据源嵌套切换。（一个业务ServiceA调用ServiceB，ServiceB调用ServiceC，每个Service都是不同的数据源）
-8. 不适用注解，适用正则匹配或spel表达式来切换数据源。
+8. 使用正则匹配或spel表达式来切换数据源（实验性功能）。
 
 # 劣势
 
@@ -122,16 +122,16 @@ spring:
 ```
 
 ```yaml
-# 多主多从                      纯粹多库（记得设置primary）        混合配置
-spring:                        spring:                        spring:
-  datasource:                    datasource:                    datasource:
-    dynamic:                       dynamic:                       dynamic:
-      datasource:                    datasource:                    datasource:
-        master_1:                      mysql:                         master:
-        master_2:                      oracle:                        slave_1:
-        slave_1:                       sqlserver:                     slave_2:
-        slave_2:                       postgresql:                    oracle_1:
-        slave_3:                       h2:                            oracle_2:
+# 多主多从                      纯粹多库（记得设置primary）                   混合配置
+spring:                               spring:                               spring:
+  datasource:                           datasource:                           datasource:
+    dynamic:                              dynamic:                              dynamic:
+      datasource:                           datasource:                           datasource:
+        master_1:                             mysql:                                master:
+        master_2:                             oracle:                               slave_1:
+        slave_1:                              sqlserver:                            slave_2:
+        slave_2:                              postgresql:                           oracle_1:
+        slave_3:                              h2:                                   oracle_2:
 ```
 
 3. 使用  **@DS**  切换数据源。
@@ -432,7 +432,7 @@ spring:
 
 # 实验性功能
 
-不适用注解而是适用正则或spel表达式来指定匹配规则的数据源。
+使用正则匹配或spel表达式来切换数据源来指定符合匹配规则的数据源。
 
 所谓实现性功能表示初步功能开发完毕，但后期很可能会有方法或构建方式的调整，也会有一些BUG存在。
 
