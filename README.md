@@ -187,8 +187,13 @@ public interface UserMapper {
 
 ---
 
-大部分用户看到这里就可以了，赶紧体验一下吧！  如果需要更多功能请继续往下看。
+
+####                                                                                       赶紧集成体验一下吧！ 如果需要更多功能请继续往下看！
 
 ---
 
-### 更多文档请访问项目WIKI或直接点击 https://gitee.com/baomidou/dynamic-datasource-spring-boot-starter/wikis/pages
+
+
+- #### Druid集成，MybatisPlus集成，动态增减数据源等等更多更细致的文档在这里     [点击查看](https://gitee.com/baomidou/dynamic-datasource-spring-boot-starter/wikis/pages)
+
+- #### 项目Javadoc一览                  [点击查看](https://apidoc.gitee.com/baomidou/dynamic-datasource-spring-boot-starter/)
