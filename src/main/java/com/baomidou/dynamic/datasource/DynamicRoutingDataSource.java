@@ -157,7 +157,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
         }
         //检测默认数据源设置
         if (groupDataSources.containsKey(primary)) {
-            log.info("当前的默认数据源是组数据源,组名为 {} ，其下有 {} 个数据源", primary, groupDataSources.size());
+            log.info("当前的默认数据源是组数据源,组名为 {} ，其下有 {} 个数据源", primary, groupDataSources.get(primary).size());
         } else if (dataSourceMap.containsKey(primary)) {
             log.info("当前的默认数据源是单数据源，数据源名为 {}", primary);
         } else {
