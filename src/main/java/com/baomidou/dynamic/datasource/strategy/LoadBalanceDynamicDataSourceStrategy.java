@@ -35,6 +35,6 @@ public class LoadBalanceDynamicDataSourceStrategy implements DynamicDataSourceSt
 
     @Override
     public DataSource determineDataSource(List<DataSource> dataSources) {
-        return dataSources.get(Math.abs(index.getAndAdd(1)) % dataSources.size());
+        return dataSources.get(Math.abs(index.getAndAdd(1) % dataSources.size()));
     }
 }
