@@ -59,7 +59,8 @@ public class DynamicDataSourceClassResolver {
     public Class<?> targetClass(MethodInvocation invocation) throws IllegalAccessException {
         if (mpEnabled) {
             Object target = invocation.getThis();
-            return Proxy.isProxyClass(target.getClass()) ? (Class) mapperInterfaceField.get(Proxy.getInvocationHandler(target)) : target.getClass();
+            Class<?> targetClass = target.getClass();
+            return Proxy.isProxyClass(targetClass) ? (Class) mapperInterfaceField.get(Proxy.getInvocationHandler(target)) : targetClass;
         }
         return invocation.getMethod().getDeclaringClass();
     }
