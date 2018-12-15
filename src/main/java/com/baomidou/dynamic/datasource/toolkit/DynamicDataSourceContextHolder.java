@@ -16,7 +16,8 @@
  */
 package com.baomidou.dynamic.datasource.toolkit;
 
-import java.util.concurrent.LinkedBlockingDeque;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 /**
  * 核心基于ThreadLocal的切换数据源工具类
@@ -35,10 +36,10 @@ public final class DynamicDataSourceContextHolder {
      * </pre>
      */
     @SuppressWarnings("unchecked")
-    private static final ThreadLocal<LinkedBlockingDeque<String>> LOOKUP_KEY_HOLDER = new ThreadLocal() {
+    private static final ThreadLocal<Deque<String>> LOOKUP_KEY_HOLDER = new ThreadLocal() {
         @Override
         protected Object initialValue() {
-            return new LinkedBlockingDeque();
+            return new ArrayDeque();
         }
     };
 
@@ -51,17 +52,19 @@ public final class DynamicDataSourceContextHolder {
      * @return 数据源名称
      */
     public static String getDataSourceLookupKey() {
-        LinkedBlockingDeque<String> deque = LOOKUP_KEY_HOLDER.get();
-        return deque.isEmpty() ? null : deque.getFirst();
+        return LOOKUP_KEY_HOLDER.get().peek();
     }
 
     /**
      * 设置当前线程数据源
+     * <p>
+     * 如非必要不要手动调用，调用后确保最终清除
+     * </p>
      *
      * @param dataSourceLookupKey 数据源名称
      */
     public static void setDataSourceLookupKey(String dataSourceLookupKey) {
-        LOOKUP_KEY_HOLDER.get().addFirst(dataSourceLookupKey);
+        LOOKUP_KEY_HOLDER.get().push(dataSourceLookupKey);
     }
 
     /**
@@ -72,11 +75,10 @@ public final class DynamicDataSourceContextHolder {
      * </p>
      */
     public static void clearDataSourceLookupKey() {
-        LinkedBlockingDeque<String> deque = LOOKUP_KEY_HOLDER.get();
+        Deque<String> deque = LOOKUP_KEY_HOLDER.get();
+        deque.poll();
         if (deque.isEmpty()) {
             LOOKUP_KEY_HOLDER.remove();
-        } else {
-            deque.pollFirst();
         }
     }
 }
