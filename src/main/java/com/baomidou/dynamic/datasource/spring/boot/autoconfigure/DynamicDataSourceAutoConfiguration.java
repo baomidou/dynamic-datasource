@@ -22,12 +22,12 @@ import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAdvisor;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationInterceptor;
+import com.baomidou.dynamic.datasource.chain.DsHeaderProcessor;
+import com.baomidou.dynamic.datasource.chain.DsProcessor;
+import com.baomidou.dynamic.datasource.chain.DsSessionProcessor;
+import com.baomidou.dynamic.datasource.chain.DsSpelExpressionProcessor;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.provider.YmlDynamicDataSourceProvider;
-import com.baomidou.dynamic.datasource.spel.DefaultDynamicDataSourceSpelParser;
-import com.baomidou.dynamic.datasource.spel.DefaultDynamicDataSourceSpelResolver;
-import com.baomidou.dynamic.datasource.spel.DynamicDataSourceSpelParser;
-import com.baomidou.dynamic.datasource.spel.DynamicDataSourceSpelResolver;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidDynamicDataSourceConfiguration;
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
 import com.p6spy.engine.spy.P6DataSource;
@@ -100,10 +100,9 @@ public class DynamicDataSourceAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public DynamicDataSourceAnnotationAdvisor dynamicDatasourceAnnotationAdvisor(DynamicDataSourceSpelParser dynamicDataSourceSpelParser, DynamicDataSourceSpelResolver dynamicDataSourceSpelResolver) {
+    public DynamicDataSourceAnnotationAdvisor dynamicDatasourceAnnotationAdvisor(DsProcessor dsProcessor) {
         DynamicDataSourceAnnotationInterceptor interceptor = new DynamicDataSourceAnnotationInterceptor();
-        interceptor.setDynamicDataSourceSpelParser(dynamicDataSourceSpelParser);
-        interceptor.setDynamicDataSourceSpelResolver(dynamicDataSourceSpelResolver);
+        interceptor.setDsProcessor(dsProcessor);
         DynamicDataSourceAnnotationAdvisor advisor = new DynamicDataSourceAnnotationAdvisor(interceptor);
         advisor.setOrder(properties.getOrder());
         return advisor;
@@ -111,14 +110,13 @@ public class DynamicDataSourceAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public DynamicDataSourceSpelParser dynamicDataSourceSpelParser() {
-        return new DefaultDynamicDataSourceSpelParser();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public DynamicDataSourceSpelResolver dynamicDataSourceSpelResolver() {
-        return new DefaultDynamicDataSourceSpelResolver();
+    public DsProcessor dsProcessor() {
+        DsHeaderProcessor headerProcessor = new DsHeaderProcessor();
+        DsSessionProcessor sessionProcessor = new DsSessionProcessor();
+        DsSpelExpressionProcessor spelExpressionProcessor = new DsSpelExpressionProcessor();
+        headerProcessor.setNextProcessor(sessionProcessor);
+        sessionProcessor.setNextProcessor(spelExpressionProcessor);
+        return headerProcessor;
     }
 
     @Bean

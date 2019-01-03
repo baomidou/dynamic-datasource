@@ -18,8 +18,7 @@ package com.baomidou.dynamic.datasource.aop;
 
 import com.baomidou.dynamic.datasource.DynamicDataSourceClassResolver;
 import com.baomidou.dynamic.datasource.annotation.DS;
-import com.baomidou.dynamic.datasource.spel.DynamicDataSourceSpelParser;
-import com.baomidou.dynamic.datasource.spel.DynamicDataSourceSpelResolver;
+import com.baomidou.dynamic.datasource.chain.DsProcessor;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import lombok.Setter;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -39,13 +38,10 @@ public class DynamicDataSourceAnnotationInterceptor implements MethodInterceptor
     /**
      * SPEL参数标识
      */
-    private static final String SPEL_PREFIX = "#";
+    private static final String DYNAMIC_PREFIX = "#";
 
     @Setter
-    private DynamicDataSourceSpelResolver dynamicDataSourceSpelResolver;
-
-    @Setter
-    private DynamicDataSourceSpelParser dynamicDataSourceSpelParser;
+    private DsProcessor dsProcessor;
 
     private DynamicDataSourceClassResolver dynamicDataSourceClassResolver = new DynamicDataSourceClassResolver();
 
@@ -64,11 +60,7 @@ public class DynamicDataSourceAnnotationInterceptor implements MethodInterceptor
         Class<?> declaringClass = dynamicDataSourceClassResolver.targetClass(invocation);
         DS ds = method.isAnnotationPresent(DS.class) ? method.getAnnotation(DS.class)
                 : AnnotationUtils.findAnnotation(declaringClass, DS.class);
-        String value = ds.value();
-        if (!value.isEmpty() && value.startsWith(SPEL_PREFIX)) {
-            String spelValue = dynamicDataSourceSpelParser.parse(invocation, value);
-            return dynamicDataSourceSpelResolver.resolve(spelValue);
-        }
-        return value;
+        String key = ds.value();
+        return (!key.isEmpty() && key.startsWith(DYNAMIC_PREFIX)) ? dsProcessor.doDetermineDatasource(invocation, key) : key;
     }
 }
