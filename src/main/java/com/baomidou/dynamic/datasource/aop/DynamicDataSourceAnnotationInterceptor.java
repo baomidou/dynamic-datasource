@@ -61,6 +61,6 @@ public class DynamicDataSourceAnnotationInterceptor implements MethodInterceptor
         DS ds = method.isAnnotationPresent(DS.class) ? method.getAnnotation(DS.class)
                 : AnnotationUtils.findAnnotation(declaringClass, DS.class);
         String key = ds.value();
-        return (!key.isEmpty() && key.startsWith(DYNAMIC_PREFIX)) ? dsProcessor.doDetermineDatasource(invocation, key) : key;
+        return (!key.isEmpty() && key.startsWith(DYNAMIC_PREFIX)) ? dsProcessor.determineDatasource(invocation, key) : key;
     }
 }
