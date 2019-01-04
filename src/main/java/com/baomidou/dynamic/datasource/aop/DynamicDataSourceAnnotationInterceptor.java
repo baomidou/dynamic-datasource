@@ -18,7 +18,7 @@ package com.baomidou.dynamic.datasource.aop;
 
 import com.baomidou.dynamic.datasource.DynamicDataSourceClassResolver;
 import com.baomidou.dynamic.datasource.annotation.DS;
-import com.baomidou.dynamic.datasource.chain.DsProcessor;
+import com.baomidou.dynamic.datasource.processor.DsProcessor;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import lombok.Setter;
 import org.aopalliance.intercept.MethodInterceptor;
