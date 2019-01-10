@@ -164,7 +164,7 @@ public class UserServiceImpl implements UserService {
   }
 }
 ```
-在mybatis环境下也可注解在mapper接口层。
+在mybatis环境下也可注解在mapper接口层。(若非必要强烈不建议在mapper上切换，不符合抽象原则。应由service来切换，在mapper上切换遇到的问题一律拒绝)
 
 ```java
 @DS("slave")
