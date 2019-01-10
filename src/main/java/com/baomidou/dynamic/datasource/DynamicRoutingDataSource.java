@@ -56,7 +56,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
 
     @Override
     public DataSource determineDataSource() {
-        return getDataSource(DynamicDataSourceContextHolder.getDataSourceLookupKey());
+        return getDataSource(DynamicDataSourceContextHolder.peek());
     }
 
     private DataSource determinePrimaryDataSource() {

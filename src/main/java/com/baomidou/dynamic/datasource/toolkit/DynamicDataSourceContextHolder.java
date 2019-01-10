@@ -53,7 +53,7 @@ public final class DynamicDataSourceContextHolder {
      *
      * @return 数据源名称
      */
-    public static String getDataSourceLookupKey() {
+    public static String peek() {
         return LOOKUP_KEY_HOLDER.get().peek();
     }
 
@@ -63,11 +63,10 @@ public final class DynamicDataSourceContextHolder {
      * 如非必要不要手动调用，调用后确保最终清除
      * </p>
      *
-     * @param dataSourceLookupKey 数据源名称
+     * @param ds 数据源名称
      */
-    public static void setDataSourceLookupKey(String dataSourceLookupKey) {
-        String ds = StringUtils.isEmpty(dataSourceLookupKey) ? "" : dataSourceLookupKey;
-        LOOKUP_KEY_HOLDER.get().push(ds);
+    public static void push(String ds) {
+        LOOKUP_KEY_HOLDER.get().push(StringUtils.isEmpty(ds) ? "" : ds);
     }
 
     /**
@@ -77,11 +76,21 @@ public final class DynamicDataSourceContextHolder {
      * 只会移除掉当前线程的数据源名称
      * </p>
      */
-    public static void clearDataSourceLookupKey() {
+    public static void poll() {
         Deque<String> deque = LOOKUP_KEY_HOLDER.get();
         deque.poll();
         if (deque.isEmpty()) {
             LOOKUP_KEY_HOLDER.remove();
         }
+    }
+
+    /**
+     * 强制清空本地线程
+     * <p>
+     * 防止内存泄漏，如手动调用了push可调用此方法确保清除
+     * </p>
+     */
+    public static void clear() {
+        LOOKUP_KEY_HOLDER.remove();
     }
 }

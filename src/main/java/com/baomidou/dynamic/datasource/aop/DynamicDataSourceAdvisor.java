@@ -62,10 +62,10 @@ public class DynamicDataSourceAdvisor extends AbstractPointcutAdvisor implements
                 try {
                     Method method = invocation.getMethod();
                     String methodPath = method.getDeclaringClass().getName() + "." + method.getName();
-                    DynamicDataSourceContextHolder.setDataSourceLookupKey(matchesCache.get(methodPath));
+                    DynamicDataSourceContextHolder.push(matchesCache.get(methodPath));
                     return invocation.proceed();
                 } finally {
-                    DynamicDataSourceContextHolder.clearDataSourceLookupKey();
+                    DynamicDataSourceContextHolder.poll();
                 }
             }
         };

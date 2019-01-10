@@ -48,10 +48,10 @@ public class DynamicDataSourceAnnotationInterceptor implements MethodInterceptor
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
         try {
-            DynamicDataSourceContextHolder.setDataSourceLookupKey(determineDatasource(invocation));
+            DynamicDataSourceContextHolder.push(determineDatasource(invocation));
             return invocation.proceed();
         } finally {
-            DynamicDataSourceContextHolder.clearDataSourceLookupKey();
+            DynamicDataSourceContextHolder.poll();
         }
     }
 
