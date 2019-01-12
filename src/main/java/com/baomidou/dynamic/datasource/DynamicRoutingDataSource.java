@@ -19,6 +19,7 @@ package com.baomidou.dynamic.datasource;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
+import com.p6spy.engine.spy.P6DataSource;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
@@ -45,6 +46,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
     protected Class<? extends DynamicDataSourceStrategy> strategy;
     @Setter
     protected String primary;
+    protected boolean p6spy;
     /**
      * 所有数据库
      */
@@ -108,6 +110,9 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
      * @param dataSource 数据源
      */
     public synchronized void addDataSource(String ds, DataSource dataSource) {
+        if (p6spy) {
+            dataSource = new P6DataSource(dataSource);
+        }
         dataSourceMap.put(ds, dataSource);
         if (ds.contains(UNDERLINE)) {
             String group = ds.split(UNDERLINE)[0];
@@ -145,6 +150,20 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
             log.info("动态数据源-删除 {} 成功", ds);
         } else {
             log.warn("动态数据源-未找到 {} 数据源");
+        }
+    }
+
+    public void setP6spy(boolean p6spy) {
+        if (p6spy) {
+            try {
+                Class.forName("com.p6spy.engine.spy.P6DataSource");
+                log.info("动态数据源-检测到并开启了p6spy");
+                this.p6spy = true;
+            } catch (Exception e) {
+                log.warn("多数据源启动器开启了p6spy但并未引入相关依赖");
+            }
+        } else {
+            this.p6spy = false;
         }
     }
 

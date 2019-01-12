@@ -30,7 +30,6 @@ import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.provider.YmlDynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidDynamicDataSourceConfiguration;
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
-import com.p6spy.engine.spy.P6DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -85,16 +84,8 @@ public class DynamicDataSourceAutoConfiguration {
         dataSource.setPrimary(properties.getPrimary());
         dataSource.setStrategy(properties.getStrategy());
         dataSource.setProvider(dynamicDataSourceProvider);
+        dataSource.setP6spy(properties.getP6spy());
         dataSource.init();
-        if (properties.getP6spy()) {
-            try {
-                Class.forName("com.p6spy.engine.spy.P6DataSource");
-                log.info("动态数据源-关联p6sy成功");
-                return new P6DataSource(dataSource);
-            } catch (Exception e) {
-                log.warn("多数据源启动器开启了p6spy但并未引入相关依赖");
-            }
-        }
         return dataSource;
     }
 
