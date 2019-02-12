@@ -138,7 +138,7 @@ spring:                               spring:                               spri
 
 **@DS** 可以注解在方法上和类上，**同时存在方法注解优先于类上注解**。
 
-注解在service实现或mapper接口方法上，但强烈不建议同时在service和mapper注解。 (可能会有问题)
+强烈建议只注解在service实现上。
 
 |     注解      |                   结果                   |
 | :-----------: | :--------------------------------------: |
@@ -162,26 +162,6 @@ public class UserServiceImpl implements UserService {
   public List<Map<String, Object>> selectByCondition() {
     return  jdbcTemplate.queryForList("select * from user where age >10");
   }
-}
-```
-在mybatis环境下也可注解在mapper接口层。(若非必要强烈不建议在mapper上切换，不符合抽象原则。应由service来切换，在mapper上切换遇到的问题一律拒绝)
-
-```java
-@DS("slave")
-public interface UserMapper {
-
-  @Insert("INSERT INTO user (name,age) values (#{name},#{age})")
-  boolean addUser(@Param("name") String name, @Param("age") Integer age);
-
-  @Update("UPDATE user set name=#{name}, age=#{age} where id =#{id}")
-  boolean updateUser(@Param("id") Integer id, @Param("name") String name, @Param("age") Integer age);
-
-  @Delete("DELETE from user where id =#{id}")
-  boolean deleteUser(@Param("id") Integer id);
-
-  @Select("SELECT * FROM user")
-  @DS("slave_1")
-  List<User> selectAll();
 }
 ```
 
