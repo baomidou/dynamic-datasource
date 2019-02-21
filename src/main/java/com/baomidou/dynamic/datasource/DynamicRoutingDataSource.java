@@ -22,9 +22,11 @@ import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import com.p6spy.engine.spy.P6DataSource;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
+import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,17 +38,17 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 1.0.0
  */
 @Slf4j
-public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
+public class DynamicRoutingDataSource extends AbstractRoutingDataSource implements DisposableBean {
 
 
     private static final String UNDERLINE = "_";
     @Setter
-    protected DynamicDataSourceProvider provider;
+    private DynamicDataSourceProvider provider;
     @Setter
-    protected Class<? extends DynamicDataSourceStrategy> strategy;
+    private Class<? extends DynamicDataSourceStrategy> strategy;
     @Setter
-    protected String primary;
-    protected boolean p6spy;
+    private String primary;
+    private boolean p6spy;
     /**
      * 所有数据库
      */
@@ -181,6 +183,19 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
             log.info("当前的默认数据源是单数据源，数据源名为 {}", primary);
         } else {
             throw new RuntimeException("请检查primary默认数据库设置");
+        }
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        log.info("closing dynamicDatasource  ing....");
+        for (Map.Entry<String, DataSource> item : dataSourceMap.entrySet()) {
+            DataSource dataSource = item.getValue();
+            Class<? extends DataSource> clazz = dataSource.getClass();
+            Method closeMethod = clazz.getDeclaredMethod("close");
+            if (closeMethod != null) {
+                closeMethod.invoke(dataSource);
+            }
         }
     }
 }
