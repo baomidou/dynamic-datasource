@@ -23,6 +23,7 @@ import com.p6spy.engine.spy.P6DataSource;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
@@ -38,7 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 1.0.0
  */
 @Slf4j
-public class DynamicRoutingDataSource extends AbstractRoutingDataSource implements DisposableBean {
+public class DynamicRoutingDataSource extends AbstractRoutingDataSource implements InitializingBean, DisposableBean {
 
 
     private static final String UNDERLINE = "_";
@@ -169,7 +170,21 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
         }
     }
 
-    public void init() {
+    @Override
+    public void destroy() throws Exception {
+        log.info("closing dynamicDatasource  ing....");
+        for (Map.Entry<String, DataSource> item : dataSourceMap.entrySet()) {
+            DataSource dataSource = item.getValue();
+            Class<? extends DataSource> clazz = dataSource.getClass();
+            Method closeMethod = clazz.getDeclaredMethod("close");
+            if (closeMethod != null) {
+                closeMethod.invoke(dataSource);
+            }
+        }
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
         Map<String, DataSource> dataSources = provider.loadDataSources();
         log.info("初始共加载 {} 个数据源", dataSources.size());
         //添加并分组数据源
@@ -183,19 +198,6 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
             log.info("当前的默认数据源是单数据源，数据源名为 {}", primary);
         } else {
             throw new RuntimeException("请检查primary默认数据库设置");
-        }
-    }
-
-    @Override
-    public void destroy() throws Exception {
-        log.info("closing dynamicDatasource  ing....");
-        for (Map.Entry<String, DataSource> item : dataSourceMap.entrySet()) {
-            DataSource dataSource = item.getValue();
-            Class<? extends DataSource> clazz = dataSource.getClass();
-            Method closeMethod = clazz.getDeclaredMethod("close");
-            if (closeMethod != null) {
-                closeMethod.invoke(dataSource);
-            }
         }
     }
 }
