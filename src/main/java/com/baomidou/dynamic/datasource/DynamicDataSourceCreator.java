@@ -16,7 +16,12 @@
  */
 package com.baomidou.dynamic.datasource;
 
+import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.util.StringUtils;
+import com.alibaba.druid.wall.WallConfig;
+import com.alibaba.druid.wall.WallFilter;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.hikari.HikariCpConfig;
@@ -29,6 +34,9 @@ import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import javax.sql.DataSource;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * 数据源创建器
@@ -179,9 +187,23 @@ public class DynamicDataSourceCreator {
         dataSource.setUrl(dataSourceProperty.getUrl());
         dataSource.setDriverClassName(dataSourceProperty.getDriverClassName());
         dataSource.setName(dataSourceProperty.getPollName());
-
         DruidConfig config = dataSourceProperty.getDruid();
-        dataSource.configFromPropety(config.toProperties(druidGlobalConfig));
+        Properties properties = config.toProperties(druidGlobalConfig);
+        String filters = properties.getProperty("druid.filters");
+        List<Filter> proxyFilters = new ArrayList<>(2);
+        if (!StringUtils.isEmpty(filters) && filters.contains("stat")) {
+            StatFilter statFilter = new StatFilter();
+            statFilter.configFromProperties(properties);
+            proxyFilters.add(statFilter);
+        }
+        if (!StringUtils.isEmpty(filters) && filters.contains("wall")) {
+            WallConfig wallConfig = dataSourceProperty.getDruid().getWall().toWallConfig(druidGlobalConfig.getWall());
+            WallFilter wallFilter = new WallFilter();
+            wallFilter.setConfig(wallConfig);
+            proxyFilters.add(wallFilter);
+        }
+        dataSource.setProxyFilters(proxyFilters);
+        dataSource.configFromPropety(properties);
         //连接参数单独设置
         dataSource.setConnectProperties(config.getConnectionProperties());
         //设置druid内置properties不支持的的参数
