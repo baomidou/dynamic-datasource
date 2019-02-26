@@ -38,7 +38,6 @@ import java.util.Properties;
 @Slf4j
 public class MasterSlaveAutoRoutingPlugin implements Interceptor {
 
-
     private static final String MASTER = "master";
 
     private static final String SLAVE = "slave";

@@ -1,5 +1,4 @@
 <p align="center">
-
 <img src="https://s1.ax1x.com/2018/07/31/PwPVAA.png" border="0" />
 
 </p>
@@ -46,7 +45,13 @@ dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成�
 1. 构建多套环境，优势是方便控制也容易集成一些简单的分布式事务，缺点是非动态同时代码量较多,配置难度大。
 2. 基于spring提供原生的 `AbstractRoutingDataSource` ，参考一些文档自己实现切换。
 
-如果你的数据源较少，场景不复杂，选择以上任意一种都可以。如果你需要更多特性，请尝试本动态数据源。
+
+
+**如果你的数据源较少，场景不复杂，选择以上任意一种都可以。**
+
+**如果你需要更多特性，请尝试本动态数据源。**
+
+
 
 1. 数据源分组，适用于多种场景 纯粹多库  读写分离  一主多从  混合模式。
 2. 简单集成Druid数据源监控多数据源，简单集成Mybatis-Plus简化单表，简单集成P6sy格式化sql，简单集成Jndi数据源。
@@ -72,7 +77,7 @@ PS: 如果您只是几个数据库但是有强烈的需求分布式事务，建�
 1. 本框架只做 **切换数据源** 这件核心的事情，并**不限制你的具体操作**，切换了数据源可以做任何CRUD。
 2. 配置文件所有以下划线 `_` 分割的数据源 **首部** 即为组的名称，相同组名称的数据源会放在一个组下。
 3. 切换数据源即可是组名，也可是具体数据源名称，切换时默认采用负载均衡机制切换。
-4. 默认的数据源名称为  **master** ，你可以通过spring.datasource.dynamic.primary修改。
+4. 默认的数据源名称为  **master** ，你可以通过 `spring.datasource.dynamic.primary` 修改。
 5. 方法上的注解优先于类上注解。
 
 # 建议
@@ -168,12 +173,12 @@ public class UserServiceImpl implements UserService {
 ---
 
 
-####                                                                                       赶紧集成体验一下吧！ 如果需要更多功能请继续往下看！
+####                                                                                       赶紧集成体验一下吧！ 如果需要更多功能请点击下面链接查看详细文档！
 
 ---
 
 
 
-- #### Druid集成，MybatisPlus集成，动态增减数据源等等更多更细致的文档在这里     [点击查看](https://gitee.com/baomidou/dynamic-datasource-spring-boot-starter/wikis/pages)
+- #### Druid集成，MybatisPlus集成，动态增减数据源，纯读写分离插件等等更多更细致的文档在这里     [点击查看](https://gitee.com/baomidou/dynamic-datasource-spring-boot-starter/wikis/pages)
 
 - #### 项目Javadoc一览                  [点击查看](https://apidoc.gitee.com/baomidou/dynamic-datasource-spring-boot-starter/)
