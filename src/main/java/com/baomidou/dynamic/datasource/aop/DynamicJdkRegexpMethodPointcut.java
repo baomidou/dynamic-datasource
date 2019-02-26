@@ -20,6 +20,10 @@ import org.springframework.aop.support.JdkRegexpMethodPointcut;
 
 import java.util.Map;
 
+/**
+ * @author TaoYu
+ * @since 2.5.0
+ */
 public class DynamicJdkRegexpMethodPointcut extends JdkRegexpMethodPointcut {
     private Map<String, String> matchesCache;
 

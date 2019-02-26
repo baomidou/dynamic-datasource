@@ -24,6 +24,12 @@ import lombok.Getter;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * 基于多种策略的自动切换数据源
+ *
+ * @author TaoYu
+ * @since 2.5.0
+ */
 public class DynamicDataSourceConfigure {
 
     @Getter

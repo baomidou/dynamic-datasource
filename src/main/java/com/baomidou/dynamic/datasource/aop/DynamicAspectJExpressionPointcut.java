@@ -21,6 +21,10 @@ import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+/**
+ * @author TaoYu
+ * @since 2.5.0
+ */
 public class DynamicAspectJExpressionPointcut extends AspectJExpressionPointcut {
     private Map<String, String> matchesCache;
 

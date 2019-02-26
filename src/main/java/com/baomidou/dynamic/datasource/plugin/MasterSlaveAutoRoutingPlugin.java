@@ -27,17 +27,28 @@ import org.apache.ibatis.session.RowBounds;
 
 import java.util.Properties;
 
+/**
+ * 在mybatis环境下的自动主从分离插件
+ *
+ * @author TaoYu
+ * @since 2.5.1
+ */
 @Intercepts({@Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class}),
         @Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class})})
 @Slf4j
 public class MasterSlaveAutoRoutingPlugin implements Interceptor {
+
+
+    private static final String MASTER = "master";
+
+    private static final String SLAVE = "slave";
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
         Object[] args = invocation.getArgs();
         MappedStatement ms = (MappedStatement) args[0];
         try {
-            DynamicDataSourceContextHolder.push(SqlCommandType.SELECT == ms.getSqlCommandType() ? "slave" : "master");
+            DynamicDataSourceContextHolder.push(SqlCommandType.SELECT == ms.getSqlCommandType() ? MASTER : SLAVE);
             return invocation.proceed();
         } finally {
             DynamicDataSourceContextHolder.clear();

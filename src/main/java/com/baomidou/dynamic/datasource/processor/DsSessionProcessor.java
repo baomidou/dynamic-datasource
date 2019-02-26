@@ -22,6 +22,10 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * @author TaoYu
+ * @since 2.5.0
+ */
 public class DsSessionProcessor extends DsProcessor {
 
     /**
