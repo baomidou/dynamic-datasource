@@ -38,11 +38,15 @@ public class DynamicDataSourceClassResolver {
     public DynamicDataSourceClassResolver() {
         Class<?> proxyClass = null;
         try {
-            proxyClass = Class.forName("com.baomidou.mybatisplus.core.override.PageMapperProxy");
-        } catch (ClassNotFoundException e) {
+            proxyClass = Class.forName("com.baomidou.mybatisplus.core.override.MybatisMapperProxy");
+        } catch (ClassNotFoundException e1) {
             try {
-                proxyClass = Class.forName("org.apache.ibatis.binding.MapperProxy");
-            } catch (ClassNotFoundException e1) {
+                proxyClass = Class.forName("com.baomidou.mybatisplus.core.override.PageMapperProxy");
+            } catch (ClassNotFoundException e2) {
+                try {
+                    proxyClass = Class.forName("org.apache.ibatis.binding.MapperProxy");
+                } catch (ClassNotFoundException e3) {
+                }
             }
         }
         if (proxyClass != null) {
