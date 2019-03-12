@@ -20,6 +20,9 @@ import com.baomidou.dynamic.datasource.matcher.ExpressionMatcher;
 import com.baomidou.dynamic.datasource.matcher.Matcher;
 import com.baomidou.dynamic.datasource.matcher.RegexMatcher;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
+import com.baomidou.dynamic.datasource.processor.DsProcessor;
+import lombok.Setter;
+
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -44,6 +47,14 @@ import java.util.Map;
  */
 public class DynamicDataSourceAdvisor extends AbstractPointcutAdvisor implements BeanFactoryAware {
 
+    /**
+     * SPEL参数标识
+     */
+    private static final String DYNAMIC_PREFIX = "#";
+
+    @Setter
+    private DsProcessor dsProcessor;
+
     private Advice advice;
 
     private Pointcut pointcut;
@@ -62,7 +73,11 @@ public class DynamicDataSourceAdvisor extends AbstractPointcutAdvisor implements
                 try {
                     Method method = invocation.getMethod();
                     String methodPath = method.getDeclaringClass().getName() + "." + method.getName();
-                    DynamicDataSourceContextHolder.push(matchesCache.get(methodPath));
+                    String key = matchesCache.get(methodPath);
+                    if(key!= null && !key.isEmpty() && key.startsWith(DYNAMIC_PREFIX)){
+                        key = dsProcessor.determineDatasource(invocation, key);
+                    }
+                    DynamicDataSourceContextHolder.push(key);
                     return invocation.proceed();
                 } finally {
                     DynamicDataSourceContextHolder.poll();
