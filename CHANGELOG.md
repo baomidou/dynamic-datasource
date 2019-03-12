@@ -1,3 +1,11 @@
+# v.2.5.3
+
+- 自定义切面支持动态解析。 https://github.com/baomidou/dynamic-datasource-spring-boot-starter/pull/29
+
+# v2.5.2
+
+- 解决对mp3.1.0的支持。
+
 # v2.5.1
 
 - 工具类新增清空本地线程的方法。
