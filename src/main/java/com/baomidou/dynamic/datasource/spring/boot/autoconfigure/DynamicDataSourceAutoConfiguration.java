@@ -111,7 +111,9 @@ public class DynamicDataSourceAutoConfiguration {
 
     @Bean
     @ConditionalOnBean(DynamicDataSourceConfigure.class)
-    public DynamicDataSourceAdvisor dynamicAdvisor(DynamicDataSourceConfigure dynamicDataSourceConfigure) {
-        return new DynamicDataSourceAdvisor(dynamicDataSourceConfigure.getMatchers());
+    public DynamicDataSourceAdvisor dynamicAdvisor(DynamicDataSourceConfigure dynamicDataSourceConfigure, DsProcessor dsProcessor) {
+        DynamicDataSourceAdvisor advisor = new DynamicDataSourceAdvisor(dynamicDataSourceConfigure.getMatchers());
+        advisor.setDsProcessor(dsProcessor);
+        return advisor;
     }
 }
