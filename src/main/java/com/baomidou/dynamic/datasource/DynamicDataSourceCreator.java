@@ -30,6 +30,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
+import org.springframework.web.context.WebApplicationContext;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Method;
@@ -82,6 +83,8 @@ public class DynamicDataSourceCreator {
 
     @Setter
     private HikariCpConfig hikariGlobalConfig;
+    @Setter
+    private WebApplicationContext applicationContext;
 
     public DynamicDataSourceCreator() {
         Class<?> builderClass = null;
@@ -201,6 +204,12 @@ public class DynamicDataSourceCreator {
             WallFilter wallFilter = new WallFilter();
             wallFilter.setConfig(wallConfig);
             proxyFilters.add(wallFilter);
+        }
+
+        if(this.applicationContext != null){
+            for(String filterId:this.druidGlobalConfig.getProxyFilters()){
+                proxyFilters.add(this.applicationContext.getBean(filterId,Filter.class));
+            }
         }
         dataSource.setProxyFilters(proxyFilters);
         dataSource.configFromPropety(properties);

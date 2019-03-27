@@ -23,6 +23,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import static com.alibaba.druid.pool.DruidAbstractDataSource.*;
@@ -74,12 +76,10 @@ public class DruidConfig {
     private Boolean sharePreparedStatements;
     private Integer connectionErrorRetryAttempts;
     private Boolean breakAfterAcquireFailure;
-
     private String publicKey;
-
     private DruidWallConfig wall = new DruidWallConfig();
-
     private DruidStatConfig stat = new DruidStatConfig();
+    private List<String> proxyFilters=new ArrayList<>();
 
     public Properties toProperties(DruidConfig globalConfig) {
         Properties properties = new Properties();
@@ -259,6 +259,14 @@ public class DruidConfig {
             properties.setProperty("druid.stat.mergeSql", "true");
         }
         return properties;
+    }
+
+    public List<String> getProxyFilters() {
+        return proxyFilters;
+    }
+
+    public void setProxyFilters(List<String> proxyFilters) {
+        this.proxyFilters = proxyFilters;
     }
 
     @Data
