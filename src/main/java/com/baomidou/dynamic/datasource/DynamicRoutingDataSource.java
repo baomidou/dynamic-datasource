@@ -27,6 +27,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -49,7 +50,9 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
     private Class<? extends DynamicDataSourceStrategy> strategy;
     @Setter
     private String primary;
+
     private boolean p6spy;
+
     /**
      * 所有数据库
      */
@@ -175,10 +178,17 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
         log.info("closing dynamicDatasource  ing....");
         for (Map.Entry<String, DataSource> item : dataSourceMap.entrySet()) {
             DataSource dataSource = item.getValue();
+            if (p6spy) {
+                Field realDataSourceField = P6DataSource.class.getDeclaredField("realDataSource");
+                realDataSourceField.setAccessible(true);
+                dataSource = (DataSource) realDataSourceField.get(dataSource);
+            }
             Class<? extends DataSource> clazz = dataSource.getClass();
-            Method closeMethod = clazz.getDeclaredMethod("close");
-            if (closeMethod != null) {
+            try {
+                Method closeMethod = clazz.getDeclaredMethod("close");
                 closeMethod.invoke(dataSource);
+            } catch (NoSuchMethodException e) {
+                log.warn("关闭数据源 {} 失败,", item.getKey());
             }
         }
     }
