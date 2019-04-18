@@ -152,7 +152,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
             }
             log.info("动态数据源-删除 {} 成功", ds);
         } else {
-            log.warn("动态数据源-未找到 {} 数据源");
+            log.warn("动态数据源-未找到 {} 数据源", ds);
         }
     }
 
