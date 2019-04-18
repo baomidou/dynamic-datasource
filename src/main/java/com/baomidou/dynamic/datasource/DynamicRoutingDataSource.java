@@ -50,7 +50,8 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
     private Class<? extends DynamicDataSourceStrategy> strategy;
     @Setter
     private String primary;
-
+    @Setter
+    private boolean strict;
     private boolean p6spy;
 
     /**
@@ -105,6 +106,9 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
         } else if (dataSourceMap.containsKey(ds)) {
             log.debug("从 {} 单数据源中返回数据源", ds);
             return dataSourceMap.get(ds);
+        }
+        if (strict) {
+            throw new RuntimeException("不能找到名称为" + ds + "的数据源");
         }
         return determinePrimaryDataSource();
     }

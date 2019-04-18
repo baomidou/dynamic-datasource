@@ -87,6 +87,7 @@ public class DynamicDataSourceAutoConfiguration {
         dataSource.setStrategy(properties.getStrategy());
         dataSource.setProvider(dynamicDataSourceProvider);
         dataSource.setP6spy(properties.getP6spy());
+        dataSource.setStrict(properties.getStrict());
         return dataSource;
     }
 
