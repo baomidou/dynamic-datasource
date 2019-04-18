@@ -16,12 +16,11 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid;
 
-import com.alibaba.druid.util.StringUtils;
-import com.alibaba.druid.wall.WallConfig;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,8 +75,13 @@ public class DruidConfig {
     private Boolean sharePreparedStatements;
     private Integer connectionErrorRetryAttempts;
     private Boolean breakAfterAcquireFailure;
+
     private String publicKey;
+
+    @NestedConfigurationProperty
     private DruidWallConfig wall = new DruidWallConfig();
+
+    @NestedConfigurationProperty
     private DruidStatConfig stat = new DruidStatConfig();
     private List<String> proxyFilters=new ArrayList<>();
 

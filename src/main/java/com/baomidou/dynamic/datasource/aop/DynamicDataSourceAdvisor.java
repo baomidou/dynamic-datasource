@@ -19,10 +19,9 @@ package com.baomidou.dynamic.datasource.aop;
 import com.baomidou.dynamic.datasource.matcher.ExpressionMatcher;
 import com.baomidou.dynamic.datasource.matcher.Matcher;
 import com.baomidou.dynamic.datasource.matcher.RegexMatcher;
-import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import com.baomidou.dynamic.datasource.processor.DsProcessor;
+import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import lombok.Setter;
-
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -74,7 +73,7 @@ public class DynamicDataSourceAdvisor extends AbstractPointcutAdvisor implements
                     Method method = invocation.getMethod();
                     String methodPath = method.getDeclaringClass().getName() + "." + method.getName();
                     String key = matchesCache.get(methodPath);
-                    if(key!= null && !key.isEmpty() && key.startsWith(DYNAMIC_PREFIX)){
+                    if (key != null && !key.isEmpty() && key.startsWith(DYNAMIC_PREFIX)) {
                         key = dsProcessor.determineDatasource(invocation, key);
                     }
                     DynamicDataSourceContextHolder.push(key);
