@@ -18,6 +18,11 @@ package com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid;
 
 import lombok.Data;
 
+/**
+ * Druid监控配置
+ *
+ * @author TaoYu
+ */
 @Data
 public class DruidStatConfig {
 

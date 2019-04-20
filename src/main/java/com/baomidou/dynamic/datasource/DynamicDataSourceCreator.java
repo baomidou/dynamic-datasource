@@ -24,6 +24,7 @@ import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallFilter;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidWallConfigUtil;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.hikari.HikariCpConfig;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -200,15 +201,15 @@ public class DynamicDataSourceCreator {
             proxyFilters.add(statFilter);
         }
         if (!StringUtils.isEmpty(filters) && filters.contains("wall")) {
-            WallConfig wallConfig = dataSourceProperty.getDruid().getWall().toWallConfig(druidGlobalConfig.getWall());
+            WallConfig wallConfig = DruidWallConfigUtil.toWallConfig(dataSourceProperty.getDruid().getWall(), druidGlobalConfig.getWall());
             WallFilter wallFilter = new WallFilter();
             wallFilter.setConfig(wallConfig);
             proxyFilters.add(wallFilter);
         }
 
-        if(this.applicationContext != null){
-            for(String filterId:this.druidGlobalConfig.getProxyFilters()){
-                proxyFilters.add(this.applicationContext.getBean(filterId,Filter.class));
+        if (this.applicationContext != null) {
+            for (String filterId : this.druidGlobalConfig.getProxyFilters()) {
+                proxyFilters.add(this.applicationContext.getBean(filterId, Filter.class));
             }
         }
         dataSource.setProxyFilters(proxyFilters);
