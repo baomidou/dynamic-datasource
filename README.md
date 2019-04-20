@@ -106,6 +106,7 @@ spring:
   datasource:
     dynamic:
       primary: master #设置默认的数据源或者数据源组,默认值即为master
+      strict: false #设置严格模式,默认false不启动. 启动后再为匹配到指定数据源时候回抛出异常,不启动会使用默认数据源.
       datasource:
         master:
           username: root
