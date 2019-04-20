@@ -1,3 +1,13 @@
+# v.2.5.4
+
+- 集成druid支持配置proxyFilter。
+- 修复打war包外部部署错误。
+- 修复内置的读写分离插件错误。
+- 修复关闭数据源异常。
+- 修复日志打印小错误。
+- 新增严格模式。
+
+
 # v.2.5.3
 
 - 自定义切面支持动态解析。 https://github.com/baomidou/dynamic-datasource-spring-boot-starter/pull/29
