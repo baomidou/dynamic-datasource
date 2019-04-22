@@ -43,7 +43,7 @@ public class DruidConfig {
     private Integer initialSize;
     private Integer maxActive;
     private Integer minIdle;
-    private Long maxWait;
+    private Integer maxWait;
     private Long timeBetweenEvictionRunsMillis;
     private Long timeBetweenLogStatsMillis;
     private Integer statSqlMaxSize;
@@ -62,7 +62,7 @@ public class DruidConfig {
     private Integer notFullTimeoutRetryCount;
     private Integer maxWaitThreadCount;
     private Boolean failFast;
-    private Integer phyTimeoutMillis;
+    private Long phyTimeoutMillis;
     private Boolean keepAlive;
     private Boolean poolPreparedStatements;
     private Boolean initVariants;
@@ -103,7 +103,7 @@ public class DruidConfig {
             properties.setProperty("druid.minIdle", String.valueOf(tempMinIdle));
         }
 
-        Long tempMaxWait = maxWait == null ? globalConfig.getMaxWait() : maxWait;
+        Integer tempMaxWait = maxWait == null ? globalConfig.getMaxWait() : maxWait;
         if (tempMaxWait != null && !tempMaxWait.equals(DEFAULT_MAX_WAIT)) {
             properties.setProperty("druid.maxWait", String.valueOf(tempMaxWait));
         }
@@ -193,7 +193,7 @@ public class DruidConfig {
             properties.setProperty("druid.failFast", "true");
         }
 
-        Integer tempPhyTimeoutMillis = phyTimeoutMillis == null ? globalConfig.getPhyTimeoutMillis() : phyTimeoutMillis;
+        Long tempPhyTimeoutMillis = phyTimeoutMillis == null ? globalConfig.getPhyTimeoutMillis() : phyTimeoutMillis;
         if (tempPhyTimeoutMillis != null && !tempPhyTimeoutMillis.equals(DEFAULT_PHY_TIMEOUT_MILLIS)) {
             properties.setProperty("druid.phyTimeoutMillis", String.valueOf(tempPhyTimeoutMillis));
         }
