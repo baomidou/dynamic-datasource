@@ -71,7 +71,7 @@ public class DynamicDataSourceAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public DynamicDataSourceCreator dynamicDataSourceCreator(@Autowired WebApplicationContext webApplicationContext) {
+    public DynamicDataSourceCreator dynamicDataSourceCreator(@Autowired(required = false) WebApplicationContext webApplicationContext) {
         DynamicDataSourceCreator dynamicDataSourceCreator = new DynamicDataSourceCreator();
         dynamicDataSourceCreator.setApplicationContext(webApplicationContext);
         dynamicDataSourceCreator.setDruidGlobalConfig(properties.getDruid());
