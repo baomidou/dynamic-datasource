@@ -19,7 +19,6 @@ package com.baomidou.dynamic.datasource;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.util.StringUtils;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallFilter;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
@@ -30,7 +29,11 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
+import org.springframework.util.StringUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.sql.DataSource;
@@ -128,24 +131,38 @@ public class DynamicDataSourceCreator {
      * @return 数据源
      */
     public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
+        DataSource dataSource;
         //如果是jndi数据源
         String jndiName = dataSourceProperty.getJndiName();
         if (jndiName != null && !jndiName.isEmpty()) {
-            return createJNDIDataSource(jndiName);
-        }
-        Class<? extends DataSource> type = dataSourceProperty.getType();
-        if (type == null) {
-            if (druidExists) {
-                return createDruidDataSource(dataSourceProperty);
-            } else if (hikariExists) {
-                return createHikariDataSource(dataSourceProperty);
+            dataSource = createJNDIDataSource(jndiName);
+        } else {
+            Class<? extends DataSource> type = dataSourceProperty.getType();
+            if (type == null) {
+                if (druidExists) {
+                    dataSource = createDruidDataSource(dataSourceProperty);
+                } else if (hikariExists) {
+                    dataSource = createHikariDataSource(dataSourceProperty);
+                } else {
+                    dataSource = createBasicDataSource(dataSourceProperty);
+                }
+            } else if (DRUID_DATASOURCE.equals(type.getName())) {
+                dataSource = createDruidDataSource(dataSourceProperty);
+            } else if (HIKARI_DATASOURCE.equals(type.getName())) {
+                dataSource = createHikariDataSource(dataSourceProperty);
+            } else {
+                dataSource = createBasicDataSource(dataSourceProperty);
             }
-        } else if (DRUID_DATASOURCE.equals(type.getName())) {
-            return createDruidDataSource(dataSourceProperty);
-        } else if (HIKARI_DATASOURCE.equals(type.getName())) {
-            return createHikariDataSource(dataSourceProperty);
         }
-        return createBasicDataSource(dataSourceProperty);
+        String schema = dataSourceProperty.getSchema();
+        if (StringUtils.hasText(schema)) {
+            runScript(dataSource, schema, dataSourceProperty);
+        }
+        String data = dataSourceProperty.getData();
+        if (StringUtils.hasText(data)) {
+            runScript(dataSource, data, dataSourceProperty);
+        }
+        return dataSource;
     }
 
     /**
@@ -262,5 +279,20 @@ public class DynamicDataSourceCreator {
         config.setDriverClassName(dataSourceProperty.getDriverClassName());
         config.setPoolName(dataSourceProperty.getPollName());
         return new HikariDataSource(config);
+    }
+
+    private void runScript(DataSource dataSource, String location, DataSourceProperty dataSourceProperty) {
+        if (StringUtils.hasText(location)) {
+            ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
+            populator.setContinueOnError(dataSourceProperty.isContinueOnError());
+            populator.setSeparator(dataSourceProperty.getSeparator());
+            ClassPathResource resource = new ClassPathResource(location);
+            if (resource.exists()) {
+                populator.addScript(resource);
+                DatabasePopulatorUtils.execute(populator, dataSource);
+            } else {
+                log.warn("could not find schema or data file {}", location);
+            }
+        }
     }
 }

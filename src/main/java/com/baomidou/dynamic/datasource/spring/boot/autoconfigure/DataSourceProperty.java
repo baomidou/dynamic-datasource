@@ -62,6 +62,22 @@ public class DataSourceProperty {
      */
     private String jndiName;
     /**
+     * 自动运行的建表脚本
+     */
+    private String schema;
+    /**
+     * 自动运行的数据脚本
+     */
+    private String data;
+    /**
+     * 错误是否继续 默认 true
+     */
+    private boolean continueOnError = true;
+    /**
+     * 分隔符 默认 ,
+     */
+    private String separator = ",";
+    /**
      * Druid参数配置
      */
     @NestedConfigurationProperty
