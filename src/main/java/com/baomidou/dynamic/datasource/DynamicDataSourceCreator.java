@@ -289,7 +289,11 @@ public class DynamicDataSourceCreator {
             ClassPathResource resource = new ClassPathResource(location);
             if (resource.exists()) {
                 populator.addScript(resource);
-                DatabasePopulatorUtils.execute(populator, dataSource);
+                try {
+                    DatabasePopulatorUtils.execute(populator, dataSource);
+                } catch (Exception e) {
+                    log.warn("execute sql error", e);
+                }
             } else {
                 log.warn("could not find schema or data file {}", location);
             }
