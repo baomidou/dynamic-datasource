@@ -20,7 +20,6 @@ import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConf
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.hikari.HikariCpConfig;
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
 import com.baomidou.dynamic.datasource.strategy.LoadBalanceDynamicDataSourceStrategy;
-import com.baomidou.dynamic.datasource.toolkit.CryptoUtils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -28,12 +27,9 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.core.Ordered;
-import org.springframework.util.StringUtils;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * DynamicDataSourceProperties
@@ -48,7 +44,6 @@ import java.util.regex.Pattern;
 @ConfigurationProperties(prefix = "spring.datasource.dynamic")
 public class DynamicDataSourceProperties {
 
-    private static final Pattern PATTERN = Pattern.compile("^ENC\\((.*)\\)$");
     /**
      * 必须设置默认的库,默认master
      */
@@ -85,40 +80,4 @@ public class DynamicDataSourceProperties {
      */
     @NestedConfigurationProperty
     private HikariCpConfig hikari = new HikariCpConfig();
-    /**
-     * 解密用公匙
-     */
-    private String publicKey = CryptoUtils.DEFAULT_PUBLIC_KEY_STRING;
-
-    /**
-     * 获取数据源配置
-     */
-    public Map<String, DataSourceProperty> getDatasource() {
-        for (Map.Entry<String, DataSourceProperty> item : datasource.entrySet()) {
-            DataSourceProperty v = item.getValue();
-            if (null != v) {
-                v.setPassword(decrypt(v.getPassword()));
-                v.setUsername(decrypt(v.getUsername()));
-                v.setUrl(decrypt(v.getUrl()));
-            }
-        }
-        return datasource;
-    }
-
-    /**
-     * 字符串解密
-     */
-    private String decrypt(String cipherText) {
-        if (StringUtils.hasText(cipherText)) {
-            Matcher matcher = PATTERN.matcher(cipherText);
-            if (matcher.find()) {
-                try {
-                    return CryptoUtils.decrypt(publicKey, matcher.group(1));
-                } catch (Exception e) {
-                    log.error("DynamicDataSourceProperties.decrypt error ", e);
-                }
-            }
-        }
-        return cipherText;
-    }
 }

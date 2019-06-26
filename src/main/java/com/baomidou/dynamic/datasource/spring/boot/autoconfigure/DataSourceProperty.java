@@ -18,19 +18,28 @@ package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.hikari.HikariCpConfig;
+import com.baomidou.dynamic.datasource.toolkit.CryptoUtils;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author TaoYu
  * @since 1.2.0
  */
+@Slf4j
 @Data
 @Accessors(chain = true)
 public class DataSourceProperty {
+
+
+    private static final Pattern PATTERN = Pattern.compile("^ENC\\((.*)\\)$");
 
     /**
      * 连接池名称(只是一个名称标识)</br>
@@ -87,4 +96,54 @@ public class DataSourceProperty {
      */
     @NestedConfigurationProperty
     private HikariCpConfig hikari = new HikariCpConfig();
+
+    /**
+     * 解密用公匙
+     */
+    private static String publicKey = CryptoUtils.DEFAULT_PUBLIC_KEY_STRING;
+
+    public static void main(String[] args) throws Exception {
+
+        String encrypt = CryptoUtils.encrypt("123123");
+        String sss = "ENC(" + encrypt + ")";
+        Matcher matcher = PATTERN.matcher(sss);
+        if (matcher.find()) {
+            try {
+                String group = matcher.group(1);
+                String decrypt = CryptoUtils.decrypt(publicKey, group);
+                System.out.println(decrypt);
+            } catch (Exception e) {
+                log.error("DynamicDataSourceProperties.decrypt error ", e);
+            }
+        }
+    }
+
+    public String getUrl() {
+        return decrypt(url);
+    }
+
+    public String getUsername() {
+        return decrypt(username);
+    }
+
+    public String getPassword() {
+        return decrypt(password);
+    }
+
+    /**
+     * 字符串解密
+     */
+    private String decrypt(String cipherText) {
+        if (StringUtils.hasText(cipherText)) {
+            Matcher matcher = PATTERN.matcher(cipherText);
+            if (matcher.find()) {
+                try {
+                    return CryptoUtils.decrypt(publicKey, matcher.group(1));
+                } catch (Exception e) {
+                    log.error("DynamicDataSourceProperties.decrypt error ", e);
+                }
+            }
+        }
+        return cipherText;
+    }
 }
