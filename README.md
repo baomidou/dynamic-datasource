@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://s1.ax1x.com/2018/07/31/PwPVAA.png" border="0" />
+<img src="https://images.gitee.com/uploads/images/2019/0626/231046_f44892b9_709883.png" border="0" />
 
 </p>
 
@@ -109,20 +109,21 @@ spring:
       strict: false #设置严格模式,默认false不启动. 启动后再为匹配到指定数据源时候回抛出异常,不启动会使用默认数据源.
       datasource:
         master:
-          username: root
-          password: 123456
-          driver-class-name: com.mysql.jdbc.Driver
           url: jdbc:mysql://xx.xx.xx.xx:3306/dynamic
+          username: root
+          password: 123456
+          driver-class-name: com.mysql.jdbc.Driver
         slave_1:
-          username: root
-          password: 123456
-          driver-class-name: com.mysql.jdbc.Driver
           url: jdbc:mysql://xx.xx.xx.xx:3307/dynamic
-        slave_2:
           username: root
           password: 123456
           driver-class-name: com.mysql.jdbc.Driver
-          url: jdbc:mysql://xx.xx.xx.xx:3308/dynamic
+        slave_2:
+          url: ENC(xxxxx) # 内置加密,使用请查看详细文档
+          username: ENC(xxxxx)
+          password: ENC(xxxxx)
+          driver-class-name: com.mysql.jdbc.Driver
+          
        #......省略
        #以上会配置一个默认库master，一个组slave下有两个子库slave_1,slave_2
 ```
