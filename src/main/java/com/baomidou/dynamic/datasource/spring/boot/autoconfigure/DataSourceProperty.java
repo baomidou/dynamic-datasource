@@ -38,8 +38,10 @@ import java.util.regex.Pattern;
 @Accessors(chain = true)
 public class DataSourceProperty {
 
-
-    private static final Pattern PATTERN = Pattern.compile("^ENC\\((.*)\\)$");
+    /**
+     * 加密正则
+     */
+    private static final Pattern ENC_PATTERN = Pattern.compile("^ENC\\((.*)\\)$");
 
     /**
      * 连接池名称(只是一个名称标识)</br>
@@ -102,22 +104,6 @@ public class DataSourceProperty {
      */
     private static String publicKey = CryptoUtils.DEFAULT_PUBLIC_KEY_STRING;
 
-    public static void main(String[] args) throws Exception {
-
-        String encrypt = CryptoUtils.encrypt("123123");
-        String sss = "ENC(" + encrypt + ")";
-        Matcher matcher = PATTERN.matcher(sss);
-        if (matcher.find()) {
-            try {
-                String group = matcher.group(1);
-                String decrypt = CryptoUtils.decrypt(publicKey, group);
-                System.out.println(decrypt);
-            } catch (Exception e) {
-                log.error("DynamicDataSourceProperties.decrypt error ", e);
-            }
-        }
-    }
-
     public String getUrl() {
         return decrypt(url);
     }
@@ -135,7 +121,7 @@ public class DataSourceProperty {
      */
     private String decrypt(String cipherText) {
         if (StringUtils.hasText(cipherText)) {
-            Matcher matcher = PATTERN.matcher(cipherText);
+            Matcher matcher = ENC_PATTERN.matcher(cipherText);
             if (matcher.find()) {
                 try {
                     return CryptoUtils.decrypt(publicKey, matcher.group(1));

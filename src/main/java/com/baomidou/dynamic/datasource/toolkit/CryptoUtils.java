@@ -3,6 +3,7 @@ package com.baomidou.dynamic.datasource.toolkit;
 import javax.crypto.Cipher;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
@@ -18,14 +19,15 @@ import java.security.spec.X509EncodedKeySpec;
  */
 public class CryptoUtils {
 
-    public static final String DEFAULT_PUBLIC_KEY_STRING = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKHGwq7q2RmwuRgKxBypQHw0mYu4BQZ3eMsTrdK8E6igRcxsobUC7uT0SoxIjl1WveWniCASejoQtn/BY6hVKWsCAwEAAQ==";
     private static final String DEFAULT_PRIVATE_KEY_STRING = "MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAocbCrurZGbC5GArEHKlAfDSZi7gFBnd4yxOt0rwTqKBFzGyhtQLu5PRKjEiOXVa95aeIIBJ6OhC2f8FjqFUpawIDAQABAkAPejKaBYHrwUqUEEOe8lpnB6lBAsQIUFnQI/vXU4MV+MhIzW0BLVZCiarIQqUXeOhThVWXKFt8GxCykrrUsQ6BAiEA4vMVxEHBovz1di3aozzFvSMdsjTcYRRo82hS5Ru2/OECIQC2fAPoXixVTVY7bNMeuxCP4954ZkXp7fEPDINCjcQDywIgcc8XLkkPcs3Jxk7uYofaXaPbg39wuJpEmzPIxi3k0OECIGubmdpOnin3HuCP/bbjbJLNNoUdGiEmFL5hDI4UdwAdAiEAtcAwbm08bKN7pwwvyqaCBC//VnEWaq39DCzxr+Z2EIk=";
+    public static final String DEFAULT_PUBLIC_KEY_STRING = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKHGwq7q2RmwuRgKxBypQHw0mYu4BQZ3eMsTrdK8E6igRcxsobUC7uT0SoxIjl1WveWniCASejoQtn/BY6hVKWsCAwEAAQ==";
 
     public static String decrypt(String cipherText) throws Exception {
         return decrypt((String) null, cipherText);
     }
 
-    public static String decrypt(String publicKeyText, String cipherText) throws Exception {
+    public static String decrypt(String publicKeyText, String cipherText)
+            throws Exception {
         PublicKey publicKey = getPublicKey(publicKeyText);
 
         return decrypt(publicKey, cipherText);
@@ -33,7 +35,7 @@ public class CryptoUtils {
 
     public static PublicKey getPublicKeyByX509(String x509File) {
         if (x509File == null || x509File.length() == 0) {
-            return CryptoUtils.getPublicKey(null);
+            return getPublicKey(null);
         }
 
         FileInputStream in = null;
@@ -47,11 +49,12 @@ public class CryptoUtils {
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed to get public key", e);
         } finally {
+
             if (in != null) {
                 try {
                     in.close();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -59,7 +62,7 @@ public class CryptoUtils {
 
     public static PublicKey getPublicKey(String publicKeyText) {
         if (publicKeyText == null || publicKeyText.length() == 0) {
-            publicKeyText = CryptoUtils.DEFAULT_PUBLIC_KEY_STRING;
+            publicKeyText = DEFAULT_PUBLIC_KEY_STRING;
         }
 
         try {
@@ -76,7 +79,7 @@ public class CryptoUtils {
 
     public static PublicKey getPublicKeyByPublicKeyFile(String publicKeyFile) {
         if (publicKeyFile == null || publicKeyFile.length() == 0) {
-            return CryptoUtils.getPublicKey(null);
+            return getPublicKey(null);
         }
 
         FileInputStream in = null;
@@ -99,8 +102,8 @@ public class CryptoUtils {
             if (in != null) {
                 try {
                     in.close();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -111,9 +114,12 @@ public class CryptoUtils {
         try {
             cipher.init(Cipher.DECRYPT_MODE, publicKey);
         } catch (InvalidKeyException e) {
+            // 因为 IBM JDK 不支持私钥加密, 公钥解密, 所以要反转公私钥
+            // 也就是说对于解密, 可以通过公钥的参数伪造一个私钥对象欺骗 IBM JDK
             RSAPublicKey rsaPublicKey = (RSAPublicKey) publicKey;
             RSAPrivateKeySpec spec = new RSAPrivateKeySpec(rsaPublicKey.getModulus(), rsaPublicKey.getPublicExponent());
             Key fakePrivateKey = KeyFactory.getInstance("RSA").generatePrivate(spec);
+            //It is a stateful object. so we need to get new one.
             cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.DECRYPT_MODE, fakePrivateKey);
         }
@@ -131,7 +137,6 @@ public class CryptoUtils {
     public static String encrypt(String plainText) throws Exception {
         return encrypt((String) null, plainText);
     }
-
 
     public static String encrypt(String key, String plainText) throws Exception {
         if (key == null) {
@@ -157,25 +162,26 @@ public class CryptoUtils {
             cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.ENCRYPT_MODE, fakePublicKey);
         }
-        byte[] encryptedBytes = cipher.doFinal(plainText.getBytes("UTF-8"));
-
-        return Base64.byteArrayToBase64(encryptedBytes);
+        return Base64.byteArrayToBase64(cipher.doFinal(plainText.getBytes("UTF-8")));
     }
 
-    public static byte[][] genKeyPairBytes(int keySize) throws NoSuchAlgorithmException, NoSuchProviderException {
+    public static byte[][] genKeyPairBytes(int keySize) {
         byte[][] keyPairBytes = new byte[2][];
+        try {
+            KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA", "SunRsaSign");
+            gen.initialize(keySize, new SecureRandom());
+            KeyPair pair = gen.generateKeyPair();
 
-        KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA", "SunRsaSign");
-        gen.initialize(keySize, new SecureRandom());
-        KeyPair pair = gen.generateKeyPair();
+            keyPairBytes[0] = pair.getPrivate().getEncoded();
+            keyPairBytes[1] = pair.getPublic().getEncoded();
 
-        keyPairBytes[0] = pair.getPrivate().getEncoded();
-        keyPairBytes[1] = pair.getPublic().getEncoded();
-
+        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
+            e.printStackTrace();
+        }
         return keyPairBytes;
     }
 
-    public static String[] genKeyPair(int keySize) throws NoSuchAlgorithmException, NoSuchProviderException {
+    public static String[] genKeyPair(int keySize) {
         byte[][] keyPairBytes = genKeyPairBytes(keySize);
         String[] keyPairs = new String[2];
 
@@ -184,4 +190,5 @@ public class CryptoUtils {
 
         return keyPairs;
     }
+
 }
