@@ -1,3 +1,9 @@
+# v.2.5.5
+
+- 支持非web环境启动。
+- 支持内置加密。
+- 支持启动ddl  schema和data。
+
 # v.2.5.4
 
 - 集成druid支持配置proxyFilter。
