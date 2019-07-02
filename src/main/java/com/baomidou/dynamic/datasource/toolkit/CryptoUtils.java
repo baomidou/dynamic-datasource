@@ -1,3 +1,19 @@
+/**
+ * Copyright © 2018 organization baomidou
+ * <pre>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * <pre/>
+ */
 package com.baomidou.dynamic.datasource.toolkit;
 
 import javax.crypto.Cipher;
@@ -19,17 +35,15 @@ import java.security.spec.X509EncodedKeySpec;
  */
 public class CryptoUtils {
 
-    private static final String DEFAULT_PRIVATE_KEY_STRING = "MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAocbCrurZGbC5GArEHKlAfDSZi7gFBnd4yxOt0rwTqKBFzGyhtQLu5PRKjEiOXVa95aeIIBJ6OhC2f8FjqFUpawIDAQABAkAPejKaBYHrwUqUEEOe8lpnB6lBAsQIUFnQI/vXU4MV+MhIzW0BLVZCiarIQqUXeOhThVWXKFt8GxCykrrUsQ6BAiEA4vMVxEHBovz1di3aozzFvSMdsjTcYRRo82hS5Ru2/OECIQC2fAPoXixVTVY7bNMeuxCP4954ZkXp7fEPDINCjcQDywIgcc8XLkkPcs3Jxk7uYofaXaPbg39wuJpEmzPIxi3k0OECIGubmdpOnin3HuCP/bbjbJLNNoUdGiEmFL5hDI4UdwAdAiEAtcAwbm08bKN7pwwvyqaCBC//VnEWaq39DCzxr+Z2EIk=";
-    public static final String DEFAULT_PUBLIC_KEY_STRING = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKHGwq7q2RmwuRgKxBypQHw0mYu4BQZ3eMsTrdK8E6igRcxsobUC7uT0SoxIjl1WveWniCASejoQtn/BY6hVKWsCAwEAAQ==";
+    public static final String DEFAULT_PUBLIC_KEY_STRING = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJ4o6sn4WoPmbs7DR9mGQzuuUQM9erQTVPpwxIzB0ETYkyKffO097qXVRLA6KPmaV+/siWewR7vpfYYjWajw5KkCAwEAAQ==";
+    private static final String DEFAULT_PRIVATE_KEY_STRING = "MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAnijqyfhag+ZuzsNH2YZDO65RAz16tBNU+nDEjMHQRNiTIp987T3updVEsDoo+ZpX7+yJZ7BHu+l9hiNZqPDkqQIDAQABAkBgErbczRIewWFaE+GXTymUHUV01Gmu7XdXUhzy6+CZkIcEnyTpUgPilGUydiIyeiY8usvWKGjFWxLoKeJDY1wBAiEA5M9uqc9XpL5uitLWHiiq7pRxhnJb/B+wZyHqLVhCLekCIQCw9D/Fsx7vHRgymWYExHvCka7w5SyWUmNzQOOKjZUIwQIhAMqbo7JaF5GZzui+qTsrZ7C7YYtb2Hf414t7TJG6hV+BAiBXuZ7r+fL6A+h9HUNQVcAtI2AhGNxT4aBgAOlNRQd/gQIgCGqaZsOdnL9624SI1DwhBt4x24q3350pWwzgfl4Kbbo=";
 
     public static String decrypt(String cipherText) throws Exception {
         return decrypt((String) null, cipherText);
     }
 
-    public static String decrypt(String publicKeyText, String cipherText)
-            throws Exception {
+    public static String decrypt(String publicKeyText, String cipherText) throws Exception {
         PublicKey publicKey = getPublicKey(publicKeyText);
-
         return decrypt(publicKey, cipherText);
     }
 
@@ -41,15 +55,12 @@ public class CryptoUtils {
         FileInputStream in = null;
         try {
             in = new FileInputStream(x509File);
-
-            CertificateFactory factory = CertificateFactory
-                    .getInstance("X.509");
+            CertificateFactory factory = CertificateFactory.getInstance("X.509");
             Certificate cer = factory.generateCertificate(in);
             return cer.getPublicKey();
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed to get public key", e);
         } finally {
-
             if (in != null) {
                 try {
                     in.close();
@@ -184,11 +195,8 @@ public class CryptoUtils {
     public static String[] genKeyPair(int keySize) {
         byte[][] keyPairBytes = genKeyPairBytes(keySize);
         String[] keyPairs = new String[2];
-
         keyPairs[0] = Base64.byteArrayToBase64(keyPairBytes[0]);
         keyPairs[1] = Base64.byteArrayToBase64(keyPairBytes[1]);
-
         return keyPairs;
     }
-
 }
