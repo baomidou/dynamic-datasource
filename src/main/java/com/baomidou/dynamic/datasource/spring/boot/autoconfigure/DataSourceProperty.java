@@ -100,9 +100,9 @@ public class DataSourceProperty {
     private HikariCpConfig hikari = new HikariCpConfig();
 
     /**
-     * 解密公匙
+     * 解密公匙(如果未设置默认使用全局的)
      */
-    private String publicKey = CryptoUtils.DEFAULT_PUBLIC_KEY_STRING;
+    private String publicKey;
 
     public String getUrl() {
         return decrypt(url);

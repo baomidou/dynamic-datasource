@@ -21,6 +21,7 @@ import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallFilter;
+import com.baomidou.dynamic.datasource.exception.ErrorCreateDataSourceException;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidWallConfigUtil;
@@ -89,6 +90,8 @@ public class DynamicDataSourceCreator {
     private HikariCpConfig hikariGlobalConfig;
     @Setter
     private WebApplicationContext applicationContext;
+    @Setter
+    private String globalPublicKey;
 
     public DynamicDataSourceCreator() {
         Class<?> builderClass = null;
@@ -173,6 +176,9 @@ public class DynamicDataSourceCreator {
      */
     public DataSource createBasicDataSource(DataSourceProperty dataSourceProperty) {
         try {
+            if (StringUtils.isEmpty(dataSourceProperty.getPublicKey())) {
+                dataSourceProperty.setPublicKey(globalPublicKey);
+            }
             Object o1 = createMethod.invoke(null);
             Object o2 = typeMethod.invoke(o1, dataSourceProperty.getType());
             Object o3 = urlMethod.invoke(o2, dataSourceProperty.getUrl());
@@ -202,6 +208,9 @@ public class DynamicDataSourceCreator {
      * @return 数据源
      */
     public DataSource createDruidDataSource(DataSourceProperty dataSourceProperty) {
+        if (StringUtils.isEmpty(dataSourceProperty.getPublicKey())) {
+            dataSourceProperty.setPublicKey(globalPublicKey);
+        }
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUsername(dataSourceProperty.getUsername());
         dataSource.setPassword(dataSourceProperty.getPassword());
@@ -258,7 +267,7 @@ public class DynamicDataSourceCreator {
         try {
             dataSource.init();
         } catch (SQLException e) {
-            log.error("druid数据源启动失败", e);
+            throw new ErrorCreateDataSourceException("druid create error", e);
         }
         return dataSource;
     }
@@ -271,6 +280,9 @@ public class DynamicDataSourceCreator {
      * @author 离世庭院 小锅盖
      */
     public DataSource createHikariDataSource(DataSourceProperty dataSourceProperty) {
+        if (StringUtils.isEmpty(dataSourceProperty.getPublicKey())) {
+            dataSourceProperty.setPublicKey(globalPublicKey);
+        }
         HikariCpConfig hikariCpConfig = dataSourceProperty.getHikari();
         HikariConfig config = hikariCpConfig.toHikariConfig(hikariGlobalConfig);
         config.setUsername(dataSourceProperty.getUsername());
