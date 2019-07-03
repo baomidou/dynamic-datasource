@@ -20,6 +20,7 @@ import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConf
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.hikari.HikariCpConfig;
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
 import com.baomidou.dynamic.datasource.strategy.LoadBalanceDynamicDataSourceStrategy;
+import com.baomidou.dynamic.datasource.toolkit.CryptoUtils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -80,4 +81,9 @@ public class DynamicDataSourceProperties {
      */
     @NestedConfigurationProperty
     private HikariCpConfig hikari = new HikariCpConfig();
+
+    /**
+     * 全局默认publicKey
+     */
+    private String publicKey = CryptoUtils.DEFAULT_PUBLIC_KEY_STRING;
 }

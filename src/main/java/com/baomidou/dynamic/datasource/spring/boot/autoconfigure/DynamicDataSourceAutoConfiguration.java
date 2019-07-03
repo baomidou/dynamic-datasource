@@ -76,6 +76,7 @@ public class DynamicDataSourceAutoConfiguration {
         dynamicDataSourceCreator.setApplicationContext(webApplicationContext);
         dynamicDataSourceCreator.setDruidGlobalConfig(properties.getDruid());
         dynamicDataSourceCreator.setHikariGlobalConfig(properties.getHikari());
+        dynamicDataSourceCreator.setGlobalPublicKey(properties.getPublicKey());
         return dynamicDataSourceCreator;
     }
 
