@@ -71,7 +71,7 @@ public class DynamicDataSourceAdvisor extends AbstractPointcutAdvisor implements
             public Object invoke(MethodInvocation invocation) throws Throwable {
                 try {
                     Method method = invocation.getMethod();
-                    String methodPath = method.getDeclaringClass().getName() + "." + method.getName();
+                    String methodPath = invocation.getThis().getClass().getName() + "." + method.getName();
                     String key = matchesCache.get(methodPath);
                     if (key != null && !key.isEmpty() && key.startsWith(DYNAMIC_PREFIX)) {
                         key = dsProcessor.determineDatasource(invocation, key);
