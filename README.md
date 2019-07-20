@@ -24,53 +24,26 @@
     </a>
 </p>
 
-#### [Github](https://github.com/baomidou/dynamic-datasource-spring-boot-starter) | [码云Gitee](https://gitee.com/baomidou/dynamic-datasource-spring-boot-starter)
-
 # 简介
 
 dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成多数据源的启动器。
 
 其支持 **Jdk 1.7+,    SpringBoot 1.4.x  1.5.x   2.0.x**。
 
-**示例项目** 可参考项目下的samples目录。
+**示例项目** 可参考项目下的samples目录。 
 
-**示例项目** 可参考项目下的samples目录。
-
-**示例项目** 可参考项目下的samples目录。
-
-# 优势
-
-网上关于动态数据源的切换的文档有很多，核心只有两种。
-
-1. 构建多套环境，优势是方便控制也容易集成一些简单的分布式事务，缺点是非动态同时代码量较多,配置难度大。
-2. 基于spring提供原生的 `AbstractRoutingDataSource` ，参考一些文档自己实现切换。
-
-
-
-**如果你的数据源较少，场景不复杂，选择以上任意一种都可以。**
-
-**如果你需要更多特性，请尝试本动态数据源。**
-
-
+# 特性
 
 1. 数据源分组，适用于多种场景 纯粹多库  读写分离  一主多从  混合模式。
-2. 简单集成Druid数据源监控多数据源，简单集成Mybatis-Plus简化单表，简单集成P6sy格式化sql，简单集成Jndi数据源。
-3. 简化Druid和HikariCp配置，提供全局参数配置。
-4. 提供自定义数据源来源(默认使用yml或properties配置)。
-5. 项目启动后能动态增减数据源。
-6. 使用spel动态参数解析数据源，如从session，header和参数中获取数据源。（多租户架构神器）
-7. 多层数据源嵌套切换。（一个业务ServiceA调用ServiceB，ServiceB调用ServiceC，每个Service都是不同的数据源）
-8. 使用正则匹配或spel表达式来切换数据源（实验性功能）。
-
-# 劣势
-
-不能使用多数据源事务（同一个数据源下能使用事务），网上其他方案也都不能提供。 
-
-如果你需要使用到分布式事务，那么你的架构应该到了微服务化的时候了。
-
-如果呼声强烈，项目达到800 star，作者考虑集成多数据源事务。(单机架构下多数据源事物)
-
-PS: 如果您只是几个数据库但是有强烈的需求分布式事务，建议还是使用传统方式自己构建多套环境集成atomic这类，网上百度很多。
+2. 内置敏感参数加密和启动初始化表结构schema数据库database。
+3. 提供对Druid，Mybatis-Plus，P6sy，Jndi的快速集成。
+4. 简化Druid和HikariCp配置，提供全局参数配置。
+5. 提供自定义数据源来源接口(默认使用yml或properties配置)。
+6. 提供项目启动后增减数据源方案。
+7. 提供Mybatis环境下的纯读写分离方案。
+8. 使用spel动态参数解析数据源，如从session，header和参数中获取数据源。（多租户架构神器）
+9. 多层数据源嵌套切换。（ServiceA >>>  ServiceB >>> ServiceC，每个Service都是不同的数据源）
+10. 提供不适用注解而使用正则匹配或spel表达式来切换数据源方案（实验性功能）。
 
 # 约定
 
@@ -79,14 +52,6 @@ PS: 如果您只是几个数据库但是有强烈的需求分布式事务，建�
 3. 切换数据源即可是组名，也可是具体数据源名称，切换时默认采用负载均衡机制切换。
 4. 默认的数据源名称为  **master** ，你可以通过 `spring.datasource.dynamic.primary` 修改。
 5. 方法上的注解优先于类上注解。
-
-# 建议
-
-强烈建议在 **主从模式** 下遵循普遍的规则，以便他人能更轻易理解你的代码。
-
-主数据库  **建议**   只执行 `INSERT`   `UPDATE`  `DELETE` 操作。
-
-从数据库  **建议**   只执行 `SELECT` 操作。
 
 # 使用方法
 
