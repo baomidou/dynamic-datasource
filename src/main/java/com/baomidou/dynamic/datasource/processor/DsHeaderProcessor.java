@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 public class DsHeaderProcessor extends DsProcessor {
 
     /**
-     * header开头
+     * header prefix
      */
     private static final String HEADER_PREFIX = "#header";
 

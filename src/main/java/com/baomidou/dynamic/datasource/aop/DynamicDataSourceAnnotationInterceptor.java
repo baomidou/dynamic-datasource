@@ -28,7 +28,7 @@ import org.springframework.core.annotation.AnnotationUtils;
 import java.lang.reflect.Method;
 
 /**
- * 动态数据源AOP核心拦截器
+ * Core Interceptor of Dynamic Datasource
  *
  * @author TaoYu
  * @since 1.2.0
@@ -36,14 +36,12 @@ import java.lang.reflect.Method;
 public class DynamicDataSourceAnnotationInterceptor implements MethodInterceptor {
 
     /**
-     * SPEL参数标识
+     * The identification of SPEL.
      */
     private static final String DYNAMIC_PREFIX = "#";
-
+    private static final DynamicDataSourceClassResolver RESOLVER = new DynamicDataSourceClassResolver();
     @Setter
     private DsProcessor dsProcessor;
-
-    private DynamicDataSourceClassResolver dynamicDataSourceClassResolver = new DynamicDataSourceClassResolver();
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
@@ -57,9 +55,9 @@ public class DynamicDataSourceAnnotationInterceptor implements MethodInterceptor
 
     private String determineDatasource(MethodInvocation invocation) throws Throwable {
         Method method = invocation.getMethod();
-        Class<?> declaringClass = dynamicDataSourceClassResolver.targetClass(invocation);
-        DS ds = method.isAnnotationPresent(DS.class) ? method.getAnnotation(DS.class)
-                : AnnotationUtils.findAnnotation(declaringClass, DS.class);
+        DS ds = method.isAnnotationPresent(DS.class)
+                ? method.getAnnotation(DS.class)
+                : AnnotationUtils.findAnnotation(RESOLVER.targetClass(invocation), DS.class);
         String key = ds.value();
         return (!key.isEmpty() && key.startsWith(DYNAMIC_PREFIX)) ? dsProcessor.determineDatasource(invocation, key) : key;
     }

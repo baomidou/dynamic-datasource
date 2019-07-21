@@ -28,7 +28,7 @@ import org.apache.ibatis.session.RowBounds;
 import java.util.Properties;
 
 /**
- * 在mybatis环境下的自动主从分离插件
+ * Master-slave Separation Plugin with mybatis
  *
  * @author TaoYu
  * @since 2.5.1

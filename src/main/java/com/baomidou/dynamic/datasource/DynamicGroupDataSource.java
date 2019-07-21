@@ -32,19 +32,10 @@ import java.util.List;
 @Data
 public class DynamicGroupDataSource {
 
-    /**
-     * 组名
-     */
     private String groupName;
 
-    /**
-     * 数据源切换策略
-     */
     private DynamicDataSourceStrategy dynamicDataSourceStrategy;
 
-    /**
-     * 当前组下所有数据源
-     */
     private List<DataSource> dataSources = new LinkedList<>();
 
     public DynamicGroupDataSource(String groupName, DynamicDataSourceStrategy dynamicDataSourceStrategy) {

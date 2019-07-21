@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * 随机策略
+ * Random strategy to switch a database
  *
  * @author TaoYu Kanyuxia
  * @since 1.0.0

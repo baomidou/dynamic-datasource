@@ -66,66 +66,72 @@ public class DynamicDataSourceCreator {
      */
     private static final JndiDataSourceLookup JNDI_DATA_SOURCE_LOOKUP = new JndiDataSourceLookup();
 
-    private Method createMethod;
-    private Method typeMethod;
-    private Method urlMethod;
-    private Method usernameMethod;
-    private Method passwordMethod;
-    private Method driverClassNameMethod;
-    private Method buildMethod;
+    private static Method createMethod;
+    private static Method typeMethod;
+    private static Method urlMethod;
+    private static Method usernameMethod;
+    private static Method passwordMethod;
+    private static Method driverClassNameMethod;
+    private static Method buildMethod;
 
     /**
      * 是否存在druid
      */
-    private Boolean druidExists = false;
+    private static Boolean druidExists = false;
     /**
      * 是否存在hikari
      */
-    private Boolean hikariExists = false;
+    private static Boolean hikariExists = false;
+
+    static {
+        //to support springboot 1.5 and 2.x
+        Class<?> builderClass = null;
+        try {
+            builderClass = Class.forName("org.springframework.boot.jdbc.DataSourceBuilder");
+        } catch (Exception ignored) {
+        }
+        if (builderClass == null) {
+            try {
+                builderClass = Class.forName("org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder");
+            } catch (Exception e) {
+            }
+        }
+        if (builderClass != null) {
+            try {
+                createMethod = builderClass.getDeclaredMethod("create");
+                typeMethod = builderClass.getDeclaredMethod("type", Class.class);
+                urlMethod = builderClass.getDeclaredMethod("url", String.class);
+                usernameMethod = builderClass.getDeclaredMethod("username", String.class);
+                passwordMethod = builderClass.getDeclaredMethod("password", String.class);
+                driverClassNameMethod = builderClass.getDeclaredMethod("driverClassName", String.class);
+                buildMethod = builderClass.getDeclaredMethod("build");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    static {
+        try {
+            Class.forName(DRUID_DATASOURCE);
+            druidExists = true;
+        } catch (ClassNotFoundException ignored) {
+        }
+        try {
+            Class.forName(HIKARI_DATASOURCE);
+            hikariExists = true;
+        } catch (ClassNotFoundException ignored) {
+        }
+    }
 
     @Setter
     private DruidConfig druidGlobalConfig;
-
     @Setter
     private HikariCpConfig hikariGlobalConfig;
     @Setter
     private WebApplicationContext applicationContext;
     @Setter
     private String globalPublicKey;
-
-    public DynamicDataSourceCreator() {
-        Class<?> builderClass = null;
-        try {
-            builderClass = Class.forName("org.springframework.boot.jdbc.DataSourceBuilder");
-        } catch (Exception e) {
-            try {
-                builderClass = Class.forName("org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder");
-            } catch (Exception e1) {
-            }
-        }
-        try {
-            createMethod = builderClass.getDeclaredMethod("create");
-            typeMethod = builderClass.getDeclaredMethod("type", Class.class);
-            urlMethod = builderClass.getDeclaredMethod("url", String.class);
-            usernameMethod = builderClass.getDeclaredMethod("username", String.class);
-            passwordMethod = builderClass.getDeclaredMethod("password", String.class);
-            driverClassNameMethod = builderClass.getDeclaredMethod("driverClassName", String.class);
-            buildMethod = builderClass.getDeclaredMethod("build");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            Class.forName(DRUID_DATASOURCE);
-            log.info("动态数据源-检测到druid存在,如配置中未指定type,druid会默认配置");
-            druidExists = true;
-        } catch (ClassNotFoundException e) {
-        }
-        try {
-            Class.forName(HIKARI_DATASOURCE);
-            hikariExists = true;
-        } catch (ClassNotFoundException e) {
-        }
-    }
 
     /**
      * 创建数据源
@@ -187,7 +193,7 @@ public class DynamicDataSourceCreator {
             Object o6 = driverClassNameMethod.invoke(o5, dataSourceProperty.getDriverClassName());
             return (DataSource) buildMethod.invoke(o6);
         } catch (Exception e) {
-            throw new RuntimeException("多数据源创建数据源失败");
+            throw new ErrorCreateDataSourceException("dynamic-datasource create basic database named " + dataSourceProperty.getPollName() + " error");
         }
     }
 

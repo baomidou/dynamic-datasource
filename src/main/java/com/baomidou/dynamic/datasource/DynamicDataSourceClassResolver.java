@@ -31,11 +31,11 @@ import java.lang.reflect.Proxy;
 @Slf4j
 public class DynamicDataSourceClassResolver {
 
-    private boolean mpEnabled = false;
+    private static boolean mpEnabled = false;
 
-    private Field mapperInterfaceField;
+    private static Field mapperInterfaceField;
 
-    public DynamicDataSourceClassResolver() {
+    static {
         Class<?> proxyClass = null;
         try {
             proxyClass = Class.forName("com.baomidou.mybatisplus.core.override.MybatisMapperProxy");

@@ -20,7 +20,8 @@ package com.baomidou.dynamic.datasource.annotation;
 import java.lang.annotation.*;
 
 /**
- * 注解在类上或方法上来切换数据源
+ * The core Annotation to switch datasource.
+ * It can be annotate at class or method.
  *
  * @author TaoYu Kanyuxia
  * @since 1.0.0
@@ -31,9 +32,9 @@ import java.lang.annotation.*;
 public @interface DS {
 
     /**
-     * 组名或者具体数据源名称或者spel参数(#开头)
+     * groupName or specific database name or spring SPEL name.
      *
-     * @return 数据源名称
+     * @return the database you want to switch
      */
     String value();
 }

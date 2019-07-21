@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 负载均衡策略
+ * LoadBalance strategy to switch a database
  *
  * @author TaoYu Kanyuxia
  * @since 1.0.0

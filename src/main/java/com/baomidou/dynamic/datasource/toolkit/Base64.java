@@ -16,6 +16,10 @@
  */
 package com.baomidou.dynamic.datasource.toolkit;
 
+/**
+ * Copy from Druid
+ * https://github.com/alibaba/druid/blob/master/src/main/java/com/alibaba/druid/util/Base64.java
+ */
 public class Base64 {
 
     /**

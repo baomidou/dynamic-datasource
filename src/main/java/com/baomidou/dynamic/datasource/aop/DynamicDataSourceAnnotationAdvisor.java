@@ -28,8 +28,6 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 
 /**
- * 动态数据源AOP织入
- *
  * @author TaoYu
  * @since 1.2.0
  */

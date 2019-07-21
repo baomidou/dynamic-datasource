@@ -31,7 +31,7 @@ import java.security.spec.RSAPublicKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 /**
- * copy From Druid
+ * Copy from Druid
  */
 public class CryptoUtils {
 

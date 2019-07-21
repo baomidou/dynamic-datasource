@@ -26,6 +26,7 @@ import java.util.Map;
  * @since 2.5.0
  */
 public class DynamicAspectJExpressionPointcut extends AspectJExpressionPointcut {
+
     private Map<String, String> matchesCache;
 
     private String ds;

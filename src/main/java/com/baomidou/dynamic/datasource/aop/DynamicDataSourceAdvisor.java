@@ -39,15 +39,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 动态数据源AOP织入
- *
  * @author TaoYu
  * @since 1.2.0
  */
 public class DynamicDataSourceAdvisor extends AbstractPointcutAdvisor implements BeanFactoryAware {
 
     /**
-     * SPEL参数标识
+     * The identification of SPEL
      */
     private static final String DYNAMIC_PREFIX = "#";
 
