@@ -49,7 +49,7 @@ dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成�
 
 1. 本框架只做 **切换数据源** 这件核心的事情，并**不限制你的具体操作**，切换了数据源可以做任何CRUD。
 2. 配置文件所有以下划线 `_` 分割的数据源 **首部** 即为组的名称，相同组名称的数据源会放在一个组下。
-3. 切换数据源即可是组名，也可是具体数据源名称，切换时默认采用负载均衡机制切换。
+3. 切换数据源可以是组名，也可以是具体数据源名称。组名则切换时采用负载均衡算法切换。
 4. 默认的数据源名称为  **master** ，你可以通过 `spring.datasource.dynamic.primary` 修改。
 5. 方法上的注解优先于类上注解。
 
@@ -88,8 +88,8 @@ spring:
           username: ENC(xxxxx)
           password: ENC(xxxxx)
           driver-class-name: com.mysql.jdbc.Driver
-          schema: db/schema.sql # 配置则生效
-          data: db/data.sql
+          schema: db/schema.sql # 配置则生效,自动初始化表结构
+          data: db/data.sql # 配置则生效,自动初始化数据
           continue-on-error: true # 默认true,初始化失败是否继续
           separator: "," # sql默认逗号分隔符
           
