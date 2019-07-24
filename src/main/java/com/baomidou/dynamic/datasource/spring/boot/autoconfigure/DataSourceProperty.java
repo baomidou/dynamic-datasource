@@ -85,9 +85,9 @@ public class DataSourceProperty {
      */
     private boolean continueOnError = true;
     /**
-     * 分隔符 默认 ,
+     * 分隔符 默认 ;
      */
-    private String separator = ",";
+    private String separator = ";";
     /**
      * Druid参数配置
      */
