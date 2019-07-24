@@ -6,10 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.baomidou.samples.spel.Application;
 import com.baomidou.samples.spel.entity.User;
 import com.baomidou.samples.spel.service.UserService;
-import java.sql.Connection;
-import java.sql.SQLException;
 import javax.servlet.http.HttpSession;
-import javax.sql.DataSource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,9 +26,6 @@ public class ApplicationTest {
   @Autowired
   private WebApplicationContext wac;
 
-  @Autowired
-  private DataSource dataSource;
-
   private MockMvc mockMvc;
   @Autowired
   private UserService userService;
@@ -41,22 +35,6 @@ public class ApplicationTest {
   @Before
   public void setup() {
     this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
-  }
-
-  @Before
-  public void beforeTest() {
-    try {
-      Connection connection = dataSource.getConnection();
-      connection.createStatement().execute("CREATE TABLE IF NOT EXISTS  USER (\n" +
-          "  id BIGINT(20) NOT NULL AUTO_INCREMENT,\n" +
-          "  name VARCHAR(30) NULL DEFAULT NULL ,\n" +
-          "  age INT(11) NULL DEFAULT NULL ,\n" +
-          "  PRIMARY KEY (id)\n" +
-          ");");
-      connection.close();
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
   }
 
   @Test

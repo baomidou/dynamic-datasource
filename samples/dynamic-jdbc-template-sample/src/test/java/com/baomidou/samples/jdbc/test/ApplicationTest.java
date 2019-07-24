@@ -3,11 +3,7 @@ package com.baomidou.samples.jdbc.test;
 import com.baomidou.samples.jdbc.Application;
 import com.baomidou.samples.jdbc.entity.User;
 import com.baomidou.samples.jdbc.service.UserService;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Random;
-import javax.sql.DataSource;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,26 +18,6 @@ public class ApplicationTest {
 
   @Autowired
   private UserService userService;
-
-  @Autowired
-  private DataSource dataSource;
-
-  @Before
-  public void beforeTest() {
-    try {
-      Connection connection = dataSource.getConnection();
-      connection.createStatement().execute("CREATE TABLE IF NOT EXISTS  USER (\n" +
-          "  id BIGINT(20) NOT NULL AUTO_INCREMENT,\n" +
-          "  name VARCHAR(30) NULL DEFAULT NULL ,\n" +
-          "  age INT(11) NULL DEFAULT NULL ,\n" +
-          "  PRIMARY KEY (id)\n" +
-          ");");
-      connection.close();
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-  }
-
 
   @Test
   public void addUser() {
