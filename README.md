@@ -43,7 +43,7 @@ dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成�
 7. 提供Mybatis环境下的  **纯读写分离 ** 方案。
 8. 使用spel动态参数解析数据源，如从session，header或参数中获取数据源。（多租户架构神器）
 9. 提供多层数据源嵌套切换。（ServiceA >>>  ServiceB >>> ServiceC，每个Service都是不同的数据源）
-10. 提供**不使用注解 **  而   **使用 正则 或 spel**    来切换数据源方案（实验性功能）。
+10. 提供 **不使用注解**  而   **使用 正则 或 spel**    来切换数据源方案（实验性功能）。
 
 # 约定
 
@@ -71,7 +71,7 @@ spring:
   datasource:
     dynamic:
       primary: master #设置默认的数据源或者数据源组,默认值即为master
-      strict: false #设置严格模式,默认false不启动. 启动后再为匹配到指定数据源时候回抛出异常,不启动会使用默认数据源.
+      strict: false #设置严格模式,默认false不启动. 启动后在未匹配到指定数据源时候回抛出异常,不启动会使用默认数据源.
       datasource:
         master:
           url: jdbc:mysql://xx.xx.xx.xx:3306/dynamic

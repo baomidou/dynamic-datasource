@@ -20,18 +20,17 @@ import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import com.p6spy.engine.spy.P6DataSource;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.util.StringUtils;
-
-import javax.sql.DataSource;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.sql.DataSource;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.util.StringUtils;
 
 /**
  * 核心动态数据源组件
@@ -69,7 +68,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
     }
 
     private DataSource determinePrimaryDataSource() {
-        log.debug("dynamic-datasource switch to the [primary] datasource");
+      log.debug("dynamic-datasource switch to the primary datasource");
         return groupDataSources.containsKey(primary) ? groupDataSources.get(primary).determineDataSource() : dataSourceMap.get(primary);
     }
 
@@ -134,12 +133,12 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
                     groupDatasource.addDatasource(dataSource);
                     groupDataSources.put(group, groupDatasource);
                 } catch (Exception e) {
-                    log.error("dynamic-datasource - add the datasource named {} error", ds, e);
+                  log.error("dynamic-datasource - add the datasource named [{}] error", ds, e);
                     dataSourceMap.remove(ds);
                 }
             }
         }
-        log.info("dynamic-datasource - load a datasource named {} success", ds);
+      log.info("dynamic-datasource - load a datasource named [{}] success", ds);
     }
 
     /**
@@ -157,9 +156,9 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
                     groupDataSources.get(group).removeDatasource(dataSource);
                 }
             }
-            log.info("dynamic-datasource - remove the database named {} success", ds);
+          log.info("dynamic-datasource - remove the database named [{}] success", ds);
         } else {
-            log.warn("dynamic-datasource - could not find a database named {}", ds);
+          log.warn("dynamic-datasource - could not find a database named [{}]", ds);
         }
     }
 
@@ -192,11 +191,10 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
                 Method closeMethod = clazz.getDeclaredMethod("close");
                 closeMethod.invoke(dataSource);
             } catch (NoSuchMethodException e) {
-                log.warn("dynamic-datasource close the datasource named {} failed,", item.getKey());
+              log.warn("dynamic-datasource close the datasource named [{}] failed,", item.getKey());
             }
         }
         log.info("dynamic-datasource all closed success,bye");
-
     }
 
     @Override

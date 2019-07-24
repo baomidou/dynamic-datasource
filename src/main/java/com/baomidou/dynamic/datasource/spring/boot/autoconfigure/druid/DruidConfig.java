@@ -16,17 +16,24 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid;
 
+import static com.alibaba.druid.pool.DruidAbstractDataSource.DEFAULT_INITIAL_SIZE;
+import static com.alibaba.druid.pool.DruidAbstractDataSource.DEFAULT_MAX_EVICTABLE_IDLE_TIME_MILLIS;
+import static com.alibaba.druid.pool.DruidAbstractDataSource.DEFAULT_MAX_WAIT;
+import static com.alibaba.druid.pool.DruidAbstractDataSource.DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS;
+import static com.alibaba.druid.pool.DruidAbstractDataSource.DEFAULT_MIN_IDLE;
+import static com.alibaba.druid.pool.DruidAbstractDataSource.DEFAULT_PHY_TIMEOUT_MILLIS;
+import static com.alibaba.druid.pool.DruidAbstractDataSource.DEFAULT_TEST_ON_BORROW;
+import static com.alibaba.druid.pool.DruidAbstractDataSource.DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS;
+import static com.alibaba.druid.pool.DruidAbstractDataSource.DEFAULT_WHILE_IDLE;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
-import static com.alibaba.druid.pool.DruidAbstractDataSource.*;
 
 /**
  * Druid参数配置
@@ -234,7 +241,8 @@ public class DruidConfig {
             if (tempConnectProperties == null) {
                 tempConnectProperties = new Properties();
             }
-            log.info("动态数据源-检测到您配置了druid加密,加密所需连接参数已为您自动配置");
+            log.info(
+                "dynamic-datasource detect druid publicKey,It is highly recommended that you use the built-in encryption method");
             tempConnectProperties.setProperty("config.decrypt", "true");
             tempConnectProperties.setProperty("config.decrypt.key", publicKey);
         }
