@@ -40,7 +40,7 @@ dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成�
 4. 简化Druid和HikariCp配置，提供全局参数配置。
 5. 提供自定义数据源来源接口(默认使用yml或properties配置)。
 6. 提供项目启动后增减数据源方案。
-7. 提供Mybatis环境下的  **纯读写分离 ** 方案。
+7. 提供Mybatis环境下的  **纯读写分离** 方案。
 8. 使用spel动态参数解析数据源，如从session，header或参数中获取数据源。（多租户架构神器）
 9. 提供多层数据源嵌套切换。（ServiceA >>>  ServiceB >>> ServiceC，每个Service都是不同的数据源）
 10. 提供 **不使用注解**  而   **使用 正则 或 spel**    来切换数据源方案（实验性功能）。
@@ -91,7 +91,7 @@ spring:
           schema: db/schema.sql # 配置则生效,自动初始化表结构
           data: db/data.sql # 配置则生效,自动初始化数据
           continue-on-error: true # 默认true,初始化失败是否继续
-          separator: "," # sql默认逗号分隔符
+          separator: ";" # sql默认分号分隔符
           
        #......省略
        #以上会配置一个默认库master，一个组slave下有两个子库slave_1,slave_2
