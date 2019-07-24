@@ -1,12 +1,12 @@
 language: java
 
 jdk:
-- openjdk7
-- openjdk8
+  - openjdk7
+  - openjdk8
 
 after_success:
-- echo success
+  - echo success
 
 cache:
   directories:
-  - $HOME/.m2
+    - $HOME/.m2

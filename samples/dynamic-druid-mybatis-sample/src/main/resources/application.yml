@@ -2,6 +2,8 @@ spring:
   datasource:
     dynamic:
       p6spy: true
+      druid:
+        filters: stat
       #      druid: #以下是全局默认值，可以全局更改
       #        initial-size:
       #        max-active:
@@ -44,6 +46,7 @@ spring:
           password: "LYIXYTfaq9ug7bqAfcoU1gQovp/Atx7wsdJ5D7oFN5QMqZUI4OGHyMkCA7IxtYAIQr/8cMVFGo9oa/mqtMrzmQ=="
           url: jdbc:h2:mem:test
           driver-class-name: org.h2.Driver
+          schema: db/schema.sql
           druid: #这里可以重写默认值
             initial-size: 5
             public-key: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKUVA/IL/iON8f63bv2i/pIAK+1sXY228slLkTKrI9axwBMIoPV7+PqdRTv6uqMl3j6nei0EDBWEu/Wp/qOQ/ScCAwEAAQ==
@@ -64,6 +67,10 @@ spring:
           password: "123456"
           url: jdbc:h2:mem:test
           driver-class-name: org.h2.Driver
+#      druid:
+#        wall:
+#          multi-statement-allow: true
 logging:
   level:
     com.baomidou: debug
+    org.springframework.jdbc.datasource.init: debug

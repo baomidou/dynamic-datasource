@@ -24,12 +24,12 @@ package com.baomidou.dynamic.datasource.exception;
  */
 public class ErrorCreateDataSourceException extends RuntimeException {
 
-    public ErrorCreateDataSourceException(String message) {
-        super(message);
-    }
+  public ErrorCreateDataSourceException(String message) {
+    super(message);
+  }
 
 
-    public ErrorCreateDataSourceException(String message, Throwable cause) {
-        super(message, cause);
-    }
+  public ErrorCreateDataSourceException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }

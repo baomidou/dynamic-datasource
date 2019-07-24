@@ -20,12 +20,11 @@ import com.baomidou.dynamic.datasource.DynamicDataSourceClassResolver;
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.dynamic.datasource.processor.DsProcessor;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
+import java.lang.reflect.Method;
 import lombok.Setter;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.core.annotation.AnnotationUtils;
-
-import java.lang.reflect.Method;
 
 /**
  * Core Interceptor of Dynamic Datasource
@@ -35,30 +34,31 @@ import java.lang.reflect.Method;
  */
 public class DynamicDataSourceAnnotationInterceptor implements MethodInterceptor {
 
-    /**
-     * The identification of SPEL.
-     */
-    private static final String DYNAMIC_PREFIX = "#";
-    private static final DynamicDataSourceClassResolver RESOLVER = new DynamicDataSourceClassResolver();
-    @Setter
-    private DsProcessor dsProcessor;
+  /**
+   * The identification of SPEL.
+   */
+  private static final String DYNAMIC_PREFIX = "#";
+  private static final DynamicDataSourceClassResolver RESOLVER = new DynamicDataSourceClassResolver();
+  @Setter
+  private DsProcessor dsProcessor;
 
-    @Override
-    public Object invoke(MethodInvocation invocation) throws Throwable {
-        try {
-            DynamicDataSourceContextHolder.push(determineDatasource(invocation));
-            return invocation.proceed();
-        } finally {
-            DynamicDataSourceContextHolder.poll();
-        }
+  @Override
+  public Object invoke(MethodInvocation invocation) throws Throwable {
+    try {
+      DynamicDataSourceContextHolder.push(determineDatasource(invocation));
+      return invocation.proceed();
+    } finally {
+      DynamicDataSourceContextHolder.poll();
     }
+  }
 
-    private String determineDatasource(MethodInvocation invocation) throws Throwable {
-        Method method = invocation.getMethod();
-        DS ds = method.isAnnotationPresent(DS.class)
-                ? method.getAnnotation(DS.class)
-                : AnnotationUtils.findAnnotation(RESOLVER.targetClass(invocation), DS.class);
-        String key = ds.value();
-        return (!key.isEmpty() && key.startsWith(DYNAMIC_PREFIX)) ? dsProcessor.determineDatasource(invocation, key) : key;
-    }
+  private String determineDatasource(MethodInvocation invocation) throws Throwable {
+    Method method = invocation.getMethod();
+    DS ds = method.isAnnotationPresent(DS.class)
+        ? method.getAnnotation(DS.class)
+        : AnnotationUtils.findAnnotation(RESOLVER.targetClass(invocation), DS.class);
+    String key = ds.value();
+    return (!key.isEmpty() && key.startsWith(DYNAMIC_PREFIX)) ? dsProcessor
+        .determineDatasource(invocation, key) : key;
+  }
 }

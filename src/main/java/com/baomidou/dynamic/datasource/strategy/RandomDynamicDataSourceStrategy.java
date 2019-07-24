@@ -16,9 +16,9 @@
  */
 package com.baomidou.dynamic.datasource.strategy;
 
-import javax.sql.DataSource;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import javax.sql.DataSource;
 
 /**
  * Random strategy to switch a database
@@ -28,8 +28,8 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class RandomDynamicDataSourceStrategy implements DynamicDataSourceStrategy {
 
-    @Override
-    public DataSource determineDataSource(List<DataSource> dataSources) {
-        return dataSources.get(ThreadLocalRandom.current().nextInt(dataSources.size()));
-    }
+  @Override
+  public DataSource determineDataSource(List<DataSource> dataSources) {
+    return dataSources.get(ThreadLocalRandom.current().nextInt(dataSources.size()));
+  }
 }

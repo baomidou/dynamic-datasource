@@ -2,11 +2,11 @@ package com.baomidou.samples.nest.service;
 
 public interface SchoolService {
 
-    void selectTeachersAndStudents();
+  void selectTeachersAndStudents();
 
-    void selectTeachersInnerStudents();
+  void selectTeachersInnerStudents();
 
-    void addTeacherAndStudent();
+  void addTeacherAndStudent();
 
-    void addTeacherAndStudentWithTx();
+  void addTeacherAndStudentWithTx();
 }

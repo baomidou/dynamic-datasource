@@ -21,4 +21,5 @@ package com.baomidou.dynamic.datasource.matcher;
  * @since 2.5.0
  */
 public interface Matcher {
+
 }

@@ -26,9 +26,9 @@ import lombok.Data;
 @Data
 public class DruidStatConfig {
 
-    private Long slowSqlMillis;
+  private Long slowSqlMillis;
 
-    private Boolean logSlowSql;
+  private Boolean logSlowSql;
 
-    private Boolean mergeSql;
+  private Boolean mergeSql;
 }

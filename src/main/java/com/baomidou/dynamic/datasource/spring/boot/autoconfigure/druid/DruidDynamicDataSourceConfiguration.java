@@ -37,10 +37,10 @@ import org.springframework.context.annotation.Import;
 @ConditionalOnClass(DruidDataSource.class)
 @EnableConfigurationProperties({DruidStatProperties.class})
 @Import({
-        DruidSpringAopConfiguration.class,
-        DruidStatViewServletConfiguration.class,
-        DruidWebStatFilterConfiguration.class,
-        DruidFilterConfiguration.class})
+    DruidSpringAopConfiguration.class,
+    DruidStatViewServletConfiguration.class,
+    DruidWebStatFilterConfiguration.class,
+    DruidFilterConfiguration.class})
 public class DruidDynamicDataSourceConfiguration {
 
 }

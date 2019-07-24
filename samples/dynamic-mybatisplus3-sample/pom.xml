@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>dynamic-datsource-samples</artifactId>
-        <groupId>com.baomidou</groupId>
-        <version>1.0.0</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <artifactId>dynamic-mybatisplus3-sample</artifactId>
+  <dependencies>
+    <dependency>
+      <artifactId>mybatis-plus-boot-starter</artifactId>
+      <groupId>com.baomidou</groupId>
+      <version>3.0.6</version>
+    </dependency>
+  </dependencies>
 
-    <artifactId>dynamic-mybatisplus3-sample</artifactId>
+  <modelVersion>4.0.0</modelVersion>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.0.6</version>
-        </dependency>
-    </dependencies>
+  <parent>
+    <artifactId>dynamic-datsource-samples</artifactId>
+    <groupId>com.baomidou</groupId>
+    <version>1.0.0</version>
+  </parent>
 
 </project>
