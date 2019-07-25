@@ -64,9 +64,8 @@ public class DynamicDataSourceAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public DynamicDataSourceProvider dynamicDataSourceProvider(
-      DynamicDataSourceCreator dynamicDataSourceCreator) {
-    return new YmlDynamicDataSourceProvider(properties, dynamicDataSourceCreator);
+  public DynamicDataSourceProvider dynamicDataSourceProvider() {
+    return new YmlDynamicDataSourceProvider(properties);
   }
 
   @Bean

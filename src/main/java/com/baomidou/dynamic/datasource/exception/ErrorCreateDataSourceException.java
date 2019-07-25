@@ -28,7 +28,6 @@ public class ErrorCreateDataSourceException extends RuntimeException {
     super(message);
   }
 
-
   public ErrorCreateDataSourceException(String message, Throwable cause) {
     super(message, cause);
   }

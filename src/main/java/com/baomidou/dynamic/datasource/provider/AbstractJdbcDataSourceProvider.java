@@ -18,16 +18,13 @@ package com.baomidou.dynamic.datasource.provider;
 
 import com.baomidou.dynamic.datasource.DynamicDataSourceCreator;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.support.JdbcUtils;
 
 /**
@@ -37,13 +34,8 @@ import org.springframework.jdbc.support.JdbcUtils;
  * @since 2.1.2
  */
 @Slf4j
-public abstract class AbstractJdbcDataSourceProvider implements DynamicDataSourceProvider {
-
-  @Autowired(required = false)
-  protected DynamicDataSourceProperties dynamicDataSourceProperties;
-
-  @Autowired
-  private DynamicDataSourceCreator dynamicDataSourceCreator;
+public abstract class AbstractJdbcDataSourceProvider extends AbstractDataSourceProvider implements
+    DynamicDataSourceProvider {
 
   /**
    * JDBC driver
@@ -81,14 +73,7 @@ public abstract class AbstractJdbcDataSourceProvider implements DynamicDataSourc
       log.info("成功获取数据库连接");
       stmt = conn.createStatement();
       Map<String, DataSourceProperty> dataSourcePropertiesMap = executeStmt(stmt);
-      Map<String, DataSource> dataSourceMap = new HashMap<>(dataSourcePropertiesMap.size());
-      for (Map.Entry<String, DataSourceProperty> item : dataSourcePropertiesMap.entrySet()) {
-        String pollName = item.getKey();
-        DataSourceProperty dataSourceProperty = item.getValue();
-        dataSourceProperty.setPollName(pollName);
-        dataSourceMap.put(pollName, dynamicDataSourceCreator.createDataSource(dataSourceProperty));
-      }
-      return dataSourceMap;
+      return createDataSourceMap(dataSourcePropertiesMap);
     } catch (Exception e) {
       e.printStackTrace();
     } finally {
