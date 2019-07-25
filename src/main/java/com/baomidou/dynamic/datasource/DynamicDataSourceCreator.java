@@ -36,12 +36,13 @@ import java.util.Properties;
 import javax.sql.DataSource;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.util.StringUtils;
-import org.springframework.web.context.WebApplicationContext;
 
 /**
  * 数据源创建器
@@ -128,8 +129,9 @@ public class DynamicDataSourceCreator {
   private DruidConfig druidGlobalConfig;
   @Setter
   private HikariCpConfig hikariGlobalConfig;
-  @Setter
-  private WebApplicationContext applicationContext;
+
+  @Autowired(required = false)
+  private ApplicationContext applicationContext;
   @Setter
   private String globalPublicKey;
 

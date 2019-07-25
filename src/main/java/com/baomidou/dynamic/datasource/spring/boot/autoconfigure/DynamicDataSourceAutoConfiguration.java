@@ -70,10 +70,8 @@ public class DynamicDataSourceAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public DynamicDataSourceCreator dynamicDataSourceCreator(
-      @Autowired(required = false) WebApplicationContext webApplicationContext) {
+  public DynamicDataSourceCreator dynamicDataSourceCreator() {
     DynamicDataSourceCreator dynamicDataSourceCreator = new DynamicDataSourceCreator();
-    dynamicDataSourceCreator.setApplicationContext(webApplicationContext);
     dynamicDataSourceCreator.setDruidGlobalConfig(properties.getDruid());
     dynamicDataSourceCreator.setHikariGlobalConfig(properties.getHikari());
     dynamicDataSourceCreator.setGlobalPublicKey(properties.getPublicKey());
