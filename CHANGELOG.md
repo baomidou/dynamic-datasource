@@ -1,10 +1,18 @@
-# v.2.5.5
+# v2.5.6
+
+- 支持非web环境启动。
+- 支持加密自定义公钥和全局公钥。
+- 启动初始化数据默认分隔符改为分号 `;`  。
+- google代码格式化。
+- 添加从数据库初始加载数据源例子。
+
+# v2.5.5
 
 - 支持非web环境启动。
 - 支持内置加密。
 - 支持启动ddl  schema和data。
 
-# v.2.5.4
+# v2.5.4
 
 - 集成druid支持配置proxyFilter。
 - 修复打war包外部部署错误。
@@ -14,7 +22,7 @@
 - 新增严格模式。
 
 
-# v.2.5.3
+# v2.5.3
 
 - 自定义切面支持动态解析。 https://github.com/baomidou/dynamic-datasource-spring-boot-starter/pull/29
 
