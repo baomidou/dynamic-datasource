@@ -85,6 +85,11 @@ public class DruidConfig {
 
   private String publicKey;
 
+
+  protected volatile Boolean                         removeAbandoned;
+  protected volatile Integer                            removeAbandonedTimeoutMillis             ;
+  protected volatile Boolean                         logAbandoned;
+
   @NestedConfigurationProperty
   private DruidWallConfig wall = new DruidWallConfig();
 
