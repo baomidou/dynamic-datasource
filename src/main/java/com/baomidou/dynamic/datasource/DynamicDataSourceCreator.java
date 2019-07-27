@@ -285,22 +285,22 @@ public class DynamicDataSourceCreator {
       dataSource.setBreakAfterAcquireFailure(true);
     }
 
-
     Integer timeout = config.getRemoveAbandonedTimeoutMillis() == null ?
-            druidGlobalConfig.getRemoveAbandonedTimeoutMillis():config.getRemoveAbandonedTimeoutMillis();
-    if(timeout!=null) {
+        druidGlobalConfig.getRemoveAbandonedTimeoutMillis()
+        : config.getRemoveAbandonedTimeoutMillis();
+    if (timeout != null) {
       dataSource.setRemoveAbandonedTimeout(timeout);
     }
 
     Boolean abandoned = config.getRemoveAbandoned() == null ?
-            druidGlobalConfig.getRemoveAbandoned():config.getRemoveAbandoned();
-    if(abandoned!=null) {
+        druidGlobalConfig.getRemoveAbandoned() : config.getRemoveAbandoned();
+    if (abandoned != null) {
       dataSource.setRemoveAbandoned(abandoned);
     }
 
     Boolean logAbandoned = config.getLogAbandoned() == null ?
-            druidGlobalConfig.getLogAbandoned():config.getLogAbandoned();
-    if(logAbandoned!=null) {
+        druidGlobalConfig.getLogAbandoned() : config.getLogAbandoned();
+    if (logAbandoned != null) {
       dataSource.setLogAbandoned(logAbandoned);
     }
 

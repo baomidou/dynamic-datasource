@@ -45,7 +45,6 @@ public class Application {
         Map<String, DataSourceProperty> map = new HashMap<>();
         //*************** ↑↑↑↑↑↑↑ here is needn't in prod env***************
 
-
         ResultSet rs = statement.executeQuery("select * from DB");
         while (rs.next()) {
           String name = rs.getString("name");

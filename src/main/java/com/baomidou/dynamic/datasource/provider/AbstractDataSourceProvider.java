@@ -21,7 +21,6 @@ import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourcePrope
 import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -30,7 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class AbstractDataSourceProvider implements DynamicDataSourceProvider {
 
   @Autowired
-  private  DynamicDataSourceCreator dynamicDataSourceCreator;
+  private DynamicDataSourceCreator dynamicDataSourceCreator;
 
   protected Map<String, DataSource> createDataSourceMap(
       Map<String, DataSourceProperty> dataSourcePropertiesMap) {

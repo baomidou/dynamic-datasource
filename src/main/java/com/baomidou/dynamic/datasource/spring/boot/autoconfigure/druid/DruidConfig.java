@@ -82,14 +82,10 @@ public class DruidConfig {
   private Boolean sharePreparedStatements;
   private Integer connectionErrorRetryAttempts;
   private Boolean breakAfterAcquireFailure;
-
+  private Boolean removeAbandoned;
+  private Integer removeAbandonedTimeoutMillis;
+  private Boolean logAbandoned;
   private String publicKey;
-
-
-  protected volatile Boolean                         removeAbandoned;
-  protected volatile Integer                            removeAbandonedTimeoutMillis             ;
-  protected volatile Boolean                         logAbandoned;
-
   @NestedConfigurationProperty
   private DruidWallConfig wall = new DruidWallConfig();
 
