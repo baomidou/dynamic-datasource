@@ -124,9 +124,4 @@ public class DynamicDataSourceAdvisor extends AbstractPointcutAdvisor implements
     }
     return composablePointcut;
   }
-
-  @Override
-  public void setOrder(int order) {
-    super.setOrder(Ordered.HIGHEST_PRECEDENCE);
-  }
 }

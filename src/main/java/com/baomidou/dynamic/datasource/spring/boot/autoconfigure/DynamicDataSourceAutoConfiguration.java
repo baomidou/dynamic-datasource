@@ -41,6 +41,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.Ordered;
 
 /**
  * 动态数据源核心自动配置类
@@ -119,6 +120,7 @@ public class DynamicDataSourceAutoConfiguration {
     DynamicDataSourceAdvisor advisor = new DynamicDataSourceAdvisor(
         dynamicDataSourceConfigure.getMatchers());
     advisor.setDsProcessor(dsProcessor);
+    advisor.setOrder(Ordered.HIGHEST_PRECEDENCE);
     return advisor;
   }
 }
