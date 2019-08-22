@@ -29,6 +29,7 @@ import org.apache.ibatis.plugin.Plugin;
 import org.apache.ibatis.plugin.Signature;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
+import org.springframework.util.StringUtils;
 
 /**
  * Master-slave Separation Plugin with mybatis
@@ -53,8 +54,10 @@ public class MasterSlaveAutoRoutingPlugin implements Interceptor {
     Object[] args = invocation.getArgs();
     MappedStatement ms = (MappedStatement) args[0];
     try {
-      DynamicDataSourceContextHolder
-          .push(SqlCommandType.SELECT == ms.getSqlCommandType() ? SLAVE : MASTER);
+      if (StringUtils.isEmpty(DynamicDataSourceContextHolder.peek())) {
+        DynamicDataSourceContextHolder
+            .push(SqlCommandType.SELECT == ms.getSqlCommandType() ? SLAVE : MASTER);
+      }
       return invocation.proceed();
     } finally {
       DynamicDataSourceContextHolder.clear();
