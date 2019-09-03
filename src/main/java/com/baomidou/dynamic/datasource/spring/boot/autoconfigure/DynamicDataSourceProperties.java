@@ -41,8 +41,9 @@ import org.springframework.core.Ordered;
 @Slf4j
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "spring.datasource.dynamic")
+@ConfigurationProperties(prefix = DynamicDataSourceProperties.PREFIX)
 public class DynamicDataSourceProperties {
+  public static final String PREFIX = "spring.datasource.dynamic";
 
   /**
    * 必须设置默认的库,默认master
