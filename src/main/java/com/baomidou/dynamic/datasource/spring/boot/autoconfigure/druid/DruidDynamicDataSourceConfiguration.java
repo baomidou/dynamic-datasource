@@ -16,7 +16,6 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid;
 
-import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.properties.DruidStatProperties;
 import com.alibaba.druid.spring.boot.autoconfigure.stat.DruidFilterConfiguration;
 import com.alibaba.druid.spring.boot.autoconfigure.stat.DruidSpringAopConfiguration;
@@ -34,13 +33,13 @@ import org.springframework.context.annotation.Import;
  * @since 1.1.0
  */
 @Configuration
-@ConditionalOnClass(DruidDataSource.class)
+@ConditionalOnClass(DruidStatProperties.class)
 @EnableConfigurationProperties({DruidStatProperties.class})
 @Import({
-    DruidSpringAopConfiguration.class,
-    DruidStatViewServletConfiguration.class,
-    DruidWebStatFilterConfiguration.class,
-    DruidFilterConfiguration.class})
+        DruidSpringAopConfiguration.class,
+        DruidStatViewServletConfiguration.class,
+        DruidWebStatFilterConfiguration.class,
+        DruidFilterConfiguration.class})
 public class DruidDynamicDataSourceConfiguration {
 
 }
