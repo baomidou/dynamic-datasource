@@ -143,11 +143,14 @@ public class UserServiceImpl implements UserService {
 
 ---
 
+### 支持一下
 
-####                                                                                       赶紧集成体验一下吧！ 如果需要更多功能请点击下面链接查看详细文档！
+![uSA83t.png](https://images.gitee.com/uploads/images/2019/0921/225754_ef8c21e8_709883.png)
+[![uSVpFJ.png](https://images.gitee.com/uploads/images/2019/0921/230525_be693c65_709883.png)](https://imgchr.com/i/uSVpFJ)
+
+#### 赶紧集成体验一下吧！ 如果需要更多功能请点击下面链接查看详细文档！
 
 ---
-
 
 
 - #### 加密,Druid集成，MybatisPlus集成，动态增减数据源，自定义切换规则,纯读写分离插件等等更多更细致的文档在这里     [点击查看](https://gitee.com/baomidou/dynamic-datasource-spring-boot-starter/wikis/pages)
