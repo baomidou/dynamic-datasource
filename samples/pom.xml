@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.1.6.RELEASE</version>
+    <version>2.1.8.RELEASE</version>
     <relativePath/>
   </parent>
 
@@ -31,6 +31,7 @@
     <module>dynamic-spel-sample</module>
     <module>dynamic-nest-sample</module>
     <module>load-datasource-from-jdbc</module>
+    <module>dynamic-add-remove-datasource</module>
   </modules>
 
   <dependencies>
