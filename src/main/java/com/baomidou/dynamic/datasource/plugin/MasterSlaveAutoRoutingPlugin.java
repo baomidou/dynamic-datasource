@@ -16,6 +16,7 @@
  */
 package com.baomidou.dynamic.datasource.plugin;
 
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
 import com.baomidou.dynamic.datasource.toolkit.DdConstants;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 
@@ -32,6 +33,7 @@ import org.apache.ibatis.plugin.Plugin;
 import org.apache.ibatis.plugin.Signature;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 /**
@@ -47,6 +49,9 @@ import org.springframework.util.StringUtils;
                 Object.class})})
 @Slf4j
 public class MasterSlaveAutoRoutingPlugin implements Interceptor {
+
+    @Autowired
+    private DynamicDataSourceProperties properties;
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
@@ -73,8 +78,21 @@ public class MasterSlaveAutoRoutingPlugin implements Interceptor {
      * @return
      */
     public String getDataSource(MappedStatement mappedStatement) {
+        String _slave = DdConstants.SLAVE;
+        if (properties.isHealth()) {
+            /*
+             * 根据从库健康状况，判断是否切到主库
+             */
+            Boolean health = DbHealthIndicator.getDbHealth(DdConstants.SLAVE);
+            if (null == health || !health) {
+                health = DbHealthIndicator.getDbHealth(DdConstants.MASTER);
+                if (null != health && health) {
+                    _slave = DdConstants.MASTER;
+                }
+            }
+        }
         return SqlCommandType.SELECT == mappedStatement.getSqlCommandType()
-                ? DdConstants.SLAVE : DdConstants.MASTER;
+                ? _slave : DdConstants.MASTER;
     }
 
     @Override

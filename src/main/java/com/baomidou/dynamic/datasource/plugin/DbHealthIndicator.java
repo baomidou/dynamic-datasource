@@ -1,7 +1,6 @@
 package com.baomidou.dynamic.datasource.plugin;
 
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
-import com.baomidou.dynamic.datasource.toolkit.DdConstants;
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.dao.support.DataAccessUtils;
@@ -33,32 +32,8 @@ public class DbHealthIndicator extends AbstractHealthIndicator {
      */
     private static Map<String, Boolean> DB_HEALTH = new ConcurrentHashMap<>();
 
-    DbHealthIndicator(DataSource dataSource) {
+    public DbHealthIndicator(DataSource dataSource) {
         this.dataSource = dataSource;
-    }
-
-    public static String getSlave() {
-        String _slave = DdConstants.SLAVE;
-        Boolean health = getDbHealth(DdConstants.SLAVE);
-        if (null == health || !health) {
-            health = getDbHealth(DdConstants.MASTER);
-            if (null != health && health) {
-                _slave = DdConstants.MASTER;
-            }
-        }
-        return _slave;
-    }
-
-    public static String getMaster() {
-        String _master = DdConstants.MASTER;
-        Boolean health = getDbHealth(DdConstants.MASTER);
-        if (null == health || !health) {
-            health = getDbHealth(DdConstants.SLAVE);
-            if (null != health && health) {
-                _master = DdConstants.SLAVE;
-            }
-        }
-        return _master;
     }
 
     /**

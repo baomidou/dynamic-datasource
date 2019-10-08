@@ -44,6 +44,7 @@ import org.springframework.core.Ordered;
 @ConfigurationProperties(prefix = DynamicDataSourceProperties.PREFIX)
 public class DynamicDataSourceProperties {
   public static final String PREFIX = "spring.datasource.dynamic";
+  public static final String HEALTH = PREFIX + ".health";
 
   /**
    * 必须设置默认的库,默认master
@@ -57,6 +58,10 @@ public class DynamicDataSourceProperties {
    * 是否使用p6spy输出，默认不输出
    */
   private Boolean p6spy = false;
+  /**
+   * 是否使用 spring actuator 监控检查，默认不检查
+   */
+  private boolean health = false;
   /**
    * 每一个数据源
    */
