@@ -16,8 +16,11 @@
  */
 package com.baomidou.dynamic.datasource.plugin;
 
+import com.baomidou.dynamic.datasource.toolkit.DdConstants;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
+
 import java.util.Properties;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -38,42 +41,48 @@ import org.springframework.util.StringUtils;
  * @since 2.5.1
  */
 @Intercepts({
-    @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class,
-        RowBounds.class, ResultHandler.class}),
-    @Signature(type = Executor.class, method = "update", args = {MappedStatement.class,
-        Object.class})})
+        @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class,
+                RowBounds.class, ResultHandler.class}),
+        @Signature(type = Executor.class, method = "update", args = {MappedStatement.class,
+                Object.class})})
 @Slf4j
 public class MasterSlaveAutoRoutingPlugin implements Interceptor {
 
-  private static final String MASTER = "master";
-
-  private static final String SLAVE = "slave";
-
-  @Override
-  public Object intercept(Invocation invocation) throws Throwable {
-    Object[] args = invocation.getArgs();
-    MappedStatement ms = (MappedStatement) args[0];
-    boolean empty = true;
-    try {
-      empty = StringUtils.isEmpty(DynamicDataSourceContextHolder.peek());
-      if (empty) {
-        DynamicDataSourceContextHolder
-            .push(SqlCommandType.SELECT == ms.getSqlCommandType() ? SLAVE : MASTER);
-      }
-      return invocation.proceed();
-    } finally {
-      if (empty) {
-        DynamicDataSourceContextHolder.clear();
-      }
+    @Override
+    public Object intercept(Invocation invocation) throws Throwable {
+        Object[] args = invocation.getArgs();
+        MappedStatement ms = (MappedStatement) args[0];
+        boolean empty = true;
+        try {
+            empty = StringUtils.isEmpty(DynamicDataSourceContextHolder.peek());
+            if (empty) {
+                DynamicDataSourceContextHolder.push(getDataSource(ms));
+            }
+            return invocation.proceed();
+        } finally {
+            if (empty) {
+                DynamicDataSourceContextHolder.clear();
+            }
+        }
     }
-  }
 
-  @Override
-  public Object plugin(Object target) {
-    return target instanceof Executor ? Plugin.wrap(target, this) : target;
-  }
+    /**
+     * 获取动态数据源名称，重写注入 DbHealthIndicator 支持数据源健康状况判断选择
+     *
+     * @param mappedStatement mybatis MappedStatement
+     * @return
+     */
+    public String getDataSource(MappedStatement mappedStatement) {
+        return SqlCommandType.SELECT == mappedStatement.getSqlCommandType()
+                ? DdConstants.SLAVE : DdConstants.MASTER;
+    }
 
-  @Override
-  public void setProperties(Properties properties) {
-  }
+    @Override
+    public Object plugin(Object target) {
+        return target instanceof Executor ? Plugin.wrap(target, this) : target;
+    }
+
+    @Override
+    public void setProperties(Properties properties) {
+    }
 }
