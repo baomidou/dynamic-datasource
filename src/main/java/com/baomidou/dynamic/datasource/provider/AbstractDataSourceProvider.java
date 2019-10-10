@@ -33,7 +33,7 @@ public abstract class AbstractDataSourceProvider implements DynamicDataSourcePro
 
   protected Map<String, DataSource> createDataSourceMap(
       Map<String, DataSourceProperty> dataSourcePropertiesMap) {
-    Map<String, DataSource> dataSourceMap = new HashMap<>(dataSourcePropertiesMap.size()*2);
+    Map<String, DataSource> dataSourceMap = new HashMap<>(dataSourcePropertiesMap.size() * 2);
     for (Map.Entry<String, DataSourceProperty> item : dataSourcePropertiesMap.entrySet()) {
       String pollName = item.getKey();
       DataSourceProperty dataSourceProperty = item.getValue();

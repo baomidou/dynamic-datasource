@@ -35,7 +35,6 @@ import org.springframework.aop.support.ComposablePointcut;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.core.Ordered;
 
 /**
  * @author TaoYu

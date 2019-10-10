@@ -7,14 +7,13 @@ package com.baomidou.dynamic.datasource.toolkit;
  * @since 2019-10-08
  */
 public interface DdConstants {
-    /**
-     * 数据源：主库
-     */
-    String MASTER = "master";
-    /**
-     * 数据源：从库
-     */
-    String SLAVE = "slave";
 
-
+  /**
+   * 数据源：主库
+   */
+  String MASTER = "master";
+  /**
+   * 数据源：从库
+   */
+  String SLAVE = "slave";
 }
