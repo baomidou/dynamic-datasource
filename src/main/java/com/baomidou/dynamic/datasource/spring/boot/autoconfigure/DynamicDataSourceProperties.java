@@ -43,6 +43,7 @@ import org.springframework.core.Ordered;
 @Setter
 @ConfigurationProperties(prefix = DynamicDataSourceProperties.PREFIX)
 public class DynamicDataSourceProperties {
+
   public static final String PREFIX = "spring.datasource.dynamic";
   public static final String HEALTH = PREFIX + ".health";
 

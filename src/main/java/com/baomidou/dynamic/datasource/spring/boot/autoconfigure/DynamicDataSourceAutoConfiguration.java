@@ -31,6 +31,7 @@ import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.provider.YmlDynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidDynamicDataSourceConfiguration;
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
+import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -43,8 +44,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.Ordered;
-
-import javax.sql.DataSource;
 
 /**
  * 动态数据源核心自动配置类
@@ -60,23 +59,21 @@ import javax.sql.DataSource;
 @EnableConfigurationProperties(DynamicDataSourceProperties.class)
 @AutoConfigureBefore(DataSourceAutoConfiguration.class)
 @Import(DruidDynamicDataSourceConfiguration.class)
-@ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name="enabled", havingValue="true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class DynamicDataSourceAutoConfiguration {
 
   @Autowired
   private DynamicDataSourceProperties properties;
 
-
   /**
    * 数据库健康状况检查，注入后在 MasterSlaveAutoRoutingPlugin 中使用
    *
    * @param dataSource 当前数据源
-   * @return
    */
   @Bean
   @ConditionalOnProperty(DynamicDataSourceProperties.HEALTH)
   @ConditionalOnMissingBean
-  public DbHealthIndicator dbHealthIndicator(DataSource dataSource){
+  public DbHealthIndicator dbHealthIndicator(DataSource dataSource) {
     return new DbHealthIndicator(dataSource);
   }
 
