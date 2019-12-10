@@ -53,7 +53,8 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
   @Setter
   private boolean strict;
   private boolean p6spy;
-
+  private boolean isSeata = false;
+  private Constructor dataSourceProxy;
   /**
    * 所有数据库
    */
@@ -62,7 +63,15 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
    * 分组数据库
    */
   private Map<String, DynamicGroupDataSource> groupDataSources = new ConcurrentHashMap<>();
-
+  
+  public DynamicRoutingDataSource() {
+    try {
+        dataSourceProxy = Class.forName("io.seata.rm.datasource.DataSourceProxy").getConstructor(DataSource.class);
+        isSeata = true;
+        log.info("启用seata代理数据源");
+    } catch (Exception e) {
+	}
+  }
   @Override
   public DataSource determineDataSource() {
     return getDataSource(DynamicDataSourceContextHolder.peek());
@@ -123,6 +132,12 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
   public synchronized void addDataSource(String ds, DataSource dataSource) {
     if (p6spy) {
       dataSource = new P6DataSource(dataSource);
+    }
+	if (isSeata) {
+        try {
+            dataSource = (DataSource)dataSourceProxy.newInstance(dataSource);
+        } catch (Exception e) {
+        }
     }
     dataSourceMap.put(ds, dataSource);
     if (ds.contains(UNDERLINE)) {
