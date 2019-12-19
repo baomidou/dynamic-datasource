@@ -37,13 +37,30 @@ public class YmlDynamicDataSourceProvider extends AbstractDataSourceProvider imp
    */
   private DynamicDataSourceProperties properties;
 
+  /**
+   * 数据库配置表初始化数据源
+   */
+  private MysqlDynamicDataSourceProvider mysqlDynamicDataSourceProvider = new MysqlDynamicDataSourceProvider();
+
   public YmlDynamicDataSourceProvider(DynamicDataSourceProperties properties) {
     this.properties = properties;
   }
 
   @Override
   public Map<String, DataSource> loadDataSources() {
-    Map<String, DataSourceProperty> dataSourcePropertiesMap = properties.getDatasource();
-    return createDataSourceMap(dataSourcePropertiesMap);
+
+      Map<String, DataSourceProperty> dataSourcePropertiesMap = properties.getDatasource();
+      Map<String, DataSource> dataSourceMap = createDataSourceMap(dataSourcePropertiesMap);
+
+      /**
+       *    在此处获取其他数据库配置的数据源
+       */
+      Map<String, DataSourceProperty> otherMap = mysqlDynamicDataSourceProvider.run(dataSourceMap.get(properties.getPrimary()));
+
+      Map<String, DataSource> otherDataSourceMap = createDataSourceMap(otherMap);
+
+      dataSourceMap.putAll(otherDataSourceMap);
+
+      return dataSourceMap;
   }
 }
