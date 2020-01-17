@@ -17,6 +17,7 @@
 package com.baomidou.dynamic.datasource;
 
 import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.filter.logging.Slf4jLogFilter;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.wall.WallConfig;
@@ -242,6 +243,14 @@ public class DynamicDataSourceCreator {
       WallFilter wallFilter = new WallFilter();
       wallFilter.setConfig(wallConfig);
       proxyFilters.add(wallFilter);
+    }
+    // 新增关于日志的配置
+    if (!StringUtils.isEmpty(filters) && filters.contains("slf4j")) {
+      Slf4jLogFilter slf4jLogFilter = new Slf4jLogFilter();
+      // 由于properties上面被用了，LogFilter不能使用configFromProperties方法，这里只能一个个set了。
+      slf4jLogFilter.setStatementLogEnabled(druidGlobalConfig.getSlf4j().getEnable());
+      slf4jLogFilter.setStatementExecutableSqlLogEnable(druidGlobalConfig.getSlf4j().getStatementExecutableSqlLogEnable());
+      proxyFilters.add(slf4jLogFilter);
     }
 
     if (this.applicationContext != null) {

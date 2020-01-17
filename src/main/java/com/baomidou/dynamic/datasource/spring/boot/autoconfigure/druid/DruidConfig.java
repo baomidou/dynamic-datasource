@@ -92,7 +92,10 @@ public class DruidConfig {
   @NestedConfigurationProperty
   private DruidStatConfig stat = new DruidStatConfig();
 
-  private List<String> proxyFilters = new ArrayList<>(2);
+  @NestedConfigurationProperty
+  private DruidSlf4jConfig slf4j = new DruidSlf4jConfig();
+
+  private List<String> proxyFilters = new ArrayList<>(4);
 
   public Properties toProperties(DruidConfig globalConfig) {
     Properties properties = new Properties();
