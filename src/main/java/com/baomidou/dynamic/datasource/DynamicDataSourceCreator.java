@@ -339,6 +339,9 @@ public class DynamicDataSourceCreator {
       ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
       populator.setContinueOnError(dataSourceProperty.isContinueOnError());
       populator.setSeparator(dataSourceProperty.getSeparator());
+      if (location.startsWith("classpath:")) {
+        location = location.substring(10);
+      }
       ClassPathResource resource = new ClassPathResource(location);
       if (resource.exists()) {
         populator.addScript(resource);
