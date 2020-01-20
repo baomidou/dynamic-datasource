@@ -22,7 +22,6 @@ import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAdvisor;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationInterceptor;
-import com.baomidou.dynamic.datasource.plugin.DbHealthIndicator;
 import com.baomidou.dynamic.datasource.processor.DsHeaderProcessor;
 import com.baomidou.dynamic.datasource.processor.DsProcessor;
 import com.baomidou.dynamic.datasource.processor.DsSessionProcessor;
@@ -64,18 +63,6 @@ public class DynamicDataSourceAutoConfiguration {
 
   @Autowired
   private DynamicDataSourceProperties properties;
-
-  /**
-   * 数据库健康状况检查，注入后在 MasterSlaveAutoRoutingPlugin 中使用
-   *
-   * @param dataSource 当前数据源
-   */
-  @Bean
-  @ConditionalOnProperty(DynamicDataSourceProperties.HEALTH)
-  @ConditionalOnMissingBean
-  public DbHealthIndicator dbHealthIndicator(DataSource dataSource) {
-    return new DbHealthIndicator(dataSource);
-  }
 
   @Bean
   @ConditionalOnMissingBean
