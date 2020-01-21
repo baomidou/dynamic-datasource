@@ -17,6 +17,7 @@
 package com.baomidou.dynamic.datasource.plugin;
 
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
+import com.baomidou.dynamic.datasource.support.DbHealthIndicator;
 import com.baomidou.dynamic.datasource.toolkit.DdConstants;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import java.util.Properties;
@@ -41,8 +42,7 @@ import org.springframework.util.StringUtils;
  * @since 2.5.1
  */
 @Intercepts({
-    @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class,
-        RowBounds.class, ResultHandler.class}),
+    @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class}),
     @Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class})})
 @Slf4j
 public class MasterSlaveAutoRoutingPlugin implements Interceptor {

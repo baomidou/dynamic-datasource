@@ -14,7 +14,7 @@
  * limitations under the License.
  * <pre/>
  */
-package com.baomidou.dynamic.datasource.plugin;
+package com.baomidou.dynamic.datasource.support;
 
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import java.sql.ResultSet;

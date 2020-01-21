@@ -17,11 +17,13 @@
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
 import com.baomidou.dynamic.datasource.DynamicDataSourceConfigure;
-import com.baomidou.dynamic.datasource.DynamicDataSourceCreator;
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAdvisor;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationInterceptor;
+import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
+import com.baomidou.dynamic.datasource.creator.DruidDataSourceCreator;
+import com.baomidou.dynamic.datasource.creator.HikariDataSourceCreator;
 import com.baomidou.dynamic.datasource.processor.DsHeaderProcessor;
 import com.baomidou.dynamic.datasource.processor.DsProcessor;
 import com.baomidou.dynamic.datasource.processor.DsSessionProcessor;
@@ -39,6 +41,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -64,6 +67,9 @@ public class DynamicDataSourceAutoConfiguration {
   @Autowired
   private DynamicDataSourceProperties properties;
 
+  @Autowired(required = false)
+  private ApplicationContext applicationContext;
+
   @Bean
   @ConditionalOnMissingBean
   public DynamicDataSourceProvider dynamicDataSourceProvider() {
@@ -72,12 +78,12 @@ public class DynamicDataSourceAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public DynamicDataSourceCreator dynamicDataSourceCreator() {
-    DynamicDataSourceCreator dynamicDataSourceCreator = new DynamicDataSourceCreator();
-    dynamicDataSourceCreator.setDruidConfig(properties.getDruid());
-    dynamicDataSourceCreator.setHikariCpConfig(properties.getHikari());
-    dynamicDataSourceCreator.setGlobalPublicKey(properties.getPublicKey());
-    return dynamicDataSourceCreator;
+  public DataSourceCreator dataSourceCreator() {
+    DataSourceCreator dataSourceCreator = new DataSourceCreator();
+    dataSourceCreator.setDruidDataSourceCreator(new DruidDataSourceCreator(properties.getDruid(), applicationContext));
+    dataSourceCreator.setHikariDataSourceCreator(new HikariDataSourceCreator(properties.getHikari()));
+    dataSourceCreator.setGlobalPublicKey(properties.getPublicKey());
+    return dataSourceCreator;
   }
 
   @Bean
@@ -95,12 +101,10 @@ public class DynamicDataSourceAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public DynamicDataSourceAnnotationAdvisor dynamicDatasourceAnnotationAdvisor(
-      DsProcessor dsProcessor) {
+  public DynamicDataSourceAnnotationAdvisor dynamicDatasourceAnnotationAdvisor(DsProcessor dsProcessor) {
     DynamicDataSourceAnnotationInterceptor interceptor = new DynamicDataSourceAnnotationInterceptor();
     interceptor.setDsProcessor(dsProcessor);
-    DynamicDataSourceAnnotationAdvisor advisor = new DynamicDataSourceAnnotationAdvisor(
-        interceptor);
+    DynamicDataSourceAnnotationAdvisor advisor = new DynamicDataSourceAnnotationAdvisor(interceptor);
     advisor.setOrder(properties.getOrder());
     return advisor;
   }
@@ -118,10 +122,8 @@ public class DynamicDataSourceAutoConfiguration {
 
   @Bean
   @ConditionalOnBean(DynamicDataSourceConfigure.class)
-  public DynamicDataSourceAdvisor dynamicAdvisor(
-      DynamicDataSourceConfigure dynamicDataSourceConfigure, DsProcessor dsProcessor) {
-    DynamicDataSourceAdvisor advisor = new DynamicDataSourceAdvisor(
-        dynamicDataSourceConfigure.getMatchers());
+  public DynamicDataSourceAdvisor dynamicAdvisor(DynamicDataSourceConfigure dynamicDataSourceConfigure, DsProcessor dsProcessor) {
+    DynamicDataSourceAdvisor advisor = new DynamicDataSourceAdvisor(dynamicDataSourceConfigure.getMatchers());
     advisor.setDsProcessor(dsProcessor);
     advisor.setOrder(Ordered.HIGHEST_PRECEDENCE);
     return advisor;

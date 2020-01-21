@@ -136,8 +136,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
         groupDataSources.get(group).addDatasource(dataSource);
       } else {
         try {
-          DynamicGroupDataSource groupDatasource = new DynamicGroupDataSource(group,
-              strategy.newInstance());
+          DynamicGroupDataSource groupDatasource = new DynamicGroupDataSource(group, strategy.newInstance());
           groupDatasource.addDatasource(dataSource);
           groupDataSources.put(group, groupDatasource);
         } catch (Exception e) {
@@ -202,6 +201,10 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
     log.info("dynamic-datasource start closing ....");
     for (Map.Entry<String, DataSource> item : dataSourceMap.entrySet()) {
       DataSource dataSource = item.getValue();
+      if (seata) {
+        DataSourceProxy dataSourceProxy = (DataSourceProxy) dataSource;
+        dataSource = dataSourceProxy.getTargetDataSource();
+      }
       if (p6spy) {
         Field realDataSourceField = P6DataSource.class.getDeclaredField("realDataSource");
         realDataSourceField.setAccessible(true);
@@ -221,11 +224,11 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
   @Override
   public void afterPropertiesSet() throws Exception {
     Map<String, DataSource> dataSources = provider.loadDataSources();
-    //添加并分组数据源
+    // 添加并分组数据源
     for (Map.Entry<String, DataSource> dsItem : dataSources.entrySet()) {
       addDataSource(dsItem.getKey(), dsItem.getValue());
     }
-    //检测默认数据源设置
+    // 检测默认数据源设置
     if (groupDataSources.containsKey(primary)) {
       log.info("dynamic-datasource initial loaded [{}] datasource,primary group datasource named [{}]", dataSources.size(), primary);
     } else if (dataSourceMap.containsKey(primary)) {

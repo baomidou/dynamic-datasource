@@ -16,7 +16,7 @@
  */
 package com.baomidou.dynamic.datasource.provider;
 
-import com.baomidou.dynamic.datasource.DynamicDataSourceCreator;
+import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class AbstractDataSourceProvider implements DynamicDataSourceProvider {
 
   @Autowired
-  private DynamicDataSourceCreator dynamicDataSourceCreator;
+  private DataSourceCreator dataSourceCreator;
 
   protected Map<String, DataSource> createDataSourceMap(
       Map<String, DataSourceProperty> dataSourcePropertiesMap) {
@@ -41,7 +41,7 @@ public abstract class AbstractDataSourceProvider implements DynamicDataSourcePro
         pollName = item.getKey();
       }
       dataSourceProperty.setPollName(pollName);
-      dataSourceMap.put(pollName, dynamicDataSourceCreator.createDataSource(dataSourceProperty));
+      dataSourceMap.put(pollName, dataSourceCreator.createDataSource(dataSourceProperty));
     }
     return dataSourceMap;
   }
