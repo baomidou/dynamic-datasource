@@ -25,6 +25,7 @@ import com.alibaba.druid.wall.WallFilter;
 import com.baomidou.dynamic.datasource.exception.ErrorCreateDataSourceException;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidSlf4jConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidWallConfigUtil;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.hikari.HikariCpConfig;
 import com.zaxxer.hikari.HikariConfig;
@@ -244,12 +245,12 @@ public class DynamicDataSourceCreator {
       wallFilter.setConfig(wallConfig);
       proxyFilters.add(wallFilter);
     }
-    // 新增关于日志的配置
     if (!StringUtils.isEmpty(filters) && filters.contains("slf4j")) {
       Slf4jLogFilter slf4jLogFilter = new Slf4jLogFilter();
       // 由于properties上面被用了，LogFilter不能使用configFromProperties方法，这里只能一个个set了。
-      slf4jLogFilter.setStatementLogEnabled(druidGlobalConfig.getSlf4j().getEnable());
-      slf4jLogFilter.setStatementExecutableSqlLogEnable(druidGlobalConfig.getSlf4j().getStatementExecutableSqlLogEnable());
+      DruidSlf4jConfig slf4jConfig = druidGlobalConfig.getSlf4j();
+      slf4jLogFilter.setStatementLogEnabled(slf4jConfig.getEnable());
+      slf4jLogFilter.setStatementExecutableSqlLogEnable(slf4jConfig.getStatementExecutableSqlLogEnable());
       proxyFilters.add(slf4jLogFilter);
     }
 

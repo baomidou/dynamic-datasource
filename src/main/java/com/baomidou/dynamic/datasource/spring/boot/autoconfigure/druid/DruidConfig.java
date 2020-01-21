@@ -86,6 +86,7 @@ public class DruidConfig {
   private Integer removeAbandonedTimeoutMillis;
   private Boolean logAbandoned;
   private String publicKey;
+
   @NestedConfigurationProperty
   private DruidWallConfig wall = new DruidWallConfig();
 
@@ -95,7 +96,7 @@ public class DruidConfig {
   @NestedConfigurationProperty
   private DruidSlf4jConfig slf4j = new DruidSlf4jConfig();
 
-  private List<String> proxyFilters = new ArrayList<>(4);
+  private List<String> proxyFilters = new ArrayList<>();
 
   public Properties toProperties(DruidConfig globalConfig) {
     Properties properties = new Properties();
