@@ -20,6 +20,8 @@ public class LoadController {
   @Autowired
   private DataSource dataSource;
   @Autowired
+  private DynamicRoutingDataSource dynamicRoutingDataSource;
+  @Autowired
   private DynamicDataSourceCreator dataSourceCreator;
 
   @GetMapping

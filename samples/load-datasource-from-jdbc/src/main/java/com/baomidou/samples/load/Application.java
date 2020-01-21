@@ -25,7 +25,7 @@ public class Application {
       @Override
       protected Map<String, DataSourceProperty> executeStmt(Statement statement)
           throws SQLException {
-        //*************** here is needn't in prod env***************
+        //*************** 实际运行应直接从库中查出，演示所以需要先插入数据***************
         statement.execute("CREATE TABLE IF NOT EXISTS `DB`\n"
             + "(\n"
             + "    `name`   VARCHAR(30) NULL DEFAULT NULL,\n"
@@ -43,7 +43,7 @@ public class Application {
         statement.executeUpdate(
             "insert into DB values ('slave_3','sa','','jdbc:h2:mem:test','org.h2.Driver')");
         Map<String, DataSourceProperty> map = new HashMap<>();
-        //*************** ↑↑↑↑↑↑↑ here is needn't in prod env***************
+        //*************** ↑↑↑↑↑↑↑ END  ***************
 
         ResultSet rs = statement.executeQuery("select * from DB");
         while (rs.next()) {

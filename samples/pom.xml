@@ -7,12 +7,12 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.1.8.RELEASE</version>
+    <version>2.2.4.RELEASE</version>
     <relativePath/>
   </parent>
 
   <groupId>com.baomidou</groupId>
-  <artifactId>samples</artifactId>
+  <artifactId>dynamic-datsource-samples</artifactId>
   <version>1.0.0</version>
   <packaging>pom</packaging>
 
@@ -23,16 +23,41 @@
   </properties>
 
   <modules>
+    <module>dynamic-add-remove-datasource</module>
+    <module>dynamic-druid-mybatis-sample</module>
     <module>dynamic-jdbc-template-sample</module>
     <module>dynamic-mybatis-sample</module>
     <module>dynamic-mybatisplus2-sample</module>
     <module>dynamic-mybatisplus3-sample</module>
-    <module>dynamic-druid-mybatis-sample</module>
-    <module>dynamic-spel-sample</module>
     <module>dynamic-nest-sample</module>
+    <module>dynamic-spel-sample</module>
     <module>load-datasource-from-jdbc</module>
-    <module>dynamic-add-remove-datasource</module>
   </modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <artifactId>mybatis-spring-boot-starter</artifactId>
+        <groupId>org.mybatis.spring.boot</groupId>
+        <version>2.1.1</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.xiaoymin</groupId>
+        <artifactId>knife4j-spring-boot-starter</artifactId>
+        <version>1.9.6</version>
+      </dependency>
+      <dependency>
+        <groupId>com.alibaba</groupId>
+        <artifactId>druid-spring-boot-starter</artifactId>
+        <version>1.1.21</version>
+      </dependency>
+      <dependency>
+        <groupId>p6spy</groupId>
+        <artifactId>p6spy</artifactId>
+        <version>3.8.7</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
     <dependency>
@@ -42,7 +67,7 @@
     <dependency>
       <groupId>com.baomidou</groupId>
       <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
-      <version>2.5.6</version>
+      <version>2.5.8</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
