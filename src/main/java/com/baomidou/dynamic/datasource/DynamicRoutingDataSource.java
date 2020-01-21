@@ -56,6 +56,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
   private boolean strict;
   private boolean p6spy;
   private boolean isSeata;
+
   /**
    * 所有数据库
    */
