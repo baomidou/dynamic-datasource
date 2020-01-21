@@ -74,8 +74,8 @@ public class DynamicDataSourceAutoConfiguration {
   @ConditionalOnMissingBean
   public DynamicDataSourceCreator dynamicDataSourceCreator() {
     DynamicDataSourceCreator dynamicDataSourceCreator = new DynamicDataSourceCreator();
-    dynamicDataSourceCreator.setDruidGlobalConfig(properties.getDruid());
-    dynamicDataSourceCreator.setHikariGlobalConfig(properties.getHikari());
+    dynamicDataSourceCreator.setDruidConfig(properties.getDruid());
+    dynamicDataSourceCreator.setHikariCpConfig(properties.getHikari());
     dynamicDataSourceCreator.setGlobalPublicKey(properties.getPublicKey());
     return dynamicDataSourceCreator;
   }
@@ -89,6 +89,7 @@ public class DynamicDataSourceAutoConfiguration {
     dataSource.setProvider(dynamicDataSourceProvider);
     dataSource.setP6spy(properties.getP6spy());
     dataSource.setStrict(properties.getStrict());
+    dataSource.setSeata(properties.getSeata());
     return dataSource;
   }
 

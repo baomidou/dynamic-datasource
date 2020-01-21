@@ -20,8 +20,7 @@ import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import com.p6spy.engine.spy.P6DataSource;
-
-import java.lang.reflect.Constructor;
+import io.seata.rm.datasource.DataSourceProxy;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
@@ -55,7 +54,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
   @Setter
   private boolean strict;
   private boolean p6spy;
-  private boolean isSeata;
+  private boolean seata;
   /**
    * 所有数据库
    */
@@ -72,8 +71,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
 
   private DataSource determinePrimaryDataSource() {
     log.debug("dynamic-datasource switch to the primary datasource");
-    return groupDataSources.containsKey(primary) ? groupDataSources.get(primary)
-        .determineDataSource() : dataSourceMap.get(primary);
+    return groupDataSources.containsKey(primary) ? groupDataSources.get(primary).determineDataSource() : dataSourceMap.get(primary);
   }
 
   /**
@@ -125,12 +123,11 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
   public synchronized void addDataSource(String ds, DataSource dataSource) {
     if (p6spy) {
       dataSource = new P6DataSource(dataSource);
+      log.info("dynamic-datasource [{}] wrap p6spy plugin", ds);
     }
-    if (isSeata) {
-      try {
-        dataSource = (DataSource)Class.forName("io.seata.rm.datasource.DataSourceProxy").getConstructor(DataSource.class).newInstance(dataSource);
-      } catch (Exception e) {
-      }
+    if (seata) {
+      dataSource = new DataSourceProxy(dataSource);
+      log.info("dynamic-datasource [{}] wrap seata plugin", ds);
     }
     dataSourceMap.put(ds, dataSource);
     if (ds.contains(UNDERLINE)) {
@@ -187,6 +184,19 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
     }
   }
 
+  public void setSeata(boolean seata) {
+    if (seata) {
+      try {
+        Class.forName("io.seata.rm.datasource.DataSourceProxy");
+        this.seata = true;
+        log.info("dynamic-datasource detect ALIBABA SEATA and enabled it");
+      } catch (Exception e) {
+        this.seata = false;
+        log.warn("dynamic-datasource enabled ALIBABA SEATA  ,however without seata dependency");
+      }
+    }
+  }
+
   @Override
   public void destroy() throws Exception {
     log.info("dynamic-datasource start closing ....");
@@ -217,25 +227,11 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
     }
     //检测默认数据源设置
     if (groupDataSources.containsKey(primary)) {
-      log.info(
-          "dynamic-datasource initial loaded [{}] datasource,primary group datasource named [{}]",
-          dataSources.size(), primary);
+      log.info("dynamic-datasource initial loaded [{}] datasource,primary group datasource named [{}]", dataSources.size(), primary);
     } else if (dataSourceMap.containsKey(primary)) {
-      log.info("dynamic-datasource initial loaded [{}] datasource,primary datasource named [{}]",
-          dataSources.size(), primary);
+      log.info("dynamic-datasource initial loaded [{}] datasource,primary datasource named [{}]", dataSources.size(), primary);
     } else {
       throw new RuntimeException("dynamic-datasource Please check the setting of primary");
-    }
-  }
-  public DynamicRoutingDataSource() {
-    try {
-      Class.forName("io.seata.rm.datasource.DataSourceProxy").getConstructor(DataSource.class);
-      this.isSeata = true;
-      log.info("启用seata代理数据源");
-    } catch (Exception e) {
-      this.isSeata=false;
-      // TODO Auto-generated catch block
-      log.info("seata不存在:{}", e.getMessage());
     }
   }
 }
