@@ -234,7 +234,6 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
       log.info("启用seata代理数据源");
     } catch (Exception e) {
       this.isSeata=false;
-      // TODO Auto-generated catch block
       log.info("seata不存在:{}", e.getMessage());
     }
   }
