@@ -34,13 +34,14 @@ import java.util.Properties;
 import javax.sql.DataSource;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
 
 /**
+ * Druid数据源创建器
+ *
  * @author TaoYu
- * @date 2020/1/21
+ * @since 2020/1/21
  */
 @Data
 @AllArgsConstructor

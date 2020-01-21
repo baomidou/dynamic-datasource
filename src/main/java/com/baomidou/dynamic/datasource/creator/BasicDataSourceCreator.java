@@ -23,8 +23,10 @@ import javax.sql.DataSource;
 import lombok.Data;
 
 /**
+ * 基础数据源创建器
+ *
  * @author TaoYu
- * @date 2020/1/21
+ * @since 2020/1/21
  */
 @Data
 public class BasicDataSourceCreator {

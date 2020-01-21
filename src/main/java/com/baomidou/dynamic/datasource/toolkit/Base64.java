@@ -22,8 +22,8 @@ package com.baomidou.dynamic.datasource.toolkit;
 public class Base64 {
 
   /**
-   * This array is a lookup table that translates 6-bit positive integer index values into their "Base64 Alphabet"
-   * equivalents as specified in Table 1 of RFC 2045.
+   * This array is a lookup table that translates 6-bit positive integer index values into their "Base64 Alphabet" equivalents as specified
+   * in Table 1 of RFC 2045.
    */
   private static final char intToBase64[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
       'L', 'M',
@@ -33,9 +33,9 @@ public class Base64 {
       '1', '2',
       '3', '4', '5', '6', '7', '8', '9', '+', '/'};
   /**
-   * This array is a lookup table that translates 6-bit positive integer index values into their "Alternate Base64
-   * Alphabet" equivalents. This is NOT the real Base64 Alphabet as per in Table 1 of RFC 2045. This alternate alphabet
-   * does not use the capital letters. It is designed for use in environments where "case folding" occurs.
+   * This array is a lookup table that translates 6-bit positive integer index values into their "Alternate Base64 Alphabet" equivalents.
+   * This is NOT the real Base64 Alphabet as per in Table 1 of RFC 2045. This alternate alphabet does not use the capital letters. It is
+   * designed for use in environments where "case folding" occurs.
    */
   private static final char intToAltBase64[] = {'!', '"', '#', '$', '%', '&', '\'', '(', ')', ',',
       '-', '.', ':',
@@ -45,9 +45,9 @@ public class Base64 {
       '1', '2',
       '3', '4', '5', '6', '7', '8', '9', '+', '?'};
   /**
-   * This array is a lookup table that translates unicode characters drawn from the "Base64 Alphabet" (as specified in
-   * Table 1 of RFC 2045) into their 6-bit positive integer equivalents. Characters that are not in the Base64 alphabet
-   * but fall within the bounds of the array are translated to -1.
+   * This array is a lookup table that translates unicode characters drawn from the "Base64 Alphabet" (as specified in Table 1 of RFC 2045)
+   * into their 6-bit positive integer equivalents. Characters that are not in the Base64 alphabet but fall within the bounds of the array
+   * are translated to -1.
    */
   private static final byte base64ToInt[] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
       -1, -1, -1,
@@ -59,8 +59,7 @@ public class Base64 {
       26, 27, 28,
       29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51};
   /**
-   * This array is the analogue of base64ToInt, but for the nonstandard variant that avoids the use of uppercase
-   * alphabetic characters.
+   * This array is the analogue of base64ToInt, but for the nonstandard variant that avoids the use of uppercase alphabetic characters.
    */
   private static final byte altBase64ToInt[] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
       -1, -1, -1, -1,
@@ -74,16 +73,18 @@ public class Base64 {
       22, 23, 24, 25};
 
   /**
-   * Translates the specified byte array into a Base64 string as per Preferences.put(byte[]).
+   * @param a Translates the specified byte array into a Base64 string as per Preferences.put(byte[]).
+   * @return str
    */
   public static String byteArrayToBase64(byte[] a) {
     return byteArrayToBase64(a, false);
   }
 
   /**
-   * Translates the specified byte array into an "alternate representation" Base64 string. This non-standard variant
-   * uses an alphabet that does not contain the uppercase alphabetic characters, which makes it suitable for use in
-   * situations where case-folding occurs.
+   * @param a Translates the specified byte array into an "alternate representation" Base64 string. This non-standard variant uses an
+   * alphabet that does not contain the uppercase alphabetic characters, which makes it suitable for use in situations where case-folding
+   * occurs.
+   * @return str
    */
   public static String byteArrayToAltBase64(byte[] a) {
     return byteArrayToBase64(a, true);
@@ -130,14 +131,16 @@ public class Base64 {
   }
 
   /**
-   * Translates the specified Base64 string (as per Preferences.get(byte[])) into a byte array.
+   * @param s Translates the specified Base64 string (as per Preferences.get(byte[])) into a byte array.
+   * @return byte[]
    */
   public static byte[] base64ToByteArray(String s) {
     return base64ToByteArray(s, false);
   }
 
   /**
-   * Translates the specified "alternate representation" Base64 string into a byte array.
+   * @param s Translates the specified "alternate representation" Base64 string into a byte array.
+   * @return byte[]
    */
   public static byte[] altBase64ToByteArray(String s) {
     return base64ToByteArray(s, true);
@@ -192,8 +195,7 @@ public class Base64 {
   }
 
   /**
-   * Translates the specified character, which is assumed to be in the "Base 64 Alphabet" into its equivalent 6-bit
-   * positive integer.
+   * Translates the specified character, which is assumed to be in the "Base 64 Alphabet" into its equivalent 6-bit positive integer.
    *
    * @throw IllegalArgumentException or ArrayOutOfBoundsException if c is not in the Base64 Alphabet.
    */

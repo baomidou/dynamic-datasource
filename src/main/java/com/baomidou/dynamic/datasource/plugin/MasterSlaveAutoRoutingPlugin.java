@@ -72,6 +72,7 @@ public class MasterSlaveAutoRoutingPlugin implements Interceptor {
    * 获取动态数据源名称，重写注入 DbHealthIndicator 支持数据源健康状况判断选择
    *
    * @param mappedStatement mybatis MappedStatement
+   * @return 获取真实的数据源名称
    */
   public String getDataSource(MappedStatement mappedStatement) {
     String slave = DdConstants.SLAVE;

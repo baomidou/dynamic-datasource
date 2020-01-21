@@ -56,6 +56,7 @@ public class DbHealthIndicator extends AbstractHealthIndicator {
    * 获取数据源连接健康状况
    *
    * @param dataSource 数据源名称
+   * @return 健康状况
    */
   public static boolean getDbHealth(String dataSource) {
     return DB_HEALTH.get(dataSource);
@@ -66,6 +67,7 @@ public class DbHealthIndicator extends AbstractHealthIndicator {
    *
    * @param dataSource 数据源名称
    * @param health 健康状况 false 不健康 true 健康
+   * @return 设置状态
    */
   public static Boolean setDbHealth(String dataSource, boolean health) {
     return DB_HEALTH.put(dataSource, health);

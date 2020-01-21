@@ -26,21 +26,27 @@ import org.springframework.util.StringUtils;
 
 /**
  * @author TaoYu
- * @date 2020/1/21
+ * @since 2020/1/21
  */
 @Slf4j
 @AllArgsConstructor
 public class ScriptRunner {
 
   /**
-   * 错误是否继续 默认 true
+   * 错误是否继续
    */
   private boolean continueOnError;
   /**
-   * 分隔符 默认 ;
+   * 分隔符
    */
   private String separator;
 
+  /**
+   * 执行数据库脚本
+   *
+   * @param dataSource 连接池
+   * @param location 脚本位置
+   */
   public void runScript(DataSource dataSource, String location) {
     if (StringUtils.hasText(location)) {
       ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
