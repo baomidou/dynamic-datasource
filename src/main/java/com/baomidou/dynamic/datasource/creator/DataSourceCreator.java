@@ -46,10 +46,6 @@ public class DataSourceCreator {
    */
   private static Boolean hikariExists = false;
 
-  private HikariDataSourceCreator hikariDataSourceCreator;
-  private DruidDataSourceCreator druidDataSourceCreator;
-  private String globalPublicKey;
-
   static {
     try {
       Class.forName(DRUID_DATASOURCE);
@@ -62,6 +58,10 @@ public class DataSourceCreator {
     } catch (ClassNotFoundException ignored) {
     }
   }
+
+  private HikariDataSourceCreator hikariDataSourceCreator;
+  private DruidDataSourceCreator druidDataSourceCreator;
+  private String globalPublicKey;
 
   /**
    * 创建数据源
