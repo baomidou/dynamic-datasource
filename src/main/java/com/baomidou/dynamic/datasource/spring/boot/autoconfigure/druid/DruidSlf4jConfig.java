@@ -26,7 +26,7 @@ import lombok.Data;
 @Data
 public class DruidSlf4jConfig {
 
-    private Boolean enable = true;
+  private Boolean enable = true;
 
-    private Boolean statementExecutableSqlLogEnable = false;
+  private Boolean statementExecutableSqlLogEnable = false;
 }

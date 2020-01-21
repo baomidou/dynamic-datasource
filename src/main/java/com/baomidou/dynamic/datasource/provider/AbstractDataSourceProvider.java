@@ -18,12 +18,11 @@ package com.baomidou.dynamic.datasource.provider;
 
 import com.baomidou.dynamic.datasource.DynamicDataSourceCreator;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
+import javax.sql.DataSource;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 @Slf4j
@@ -38,7 +37,7 @@ public abstract class AbstractDataSourceProvider implements DynamicDataSourcePro
     for (Map.Entry<String, DataSourceProperty> item : dataSourcePropertiesMap.entrySet()) {
       DataSourceProperty dataSourceProperty = item.getValue();
       String pollName = dataSourceProperty.getPollName();
-      if(pollName == null || "".equals(pollName)){
+      if (pollName == null || "".equals(pollName)) {
         pollName = item.getKey();
       }
       dataSourceProperty.setPollName(pollName);

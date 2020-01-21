@@ -51,7 +51,7 @@ public class DsSpelExpressionProcessor extends DsProcessor {
     Object[] arguments = invocation.getArguments();
     EvaluationContext context = new MethodBasedEvaluationContext(null, method, arguments,
         NAME_DISCOVERER);
-      final Object value = PARSER.parseExpression(key).getValue(context);
-      return value == null? null : value.toString();
+    final Object value = PARSER.parseExpression(key).getValue(context);
+    return value == null ? null : value.toString();
   }
 }
