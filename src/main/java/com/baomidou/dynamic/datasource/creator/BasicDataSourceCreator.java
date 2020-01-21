@@ -29,6 +29,18 @@ import lombok.Data;
 @Data
 public class BasicDataSourceCreator {
 
+  private BasicDataSourceCreator() {
+  }
+
+  public static BasicDataSourceCreator getInstance() {
+    return Inner.INSTANCE;
+  }
+
+  private static class Inner {
+
+    private static final BasicDataSourceCreator INSTANCE = new BasicDataSourceCreator();
+  }
+
   private static Method createMethod;
   private static Method typeMethod;
   private static Method urlMethod;

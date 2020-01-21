@@ -109,6 +109,13 @@
       <version>3.8.7</version>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>io.seata</groupId>
+      <artifactId>seata-all</artifactId>
+      <version>1.0.0</version>
+      <optional>true</optional>
+    </dependency>
+
   </dependencies>
 
   <build>

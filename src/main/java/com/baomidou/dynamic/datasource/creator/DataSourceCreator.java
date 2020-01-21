@@ -16,13 +16,14 @@
  */
 package com.baomidou.dynamic.datasource.creator;
 
+import static com.baomidou.dynamic.datasource.toolkit.DdConstants.DRUID_DATASOURCE;
+import static com.baomidou.dynamic.datasource.toolkit.DdConstants.HIKARI_DATASOURCE;
+
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import com.baomidou.dynamic.datasource.support.ScriptRunner;
 import javax.sql.DataSource;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.util.StringUtils;
 
@@ -33,29 +34,9 @@ import org.springframework.util.StringUtils;
  * @since 2.3.0
  */
 @Slf4j
+@Setter
 public class DataSourceCreator {
 
-  /**
-   * DRUID数据源类
-   */
-  private static final String DRUID_DATASOURCE = "com.alibaba.druid.pool.DruidDataSource";
-  /**
-   * HikariCp数据源
-   */
-  private static final String HIKARI_DATASOURCE = "com.zaxxer.hikari.HikariDataSource";
-  /**
-   * JNDI数据源查找
-   */
-  private static final JndiDataSourceLookup JNDI_DATA_SOURCE_LOOKUP = new JndiDataSourceLookup();
-
-  @Setter
-  private BasicDataSourceCreator basicDataSourceCreator;
-
-  @Setter
-  private HikariDataSourceCreator hikariDataSourceCreator;
-
-  @Setter
-  private DruidDataSourceCreator druidDataSourceCreator;
   /**
    * 是否存在druid
    */
@@ -64,6 +45,10 @@ public class DataSourceCreator {
    * 是否存在hikari
    */
   private static Boolean hikariExists = false;
+
+  private HikariDataSourceCreator hikariDataSourceCreator;
+  private DruidDataSourceCreator druidDataSourceCreator;
+  private String globalPublicKey;
 
   static {
     try {
@@ -77,11 +62,6 @@ public class DataSourceCreator {
     } catch (ClassNotFoundException ignored) {
     }
   }
-
-  @Setter
-  private String globalPublicKey;
-  @Autowired(required = false)
-  private ApplicationContext applicationContext;
 
   /**
    * 创建数据源
@@ -113,6 +93,11 @@ public class DataSourceCreator {
         dataSource = createBasicDataSource(dataSourceProperty);
       }
     }
+    this.runScrip(dataSourceProperty, dataSource);
+    return dataSource;
+  }
+
+  private void runScrip(DataSourceProperty dataSourceProperty, DataSource dataSource) {
     String schema = dataSourceProperty.getSchema();
     String data = dataSourceProperty.getData();
     if (StringUtils.hasText(schema) || StringUtils.hasText(data)) {
@@ -124,7 +109,6 @@ public class DataSourceCreator {
         scriptRunner.runScript(dataSource, data);
       }
     }
-    return dataSource;
   }
 
   /**
@@ -137,7 +121,7 @@ public class DataSourceCreator {
     if (StringUtils.isEmpty(dataSourceProperty.getPublicKey())) {
       dataSourceProperty.setPublicKey(globalPublicKey);
     }
-    return basicDataSourceCreator.createDataSource(dataSourceProperty);
+    return BasicDataSourceCreator.getInstance().createDataSource(dataSourceProperty);
   }
 
   /**
@@ -147,11 +131,11 @@ public class DataSourceCreator {
    * @return 数据源
    */
   public DataSource createJNDIDataSource(String jndiName) {
-    return JNDI_DATA_SOURCE_LOOKUP.getDataSource(jndiName);
+    return new JndiDataSourceLookup().getDataSource(jndiName);
   }
 
   /**
-   * 创建DRUID数据源
+   * 创建Druid数据源
    *
    * @param dataSourceProperty 数据源参数
    * @return 数据源

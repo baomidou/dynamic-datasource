@@ -1,7 +1,7 @@
 package com.baomidou.samples.dynamicload.controller;
 
-import com.baomidou.dynamic.datasource.DynamicDataSourceCreator;
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
+import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import java.util.Set;
 import javax.sql.DataSource;
@@ -20,9 +20,7 @@ public class LoadController {
   @Autowired
   private DataSource dataSource;
   @Autowired
-  private DynamicRoutingDataSource dynamicRoutingDataSource;
-  @Autowired
-  private DynamicDataSourceCreator dataSourceCreator;
+  private DataSourceCreator dataSourceCreator;
 
   @GetMapping
   public Set<String> now() {
