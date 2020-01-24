@@ -144,7 +144,10 @@ public class DataSourceCreator {
     if (StringUtils.isEmpty(dataSourceProperty.getPublicKey())) {
       dataSourceProperty.setPublicKey(globalPublicKey);
     }
-    return druidDataSourceCreator.createDataSource(dataSourceProperty);
+    if (druidDataSourceCreator != null) {
+      return druidDataSourceCreator.createDataSource(dataSourceProperty);
+    }
+    return createBasicDataSource(dataSourceProperty);
   }
 
   /**
@@ -158,6 +161,9 @@ public class DataSourceCreator {
     if (StringUtils.isEmpty(dataSourceProperty.getPublicKey())) {
       dataSourceProperty.setPublicKey(globalPublicKey);
     }
-    return hikariDataSourceCreator.createDataSource(dataSourceProperty);
+    if (hikariDataSourceCreator != null) {
+      return hikariDataSourceCreator.createDataSource(dataSourceProperty);
+    }
+    return createBasicDataSource(dataSourceProperty);
   }
 }
