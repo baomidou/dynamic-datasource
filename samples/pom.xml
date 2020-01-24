@@ -30,6 +30,7 @@
     <module>dynamic-mybatisplus2-sample</module>
     <module>dynamic-mybatisplus3-sample</module>
     <module>dynamic-nest-sample</module>
+    <module>dynamic-seata-sample</module>
     <module>dynamic-spel-sample</module>
     <module>load-datasource-from-jdbc</module>
   </modules>
@@ -70,14 +71,19 @@
       <version>2.5.8</version>
     </dependency>
     <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
       <version>1.4.197</version>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

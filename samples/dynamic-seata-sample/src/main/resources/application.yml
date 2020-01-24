@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    dynamic:
+      primary: order
+      strict: true
+      datasource:
+        order:
+          username: root
+          password: 123456
+          url: jdbc:mysql://localhost:3306/seata_order?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&useSSL=false
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          schema: db/schema-order.sql
+        account:
+          username: root
+          password: 123456
+          url: jdbc:mysql://localhost:3306/seata_account?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&useSSL=false
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          schema: db/schema-accountr.sql
+        product:
+          username: root
+          password: 123456
+          url: jdbc:mysql://localhost:3306/seata_product?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&useSSL=false
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          schema: db/schema-product.sql
+logging:
+  level:
+    com.baomidou: debug
