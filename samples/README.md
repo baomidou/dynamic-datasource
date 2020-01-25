@@ -11,5 +11,6 @@
 - dynamic-mybatisplus2-sample 集成mybatisPlus2的使用示例
 - dynamic-mybatisplus3-sample 集成mybatisPlus3的使用示例
 - dynamic-nest-sample 嵌套切换数据源使用示例（高级）
+- dynamic-seata-sample 基于seata的分布式事务集成使用示例
 - dynamic-spel-sample 动态从外部参数spel来切换数据源的使用示例（高级）
 - load-datasource-from-jdbc 通过数据库配置来启动数据源示例（高级）

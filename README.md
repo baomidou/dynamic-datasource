@@ -152,7 +152,4 @@ public class UserServiceImpl implements UserService {
 
 ---
 
-
-- #### 加密,Druid集成，MybatisPlus集成，动态增减数据源，自定义切换规则,纯读写分离插件等等更多更细致的文档在这里     [点击查看](https://gitee.com/baomidou/dynamic-datasource-spring-boot-starter/wikis/pages)
-
-- #### 项目Javadoc一览                  [点击查看](https://apidoc.gitee.com/baomidou/dynamic-datasource-spring-boot-starter/)
+[加密,Druid集成，MybatisPlus集成，动态增减数据源，自定义切换规则,纯读写分离插件等等更多更细致的文档在这里](https://github.com/baomidou/dynamic-datasource-spring-boot-starter/wiki)
