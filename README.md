@@ -44,6 +44,7 @@ dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成�
 8. 使用spel动态参数解析数据源，如从session，header或参数中获取数据源。（多租户架构神器）
 9. 提供多层数据源嵌套切换。（ServiceA >>>  ServiceB >>> ServiceC，每个Service都是不同的数据源）
 10. 提供 **不使用注解**  而   **使用 正则 或 spel**    来切换数据源方案（实验性功能）。
+11. **基于seata的分布式事务支持。**
 
 # 约定
 
@@ -152,4 +153,4 @@ public class UserServiceImpl implements UserService {
 
 ---
 
-[加密,Druid集成，MybatisPlus集成，动态增减数据源，自定义切换规则,纯读写分离插件等等更多更细致的文档在这里](https://github.com/baomidou/dynamic-datasource-spring-boot-starter/wiki)
+[分布式事务，加密,Druid集成，MybatisPlus集成，动态增减数据源，自定义切换规则,纯读写分离插件等等更多更细致的文档在这里](https://github.com/baomidou/dynamic-datasource-spring-boot-starter/wiki)
