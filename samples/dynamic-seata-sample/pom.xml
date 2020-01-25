@@ -17,6 +17,21 @@
       <version>3.3.0</version>
     </dependency>
     <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>druid-spring-boot-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.alibaba.cloud</groupId>
+      <artifactId>spring-cloud-alibaba-seata</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>io.seata</groupId>
+          <artifactId>seata-all</artifactId>
+        </exclusion>
+      </exclusions>
+      <version>2.1.1.RELEASE</version>
+    </dependency>
+    <dependency>
       <groupId>io.seata</groupId>
       <artifactId>seata-all</artifactId>
       <version>1.0.0</version>

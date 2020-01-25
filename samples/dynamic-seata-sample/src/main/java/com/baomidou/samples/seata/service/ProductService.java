@@ -7,7 +7,7 @@ public interface ProductService {
    *
    * @param productId 商品 ID
    * @param amount 扣减数量
-   * @return 操作结果
+   * @return 商品总价
    */
-  boolean reduceStock(Long productId, Integer amount);
+  Double reduceStock(Long productId, Integer amount);
 }

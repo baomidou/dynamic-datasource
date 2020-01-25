@@ -27,4 +27,4 @@ CREATE TABLE undo_log
   DEFAULT CHARSET = utf8;
 
 INSERT INTO product (id, price, stock)
-VALUES (1, 5, 10);
+VALUES (1, 10, 20);

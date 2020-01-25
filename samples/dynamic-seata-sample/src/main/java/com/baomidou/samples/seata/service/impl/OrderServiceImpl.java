@@ -1,70 +1,63 @@
 package com.baomidou.samples.seata.service.impl;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
-import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
-import com.baomidou.samples.seata.common.OperationResponse;
-import com.baomidou.samples.seata.dao.OrderDao;
-import com.baomidou.samples.seata.entity.Orders;
 import com.baomidou.samples.seata.common.OrderStatus;
-import com.baomidou.samples.seata.service.OrderService;
-import com.baomidou.samples.seata.service.AccountService;
-import com.baomidou.samples.seata.service.ProductService;
+import com.baomidou.samples.seata.dao.OrderDao;
 import com.baomidou.samples.seata.dto.PlaceOrderRequest;
+import com.baomidou.samples.seata.entity.Order;
+import com.baomidou.samples.seata.service.AccountService;
+import com.baomidou.samples.seata.service.OrderService;
+import com.baomidou.samples.seata.service.ProductService;
 import io.seata.core.context.RootContext;
 import io.seata.spring.annotation.GlobalTransactional;
-import lombok.AllArgsConstructor;
+import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
 @Slf4j
-@AllArgsConstructor
+@Service
 public class OrderServiceImpl implements OrderService {
 
-  private final OrderDao orderDao;
-
-  private final AccountService accountService;
-
-  private final ProductService productService;
+  @Resource
+  private OrderDao orderDao;
+  @Autowired
+  private AccountService accountService;
+  @Autowired
+  private ProductService productService;
 
   @DS("order")
   @Override
   @Transactional
   @GlobalTransactional
-  public OperationResponse placeOrder(PlaceOrderRequest placeOrderRequest) {
-    log.info("=============ORDER=================");
-    DynamicDataSourceContextHolder.push("order");
+  public void placeOrder(PlaceOrderRequest request) {
+    log.info("=============ORDER START=================");
+    Long userId = request.getUserId();
+    Long productId = request.getProductId();
+    Integer amount = request.getAmount();
+    log.info("收到下单请求,用户:{}, 商品:{},数量:{}", userId, productId, amount);
+
     log.info("当前 XID: {}", RootContext.getXID());
 
-    Integer amount = 1;
-    Integer price = placeOrderRequest.getPrice();
-
-    Orders orders = Orders.builder()
-        .userId(placeOrderRequest.getUserId())
-        .productId(placeOrderRequest.getProductId())
+    Order order = Order.builder()
+        .userId(userId)
+        .productId(productId)
         .status(OrderStatus.INIT)
-        .payAmount(price)
+        .amount(amount)
         .build();
 
-    Integer saveOrderRecord = orderDao.insert(orders);
-
-    log.info("保存订单{}", saveOrderRecord > 0 ? "成功" : "失败");
-
-    // 扣减库存
-    boolean operationStorageResult = productService.reduceStock(placeOrderRequest.getProductId(), amount);
-
+    orderDao.insert(order);
+    log.info("订单一阶段生成，等待扣库存付款中");
+    // 扣减库存并计算总价
+    Double totalPrice = productService.reduceStock(productId, amount);
     // 扣减余额
-    boolean operationBalanceResult = accountService.reduceBalance(placeOrderRequest.getUserId(), price);
+    accountService.reduceBalance(userId, totalPrice);
 
-    log.info("=============ORDER=================");
-
-    orders.setStatus(OrderStatus.SUCCESS);
-    Integer updateOrderRecord = orderDao.updateById(orders);
-    log.info("更新订单:{} {}", orders.getId(), updateOrderRecord > 0 ? "成功" : "失败");
-
-    return OperationResponse.builder()
-        .success(operationStorageResult && operationBalanceResult)
-        .build();
+    order.setStatus(OrderStatus.SUCCESS);
+    order.setTotalPrice(totalPrice);
+    orderDao.updateById(order);
+    log.info("订单已成功下单");
+    log.info("=============ORDER END=================");
   }
 }

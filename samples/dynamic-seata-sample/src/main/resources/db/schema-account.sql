@@ -25,4 +25,4 @@ CREATE TABLE undo_log
   AUTO_INCREMENT = 1
   DEFAULT CHARSET = utf8;
 INSERT INTO account (id, balance)
-VALUES (1, 1);
+VALUES (1, 50);
