@@ -32,8 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import javax.sql.DataSource;
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
 
@@ -44,12 +44,16 @@ import org.springframework.util.StringUtils;
  * @since 2020/1/21
  */
 @Data
-@AllArgsConstructor
 public class DruidDataSourceCreator {
 
   private DruidConfig druidConfig;
 
+  @Autowired(required = false)
   private ApplicationContext applicationContext;
+
+  public DruidDataSourceCreator(DruidConfig druidConfig) {
+    this.druidConfig = druidConfig;
+  }
 
   public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
     DruidDataSource dataSource = new DruidDataSource();

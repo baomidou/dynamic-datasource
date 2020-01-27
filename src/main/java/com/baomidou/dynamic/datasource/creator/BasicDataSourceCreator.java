@@ -67,13 +67,6 @@ public class BasicDataSourceCreator {
     }
   }
 
-  private BasicDataSourceCreator() {
-  }
-
-  public static BasicDataSourceCreator getInstance() {
-    return Inner.INSTANCE;
-  }
-
   /**
    * 创建基础数据源
    *
@@ -93,11 +86,6 @@ public class BasicDataSourceCreator {
       throw new ErrorCreateDataSourceException(
           "dynamic-datasource create basic database named " + dataSourceProperty.getPollName() + " error");
     }
-  }
-
-  private static class Inner {
-
-    private static final BasicDataSourceCreator INSTANCE = new BasicDataSourceCreator();
   }
 
 }

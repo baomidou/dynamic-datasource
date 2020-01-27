@@ -24,7 +24,6 @@ import com.baomidou.dynamic.datasource.support.ScriptRunner;
 import javax.sql.DataSource;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.util.StringUtils;
 
 /**
@@ -59,6 +58,8 @@ public class DataSourceCreator {
     }
   }
 
+  private BasicDataSourceCreator basicDataSourceCreator;
+  private JndiDataSourceCreator jndiDataSourceCreator;
   private HikariDataSourceCreator hikariDataSourceCreator;
   private DruidDataSourceCreator druidDataSourceCreator;
   private String globalPublicKey;
@@ -121,7 +122,7 @@ public class DataSourceCreator {
     if (StringUtils.isEmpty(dataSourceProperty.getPublicKey())) {
       dataSourceProperty.setPublicKey(globalPublicKey);
     }
-    return BasicDataSourceCreator.getInstance().createDataSource(dataSourceProperty);
+    return basicDataSourceCreator.createDataSource(dataSourceProperty);
   }
 
   /**
@@ -131,7 +132,7 @@ public class DataSourceCreator {
    * @return 数据源
    */
   public DataSource createJNDIDataSource(String jndiName) {
-    return new JndiDataSourceLookup().getDataSource(jndiName);
+    return jndiDataSourceCreator.createDataSource(jndiName);
   }
 
   /**
@@ -144,10 +145,7 @@ public class DataSourceCreator {
     if (StringUtils.isEmpty(dataSourceProperty.getPublicKey())) {
       dataSourceProperty.setPublicKey(globalPublicKey);
     }
-    if (druidDataSourceCreator != null) {
-      return druidDataSourceCreator.createDataSource(dataSourceProperty);
-    }
-    return createBasicDataSource(dataSourceProperty);
+    return druidDataSourceCreator.createDataSource(dataSourceProperty);
   }
 
   /**
@@ -161,9 +159,6 @@ public class DataSourceCreator {
     if (StringUtils.isEmpty(dataSourceProperty.getPublicKey())) {
       dataSourceProperty.setPublicKey(globalPublicKey);
     }
-    if (hikariDataSourceCreator != null) {
-      return hikariDataSourceCreator.createDataSource(dataSourceProperty);
-    }
-    return createBasicDataSource(dataSourceProperty);
+    return hikariDataSourceCreator.createDataSource(dataSourceProperty);
   }
 }
