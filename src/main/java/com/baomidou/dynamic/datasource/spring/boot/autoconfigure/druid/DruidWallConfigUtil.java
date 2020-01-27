@@ -41,26 +41,20 @@ public final class DruidWallConfigUtil {
     if (!StringUtils.isEmpty(tempDir)) {
       wallConfig.loadConfig(tempDir);
     }
-    String tempTenantTablePattern =
-        StringUtils.isEmpty(c.getTenantTablePattern()) ? g.getTenantTablePattern()
-            : c.getTenantTablePattern();
+    String tempTenantTablePattern = StringUtils.isEmpty(c.getTenantTablePattern()) ? g.getTenantTablePattern() : c.getTenantTablePattern();
     if (!StringUtils.isEmpty(tempTenantTablePattern)) {
       wallConfig.setTenantTablePattern(tempTenantTablePattern);
     }
-    String tempTenantColumn =
-        StringUtils.isEmpty(c.getTenantColumn()) ? g.getTenantColumn() : c.getTenantColumn();
+    String tempTenantColumn = StringUtils.isEmpty(c.getTenantColumn()) ? g.getTenantColumn() : c.getTenantColumn();
     if (!StringUtils.isEmpty(tempTenantColumn)) {
       wallConfig.setTenantTablePattern(tempTenantColumn);
     }
     Boolean tempNoneBaseStatementAllow =
-        c.getNoneBaseStatementAllow() == null ? g.getNoneBaseStatementAllow()
-            : c.getNoneBaseStatementAllow();
+        c.getNoneBaseStatementAllow() == null ? g.getNoneBaseStatementAllow() : c.getNoneBaseStatementAllow();
     if (tempNoneBaseStatementAllow != null && tempNoneBaseStatementAllow) {
       wallConfig.setNoneBaseStatementAllow(true);
     }
-    Integer tempInsertValuesCheckSize =
-        c.getInsertValuesCheckSize() == null ? g.getInsertValuesCheckSize()
-            : c.getInsertValuesCheckSize();
+    Integer tempInsertValuesCheckSize = c.getInsertValuesCheckSize() == null ? g.getInsertValuesCheckSize() : c.getInsertValuesCheckSize();
     if (tempInsertValuesCheckSize != null) {
       wallConfig.setInsertValuesCheckSize(tempInsertValuesCheckSize);
     }
@@ -77,67 +71,54 @@ public final class DruidWallConfigUtil {
     if (tempSelectAllow != null && !tempSelectAllow) {
       wallConfig.setSelelctAllow(false);
     }
-    Boolean tempSelectIntoAllow =
-        c.getSelectIntoAllow() == null ? g.getSelectIntoAllow() : c.getSelectIntoAllow();
+    Boolean tempSelectIntoAllow = c.getSelectIntoAllow() == null ? g.getSelectIntoAllow() : c.getSelectIntoAllow();
     if (tempSelectIntoAllow != null && !tempSelectIntoAllow) {
       wallConfig.setSelectIntoAllow(false);
     }
     Boolean tempSelectIntoOutfileAllow =
-        c.getSelectIntoOutfileAllow() == null ? g.getSelectIntoOutfileAllow()
-            : c.getSelectIntoOutfileAllow();
+        c.getSelectIntoOutfileAllow() == null ? g.getSelectIntoOutfileAllow() : c.getSelectIntoOutfileAllow();
     if (tempSelectIntoOutfileAllow != null && tempSelectIntoOutfileAllow) {
       wallConfig.setSelectIntoOutfileAllow(true);
     }
     Boolean tempSelectWhereAlwayTrueCheck =
-        c.getSelectWhereAlwayTrueCheck() == null ? g.getSelectWhereAlwayTrueCheck()
-            : c.getSelectWhereAlwayTrueCheck();
+        c.getSelectWhereAlwayTrueCheck() == null ? g.getSelectWhereAlwayTrueCheck() : c.getSelectWhereAlwayTrueCheck();
     if (tempSelectWhereAlwayTrueCheck != null && !tempSelectWhereAlwayTrueCheck) {
       wallConfig.setSelectWhereAlwayTrueCheck(false);
     }
     Boolean tempSelectHavingAlwayTrueCheck =
-        c.getSelectHavingAlwayTrueCheck() == null ? g.getSelectHavingAlwayTrueCheck()
-            : c.getSelectHavingAlwayTrueCheck();
+        c.getSelectHavingAlwayTrueCheck() == null ? g.getSelectHavingAlwayTrueCheck() : c.getSelectHavingAlwayTrueCheck();
     if (tempSelectHavingAlwayTrueCheck != null && !tempSelectHavingAlwayTrueCheck) {
       wallConfig.setSelectHavingAlwayTrueCheck(false);
     }
-    Boolean tempSelectUnionCheck =
-        c.getSelectUnionCheck() == null ? g.getSelectUnionCheck() : c.getSelectUnionCheck();
+    Boolean tempSelectUnionCheck = c.getSelectUnionCheck() == null ? g.getSelectUnionCheck() : c.getSelectUnionCheck();
     if (tempSelectUnionCheck != null && !tempSelectUnionCheck) {
       wallConfig.setSelectUnionCheck(false);
     }
-    Boolean tempSelectMinusCheck =
-        c.getSelectMinusCheck() == null ? g.getSelectMinusCheck() : c.getSelectMinusCheck();
+    Boolean tempSelectMinusCheck = c.getSelectMinusCheck() == null ? g.getSelectMinusCheck() : c.getSelectMinusCheck();
     if (tempSelectMinusCheck != null && !tempSelectMinusCheck) {
       wallConfig.setSelectMinusCheck(false);
     }
-    Boolean tempSelectExceptCheck =
-        c.getSelectExceptCheck() == null ? g.getSelectExceptCheck() : c.getSelectExceptCheck();
+    Boolean tempSelectExceptCheck = c.getSelectExceptCheck() == null ? g.getSelectExceptCheck() : c.getSelectExceptCheck();
     if (tempSelectExceptCheck != null && !tempSelectExceptCheck) {
       wallConfig.setSelectExceptCheck(false);
     }
-    Boolean tempSelectIntersectCheck =
-        c.getSelectIntersectCheck() == null ? g.getSelectIntersectCheck()
-            : c.getSelectIntersectCheck();
+    Boolean tempSelectIntersectCheck = c.getSelectIntersectCheck() == null ? g.getSelectIntersectCheck() : c.getSelectIntersectCheck();
     if (tempSelectIntersectCheck != null && !tempSelectIntersectCheck) {
       wallConfig.setSelectIntersectCheck(false);
     }
-    Boolean tempCreateTableAllow =
-        c.getCreateTableAllow() == null ? g.getCreateTableAllow() : c.getCreateTableAllow();
+    Boolean tempCreateTableAllow = c.getCreateTableAllow() == null ? g.getCreateTableAllow() : c.getCreateTableAllow();
     if (tempCreateTableAllow != null && !tempCreateTableAllow) {
       wallConfig.setCreateTableAllow(false);
     }
-    Boolean tempDropTableAllow =
-        c.getDropTableAllow() == null ? g.getDropTableAllow() : c.getDropTableAllow();
+    Boolean tempDropTableAllow = c.getDropTableAllow() == null ? g.getDropTableAllow() : c.getDropTableAllow();
     if (tempDropTableAllow != null && !tempDropTableAllow) {
       wallConfig.setDropTableAllow(false);
     }
-    Boolean tempAlterTableAllow =
-        c.getAlterTableAllow() == null ? g.getAlterTableAllow() : c.getAlterTableAllow();
+    Boolean tempAlterTableAllow = c.getAlterTableAllow() == null ? g.getAlterTableAllow() : c.getAlterTableAllow();
     if (tempAlterTableAllow != null && !tempAlterTableAllow) {
       wallConfig.setAlterTableAllow(false);
     }
-    Boolean tempRenameTableAllow =
-        c.getRenameTableAllow() == null ? g.getRenameTableAllow() : c.getRenameTableAllow();
+    Boolean tempRenameTableAllow = c.getRenameTableAllow() == null ? g.getRenameTableAllow() : c.getRenameTableAllow();
     if (tempRenameTableAllow != null && !tempRenameTableAllow) {
       wallConfig.setRenameTableAllow(false);
     }
@@ -145,14 +126,11 @@ public final class DruidWallConfigUtil {
     if (tempHintAllow != null && !tempHintAllow) {
       wallConfig.setHintAllow(false);
     }
-    Boolean tempLockTableAllow =
-        c.getLockTableAllow() == null ? g.getLockTableAllow() : c.getLockTableAllow();
+    Boolean tempLockTableAllow = c.getLockTableAllow() == null ? g.getLockTableAllow() : c.getLockTableAllow();
     if (tempLockTableAllow != null && !tempLockTableAllow) {
       wallConfig.setLockTableAllow(false);
     }
-    Boolean tempStartTransactionAllow =
-        c.getStartTransactionAllow() == null ? g.getStartTransactionAllow()
-            : c.getStartTransactionAllow();
+    Boolean tempStartTransactionAllow = c.getStartTransactionAllow() == null ? g.getStartTransactionAllow() : c.getStartTransactionAllow();
     if (tempStartTransactionAllow != null && !tempStartTransactionAllow) {
       wallConfig.setStartTransactionAllow(false);
     }
@@ -161,32 +139,26 @@ public final class DruidWallConfigUtil {
       wallConfig.setBlockAllow(false);
     }
     Boolean tempConditionAndAlwayTrueAllow =
-        c.getConditionAndAlwayTrueAllow() == null ? g.getConditionAndAlwayTrueAllow()
-            : c.getConditionAndAlwayTrueAllow();
+        c.getConditionAndAlwayTrueAllow() == null ? g.getConditionAndAlwayTrueAllow() : c.getConditionAndAlwayTrueAllow();
     if (tempConditionAndAlwayTrueAllow != null && tempConditionAndAlwayTrueAllow) {
       wallConfig.setConditionAndAlwayTrueAllow(true);
     }
     Boolean tempConditionAndAlwayFalseAllow =
-        c.getConditionAndAlwayFalseAllow() == null ? g.getConditionAndAlwayFalseAllow()
-            : c.getConditionAndAlwayFalseAllow();
+        c.getConditionAndAlwayFalseAllow() == null ? g.getConditionAndAlwayFalseAllow() : c.getConditionAndAlwayFalseAllow();
     if (tempConditionAndAlwayFalseAllow != null && tempConditionAndAlwayFalseAllow) {
       wallConfig.setConditionAndAlwayFalseAllow(true);
     }
     Boolean tempConditionDoubleConstAllow =
-        c.getConditionDoubleConstAllow() == null ? g.getConditionDoubleConstAllow()
-            : c.getConditionDoubleConstAllow();
+        c.getConditionDoubleConstAllow() == null ? g.getConditionDoubleConstAllow() : c.getConditionDoubleConstAllow();
     if (tempConditionDoubleConstAllow != null && tempConditionDoubleConstAllow) {
       wallConfig.setConditionDoubleConstAllow(true);
     }
     Boolean tempConditionLikeTrueAllow =
-        c.getConditionLikeTrueAllow() == null ? g.getConditionLikeTrueAllow()
-            : c.getConditionLikeTrueAllow();
+        c.getConditionLikeTrueAllow() == null ? g.getConditionLikeTrueAllow() : c.getConditionLikeTrueAllow();
     if (tempConditionLikeTrueAllow != null && !tempConditionLikeTrueAllow) {
       wallConfig.setConditionLikeTrueAllow(false);
     }
-    Boolean tempSelectAllColumnAllow =
-        c.getSelectAllColumnAllow() == null ? g.getSelectAllColumnAllow()
-            : c.getSelectAllColumnAllow();
+    Boolean tempSelectAllColumnAllow = c.getSelectAllColumnAllow() == null ? g.getSelectAllColumnAllow() : c.getSelectAllColumnAllow();
     if (tempSelectAllColumnAllow != null && !tempSelectAllColumnAllow) {
       wallConfig.setSelectAllColumnAllow(false);
     }
@@ -195,14 +167,11 @@ public final class DruidWallConfigUtil {
       wallConfig.setDeleteAllow(false);
     }
     Boolean tempDeleteWhereAlwayTrueCheck =
-        c.getDeleteWhereAlwayTrueCheck() == null ? g.getDeleteWhereAlwayTrueCheck()
-            : c.getDeleteWhereAlwayTrueCheck();
+        c.getDeleteWhereAlwayTrueCheck() == null ? g.getDeleteWhereAlwayTrueCheck() : c.getDeleteWhereAlwayTrueCheck();
     if (tempDeleteWhereAlwayTrueCheck != null && !tempDeleteWhereAlwayTrueCheck) {
       wallConfig.setDeleteWhereAlwayTrueCheck(false);
     }
-    Boolean tempDeleteWhereNoneCheck =
-        c.getDeleteWhereNoneCheck() == null ? g.getDeleteWhereNoneCheck()
-            : c.getDeleteWhereNoneCheck();
+    Boolean tempDeleteWhereNoneCheck = c.getDeleteWhereNoneCheck() == null ? g.getDeleteWhereNoneCheck() : c.getDeleteWhereNoneCheck();
     if (tempDeleteWhereNoneCheck != null && tempDeleteWhereNoneCheck) {
       wallConfig.setDeleteWhereNoneCheck(true);
     }
@@ -211,14 +180,11 @@ public final class DruidWallConfigUtil {
       wallConfig.setUpdateAllow(false);
     }
     Boolean tempUpdateWhereAlayTrueCheck =
-        c.getUpdateWhereAlayTrueCheck() == null ? g.getUpdateWhereAlayTrueCheck()
-            : c.getUpdateWhereAlayTrueCheck();
+        c.getUpdateWhereAlayTrueCheck() == null ? g.getUpdateWhereAlayTrueCheck() : c.getUpdateWhereAlayTrueCheck();
     if (tempUpdateWhereAlayTrueCheck != null && !tempUpdateWhereAlayTrueCheck) {
       wallConfig.setUpdateWhereAlayTrueCheck(false);
     }
-    Boolean tempUpdateWhereNoneCheck =
-        c.getUpdateWhereNoneCheck() == null ? g.getUpdateWhereNoneCheck()
-            : c.getUpdateWhereNoneCheck();
+    Boolean tempUpdateWhereNoneCheck = c.getUpdateWhereNoneCheck() == null ? g.getUpdateWhereNoneCheck() : c.getUpdateWhereNoneCheck();
     if (tempUpdateWhereNoneCheck != null && tempUpdateWhereNoneCheck) {
       wallConfig.setUpdateWhereNoneCheck(true);
     }
@@ -234,13 +200,11 @@ public final class DruidWallConfigUtil {
     if (tempMinusAllow != null && !tempMinusAllow) {
       wallConfig.setMinusAllow(false);
     }
-    Boolean tempIntersectAllow =
-        c.getIntersectAllow() == null ? g.getIntersectAllow() : c.getIntersectAllow();
+    Boolean tempIntersectAllow = c.getIntersectAllow() == null ? g.getIntersectAllow() : c.getIntersectAllow();
     if (tempIntersectAllow != null && !tempIntersectAllow) {
       wallConfig.setIntersectAllow(false);
     }
-    Boolean tempReplaceAllow =
-        c.getReplaceAllow() == null ? g.getReplaceAllow() : c.getReplaceAllow();
+    Boolean tempReplaceAllow = c.getReplaceAllow() == null ? g.getReplaceAllow() : c.getReplaceAllow();
     if (tempReplaceAllow != null && !tempReplaceAllow) {
       wallConfig.setReplaceAllow(false);
     }
@@ -252,8 +216,7 @@ public final class DruidWallConfigUtil {
     if (tempCommitAllow != null && !tempCommitAllow) {
       wallConfig.setCommitAllow(false);
     }
-    Boolean tempRollbackAllow =
-        c.getRollbackAllow() == null ? g.getRollbackAllow() : c.getRollbackAllow();
+    Boolean tempRollbackAllow = c.getRollbackAllow() == null ? g.getRollbackAllow() : c.getRollbackAllow();
     if (tempRollbackAllow != null && !tempRollbackAllow) {
       wallConfig.setRollbackAllow(false);
     }
@@ -261,40 +224,31 @@ public final class DruidWallConfigUtil {
     if (tempUseAllow != null && !tempUseAllow) {
       wallConfig.setUseAllow(false);
     }
-    Boolean tempMultiStatementAllow =
-        c.getMultiStatementAllow() == null ? g.getMultiStatementAllow()
-            : c.getMultiStatementAllow();
+    Boolean tempMultiStatementAllow = c.getMultiStatementAllow() == null ? g.getMultiStatementAllow() : c.getMultiStatementAllow();
     if (tempMultiStatementAllow != null && tempMultiStatementAllow) {
       wallConfig.setMultiStatementAllow(true);
     }
-    Boolean tempTruncateAllow =
-        c.getTruncateAllow() == null ? g.getTruncateAllow() : c.getTruncateAllow();
+    Boolean tempTruncateAllow = c.getTruncateAllow() == null ? g.getTruncateAllow() : c.getTruncateAllow();
     if (tempTruncateAllow != null && !tempTruncateAllow) {
       wallConfig.setTruncateAllow(false);
     }
-    Boolean tempCommentAllow =
-        c.getCommentAllow() == null ? g.getCommentAllow() : c.getCommentAllow();
+    Boolean tempCommentAllow = c.getCommentAllow() == null ? g.getCommentAllow() : c.getCommentAllow();
     if (tempCommentAllow != null && tempCommentAllow) {
       wallConfig.setCommentAllow(true);
     }
-    Boolean tempStrictSyntaxCheck =
-        c.getStrictSyntaxCheck() == null ? g.getStrictSyntaxCheck() : c.getStrictSyntaxCheck();
+    Boolean tempStrictSyntaxCheck = c.getStrictSyntaxCheck() == null ? g.getStrictSyntaxCheck() : c.getStrictSyntaxCheck();
     if (tempStrictSyntaxCheck != null && !tempStrictSyntaxCheck) {
       wallConfig.setStrictSyntaxCheck(false);
     }
-    Boolean tempConstArithmeticAllow =
-        c.getConstArithmeticAllow() == null ? g.getConstArithmeticAllow()
-            : c.getConstArithmeticAllow();
+    Boolean tempConstArithmeticAllow = c.getConstArithmeticAllow() == null ? g.getConstArithmeticAllow() : c.getConstArithmeticAllow();
     if (tempConstArithmeticAllow != null && !tempConstArithmeticAllow) {
       wallConfig.setConstArithmeticAllow(false);
     }
-    Boolean tempLimitZeroAllow =
-        c.getLimitZeroAllow() == null ? g.getLimitZeroAllow() : c.getLimitZeroAllow();
+    Boolean tempLimitZeroAllow = c.getLimitZeroAllow() == null ? g.getLimitZeroAllow() : c.getLimitZeroAllow();
     if (tempLimitZeroAllow != null && tempLimitZeroAllow) {
       wallConfig.setLimitZeroAllow(true);
     }
-    Boolean tempDescribeAllow =
-        c.getDescribeAllow() == null ? g.getDescribeAllow() : c.getDescribeAllow();
+    Boolean tempDescribeAllow = c.getDescribeAllow() == null ? g.getDescribeAllow() : c.getDescribeAllow();
     if (tempDescribeAllow != null && !tempDescribeAllow) {
       wallConfig.setDescribeAllow(false);
     }
@@ -310,8 +264,7 @@ public final class DruidWallConfigUtil {
     if (tempTableCheck != null && !tempTableCheck) {
       wallConfig.setTableCheck(false);
     }
-    Boolean tempFunctionCheck =
-        c.getFunctionCheck() == null ? g.getFunctionCheck() : c.getFunctionCheck();
+    Boolean tempFunctionCheck = c.getFunctionCheck() == null ? g.getFunctionCheck() : c.getFunctionCheck();
     if (tempFunctionCheck != null && !tempFunctionCheck) {
       wallConfig.setFunctionCheck(false);
     }
@@ -319,18 +272,15 @@ public final class DruidWallConfigUtil {
     if (tempObjectCheck != null && !tempObjectCheck) {
       wallConfig.setObjectCheck(false);
     }
-    Boolean tempVariantCheck =
-        c.getVariantCheck() == null ? g.getVariantCheck() : c.getVariantCheck();
+    Boolean tempVariantCheck = c.getVariantCheck() == null ? g.getVariantCheck() : c.getVariantCheck();
     if (tempVariantCheck != null && !tempVariantCheck) {
       wallConfig.setVariantCheck(false);
     }
-    Boolean tempMustParameterized =
-        c.getMustParameterized() == null ? g.getMustParameterized() : c.getMustParameterized();
+    Boolean tempMustParameterized = c.getMustParameterized() == null ? g.getMustParameterized() : c.getMustParameterized();
     if (tempMustParameterized != null && tempMustParameterized) {
       wallConfig.setMustParameterized(true);
     }
-    Boolean tempDoPrivilegedAllow =
-        c.getDoPrivilegedAllow() == null ? g.getDoPrivilegedAllow() : c.getDoPrivilegedAllow();
+    Boolean tempDoPrivilegedAllow = c.getDoPrivilegedAllow() == null ? g.getDoPrivilegedAllow() : c.getDoPrivilegedAllow();
     if (tempDoPrivilegedAllow != null && tempDoPrivilegedAllow) {
       wallConfig.setDoPrivilegedAllow(true);
     }
@@ -338,32 +288,26 @@ public final class DruidWallConfigUtil {
     if (tempWrapAllow != null && !tempWrapAllow) {
       wallConfig.setWrapAllow(false);
     }
-    Boolean tempMetadataAllow =
-        c.getMetadataAllow() == null ? g.getMetadataAllow() : c.getMetadataAllow();
+    Boolean tempMetadataAllow = c.getMetadataAllow() == null ? g.getMetadataAllow() : c.getMetadataAllow();
     if (tempMetadataAllow != null && !tempMetadataAllow) {
       wallConfig.setMetadataAllow(false);
     }
-    Boolean tempConditionOpXorAllow =
-        c.getConditionOpXorAllow() == null ? g.getConditionOpXorAllow()
-            : c.getConditionOpXorAllow();
+    Boolean tempConditionOpXorAllow = c.getConditionOpXorAllow() == null ? g.getConditionOpXorAllow() : c.getConditionOpXorAllow();
     if (tempConditionOpXorAllow != null && tempConditionOpXorAllow) {
       wallConfig.setConditionOpXorAllow(true);
     }
     Boolean tempConditionOpBitwseAllow =
-        c.getConditionOpBitwseAllow() == null ? g.getConditionOpBitwseAllow()
-            : c.getConditionOpBitwseAllow();
+        c.getConditionOpBitwseAllow() == null ? g.getConditionOpBitwseAllow() : c.getConditionOpBitwseAllow();
     if (tempConditionOpBitwseAllow != null && !tempConditionOpBitwseAllow) {
       wallConfig.setConditionOpBitwseAllow(false);
     }
     Boolean tempCaseConditionConstAllow =
-        c.getCaseConditionConstAllow() == null ? g.getCaseConditionConstAllow()
-            : c.getCaseConditionConstAllow();
+        c.getCaseConditionConstAllow() == null ? g.getCaseConditionConstAllow() : c.getCaseConditionConstAllow();
     if (tempCaseConditionConstAllow != null && tempCaseConditionConstAllow) {
       wallConfig.setCaseConditionConstAllow(true);
     }
     Boolean tempCompleteInsertValuesCheck =
-        c.getCompleteInsertValuesCheck() == null ? g.getCompleteInsertValuesCheck()
-            : c.getCompleteInsertValuesCheck();
+        c.getCompleteInsertValuesCheck() == null ? g.getCompleteInsertValuesCheck() : c.getCompleteInsertValuesCheck();
     if (tempCompleteInsertValuesCheck != null && tempCompleteInsertValuesCheck) {
       wallConfig.setCompleteInsertValuesCheck(true);
     }

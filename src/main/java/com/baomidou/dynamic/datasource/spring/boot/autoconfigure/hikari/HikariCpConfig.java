@@ -71,13 +71,19 @@ public class HikariCpConfig {
   private Properties dataSourceProperties;
   private Properties healthCheckProperties;
 
-  public HikariConfig toHikariConfig(HikariCpConfig globalConfig) {
-    HikariConfig config = new com.zaxxer.hikari.HikariConfig();
+  /**
+   * 转换为HikariCP配置
+   *
+   * @param g 全局配置
+   * @return HikariCP配置
+   */
+  public HikariConfig toHikariConfig(HikariCpConfig g) {
+    HikariConfig config = new HikariConfig();
 
-    String tempSchema = schema == null ? globalConfig.getSchema() : schema;
+    String tempSchema = schema == null ? g.getSchema() : schema;
     if (tempSchema != null) {
       try {
-        Field schemaField = com.zaxxer.hikari.HikariConfig.class.getDeclaredField("schema");
+        Field schemaField = HikariConfig.class.getDeclaredField("schema");
         schemaField.setAccessible(true);
         schemaField.set(config, tempSchema);
       } catch (NoSuchFieldException e) {
@@ -87,128 +93,107 @@ public class HikariCpConfig {
       }
     }
 
-    String tempCatalog = catalog == null ? globalConfig.getCatalog() : catalog;
+    String tempCatalog = catalog == null ? g.getCatalog() : catalog;
     if (tempCatalog != null) {
       config.setCatalog(tempCatalog);
     }
 
-    Long tempConnectionTimeout =
-        connectionTimeout == null ? globalConfig.getConnectionTimeout() : connectionTimeout;
+    Long tempConnectionTimeout = connectionTimeout == null ? g.getConnectionTimeout() : connectionTimeout;
     if (tempConnectionTimeout != null && !tempConnectionTimeout.equals(CONNECTION_TIMEOUT)) {
       config.setConnectionTimeout(tempConnectionTimeout);
     }
 
-    Long tempValidationTimeout =
-        validationTimeout == null ? globalConfig.getValidationTimeout() : validationTimeout;
+    Long tempValidationTimeout = validationTimeout == null ? g.getValidationTimeout() : validationTimeout;
     if (tempValidationTimeout != null && !tempValidationTimeout.equals(VALIDATION_TIMEOUT)) {
       config.setValidationTimeout(tempValidationTimeout);
     }
 
-    Long tempIdleTimeout = idleTimeout == null ? globalConfig.getIdleTimeout() : idleTimeout;
+    Long tempIdleTimeout = idleTimeout == null ? g.getIdleTimeout() : idleTimeout;
     if (tempIdleTimeout != null && !tempIdleTimeout.equals(IDLE_TIMEOUT)) {
       config.setIdleTimeout(tempIdleTimeout);
     }
 
-    Long tempLeakDetectionThreshold =
-        leakDetectionThreshold == null ? globalConfig.getLeakDetectionThreshold()
-            : leakDetectionThreshold;
+    Long tempLeakDetectionThreshold = leakDetectionThreshold == null ? g.getLeakDetectionThreshold() : leakDetectionThreshold;
     if (tempLeakDetectionThreshold != null) {
       config.setLeakDetectionThreshold(tempLeakDetectionThreshold);
     }
 
-    Long tempMaxLifetime = maxLifetime == null ? globalConfig.getMaxLifetime() : maxLifetime;
+    Long tempMaxLifetime = maxLifetime == null ? g.getMaxLifetime() : maxLifetime;
     if (tempMaxLifetime != null && !tempMaxLifetime.equals(MAX_LIFETIME)) {
       config.setMaxLifetime(tempMaxLifetime);
     }
 
-    Integer tempMaxPoolSize = maxPoolSize == null ? globalConfig.getMaxPoolSize() : maxPoolSize;
+    Integer tempMaxPoolSize = maxPoolSize == null ? g.getMaxPoolSize() : maxPoolSize;
     if (tempMaxPoolSize != null && !tempMaxPoolSize.equals(-1)) {
       config.setMaximumPoolSize(tempMaxPoolSize);
     }
 
-    Integer tempMinIdle = minIdle == null ? globalConfig.getMinIdle() : getMinIdle();
+    Integer tempMinIdle = minIdle == null ? g.getMinIdle() : getMinIdle();
     if (tempMinIdle != null && !tempMinIdle.equals(-1)) {
       config.setMinimumIdle(tempMinIdle);
     }
 
-    Long tempInitializationFailTimeout =
-        initializationFailTimeout == null ? globalConfig.getInitializationFailTimeout()
-            : initializationFailTimeout;
+    Long tempInitializationFailTimeout = initializationFailTimeout == null ? g.getInitializationFailTimeout() : initializationFailTimeout;
     if (tempInitializationFailTimeout != null && !tempInitializationFailTimeout.equals(1L)) {
       config.setInitializationFailTimeout(tempInitializationFailTimeout);
     }
 
-    String tempConnectionInitSql =
-        connectionInitSql == null ? globalConfig.getConnectionInitSql() : connectionInitSql;
+    String tempConnectionInitSql = connectionInitSql == null ? g.getConnectionInitSql() : connectionInitSql;
     if (tempConnectionInitSql != null) {
       config.setConnectionInitSql(tempConnectionInitSql);
     }
 
-    String tempConnectionTestQuery =
-        connectionTestQuery == null ? globalConfig.getConnectionTestQuery() : connectionTestQuery;
+    String tempConnectionTestQuery = connectionTestQuery == null ? g.getConnectionTestQuery() : connectionTestQuery;
     if (tempConnectionTestQuery != null) {
       config.setConnectionTestQuery(tempConnectionTestQuery);
     }
 
-    String tempDataSourceClassName =
-        dataSourceClassName == null ? globalConfig.getDataSourceClassName() : dataSourceClassName;
+    String tempDataSourceClassName = dataSourceClassName == null ? g.getDataSourceClassName() : dataSourceClassName;
     if (tempDataSourceClassName != null) {
       config.setDataSourceClassName(tempDataSourceClassName);
     }
 
-    String tempDataSourceJndiName =
-        dataSourceJndiName == null ? globalConfig.getDataSourceJndiName() : dataSourceJndiName;
+    String tempDataSourceJndiName = dataSourceJndiName == null ? g.getDataSourceJndiName() : dataSourceJndiName;
     if (tempDataSourceJndiName != null) {
       config.setDataSourceJNDI(tempDataSourceJndiName);
     }
 
-    String tempTransactionIsolationName =
-        transactionIsolationName == null ? globalConfig.getTransactionIsolationName()
-            : transactionIsolationName;
+    String tempTransactionIsolationName = transactionIsolationName == null ? g.getTransactionIsolationName() : transactionIsolationName;
     if (tempTransactionIsolationName != null) {
       config.setTransactionIsolation(tempTransactionIsolationName);
     }
 
-    Boolean tempAutoCommit = isAutoCommit == null ? globalConfig.getIsAutoCommit() : isAutoCommit;
+    Boolean tempAutoCommit = isAutoCommit == null ? g.getIsAutoCommit() : isAutoCommit;
     if (tempAutoCommit != null && tempAutoCommit.equals(Boolean.FALSE)) {
       config.setAutoCommit(false);
     }
 
-    Boolean tempReadOnly = isReadOnly == null ? globalConfig.getIsReadOnly() : isReadOnly;
+    Boolean tempReadOnly = isReadOnly == null ? g.getIsReadOnly() : isReadOnly;
     if (tempReadOnly != null) {
       config.setReadOnly(tempReadOnly);
     }
 
-    Boolean tempIsolateInternalQueries =
-        isIsolateInternalQueries == null ? globalConfig.getIsIsolateInternalQueries()
-            : isIsolateInternalQueries;
+    Boolean tempIsolateInternalQueries = isIsolateInternalQueries == null ? g.getIsIsolateInternalQueries() : isIsolateInternalQueries;
     if (tempIsolateInternalQueries != null) {
       config.setIsolateInternalQueries(tempIsolateInternalQueries);
     }
 
-    Boolean tempRegisterMbeans =
-        isRegisterMbeans == null ? globalConfig.getIsRegisterMbeans() : isRegisterMbeans;
+    Boolean tempRegisterMbeans = isRegisterMbeans == null ? g.getIsRegisterMbeans() : isRegisterMbeans;
     if (tempRegisterMbeans != null) {
       config.setRegisterMbeans(tempRegisterMbeans);
     }
 
-    Boolean tempAllowPoolSuspension =
-        isAllowPoolSuspension == null ? globalConfig.getIsAllowPoolSuspension()
-            : isAllowPoolSuspension;
+    Boolean tempAllowPoolSuspension = isAllowPoolSuspension == null ? g.getIsAllowPoolSuspension() : isAllowPoolSuspension;
     if (tempAllowPoolSuspension != null) {
       config.setAllowPoolSuspension(tempAllowPoolSuspension);
     }
 
-    Properties tempDataSourceProperties =
-        dataSourceProperties == null ? globalConfig.getDataSourceProperties()
-            : dataSourceProperties;
+    Properties tempDataSourceProperties = dataSourceProperties == null ? g.getDataSourceProperties() : dataSourceProperties;
     if (tempDataSourceProperties != null) {
       config.setDataSourceProperties(tempDataSourceProperties);
     }
 
-    Properties tempHealthCheckProperties =
-        healthCheckProperties == null ? globalConfig.getHealthCheckProperties()
-            : healthCheckProperties;
+    Properties tempHealthCheckProperties = healthCheckProperties == null ? g.getHealthCheckProperties() : healthCheckProperties;
     if (tempHealthCheckProperties != null) {
       config.setHealthCheckProperties(tempHealthCheckProperties);
     }
