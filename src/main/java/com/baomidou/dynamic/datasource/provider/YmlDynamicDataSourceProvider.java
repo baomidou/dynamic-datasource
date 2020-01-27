@@ -17,9 +17,9 @@
 package com.baomidou.dynamic.datasource.provider;
 
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
 import java.util.Map;
 import javax.sql.DataSource;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -29,21 +29,17 @@ import lombok.extern.slf4j.Slf4j;
  * @since 1.0.0
  */
 @Slf4j
+@AllArgsConstructor
 public class YmlDynamicDataSourceProvider extends AbstractDataSourceProvider implements
     DynamicDataSourceProvider {
 
   /**
-   * 多数据源参数
+   * 所有数据源
    */
-  private DynamicDataSourceProperties properties;
-
-  public YmlDynamicDataSourceProvider(DynamicDataSourceProperties properties) {
-    this.properties = properties;
-  }
+  private Map<String, DataSourceProperty> dataSourcePropertiesMap;
 
   @Override
   public Map<String, DataSource> loadDataSources() {
-    Map<String, DataSourceProperty> dataSourcePropertiesMap = properties.getDatasource();
     return createDataSourceMap(dataSourcePropertiesMap);
   }
 }

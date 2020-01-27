@@ -21,9 +21,6 @@ import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAdvisor;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationInterceptor;
-import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
-import com.baomidou.dynamic.datasource.creator.DruidDataSourceCreator;
-import com.baomidou.dynamic.datasource.creator.HikariDataSourceCreator;
 import com.baomidou.dynamic.datasource.processor.DsHeaderProcessor;
 import com.baomidou.dynamic.datasource.processor.DsProcessor;
 import com.baomidou.dynamic.datasource.processor.DsSessionProcessor;
@@ -32,16 +29,16 @@ import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.provider.YmlDynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidDynamicDataSourceConfiguration;
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
+import java.util.Map;
 import javax.sql.DataSource;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -58,32 +55,20 @@ import org.springframework.core.Ordered;
  */
 @Slf4j
 @Configuration
+@AllArgsConstructor
 @EnableConfigurationProperties(DynamicDataSourceProperties.class)
 @AutoConfigureBefore(DataSourceAutoConfiguration.class)
-@Import(DruidDynamicDataSourceConfiguration.class)
+@Import(value = {DruidDynamicDataSourceConfiguration.class, DynamicDataSourceCreatorAutoConfiguration.class})
 @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class DynamicDataSourceAutoConfiguration {
 
-  @Autowired
-  private DynamicDataSourceProperties properties;
-
-  @Autowired(required = false)
-  private ApplicationContext applicationContext;
+  private final DynamicDataSourceProperties properties;
 
   @Bean
   @ConditionalOnMissingBean
   public DynamicDataSourceProvider dynamicDataSourceProvider() {
-    return new YmlDynamicDataSourceProvider(properties);
-  }
-
-  @Bean
-  @ConditionalOnMissingBean
-  public DataSourceCreator dataSourceCreator() {
-    DataSourceCreator dataSourceCreator = new DataSourceCreator();
-    dataSourceCreator.setDruidDataSourceCreator(new DruidDataSourceCreator(properties.getDruid(), applicationContext));
-    dataSourceCreator.setHikariDataSourceCreator(new HikariDataSourceCreator(properties.getHikari()));
-    dataSourceCreator.setGlobalPublicKey(properties.getPublicKey());
-    return dataSourceCreator;
+    Map<String, DataSourceProperty> datasourceMap = properties.getDatasource();
+    return new YmlDynamicDataSourceProvider(datasourceMap);
   }
 
   @Bean
