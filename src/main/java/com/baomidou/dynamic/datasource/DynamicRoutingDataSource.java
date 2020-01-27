@@ -22,6 +22,7 @@ import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import com.p6spy.engine.spy.P6DataSource;
 import io.seata.rm.datasource.DataSourceProxy;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -40,8 +41,7 @@ import org.springframework.util.StringUtils;
  * @since 1.0.0
  */
 @Slf4j
-public class DynamicRoutingDataSource extends AbstractRoutingDataSource implements InitializingBean,
-    DisposableBean {
+public class DynamicRoutingDataSource extends AbstractRoutingDataSource implements InitializingBean, DisposableBean {
 
   private static final String UNDERLINE = "_";
 
@@ -121,31 +121,35 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
    * @param dataSource 数据源
    */
   public synchronized void addDataSource(String ds, DataSource dataSource) {
-    if (p6spy) {
-      dataSource = new P6DataSource(dataSource);
-      log.info("dynamic-datasource [{}] wrap p6spy plugin", ds);
-    }
-    if (seata) {
-      dataSource = new DataSourceProxy(dataSource);
-      log.info("dynamic-datasource [{}] wrap seata plugin", ds);
-    }
-    dataSourceMap.put(ds, dataSource);
-    if (ds.contains(UNDERLINE)) {
-      String group = ds.split(UNDERLINE)[0];
-      if (groupDataSources.containsKey(group)) {
-        groupDataSources.get(group).addDatasource(dataSource);
-      } else {
-        try {
-          DynamicGroupDataSource groupDatasource = new DynamicGroupDataSource(group, strategy.newInstance());
-          groupDatasource.addDatasource(dataSource);
-          groupDataSources.put(group, groupDatasource);
-        } catch (Exception e) {
-          log.error("dynamic-datasource - add the datasource named [{}] error", ds, e);
-          dataSourceMap.remove(ds);
+    if (!dataSourceMap.containsKey(ds)) {
+      if (p6spy) {
+        dataSource = new P6DataSource(dataSource);
+        log.info("dynamic-datasource [{}] wrap p6spy plugin", ds);
+      }
+      if (seata) {
+        dataSource = new DataSourceProxy(dataSource);
+        log.info("dynamic-datasource [{}] wrap seata plugin", ds);
+      }
+      dataSourceMap.put(ds, dataSource);
+      if (ds.contains(UNDERLINE)) {
+        String group = ds.split(UNDERLINE)[0];
+        if (groupDataSources.containsKey(group)) {
+          groupDataSources.get(group).addDatasource(dataSource);
+        } else {
+          try {
+            DynamicGroupDataSource groupDatasource = new DynamicGroupDataSource(group, strategy.newInstance());
+            groupDatasource.addDatasource(dataSource);
+            groupDataSources.put(group, groupDatasource);
+          } catch (Exception e) {
+            log.error("dynamic-datasource - add the datasource named [{}] error", ds, e);
+            dataSourceMap.remove(ds);
+          }
         }
       }
+      log.info("dynamic-datasource - load a datasource named [{}] success", ds);
+    } else {
+      log.warn("dynamic-datasource - load a datasource named [{}] failed, because it already exist", ds);
     }
-    log.info("dynamic-datasource - load a datasource named [{}] success", ds);
   }
 
   /**
@@ -156,6 +160,11 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
   public synchronized void removeDataSource(String ds) {
     if (dataSourceMap.containsKey(ds)) {
       DataSource dataSource = dataSourceMap.get(ds);
+      try {
+        closeDataSource(ds, dataSource);
+      } catch (Exception e) {
+        throw new RuntimeException("dynamic-datasource - remove the database named " + ds + " failed", e);
+      }
       dataSourceMap.remove(ds);
       if (ds.contains(UNDERLINE)) {
         String group = ds.split(UNDERLINE)[0];
@@ -200,25 +209,29 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
   public void destroy() throws Exception {
     log.info("dynamic-datasource start closing ....");
     for (Map.Entry<String, DataSource> item : dataSourceMap.entrySet()) {
-      DataSource dataSource = item.getValue();
-      if (seata) {
-        DataSourceProxy dataSourceProxy = (DataSourceProxy) dataSource;
-        dataSource = dataSourceProxy.getTargetDataSource();
-      }
-      if (p6spy) {
-        Field realDataSourceField = P6DataSource.class.getDeclaredField("realDataSource");
-        realDataSourceField.setAccessible(true);
-        dataSource = (DataSource) realDataSourceField.get(dataSource);
-      }
-      Class<? extends DataSource> clazz = dataSource.getClass();
-      try {
-        Method closeMethod = clazz.getDeclaredMethod("close");
-        closeMethod.invoke(dataSource);
-      } catch (NoSuchMethodException e) {
-        log.warn("dynamic-datasource close the datasource named [{}] failed,", item.getKey());
-      }
+      closeDataSource(item.getKey(), item.getValue());
     }
     log.info("dynamic-datasource all closed success,bye");
+  }
+
+  private void closeDataSource(String name, DataSource dataSource)
+      throws NoSuchFieldException, IllegalAccessException, InvocationTargetException {
+    if (seata) {
+      DataSourceProxy dataSourceProxy = (DataSourceProxy) dataSource;
+      dataSource = dataSourceProxy.getTargetDataSource();
+    }
+    if (p6spy) {
+      Field realDataSourceField = P6DataSource.class.getDeclaredField("realDataSource");
+      realDataSourceField.setAccessible(true);
+      dataSource = (DataSource) realDataSourceField.get(dataSource);
+    }
+    Class<? extends DataSource> clazz = dataSource.getClass();
+    try {
+      Method closeMethod = clazz.getDeclaredMethod("close");
+      closeMethod.invoke(dataSource);
+    } catch (NoSuchMethodException e) {
+      log.warn("dynamic-datasource close the datasource named [{}] failed,", name);
+    }
   }
 
   @Override
@@ -237,4 +250,5 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
       throw new RuntimeException("dynamic-datasource Please check the setting of primary");
     }
   }
+
 }
