@@ -16,8 +16,8 @@
  */
 package com.baomidou.dynamic.datasource.creator;
 
-import static com.baomidou.dynamic.datasource.toolkit.DdConstants.DRUID_DATASOURCE;
-import static com.baomidou.dynamic.datasource.toolkit.DdConstants.HIKARI_DATASOURCE;
+import static com.baomidou.dynamic.datasource.support.DdConstants.DRUID_DATASOURCE;
+import static com.baomidou.dynamic.datasource.support.DdConstants.HIKARI_DATASOURCE;
 
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import com.baomidou.dynamic.datasource.support.ScriptRunner;

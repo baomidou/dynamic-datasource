@@ -21,6 +21,7 @@ import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourcePrope
 import java.lang.reflect.Method;
 import javax.sql.DataSource;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 基础数据源创建器
@@ -29,6 +30,7 @@ import lombok.Data;
  * @since 2020/1/21
  */
 @Data
+@Slf4j
 public class BasicDataSourceCreator {
 
   private static Method createMethod;
@@ -50,6 +52,7 @@ public class BasicDataSourceCreator {
       try {
         builderClass = Class.forName("org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder");
       } catch (Exception e) {
+        log.warn("not in springBoot ENV,could not create BasicDataSourceCreator");
       }
     }
     if (builderClass != null) {

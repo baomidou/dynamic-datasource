@@ -39,8 +39,7 @@ public class DsHeaderProcessor extends DsProcessor {
 
   @Override
   public String doDetermineDatasource(MethodInvocation invocation, String key) {
-    HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
-        .getRequestAttributes()).getRequest();
+    HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
     return request.getHeader(key.substring(8));
   }
 }

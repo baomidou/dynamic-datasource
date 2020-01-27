@@ -18,7 +18,7 @@ package com.baomidou.dynamic.datasource.plugin;
 
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
 import com.baomidou.dynamic.datasource.support.DbHealthIndicator;
-import com.baomidou.dynamic.datasource.toolkit.DdConstants;
+import com.baomidou.dynamic.datasource.support.DdConstants;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import java.util.Properties;
 import lombok.extern.slf4j.Slf4j;

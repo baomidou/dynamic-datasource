@@ -29,8 +29,7 @@ public class DynamicJdkRegexpMethodPointcut extends JdkRegexpMethodPointcut {
 
   private String ds;
 
-  public DynamicJdkRegexpMethodPointcut(String pattern, String ds,
-      Map<String, String> matchesCache) {
+  public DynamicJdkRegexpMethodPointcut(String pattern, String ds, Map<String, String> matchesCache) {
     this.ds = ds;
     this.matchesCache = matchesCache;
     setPattern(pattern);

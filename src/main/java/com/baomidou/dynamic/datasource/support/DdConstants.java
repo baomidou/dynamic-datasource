@@ -14,7 +14,7 @@
  * limitations under the License.
  * <pre/>
  */
-package com.baomidou.dynamic.datasource.toolkit;
+package com.baomidou.dynamic.datasource.support;
 
 /**
  * 动态数据源常量

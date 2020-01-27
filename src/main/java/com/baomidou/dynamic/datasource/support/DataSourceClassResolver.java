@@ -14,7 +14,7 @@
  * limitations under the License.
  * <pre/>
  */
-package com.baomidou.dynamic.datasource;
+package com.baomidou.dynamic.datasource.support;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
@@ -28,7 +28,7 @@ import org.aopalliance.intercept.MethodInvocation;
  * @since 2.3.0
  */
 @Slf4j
-public class DynamicDataSourceClassResolver {
+public class DataSourceClassResolver {
 
   private static boolean mpEnabled = false;
 
@@ -63,8 +63,7 @@ public class DynamicDataSourceClassResolver {
     if (mpEnabled) {
       Object target = invocation.getThis();
       Class<?> targetClass = target.getClass();
-      return Proxy.isProxyClass(targetClass) ? (Class) mapperInterfaceField
-          .get(Proxy.getInvocationHandler(target)) : targetClass;
+      return Proxy.isProxyClass(targetClass) ? (Class) mapperInterfaceField.get(Proxy.getInvocationHandler(target)) : targetClass;
     }
     return invocation.getMethod().getDeclaringClass();
   }

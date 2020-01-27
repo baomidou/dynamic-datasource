@@ -49,8 +49,7 @@ public class DsSpelExpressionProcessor extends DsProcessor {
   public String doDetermineDatasource(MethodInvocation invocation, String key) {
     Method method = invocation.getMethod();
     Object[] arguments = invocation.getArguments();
-    EvaluationContext context = new MethodBasedEvaluationContext(null, method, arguments,
-        NAME_DISCOVERER);
+    EvaluationContext context = new MethodBasedEvaluationContext(null, method, arguments, NAME_DISCOVERER);
     final Object value = PARSER.parseExpression(key).getValue(context);
     return value == null ? null : value.toString();
   }

@@ -118,8 +118,7 @@ public class DruidDataSourceCreator {
       dataSource.setConnectionErrorRetryAttempts(connectionErrorRetryAttempts);
     }
     Boolean breakAfterAcquireFailure =
-        config.getBreakAfterAcquireFailure() == null ? druidConfig.getBreakAfterAcquireFailure()
-            : config.getBreakAfterAcquireFailure();
+        config.getBreakAfterAcquireFailure() == null ? druidConfig.getBreakAfterAcquireFailure() : config.getBreakAfterAcquireFailure();
     if (breakAfterAcquireFailure != null && breakAfterAcquireFailure.equals(true)) {
       dataSource.setBreakAfterAcquireFailure(true);
     }

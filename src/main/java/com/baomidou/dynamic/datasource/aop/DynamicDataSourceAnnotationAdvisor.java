@@ -38,8 +38,7 @@ public class DynamicDataSourceAnnotationAdvisor extends AbstractPointcutAdvisor 
 
   private Pointcut pointcut;
 
-  public DynamicDataSourceAnnotationAdvisor(
-      @NonNull DynamicDataSourceAnnotationInterceptor dynamicDataSourceAnnotationInterceptor) {
+  public DynamicDataSourceAnnotationAdvisor(@NonNull DynamicDataSourceAnnotationInterceptor dynamicDataSourceAnnotationInterceptor) {
     this.advice = dynamicDataSourceAnnotationInterceptor;
     this.pointcut = buildPointcut();
   }

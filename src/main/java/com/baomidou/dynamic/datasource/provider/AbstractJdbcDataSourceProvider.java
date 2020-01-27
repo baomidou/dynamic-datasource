@@ -33,8 +33,7 @@ import org.springframework.jdbc.support.JdbcUtils;
  * @since 2.1.2
  */
 @Slf4j
-public abstract class AbstractJdbcDataSourceProvider extends AbstractDataSourceProvider implements
-    DynamicDataSourceProvider {
+public abstract class AbstractJdbcDataSourceProvider extends AbstractDataSourceProvider implements DynamicDataSourceProvider {
 
   /**
    * JDBC driver
@@ -53,8 +52,7 @@ public abstract class AbstractJdbcDataSourceProvider extends AbstractDataSourceP
    */
   private String password;
 
-  public AbstractJdbcDataSourceProvider(String driverClassName, String url, String username,
-      String password) {
+  public AbstractJdbcDataSourceProvider(String driverClassName, String url, String username, String password) {
     this.driverClassName = driverClassName;
     this.url = url;
     this.username = username;

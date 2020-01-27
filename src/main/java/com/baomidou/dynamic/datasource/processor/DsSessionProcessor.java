@@ -39,8 +39,7 @@ public class DsSessionProcessor extends DsProcessor {
 
   @Override
   public String doDetermineDatasource(MethodInvocation invocation, String key) {
-    HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
-        .getRequestAttributes()).getRequest();
+    HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
     return request.getSession().getAttribute(key.substring(9)).toString();
   }
 }

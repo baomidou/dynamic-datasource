@@ -16,9 +16,9 @@
  */
 package com.baomidou.dynamic.datasource.aop;
 
-import com.baomidou.dynamic.datasource.DynamicDataSourceClassResolver;
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.dynamic.datasource.processor.DsProcessor;
+import com.baomidou.dynamic.datasource.support.DataSourceClassResolver;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import java.lang.reflect.Method;
 import lombok.Setter;
@@ -38,7 +38,7 @@ public class DynamicDataSourceAnnotationInterceptor implements MethodInterceptor
    * The identification of SPEL.
    */
   private static final String DYNAMIC_PREFIX = "#";
-  private static final DynamicDataSourceClassResolver RESOLVER = new DynamicDataSourceClassResolver();
+  private static final DataSourceClassResolver RESOLVER = new DataSourceClassResolver();
   @Setter
   private DsProcessor dsProcessor;
 
@@ -54,11 +54,9 @@ public class DynamicDataSourceAnnotationInterceptor implements MethodInterceptor
 
   private String determineDatasource(MethodInvocation invocation) throws Throwable {
     Method method = invocation.getMethod();
-    DS ds = method.isAnnotationPresent(DS.class)
-        ? method.getAnnotation(DS.class)
+    DS ds = method.isAnnotationPresent(DS.class) ? method.getAnnotation(DS.class)
         : AnnotationUtils.findAnnotation(RESOLVER.targetClass(invocation), DS.class);
     String key = ds.value();
-    return (!key.isEmpty() && key.startsWith(DYNAMIC_PREFIX)) ? dsProcessor
-        .determineDatasource(invocation, key) : key;
+    return (!key.isEmpty() && key.startsWith(DYNAMIC_PREFIX)) ? dsProcessor.determineDatasource(invocation, key) : key;
   }
 }

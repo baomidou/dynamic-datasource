@@ -30,8 +30,7 @@ public class DynamicAspectJExpressionPointcut extends AspectJExpressionPointcut 
 
   private String ds;
 
-  public DynamicAspectJExpressionPointcut(String expression, String ds,
-      Map<String, String> matchesCache) {
+  public DynamicAspectJExpressionPointcut(String expression, String ds, Map<String, String> matchesCache) {
     this.ds = ds;
     this.matchesCache = matchesCache;
     setExpression(expression);

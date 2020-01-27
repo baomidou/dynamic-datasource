@@ -30,8 +30,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @AllArgsConstructor
-public class YmlDynamicDataSourceProvider extends AbstractDataSourceProvider implements
-    DynamicDataSourceProvider {
+public class YmlDynamicDataSourceProvider extends AbstractDataSourceProvider implements DynamicDataSourceProvider {
 
   /**
    * 所有数据源

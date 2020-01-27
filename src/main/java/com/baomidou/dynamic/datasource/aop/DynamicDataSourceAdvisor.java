@@ -103,8 +103,7 @@ public class DynamicDataSourceAdvisor extends AbstractPointcutAdvisor implements
     for (Matcher matcher : matchers) {
       if (matcher instanceof RegexMatcher) {
         RegexMatcher regexMatcher = (RegexMatcher) matcher;
-        Pointcut pointcut = new DynamicJdkRegexpMethodPointcut(regexMatcher.getPattern(),
-            regexMatcher.getDs(), matchesCache);
+        Pointcut pointcut = new DynamicJdkRegexpMethodPointcut(regexMatcher.getPattern(), regexMatcher.getDs(), matchesCache);
         if (composablePointcut == null) {
           composablePointcut = new ComposablePointcut(pointcut);
         } else {
@@ -112,8 +111,8 @@ public class DynamicDataSourceAdvisor extends AbstractPointcutAdvisor implements
         }
       } else {
         ExpressionMatcher expressionMatcher = (ExpressionMatcher) matcher;
-        Pointcut pointcut = new DynamicAspectJExpressionPointcut(expressionMatcher.getExpression(),
-            expressionMatcher.getDs(), matchesCache);
+        Pointcut pointcut = new DynamicAspectJExpressionPointcut(expressionMatcher.getExpression(), expressionMatcher.getDs(),
+            matchesCache);
         if (composablePointcut == null) {
           composablePointcut = new ComposablePointcut(pointcut);
         } else {

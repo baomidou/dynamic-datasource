@@ -37,8 +37,7 @@ public class DynamicGroupDataSource {
 
   private List<DataSource> dataSources = new LinkedList<>();
 
-  public DynamicGroupDataSource(String groupName,
-      DynamicDataSourceStrategy dynamicDataSourceStrategy) {
+  public DynamicGroupDataSource(String groupName, DynamicDataSourceStrategy dynamicDataSourceStrategy) {
     this.groupName = groupName;
     this.dynamicDataSourceStrategy = dynamicDataSourceStrategy;
   }
