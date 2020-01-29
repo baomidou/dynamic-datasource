@@ -7,10 +7,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication(exclude = DruidDataSourceAutoConfigure.class)
 @MapperScan("com.baomidou.samples.druid.mybatis.mapper")
-public class Application {
+public class DruidMybatisApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(Application.class, args);
+    SpringApplication.run(DruidMybatisApplication.class, args);
   }
 
 }

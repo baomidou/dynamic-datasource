@@ -1,6 +1,6 @@
 package com.baomidou.samples.druid.mybatis.test;
 
-import com.baomidou.samples.druid.mybatis.Application;
+import com.baomidou.samples.druid.mybatis.DruidMybatisApplication;
 import com.baomidou.samples.druid.mybatis.entity.User;
 import com.baomidou.samples.druid.mybatis.service.UserService;
 import java.util.Random;
@@ -11,8 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = Application.class)
-public class ApplicationTest {
+@SpringBootTest(classes = DruidMybatisApplication.class)
+public class DruidMybatisApplicationTest {
 
   private Random random = new Random();
 

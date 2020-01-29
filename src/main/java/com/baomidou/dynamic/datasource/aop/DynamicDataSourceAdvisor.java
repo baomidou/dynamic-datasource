@@ -54,7 +54,7 @@ public class DynamicDataSourceAdvisor extends AbstractPointcutAdvisor implements
 
   private Pointcut pointcut;
 
-  private Map<String, String> matchesCache = new HashMap<String, String>();
+  private Map<String, String> matchesCache = new HashMap<>();
 
   public DynamicDataSourceAdvisor(List<Matcher> matchers) {
     this.pointcut = buildPointcut(matchers);
