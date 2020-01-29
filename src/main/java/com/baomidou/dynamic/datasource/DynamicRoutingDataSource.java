@@ -158,6 +158,12 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
    * @param ds 数据源名称
    */
   public synchronized void removeDataSource(String ds) {
+    if (!StringUtils.hasText(ds)) {
+      throw new RuntimeException("remove parameter could not be empty");
+    }
+    if (primary.equals(ds)) {
+      throw new RuntimeException("could not remove primary datasource");
+    }
     if (dataSourceMap.containsKey(ds)) {
       DataSource dataSource = dataSourceMap.get(ds);
       try {
