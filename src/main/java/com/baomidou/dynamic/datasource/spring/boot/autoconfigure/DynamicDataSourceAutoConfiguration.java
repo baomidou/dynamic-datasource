@@ -73,13 +73,19 @@ public class DynamicDataSourceAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public DataSource dataSource(DynamicDataSourceProvider dynamicDataSourceProvider) {
+  public DynamicDataSourceStrategy dynamicDataSourceStrategy() throws Exception {
+    return properties.getStrategy().newInstance();
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  public DataSource dataSource(DynamicDataSourceProvider dynamicDataSourceProvider, DynamicDataSourceStrategy dynamicDataSourceStrategy) {
     DynamicRoutingDataSource dataSource = new DynamicRoutingDataSource();
     dataSource.setPrimary(properties.getPrimary());
-    dataSource.setStrategy(properties.getStrategy());
+    dataSource.setStrict(properties.getStrict());
+    dataSource.setStrategy(dynamicDataSourceStrategy);
     dataSource.setProvider(dynamicDataSourceProvider);
     dataSource.setP6spy(properties.getP6spy());
-    dataSource.setStrict(properties.getStrict());
     dataSource.setSeata(properties.getSeata());
     return dataSource;
   }

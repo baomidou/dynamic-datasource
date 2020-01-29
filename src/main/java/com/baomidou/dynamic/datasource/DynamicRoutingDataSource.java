@@ -48,7 +48,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
   @Setter
   private DynamicDataSourceProvider provider;
   @Setter
-  private Class<? extends DynamicDataSourceStrategy> strategy;
+  private DynamicDataSourceStrategy strategy;
   @Setter
   private String primary;
   @Setter
@@ -122,33 +122,42 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
    */
   public synchronized void addDataSource(String ds, DataSource dataSource) {
     if (!dataSourceMap.containsKey(ds)) {
-      if (p6spy) {
-        dataSource = new P6DataSource(dataSource);
-        log.info("dynamic-datasource [{}] wrap p6spy plugin", ds);
-      }
-      if (seata) {
-        dataSource = new DataSourceProxy(dataSource);
-        log.info("dynamic-datasource [{}] wrap seata plugin", ds);
-      }
+      dataSource = wrapDataSource(ds, dataSource);
       dataSourceMap.put(ds, dataSource);
-      if (ds.contains(UNDERLINE)) {
-        String group = ds.split(UNDERLINE)[0];
-        if (groupDataSources.containsKey(group)) {
-          groupDataSources.get(group).addDatasource(dataSource);
-        } else {
-          try {
-            DynamicGroupDataSource groupDatasource = new DynamicGroupDataSource(group, strategy.newInstance());
-            groupDatasource.addDatasource(dataSource);
-            groupDataSources.put(group, groupDatasource);
-          } catch (Exception e) {
-            log.error("dynamic-datasource - add the datasource named [{}] error", ds, e);
-            dataSourceMap.remove(ds);
-          }
-        }
-      }
+      this.addGroupDataSource(ds, dataSource);
       log.info("dynamic-datasource - load a datasource named [{}] success", ds);
     } else {
       log.warn("dynamic-datasource - load a datasource named [{}] failed, because it already exist", ds);
+    }
+  }
+
+  private DataSource wrapDataSource(String ds, DataSource dataSource) {
+    if (p6spy) {
+      dataSource = new P6DataSource(dataSource);
+      log.info("dynamic-datasource [{}] wrap p6spy plugin", ds);
+    }
+    if (seata) {
+      dataSource = new DataSourceProxy(dataSource);
+      log.info("dynamic-datasource [{}] wrap seata plugin", ds);
+    }
+    return dataSource;
+  }
+
+  private void addGroupDataSource(String ds, DataSource dataSource) {
+    if (ds.contains(UNDERLINE)) {
+      String group = ds.split(UNDERLINE)[0];
+      if (groupDataSources.containsKey(group)) {
+        groupDataSources.get(group).addDatasource(dataSource);
+      } else {
+        try {
+          DynamicGroupDataSource groupDatasource = new DynamicGroupDataSource(group, strategy);
+          groupDatasource.addDatasource(dataSource);
+          groupDataSources.put(group, groupDatasource);
+        } catch (Exception e) {
+          log.error("dynamic-datasource - add the datasource named [{}] error", ds, e);
+          dataSourceMap.remove(ds);
+        }
+      }
     }
   }
 
