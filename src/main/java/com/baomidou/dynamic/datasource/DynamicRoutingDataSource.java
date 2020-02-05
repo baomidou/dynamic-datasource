@@ -48,11 +48,11 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
   @Setter
   private DynamicDataSourceProvider provider;
   @Setter
-  private DynamicDataSourceStrategy strategy;
-  @Setter
   private String primary;
   @Setter
   private boolean strict;
+  @Setter
+  private Class<? extends DynamicDataSourceStrategy> strategy;
   private boolean p6spy;
   private boolean seata;
   /**
@@ -150,7 +150,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
         groupDataSources.get(group).addDatasource(dataSource);
       } else {
         try {
-          DynamicGroupDataSource groupDatasource = new DynamicGroupDataSource(group, strategy);
+          DynamicGroupDataSource groupDatasource = new DynamicGroupDataSource(group, strategy.newInstance());
           groupDatasource.addDatasource(dataSource);
           groupDataSources.put(group, groupDatasource);
         } catch (Exception e) {
