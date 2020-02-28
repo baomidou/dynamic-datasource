@@ -1,5 +1,5 @@
 /**
- * Copyright © 2019 organization humingfeng
+ * Copyright © 2020 organization humingfeng
  * <pre>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,12 @@
  * limitations under the License.
  * <pre/>
  */
-package com.baomidou.dynamic.datasource.provider;
+package cn.humingfeng.dynamic.datasource.provider;
 
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
+import cn.humingfeng.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
+import cn.humingfeng.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -27,12 +29,13 @@ import java.util.Map;
 /**
  * YML数据源提供者
  *
- * @author TaoYu Kanyuxia
+ * @author HuMingfeng
  * @since 1.0.0
  */
 @Slf4j
 public class YmlDynamicDataSourceProvider extends AbstractDataSourceProvider implements DynamicDataSourceProvider {
 
+    private static final Log LOG = LogFactory.getLog(YmlDynamicDataSourceProvider.class);
     /**
     * 所有数据源
     */

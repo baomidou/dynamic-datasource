@@ -1,5 +1,5 @@
 /**
- * Copyright © 2019 organization humingfeng
+ * Copyright © 2020 organization humingfeng
  * <pre>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,15 @@
  * limitations under the License.
  * <pre/>
  */
-package com.baomidou.dynamic.datasource.provider;
+package cn.humingfeng.dynamic.datasource.provider;
 
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
-import com.baomidou.dynamic.datasource.toolkit.CryptoUtils;
+import cn.humingfeng.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
+import cn.humingfeng.dynamic.datasource.toolkit.CryptoUtils;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.StringUtils;
+import com.gbase.jdbc.jdbc2.optional.GBaseDataSource;
 import com.zaxxer.hikari.HikariDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -48,6 +50,11 @@ public class MysqlDynamicDataSourceProvider {
      * HikariCp数据源
      */
     private static final String HIKARI_DATASOURCE = "com.zaxxer.hikari.HikariDataSource";
+
+    /**
+     * BasicDataSource
+     */
+    private static final String BASIC_DATASOURCE = "org.apache.commons.dbcp2.BasicDataSource";
     /**
      * 国产Gbase数据源
      */
@@ -104,7 +111,13 @@ public class MysqlDynamicDataSourceProvider {
                 DataSourceProperty dataSourceProperty = new DataSourceProperty();
                 dataSourceProperty.setUrl(url);
                 dataSourceProperty.setUsername(user_name);
-                dataSourceProperty.setPassword(CryptoUtils.decrypt(password));
+
+                try {
+                    dataSourceProperty.setPassword(CryptoUtils.decrypt(password));
+                }catch (Exception e) {
+                    log.warn(db_name +" password is not encrypt");
+                    dataSourceProperty.setPassword(password);
+                }
                 dataSourceProperty.setDriverClassName(driver_class_name);
                 switch (type) {
                     case DRUID_DATASOURCE:
@@ -112,6 +125,12 @@ public class MysqlDynamicDataSourceProvider {
                         break;
                     case HIKARI_DATASOURCE:
                         dataSourceProperty.setType(HikariDataSource.class);
+                        break;
+                    case BASIC_DATASOURCE:
+                        dataSourceProperty.setType(BasicDataSource.class);
+                        break;
+                    case GBASE_DATASOURCE:
+                        dataSourceProperty.setType(GBaseDataSource.class);
                         break;
                     default:
                         break;
