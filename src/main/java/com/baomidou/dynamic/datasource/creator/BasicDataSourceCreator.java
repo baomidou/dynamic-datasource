@@ -87,7 +87,7 @@ public class BasicDataSourceCreator {
       return (DataSource) buildMethod.invoke(o6);
     } catch (Exception e) {
       throw new ErrorCreateDataSourceException(
-          "dynamic-datasource create basic database named " + dataSourceProperty.getPollName() + " error");
+          "dynamic-datasource create basic database named " + dataSourceProperty.getPoolName() + " error");
     }
   }
 

@@ -61,7 +61,7 @@ public class DruidDataSourceCreator {
     dataSource.setPassword(dataSourceProperty.getPassword());
     dataSource.setUrl(dataSourceProperty.getUrl());
     dataSource.setDriverClassName(dataSourceProperty.getDriverClassName());
-    dataSource.setName(dataSourceProperty.getPollName());
+    dataSource.setName(dataSourceProperty.getPoolName());
     DruidConfig config = dataSourceProperty.getDruid();
     Properties properties = config.toProperties(druidConfig);
     String filters = properties.getProperty("druid.filters");

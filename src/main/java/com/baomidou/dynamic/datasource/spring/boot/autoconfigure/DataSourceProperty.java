@@ -45,7 +45,7 @@ public class DataSourceProperty {
   /**
    * 连接池名称(只是一个名称标识)</br> 默认是配置文件上的名称
    */
-  private String pollName;
+  private String poolName;
   /**
    * 连接池类型，如果不设置自动查找 Druid > HikariCp
    */

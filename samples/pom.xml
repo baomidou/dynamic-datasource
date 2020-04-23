@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.2.4.RELEASE</version>
+    <version>2.2.6.RELEASE</version>
     <relativePath/>
   </parent>
 
@@ -40,7 +40,7 @@
       <dependency>
         <groupId>org.mybatis.spring.boot</groupId>
         <artifactId>mybatis-spring-boot-starter</artifactId>
-        <version>2.1.1</version>
+        <version>2.1.2</version>
       </dependency>
       <dependency>
         <groupId>com.github.xiaoymin</groupId>
@@ -50,12 +50,12 @@
       <dependency>
         <groupId>com.alibaba</groupId>
         <artifactId>druid-spring-boot-starter</artifactId>
-        <version>1.1.21</version>
+        <version>1.1.22</version>
       </dependency>
       <dependency>
         <groupId>p6spy</groupId>
         <artifactId>p6spy</artifactId>
-        <version>3.8.7</version>
+        <version>3.9.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -68,7 +68,7 @@
     <dependency>
       <groupId>com.baomidou</groupId>
       <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
-      <version>3.0.1</version>
+      <version>3.1.0</version>
     </dependency>
     <dependency>
       <groupId>com.h2database</groupId>
@@ -100,5 +100,22 @@
       </plugin>
     </plugins>
   </build>
+
+  <repositories>
+    <repository>
+      <id>central</id>
+      <name>aliyun maven</name>
+      <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+      <layout>default</layout>
+      <!-- 是否开启发布版构件下载 -->
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <!-- 是否开启快照版构件下载 -->
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 
 </project>
