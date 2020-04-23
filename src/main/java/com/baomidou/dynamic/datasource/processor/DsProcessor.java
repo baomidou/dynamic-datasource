@@ -46,7 +46,7 @@ public abstract class DsProcessor {
    * </pre>
    *
    * @param invocation 方法执行信息
-   * @param key DS注解里的内容
+   * @param key        DS注解里的内容
    * @return 数据源名称
    */
   public String determineDatasource(MethodInvocation invocation, String key) {
@@ -67,7 +67,7 @@ public abstract class DsProcessor {
    * 抽象最终决定数据源
    *
    * @param invocation 方法执行信息
-   * @param key DS注解里的内容
+   * @param key        DS注解里的内容
    * @return 数据源名称
    */
   public abstract String doDetermineDatasource(MethodInvocation invocation, String key);

@@ -117,7 +117,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
   /**
    * 添加数据源
    *
-   * @param ds 数据源名称
+   * @param ds         数据源名称
    * @param dataSource 数据源
    */
   public synchronized void addDataSource(String ds, DataSource dataSource) {

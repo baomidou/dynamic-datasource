@@ -139,6 +139,17 @@ public class DruidDataSourceCreator {
       dataSource.setLogAbandoned(logAbandoned);
     }
 
+    Integer queryTimeOut = config.getQueryTimeout() == null ? druidConfig.getQueryTimeout() : config.getQueryTimeout();
+    if (queryTimeOut != null) {
+      dataSource.setQueryTimeout(queryTimeOut);
+    }
+
+    Integer transactionQueryTimeout =
+        config.getTransactionQueryTimeout() == null ? druidConfig.getTransactionQueryTimeout() : config.getTransactionQueryTimeout();
+    if (transactionQueryTimeout != null) {
+      dataSource.setTransactionQueryTimeout(transactionQueryTimeout);
+    }
+
     try {
       dataSource.init();
     } catch (SQLException e) {

@@ -45,7 +45,7 @@ public class ScriptRunner {
    * 执行数据库脚本
    *
    * @param dataSource 连接池
-   * @param location 脚本位置
+   * @param location   脚本位置
    */
   public void runScript(DataSource dataSource, String location) {
     if (StringUtils.hasText(location)) {
