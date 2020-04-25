@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import lombok.Setter;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 
 /**
@@ -54,8 +55,9 @@ public class DynamicDataSourceAnnotationInterceptor implements MethodInterceptor
 
   private String determineDatasource(MethodInvocation invocation) throws Throwable {
     Method method = invocation.getMethod();
-    DS ds = method.isAnnotationPresent(DS.class) ? method.getAnnotation(DS.class)
-        : AnnotationUtils.findAnnotation(RESOLVER.targetClass(invocation), DS.class);
+    DS ds =  AnnotatedElementUtils.hasAnnotation(method,DS.class) ?
+            AnnotatedElementUtils.findMergedAnnotation(method,DS.class)
+            : AnnotationUtils.findAnnotation(RESOLVER.targetClass(invocation), DS.class);
     String key = ds.value();
     return (!key.isEmpty() && key.startsWith(DYNAMIC_PREFIX)) ? dsProcessor.determineDatasource(invocation, key) : key;
   }

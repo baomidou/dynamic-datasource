@@ -12,57 +12,39 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * <pre/>
+ * </pre>
  */
-package com.baomidou.dynamic.datasource.aop;
+package com.baomidou.samples.mybatis.support;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
+import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor;
+import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationInterceptor;
 import lombok.NonNull;
 import org.aopalliance.aop.Advice;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.AbstractPointcutAdvisor;
 import org.springframework.aop.support.ComposablePointcut;
-import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
+
 
 /**
  * @author TaoYu
  * @since 1.2.0
  */
-public class DynamicDataSourceAnnotationAdvisor extends AbstractPointcutAdvisor implements
+public class DynamicDataSourceAnnotationExtAdvisor extends DynamicDataSourceAnnotationAdvisor implements
     BeanFactoryAware {
 
-  private Advice advice;
-
-  private Pointcut pointcut;
-
-  public DynamicDataSourceAnnotationAdvisor(@NonNull DynamicDataSourceAnnotationInterceptor dynamicDataSourceAnnotationInterceptor) {
-    this.advice = dynamicDataSourceAnnotationInterceptor;
-    this.pointcut = buildPointcut();
+  public DynamicDataSourceAnnotationExtAdvisor(DynamicDataSourceAnnotationInterceptor dynamicDataSourceAnnotationInterceptor) {
+    super(dynamicDataSourceAnnotationInterceptor);
   }
 
-  @Override
-  public Pointcut getPointcut() {
-    return this.pointcut;
-  }
 
-  @Override
-  public Advice getAdvice() {
-    return this.advice;
-  }
-
-  @Override
-  public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-    if (this.advice instanceof BeanFactoryAware) {
-      ((BeanFactoryAware) this.advice).setBeanFactory(beanFactory);
-    }
-  }
 
   protected Pointcut buildPointcut() {
     Pointcut cpc = new AnnotationMatchingPointcut(DS.class, true);
-    Pointcut mpc = AnnotationMatchingPointcut.forMethodAnnotation(DS.class);
+    Pointcut mpc = new AnnotationMatchingPointcut(null,DS.class,true);
     return new ComposablePointcut(cpc).union(mpc);
   }
 }

@@ -27,6 +27,7 @@
     <module>dynamic-druid-mybatis-sample</module>
     <module>dynamic-jdbc-template-sample</module>
     <module>dynamic-mybatis-sample</module>
+    <module>dynamic-mybatis-dsext</module>
     <module>dynamic-mybatisplus2-sample</module>
     <module>dynamic-mybatisplus3-sample</module>
     <module>dynamic-nest-sample</module>
