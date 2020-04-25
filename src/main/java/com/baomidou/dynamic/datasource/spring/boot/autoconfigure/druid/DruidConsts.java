@@ -20,7 +20,7 @@ package com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid;
  * Druid 配置属性
  *
  * @author TaoYu
- * @date 2020/1/27
+ * @since 2020/1/27
  */
 public interface DruidConsts {
 

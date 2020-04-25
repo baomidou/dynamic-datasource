@@ -18,7 +18,6 @@ package com.baomidou.dynamic.datasource.toolkit;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-
 import org.springframework.core.NamedInheritableThreadLocal;
 import org.springframework.util.StringUtils;
 
