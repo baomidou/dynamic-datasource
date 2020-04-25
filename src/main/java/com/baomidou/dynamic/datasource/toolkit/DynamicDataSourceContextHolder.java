@@ -18,6 +18,8 @@ package com.baomidou.dynamic.datasource.toolkit;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+
+import org.springframework.core.NamedInheritableThreadLocal;
 import org.springframework.util.StringUtils;
 
 /**
@@ -37,7 +39,7 @@ public final class DynamicDataSourceContextHolder {
    * </pre>
    */
   @SuppressWarnings("unchecked")
-  private static final ThreadLocal<Deque<String>> LOOKUP_KEY_HOLDER = new ThreadLocal() {
+  private static final ThreadLocal<Deque<String>> LOOKUP_KEY_HOLDER = new NamedInheritableThreadLocal("dynamic-datasource") {
     @Override
     protected Object initialValue() {
       return new ArrayDeque();
