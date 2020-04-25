@@ -1,5 +1,8 @@
 spring:
   datasource:
+    druid:
+      stat-view-servlet:
+        enabled: true
     dynamic:
       p6spy: true
       druid:
