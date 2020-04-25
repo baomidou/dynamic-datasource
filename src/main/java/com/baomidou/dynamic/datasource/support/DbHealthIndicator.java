@@ -66,7 +66,7 @@ public class DbHealthIndicator extends AbstractHealthIndicator {
    * 设置连接池健康状况
    *
    * @param dataSource 数据源名称
-   * @param health 健康状况 false 不健康 true 健康
+   * @param health     健康状况 false 不健康 true 健康
    * @return 设置状态
    */
   public static Boolean setDbHealth(String dataSource, boolean health) {

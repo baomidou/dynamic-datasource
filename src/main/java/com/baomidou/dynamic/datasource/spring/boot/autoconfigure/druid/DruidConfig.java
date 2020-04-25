@@ -16,56 +16,18 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid;
 
-import static com.alibaba.druid.pool.DruidAbstractDataSource.DEFAULT_INITIAL_SIZE;
-import static com.alibaba.druid.pool.DruidAbstractDataSource.DEFAULT_MAX_EVICTABLE_IDLE_TIME_MILLIS;
-import static com.alibaba.druid.pool.DruidAbstractDataSource.DEFAULT_MAX_WAIT;
-import static com.alibaba.druid.pool.DruidAbstractDataSource.DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS;
-import static com.alibaba.druid.pool.DruidAbstractDataSource.DEFAULT_MIN_IDLE;
-import static com.alibaba.druid.pool.DruidAbstractDataSource.DEFAULT_PHY_TIMEOUT_MILLIS;
-import static com.alibaba.druid.pool.DruidAbstractDataSource.DEFAULT_TEST_ON_BORROW;
-import static com.alibaba.druid.pool.DruidAbstractDataSource.DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS;
-import static com.alibaba.druid.pool.DruidAbstractDataSource.DEFAULT_WHILE_IDLE;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.ASYNC_INIT;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.CLEAR_FILTERS_ENABLE;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.FAIL_FAST;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.FILTERS;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.INITIAL_SIZE;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.INIT_CONNECTION_SQLS;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.INIT_GLOBAL_VARIANTS;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.INIT_VARIANTS;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.KEEP_ALIVE;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.KILL_WHEN_SOCKET_READ_TIMEOUT;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.MAX_ACTIVE;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.MAX_EVICTABLE_IDLE_TIME_MILLIS;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.MAX_POOL_PREPARED_STATEMENT_PER_CONNECTION_SIZE;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.MAX_WAIT;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.MAX_WAIT_THREAD_COUNT;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.MIN_EVICTABLE_IDLE_TIME_MILLIS;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.MIN_IDLE;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.NOT_FULL_TIMEOUT_RETRY_COUNT;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.PHY_TIMEOUT_MILLIS;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.POOL_PREPARED_STATEMENTS;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.RESET_STAT_ENABLE;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.STAT_LOG_SLOW_SQL;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.STAT_MERGE_SQL;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.STAT_SLOW_SQL_MILLIS;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.STAT_SQL_MAX_SIZE;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.TEST_ON_BORROW;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.TEST_WHILE_IDLE;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.TIME_BETWEEN_EVICTION_RUNS_MILLIS;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.TIME_BETWEEN_LOG_STATS_MILLIS;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.USE_GLOBAL_DATA_SOURCE_STAT;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.USE_UNFAIR_LOCK;
-import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.VALIDATION_QUERY;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
+import static com.alibaba.druid.pool.DruidAbstractDataSource.*;
+import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.*;
 
 /**
  * Druid参数配置
@@ -117,6 +79,8 @@ public class DruidConfig {
   private Boolean removeAbandoned;
   private Integer removeAbandonedTimeoutMillis;
   private Boolean logAbandoned;
+  private Integer queryTimeout;
+  private Integer transactionQueryTimeout;
   private String publicKey;
 
   @NestedConfigurationProperty

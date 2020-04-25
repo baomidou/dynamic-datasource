@@ -61,7 +61,7 @@ public class DruidDataSourceCreator {
     dataSource.setPassword(dataSourceProperty.getPassword());
     dataSource.setUrl(dataSourceProperty.getUrl());
     dataSource.setDriverClassName(dataSourceProperty.getDriverClassName());
-    dataSource.setName(dataSourceProperty.getPollName());
+    dataSource.setName(dataSourceProperty.getPoolName());
     DruidConfig config = dataSourceProperty.getDruid();
     Properties properties = config.toProperties(druidConfig);
     String filters = properties.getProperty("druid.filters");
@@ -137,6 +137,17 @@ public class DruidDataSourceCreator {
     Boolean logAbandoned = config.getLogAbandoned() == null ? druidConfig.getLogAbandoned() : config.getLogAbandoned();
     if (logAbandoned != null) {
       dataSource.setLogAbandoned(logAbandoned);
+    }
+
+    Integer queryTimeOut = config.getQueryTimeout() == null ? druidConfig.getQueryTimeout() : config.getQueryTimeout();
+    if (queryTimeOut != null) {
+      dataSource.setQueryTimeout(queryTimeOut);
+    }
+
+    Integer transactionQueryTimeout =
+        config.getTransactionQueryTimeout() == null ? druidConfig.getTransactionQueryTimeout() : config.getTransactionQueryTimeout();
+    if (transactionQueryTimeout != null) {
+      dataSource.setTransactionQueryTimeout(transactionQueryTimeout);
     }
 
     try {

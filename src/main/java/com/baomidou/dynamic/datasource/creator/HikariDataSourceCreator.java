@@ -42,7 +42,7 @@ public class HikariDataSourceCreator {
     config.setPassword(dataSourceProperty.getPassword());
     config.setJdbcUrl(dataSourceProperty.getUrl());
     config.setDriverClassName(dataSourceProperty.getDriverClassName());
-    config.setPoolName(dataSourceProperty.getPollName());
+    config.setPoolName(dataSourceProperty.getPoolName());
     return new HikariDataSource(config);
   }
 }

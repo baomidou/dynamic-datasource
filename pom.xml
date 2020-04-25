@@ -12,7 +12,7 @@
 
   <groupId>com.baomidou</groupId>
   <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
-  <version>3.0.1</version>
+  <version>3.1.0</version>
   <packaging>jar</packaging>
 
   <name>dynamic-datasource-spring-boot-starter</name>
@@ -78,7 +78,7 @@
     <dependency>
       <groupId>com.alibaba</groupId>
       <artifactId>druid-spring-boot-starter</artifactId>
-      <version>1.1.21</version>
+      <version>1.1.22</version>
       <optional>true</optional>
     </dependency>
     <dependency>
@@ -112,10 +112,9 @@
     <dependency>
       <groupId>io.seata</groupId>
       <artifactId>seata-all</artifactId>
-      <version>1.0.0</version>
+      <version>1.2.0</version>
       <optional>true</optional>
     </dependency>
-
   </dependencies>
 
   <build>
@@ -218,5 +217,22 @@
       </build>
     </profile>
   </profiles>
+
+  <repositories>
+    <repository>
+      <id>central</id>
+      <name>aliyun maven</name>
+      <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+      <layout>default</layout>
+      <!-- 是否开启发布版构件下载 -->
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <!-- 是否开启快照版构件下载 -->
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 
 </project>

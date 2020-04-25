@@ -82,8 +82,8 @@ public class Base64 {
 
   /**
    * @param a Translates the specified byte array into an "alternate representation" Base64 string. This non-standard variant uses an
-   * alphabet that does not contain the uppercase alphabetic characters, which makes it suitable for use in situations where case-folding
-   * occurs.
+   *          alphabet that does not contain the uppercase alphabetic characters, which makes it suitable for use in situations where
+   *          case-folding occurs.
    * @return str
    */
   public static String byteArrayToAltBase64(byte[] a) {
