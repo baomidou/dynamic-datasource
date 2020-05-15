@@ -41,7 +41,7 @@ spring:
       #        break-after-acquire-failure:
       #        filters: stat,wall # 注意这个值和druid原生不一致，默认启动了stat,wall
       datasource:
-        master:
+        masterDog:
           username: sa
           password: "LYIXYTfaq9ug7bqAfcoU1gQovp/Atx7wsdJ5D7oFN5QMqZUI4OGHyMkCA7IxtYAIQr/8cMVFGo9oa/mqtMrzmQ=="
           url: jdbc:h2:mem:test
@@ -52,19 +52,19 @@ spring:
             public-key: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKUVA/IL/iON8f63bv2i/pIAK+1sXY228slLkTKrI9axwBMIoPV7+PqdRTv6uqMl3j6nei0EDBWEu/Wp/qOQ/ScCAwEAAQ==
         slave_1:
           username: sa
-          password: "123456"
+          password: "LYIXYTfaq9ug7bqAfcoU1gQovp/Atx7wsdJ5D7oFN5QMqZUI4OGHyMkCA7IxtYAIQr/8cMVFGo9oa/mqtMrzmQ=="
           url: jdbc:h2:mem:test
           driver-class-name: org.h2.Driver
           dbcp:
             initial-size: 6
         slave_2:
           username: sa
-          password: "123456"
+          password: "LYIXYTfaq9ug7bqAfcoU1gQovp/Atx7wsdJ5D7oFN5QMqZUI4OGHyMkCA7IxtYAIQr/8cMVFGo9oa/mqtMrzmQ=="
           url: jdbc:h2:mem:test
           driver-class-name: org.h2.Driver
         slave_3:
           username: sa
-          password: "123456"
+          password: "LYIXYTfaq9ug7bqAfcoU1gQovp/Atx7wsdJ5D7oFN5QMqZUI4OGHyMkCA7IxtYAIQr/8cMVFGo9oa/mqtMrzmQ=="
           url: jdbc:h2:mem:test
           driver-class-name: org.h2.Driver
 #      dbcp:
