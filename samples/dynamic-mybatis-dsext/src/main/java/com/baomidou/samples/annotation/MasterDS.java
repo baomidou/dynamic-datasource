@@ -32,5 +32,4 @@ import java.lang.annotation.*;
 @Documented
 @DS("master")
 public @interface MasterDS {
-    String value() default "master";
 }

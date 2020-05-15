@@ -16,15 +16,14 @@
  */
 package com.baomidou.dynamic.datasource.creator;
 
-import static com.baomidou.dynamic.datasource.support.DdConstants.DRUID_DATASOURCE;
-import static com.baomidou.dynamic.datasource.support.DdConstants.HIKARI_DATASOURCE;
-
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import com.baomidou.dynamic.datasource.support.ScriptRunner;
 import javax.sql.DataSource;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
+
+import static com.baomidou.dynamic.datasource.support.DdConstants.*;
 
 /**
  * 数据源创建器
@@ -45,10 +44,17 @@ public class DataSourceCreator {
    */
   private static Boolean hikariExists = false;
 
+  private static Boolean dbcpExists = false;
+
   static {
     try {
       Class.forName(DRUID_DATASOURCE);
       druidExists = true;
+    } catch (ClassNotFoundException ignored) {
+    }
+    try {
+      Class.forName(DBCP_DATASOURCE);
+      dbcpExists = true;
     } catch (ClassNotFoundException ignored) {
     }
     try {
@@ -62,6 +68,7 @@ public class DataSourceCreator {
   private JndiDataSourceCreator jndiDataSourceCreator;
   private HikariDataSourceCreator hikariDataSourceCreator;
   private DruidDataSourceCreator druidDataSourceCreator;
+  private DbcpDataSourceCreator dbcpDataSourceCreator;
   private String globalPublicKey;
 
   /**
@@ -81,14 +88,18 @@ public class DataSourceCreator {
       if (type == null) {
         if (druidExists) {
           dataSource = createDruidDataSource(dataSourceProperty);
-        } else if (hikariExists) {
+        }  else if(dbcpExists){
+          dataSource = createDbcpDataSource(dataSourceProperty);
+        }  else if (hikariExists) {
           dataSource = createHikariDataSource(dataSourceProperty);
-        } else {
+        }else {
           dataSource = createBasicDataSource(dataSourceProperty);
         }
       } else if (DRUID_DATASOURCE.equals(type.getName())) {
         dataSource = createDruidDataSource(dataSourceProperty);
-      } else if (HIKARI_DATASOURCE.equals(type.getName())) {
+      } else if (DBCP_DATASOURCE.equals(type.getName())) {
+        dataSource = createDbcpDataSource(dataSourceProperty);
+      }  else if (HIKARI_DATASOURCE.equals(type.getName())) {
         dataSource = createHikariDataSource(dataSourceProperty);
       } else {
         dataSource = createBasicDataSource(dataSourceProperty);
@@ -147,6 +158,20 @@ public class DataSourceCreator {
     }
     return druidDataSourceCreator.createDataSource(dataSourceProperty);
   }
+
+  /**
+   * 创建Dbcp数据源
+   *
+   * @param dataSourceProperty 数据源参数
+   * @return 数据源
+   */
+  public DataSource createDbcpDataSource(DataSourceProperty dataSourceProperty) {
+    if (StringUtils.isEmpty(dataSourceProperty.getPublicKey())) {
+      dataSourceProperty.setPublicKey(globalPublicKey);
+    }
+    return dbcpDataSourceCreator.createDataSource(dataSourceProperty);
+  }
+
 
   /**
    * 创建Hikari数据源

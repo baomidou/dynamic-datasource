@@ -16,11 +16,7 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
-import com.baomidou.dynamic.datasource.creator.BasicDataSourceCreator;
-import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
-import com.baomidou.dynamic.datasource.creator.DruidDataSourceCreator;
-import com.baomidou.dynamic.datasource.creator.HikariDataSourceCreator;
-import com.baomidou.dynamic.datasource.creator.JndiDataSourceCreator;
+import com.baomidou.dynamic.datasource.creator.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -44,6 +40,7 @@ public class DynamicDataSourceCreatorAutoConfiguration {
     dataSourceCreator.setJndiDataSourceCreator(jndiDataSourceCreator());
     dataSourceCreator.setDruidDataSourceCreator(druidDataSourceCreator());
     dataSourceCreator.setHikariDataSourceCreator(hikariDataSourceCreator());
+    dataSourceCreator.setDbcpDataSourceCreator(dbcpDataSourceCreator());
     dataSourceCreator.setGlobalPublicKey(properties.getPublicKey());
     return dataSourceCreator;
   }
@@ -70,5 +67,11 @@ public class DynamicDataSourceCreatorAutoConfiguration {
   @ConditionalOnMissingBean
   public HikariDataSourceCreator hikariDataSourceCreator() {
     return new HikariDataSourceCreator(properties.getHikari());
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  public DbcpDataSourceCreator dbcpDataSourceCreator() {
+    return new DbcpDataSourceCreator(properties.getDbcp());
   }
 }

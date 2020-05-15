@@ -32,5 +32,4 @@ import java.lang.annotation.*;
 @Documented
 @DS("slave")
 public @interface SlaveDS {
-    String value() default "slave";
 }

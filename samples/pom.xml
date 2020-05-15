@@ -25,6 +25,7 @@
   <modules>
     <module>dynamic-add-remove-datasource</module>
     <module>dynamic-druid-mybatis-sample</module>
+    <module>dynamic-dbcp-mybatis-sample</module>
     <module>dynamic-jdbc-template-sample</module>
     <module>dynamic-mybatis-sample</module>
     <module>dynamic-mybatis-dsext</module>

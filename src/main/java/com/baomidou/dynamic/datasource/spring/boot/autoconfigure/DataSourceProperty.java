@@ -16,6 +16,7 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.dbcp.DbcpConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.hikari.HikariCpConfig;
 import com.baomidou.dynamic.datasource.toolkit.CryptoUtils;
@@ -96,6 +97,11 @@ public class DataSourceProperty {
    */
   @NestedConfigurationProperty
   private HikariCpConfig hikari = new HikariCpConfig();
+  /**
+   * dbcp 参数设置
+   */
+  @NestedConfigurationProperty
+  private DbcpConfig dbcp = new DbcpConfig();
 
   /**
    * 解密公匙(如果未设置默认使用全局的)
@@ -130,4 +136,5 @@ public class DataSourceProperty {
     }
     return cipherText;
   }
+
 }
