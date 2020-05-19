@@ -18,7 +18,7 @@ package com.baomidou.dynamic.datasource.toolkit;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-import org.springframework.core.NamedInheritableThreadLocal;
+import org.springframework.core.NamedThreadLocal;
 import org.springframework.util.StringUtils;
 
 /**
@@ -34,14 +34,13 @@ public final class DynamicDataSourceContextHolder {
    * <pre>
    * 为了支持嵌套切换，如ABC三个service都是不同的数据源
    * 其中A的某个业务要调B的方法，B的方法需要调用C的方法。一级一级调用切换，形成了链。
-   * 传统的只设置当前线程的方式不能满足此业务需求，必须模拟栈，后进先出。
+   * 传统的只设置当前线程的方式不能满足此业务需求，必须使用栈，后进先出。
    * </pre>
    */
-  @SuppressWarnings("unchecked")
-  private static final ThreadLocal<Deque<String>> LOOKUP_KEY_HOLDER = new NamedInheritableThreadLocal("dynamic-datasource") {
+  private static final ThreadLocal<Deque<String>> LOOKUP_KEY_HOLDER = new NamedThreadLocal<Deque<String>>("dynamic-datasource") {
     @Override
-    protected Object initialValue() {
-      return new ArrayDeque();
+    protected Deque<String> initialValue() {
+      return new ArrayDeque<>();
     }
   };
 
