@@ -4,7 +4,9 @@ JDK Version(required):
 
 SpringBoot Version(required): 
 
-Starter Version(required):
+dynamic-datasource-spring-boot-starter Version(required):
+
+druid Version(optional):
 
 # Describe
 
@@ -14,7 +16,11 @@ Starter Version(required):
 
 Expected Result: 
 
+
+
 Actual Result:  
+
+
 
 # Steps to reproduce
 
