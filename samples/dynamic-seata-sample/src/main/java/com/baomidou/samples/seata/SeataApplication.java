@@ -9,8 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @MapperScan("com.baomidou.samples.seata.dao")
 public class SeataApplication {
 
-  public static void main(String[] args) {
-    SpringApplication.run(SeataApplication.class, args);
-  }
+    public static void main(String[] args) {
+        SpringApplication.run(SeataApplication.class, args);
+    }
 
 }

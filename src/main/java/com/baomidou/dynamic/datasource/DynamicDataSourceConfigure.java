@@ -19,9 +19,10 @@ package com.baomidou.dynamic.datasource;
 import com.baomidou.dynamic.datasource.matcher.ExpressionMatcher;
 import com.baomidou.dynamic.datasource.matcher.Matcher;
 import com.baomidou.dynamic.datasource.matcher.RegexMatcher;
+import lombok.Getter;
+
 import java.util.LinkedList;
 import java.util.List;
-import lombok.Getter;
 
 /**
  * 基于多种策略的自动切换数据源
@@ -31,24 +32,24 @@ import lombok.Getter;
  */
 public class DynamicDataSourceConfigure {
 
-  @Getter
-  private List<Matcher> matchers = new LinkedList<>();
+    @Getter
+    private List<Matcher> matchers = new LinkedList<>();
 
-  private DynamicDataSourceConfigure() {
-  }
+    private DynamicDataSourceConfigure() {
+    }
 
-  public static DynamicDataSourceConfigure config() {
-    return new DynamicDataSourceConfigure();
-  }
+    public static DynamicDataSourceConfigure config() {
+        return new DynamicDataSourceConfigure();
+    }
 
-  public DynamicDataSourceConfigure regexMatchers(String pattern, String ds) {
-    matchers.add(new RegexMatcher(pattern, ds));
-    return this;
-  }
+    public DynamicDataSourceConfigure regexMatchers(String pattern, String ds) {
+        matchers.add(new RegexMatcher(pattern, ds));
+        return this;
+    }
 
-  public DynamicDataSourceConfigure expressionMatchers(String expression, String ds) {
-    matchers.add(new ExpressionMatcher(expression, ds));
-    return this;
-  }
+    public DynamicDataSourceConfigure expressionMatchers(String expression, String ds) {
+        matchers.add(new ExpressionMatcher(expression, ds));
+        return this;
+    }
 
 }

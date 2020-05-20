@@ -27,15 +27,16 @@ import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourcePrope
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidSlf4jConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidWallConfigUtil;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import javax.sql.DataSource;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
+
+import javax.sql.DataSource;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * Druid数据源创建器
@@ -46,115 +47,115 @@ import org.springframework.util.StringUtils;
 @Data
 public class DruidDataSourceCreator {
 
-  private DruidConfig druidConfig;
+    private DruidConfig druidConfig;
 
-  @Autowired(required = false)
-  private ApplicationContext applicationContext;
+    @Autowired(required = false)
+    private ApplicationContext applicationContext;
 
-  public DruidDataSourceCreator(DruidConfig druidConfig) {
-    this.druidConfig = druidConfig;
-  }
-
-  public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
-    DruidDataSource dataSource = new DruidDataSource();
-    dataSource.setUsername(dataSourceProperty.getUsername());
-    dataSource.setPassword(dataSourceProperty.getPassword());
-    dataSource.setUrl(dataSourceProperty.getUrl());
-    dataSource.setDriverClassName(dataSourceProperty.getDriverClassName());
-    dataSource.setName(dataSourceProperty.getPoolName());
-    DruidConfig config = dataSourceProperty.getDruid();
-    Properties properties = config.toProperties(druidConfig);
-    String filters = properties.getProperty("druid.filters");
-    List<Filter> proxyFilters = new ArrayList<>(2);
-    if (!StringUtils.isEmpty(filters) && filters.contains("stat")) {
-      StatFilter statFilter = new StatFilter();
-      statFilter.configFromProperties(properties);
-      proxyFilters.add(statFilter);
-    }
-    if (!StringUtils.isEmpty(filters) && filters.contains("wall")) {
-      WallConfig wallConfig = DruidWallConfigUtil.toWallConfig(dataSourceProperty.getDruid().getWall(), druidConfig.getWall());
-      WallFilter wallFilter = new WallFilter();
-      wallFilter.setConfig(wallConfig);
-      proxyFilters.add(wallFilter);
-    }
-    if (!StringUtils.isEmpty(filters) && filters.contains("slf4j")) {
-      Slf4jLogFilter slf4jLogFilter = new Slf4jLogFilter();
-      // 由于properties上面被用了，LogFilter不能使用configFromProperties方法，这里只能一个个set了。
-      DruidSlf4jConfig slf4jConfig = druidConfig.getSlf4j();
-      slf4jLogFilter.setStatementLogEnabled(slf4jConfig.getEnable());
-      slf4jLogFilter.setStatementExecutableSqlLogEnable(slf4jConfig.getStatementExecutableSqlLogEnable());
-      proxyFilters.add(slf4jLogFilter);
+    public DruidDataSourceCreator(DruidConfig druidConfig) {
+        this.druidConfig = druidConfig;
     }
 
-    if (this.applicationContext != null) {
-      for (String filterId : druidConfig.getProxyFilters()) {
-        proxyFilters.add(this.applicationContext.getBean(filterId, Filter.class));
-      }
-    }
-    dataSource.setProxyFilters(proxyFilters);
-    dataSource.configFromPropety(properties);
-    //连接参数单独设置
-    dataSource.setConnectProperties(config.getConnectionProperties());
-    //设置druid内置properties不支持的的参数
-    Boolean testOnReturn = config.getTestOnReturn() == null ? druidConfig.getTestOnReturn() : config.getTestOnReturn();
-    if (testOnReturn != null && testOnReturn.equals(true)) {
-      dataSource.setTestOnReturn(true);
-    }
-    Integer validationQueryTimeout =
-        config.getValidationQueryTimeout() == null ? druidConfig.getValidationQueryTimeout() : config.getValidationQueryTimeout();
-    if (validationQueryTimeout != null && !validationQueryTimeout.equals(-1)) {
-      dataSource.setValidationQueryTimeout(validationQueryTimeout);
-    }
+    public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
+        DruidDataSource dataSource = new DruidDataSource();
+        dataSource.setUsername(dataSourceProperty.getUsername());
+        dataSource.setPassword(dataSourceProperty.getPassword());
+        dataSource.setUrl(dataSourceProperty.getUrl());
+        dataSource.setDriverClassName(dataSourceProperty.getDriverClassName());
+        dataSource.setName(dataSourceProperty.getPoolName());
+        DruidConfig config = dataSourceProperty.getDruid();
+        Properties properties = config.toProperties(druidConfig);
+        String filters = properties.getProperty("druid.filters");
+        List<Filter> proxyFilters = new ArrayList<>(2);
+        if (!StringUtils.isEmpty(filters) && filters.contains("stat")) {
+            StatFilter statFilter = new StatFilter();
+            statFilter.configFromProperties(properties);
+            proxyFilters.add(statFilter);
+        }
+        if (!StringUtils.isEmpty(filters) && filters.contains("wall")) {
+            WallConfig wallConfig = DruidWallConfigUtil.toWallConfig(dataSourceProperty.getDruid().getWall(), druidConfig.getWall());
+            WallFilter wallFilter = new WallFilter();
+            wallFilter.setConfig(wallConfig);
+            proxyFilters.add(wallFilter);
+        }
+        if (!StringUtils.isEmpty(filters) && filters.contains("slf4j")) {
+            Slf4jLogFilter slf4jLogFilter = new Slf4jLogFilter();
+            // 由于properties上面被用了，LogFilter不能使用configFromProperties方法，这里只能一个个set了。
+            DruidSlf4jConfig slf4jConfig = druidConfig.getSlf4j();
+            slf4jLogFilter.setStatementLogEnabled(slf4jConfig.getEnable());
+            slf4jLogFilter.setStatementExecutableSqlLogEnable(slf4jConfig.getStatementExecutableSqlLogEnable());
+            proxyFilters.add(slf4jLogFilter);
+        }
 
-    Boolean sharePreparedStatements =
-        config.getSharePreparedStatements() == null ? druidConfig.getSharePreparedStatements() : config.getSharePreparedStatements();
-    if (sharePreparedStatements != null && sharePreparedStatements.equals(true)) {
-      dataSource.setSharePreparedStatements(true);
-    }
-    Integer connectionErrorRetryAttempts =
-        config.getConnectionErrorRetryAttempts() == null ? druidConfig.getConnectionErrorRetryAttempts()
-            : config.getConnectionErrorRetryAttempts();
-    if (connectionErrorRetryAttempts != null && !connectionErrorRetryAttempts.equals(1)) {
-      dataSource.setConnectionErrorRetryAttempts(connectionErrorRetryAttempts);
-    }
-    Boolean breakAfterAcquireFailure =
-        config.getBreakAfterAcquireFailure() == null ? druidConfig.getBreakAfterAcquireFailure() : config.getBreakAfterAcquireFailure();
-    if (breakAfterAcquireFailure != null && breakAfterAcquireFailure.equals(true)) {
-      dataSource.setBreakAfterAcquireFailure(true);
-    }
+        if (this.applicationContext != null) {
+            for (String filterId : druidConfig.getProxyFilters()) {
+                proxyFilters.add(this.applicationContext.getBean(filterId, Filter.class));
+            }
+        }
+        dataSource.setProxyFilters(proxyFilters);
+        dataSource.configFromPropety(properties);
+        //连接参数单独设置
+        dataSource.setConnectProperties(config.getConnectionProperties());
+        //设置druid内置properties不支持的的参数
+        Boolean testOnReturn = config.getTestOnReturn() == null ? druidConfig.getTestOnReturn() : config.getTestOnReturn();
+        if (testOnReturn != null && testOnReturn.equals(true)) {
+            dataSource.setTestOnReturn(true);
+        }
+        Integer validationQueryTimeout =
+                config.getValidationQueryTimeout() == null ? druidConfig.getValidationQueryTimeout() : config.getValidationQueryTimeout();
+        if (validationQueryTimeout != null && !validationQueryTimeout.equals(-1)) {
+            dataSource.setValidationQueryTimeout(validationQueryTimeout);
+        }
 
-    Integer timeout = config.getRemoveAbandonedTimeoutMillis() == null ? druidConfig.getRemoveAbandonedTimeoutMillis()
-        : config.getRemoveAbandonedTimeoutMillis();
-    if (timeout != null) {
-      dataSource.setRemoveAbandonedTimeout(timeout);
-    }
+        Boolean sharePreparedStatements =
+                config.getSharePreparedStatements() == null ? druidConfig.getSharePreparedStatements() : config.getSharePreparedStatements();
+        if (sharePreparedStatements != null && sharePreparedStatements.equals(true)) {
+            dataSource.setSharePreparedStatements(true);
+        }
+        Integer connectionErrorRetryAttempts =
+                config.getConnectionErrorRetryAttempts() == null ? druidConfig.getConnectionErrorRetryAttempts()
+                        : config.getConnectionErrorRetryAttempts();
+        if (connectionErrorRetryAttempts != null && !connectionErrorRetryAttempts.equals(1)) {
+            dataSource.setConnectionErrorRetryAttempts(connectionErrorRetryAttempts);
+        }
+        Boolean breakAfterAcquireFailure =
+                config.getBreakAfterAcquireFailure() == null ? druidConfig.getBreakAfterAcquireFailure() : config.getBreakAfterAcquireFailure();
+        if (breakAfterAcquireFailure != null && breakAfterAcquireFailure.equals(true)) {
+            dataSource.setBreakAfterAcquireFailure(true);
+        }
 
-    Boolean abandoned = config.getRemoveAbandoned() == null ? druidConfig.getRemoveAbandoned() : config.getRemoveAbandoned();
-    if (abandoned != null) {
-      dataSource.setRemoveAbandoned(abandoned);
-    }
+        Integer timeout = config.getRemoveAbandonedTimeoutMillis() == null ? druidConfig.getRemoveAbandonedTimeoutMillis()
+                : config.getRemoveAbandonedTimeoutMillis();
+        if (timeout != null) {
+            dataSource.setRemoveAbandonedTimeout(timeout);
+        }
 
-    Boolean logAbandoned = config.getLogAbandoned() == null ? druidConfig.getLogAbandoned() : config.getLogAbandoned();
-    if (logAbandoned != null) {
-      dataSource.setLogAbandoned(logAbandoned);
-    }
+        Boolean abandoned = config.getRemoveAbandoned() == null ? druidConfig.getRemoveAbandoned() : config.getRemoveAbandoned();
+        if (abandoned != null) {
+            dataSource.setRemoveAbandoned(abandoned);
+        }
 
-    Integer queryTimeOut = config.getQueryTimeout() == null ? druidConfig.getQueryTimeout() : config.getQueryTimeout();
-    if (queryTimeOut != null) {
-      dataSource.setQueryTimeout(queryTimeOut);
-    }
+        Boolean logAbandoned = config.getLogAbandoned() == null ? druidConfig.getLogAbandoned() : config.getLogAbandoned();
+        if (logAbandoned != null) {
+            dataSource.setLogAbandoned(logAbandoned);
+        }
 
-    Integer transactionQueryTimeout =
-        config.getTransactionQueryTimeout() == null ? druidConfig.getTransactionQueryTimeout() : config.getTransactionQueryTimeout();
-    if (transactionQueryTimeout != null) {
-      dataSource.setTransactionQueryTimeout(transactionQueryTimeout);
-    }
+        Integer queryTimeOut = config.getQueryTimeout() == null ? druidConfig.getQueryTimeout() : config.getQueryTimeout();
+        if (queryTimeOut != null) {
+            dataSource.setQueryTimeout(queryTimeOut);
+        }
 
-    try {
-      dataSource.init();
-    } catch (SQLException e) {
-      throw new ErrorCreateDataSourceException("druid create error", e);
+        Integer transactionQueryTimeout =
+                config.getTransactionQueryTimeout() == null ? druidConfig.getTransactionQueryTimeout() : config.getTransactionQueryTimeout();
+        if (transactionQueryTimeout != null) {
+            dataSource.setTransactionQueryTimeout(transactionQueryTimeout);
+        }
+
+        try {
+            dataSource.init();
+        } catch (SQLException e) {
+            throw new ErrorCreateDataSourceException("druid create error", e);
+        }
+        return dataSource;
     }
-    return dataSource;
-  }
 }

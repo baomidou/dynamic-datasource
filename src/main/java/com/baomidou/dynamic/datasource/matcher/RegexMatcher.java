@@ -27,8 +27,8 @@ import lombok.Data;
 @Data
 public class RegexMatcher implements Matcher {
 
-  private String pattern;
+    private String pattern;
 
-  private String ds;
+    private String ds;
 }
 

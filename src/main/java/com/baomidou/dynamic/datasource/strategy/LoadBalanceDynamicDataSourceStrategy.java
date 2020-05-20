@@ -16,9 +16,9 @@
  */
 package com.baomidou.dynamic.datasource.strategy;
 
+import javax.sql.DataSource;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import javax.sql.DataSource;
 
 /**
  * LoadBalance strategy to switch a database
@@ -28,13 +28,13 @@ import javax.sql.DataSource;
  */
 public class LoadBalanceDynamicDataSourceStrategy implements DynamicDataSourceStrategy {
 
-  /**
-   * 负载均衡计数器
-   */
-  private AtomicInteger index = new AtomicInteger(0);
+    /**
+     * 负载均衡计数器
+     */
+    private AtomicInteger index = new AtomicInteger(0);
 
-  @Override
-  public DataSource determineDataSource(List<DataSource> dataSources) {
-    return dataSources.get(Math.abs(index.getAndAdd(1) % dataSources.size()));
-  }
+    @Override
+    public DataSource determineDataSource(List<DataSource> dataSources) {
+        return dataSources.get(Math.abs(index.getAndAdd(1) % dataSources.size()));
+    }
 }

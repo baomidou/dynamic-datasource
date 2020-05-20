@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class OrderController {
 
-  @Autowired
-  private OrderService orderService;
+    @Autowired
+    private OrderService orderService;
 
-  @PostMapping("/placeOrder")
-  public String placeOrder(@Validated @RequestBody PlaceOrderRequest request) {
-    orderService.placeOrder(request);
-    return "下单成功";
-  }
+    @PostMapping("/placeOrder")
+    public String placeOrder(@Validated @RequestBody PlaceOrderRequest request) {
+        orderService.placeOrder(request);
+        return "下单成功";
+    }
 }

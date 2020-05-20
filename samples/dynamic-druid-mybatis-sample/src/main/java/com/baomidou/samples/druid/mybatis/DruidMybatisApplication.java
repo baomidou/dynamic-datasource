@@ -9,8 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @MapperScan("com.baomidou.samples.druid.mybatis.mapper")
 public class DruidMybatisApplication {
 
-  public static void main(String[] args) {
-    SpringApplication.run(DruidMybatisApplication.class, args);
-  }
+    public static void main(String[] args) {
+        SpringApplication.run(DruidMybatisApplication.class, args);
+    }
 
 }

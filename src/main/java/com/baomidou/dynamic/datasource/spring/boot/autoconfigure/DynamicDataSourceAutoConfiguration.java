@@ -29,8 +29,6 @@ import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.provider.YmlDynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidDynamicDataSourceConfiguration;
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
-import java.util.Map;
-import javax.sql.DataSource;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -43,7 +41,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.Ordered;
-import org.springframework.expression.ParserContext;
+
+import javax.sql.DataSource;
+import java.util.Map;
 
 /**
  * 动态数据源核心自动配置类
@@ -63,55 +63,55 @@ import org.springframework.expression.ParserContext;
 @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class DynamicDataSourceAutoConfiguration {
 
-  private final DynamicDataSourceProperties properties;
+    private final DynamicDataSourceProperties properties;
 
-  @Bean
-  @ConditionalOnMissingBean
-  public DynamicDataSourceProvider dynamicDataSourceProvider() {
-    Map<String, DataSourceProperty> datasourceMap = properties.getDatasource();
-    return new YmlDynamicDataSourceProvider(datasourceMap);
-  }
+    @Bean
+    @ConditionalOnMissingBean
+    public DynamicDataSourceProvider dynamicDataSourceProvider() {
+        Map<String, DataSourceProperty> datasourceMap = properties.getDatasource();
+        return new YmlDynamicDataSourceProvider(datasourceMap);
+    }
 
-  @Bean
-  @ConditionalOnMissingBean
-  public DataSource dataSource(DynamicDataSourceProvider dynamicDataSourceProvider) {
-    DynamicRoutingDataSource dataSource = new DynamicRoutingDataSource();
-    dataSource.setPrimary(properties.getPrimary());
-    dataSource.setStrict(properties.getStrict());
-    dataSource.setStrategy(properties.getStrategy());
-    dataSource.setProvider(dynamicDataSourceProvider);
-    dataSource.setP6spy(properties.getP6spy());
-    dataSource.setSeata(properties.getSeata());
-    return dataSource;
-  }
+    @Bean
+    @ConditionalOnMissingBean
+    public DataSource dataSource(DynamicDataSourceProvider dynamicDataSourceProvider) {
+        DynamicRoutingDataSource dataSource = new DynamicRoutingDataSource();
+        dataSource.setPrimary(properties.getPrimary());
+        dataSource.setStrict(properties.getStrict());
+        dataSource.setStrategy(properties.getStrategy());
+        dataSource.setProvider(dynamicDataSourceProvider);
+        dataSource.setP6spy(properties.getP6spy());
+        dataSource.setSeata(properties.getSeata());
+        return dataSource;
+    }
 
-  @Bean
-  @ConditionalOnMissingBean
-  public DynamicDataSourceAnnotationAdvisor dynamicDatasourceAnnotationAdvisor(DsProcessor dsProcessor) {
-    DynamicDataSourceAnnotationInterceptor interceptor = new DynamicDataSourceAnnotationInterceptor();
-    interceptor.setDsProcessor(dsProcessor);
-    DynamicDataSourceAnnotationAdvisor advisor = new DynamicDataSourceAnnotationAdvisor(interceptor);
-    advisor.setOrder(properties.getOrder());
-    return advisor;
-  }
+    @Bean
+    @ConditionalOnMissingBean
+    public DynamicDataSourceAnnotationAdvisor dynamicDatasourceAnnotationAdvisor(DsProcessor dsProcessor) {
+        DynamicDataSourceAnnotationInterceptor interceptor = new DynamicDataSourceAnnotationInterceptor();
+        interceptor.setDsProcessor(dsProcessor);
+        DynamicDataSourceAnnotationAdvisor advisor = new DynamicDataSourceAnnotationAdvisor(interceptor);
+        advisor.setOrder(properties.getOrder());
+        return advisor;
+    }
 
-  @Bean
-  @ConditionalOnMissingBean
-  public DsProcessor dsProcessor() {
-    DsHeaderProcessor headerProcessor = new DsHeaderProcessor();
-    DsSessionProcessor sessionProcessor = new DsSessionProcessor();
-    DsSpelExpressionProcessor spelExpressionProcessor = new DsSpelExpressionProcessor();
-    headerProcessor.setNextProcessor(sessionProcessor);
-    sessionProcessor.setNextProcessor(spelExpressionProcessor);
-    return headerProcessor;
-  }
+    @Bean
+    @ConditionalOnMissingBean
+    public DsProcessor dsProcessor() {
+        DsHeaderProcessor headerProcessor = new DsHeaderProcessor();
+        DsSessionProcessor sessionProcessor = new DsSessionProcessor();
+        DsSpelExpressionProcessor spelExpressionProcessor = new DsSpelExpressionProcessor();
+        headerProcessor.setNextProcessor(sessionProcessor);
+        sessionProcessor.setNextProcessor(spelExpressionProcessor);
+        return headerProcessor;
+    }
 
-  @Bean
-  @ConditionalOnBean(DynamicDataSourceConfigure.class)
-  public DynamicDataSourceAdvisor dynamicAdvisor(DynamicDataSourceConfigure dynamicDataSourceConfigure, DsProcessor dsProcessor) {
-    DynamicDataSourceAdvisor advisor = new DynamicDataSourceAdvisor(dynamicDataSourceConfigure.getMatchers());
-    advisor.setDsProcessor(dsProcessor);
-    advisor.setOrder(Ordered.HIGHEST_PRECEDENCE);
-    return advisor;
-  }
+    @Bean
+    @ConditionalOnBean(DynamicDataSourceConfigure.class)
+    public DynamicDataSourceAdvisor dynamicAdvisor(DynamicDataSourceConfigure dynamicDataSourceConfigure, DsProcessor dsProcessor) {
+        DynamicDataSourceAdvisor advisor = new DynamicDataSourceAdvisor(dynamicDataSourceConfigure.getMatchers());
+        advisor.setDsProcessor(dsProcessor);
+        advisor.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        return advisor;
+    }
 }

@@ -20,9 +20,10 @@ import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourcePrope
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.hikari.HikariCpConfig;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import javax.sql.DataSource;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
+import javax.sql.DataSource;
 
 /**
  * Hikari数据源创建器
@@ -34,15 +35,15 @@ import lombok.Data;
 @AllArgsConstructor
 public class HikariDataSourceCreator {
 
-  private HikariCpConfig hikariCpConfig;
+    private HikariCpConfig hikariCpConfig;
 
-  public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
-    HikariConfig config = dataSourceProperty.getHikari().toHikariConfig(hikariCpConfig);
-    config.setUsername(dataSourceProperty.getUsername());
-    config.setPassword(dataSourceProperty.getPassword());
-    config.setJdbcUrl(dataSourceProperty.getUrl());
-    config.setDriverClassName(dataSourceProperty.getDriverClassName());
-    config.setPoolName(dataSourceProperty.getPoolName());
-    return new HikariDataSource(config);
-  }
+    public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
+        HikariConfig config = dataSourceProperty.getHikari().toHikariConfig(hikariCpConfig);
+        config.setUsername(dataSourceProperty.getUsername());
+        config.setPassword(dataSourceProperty.getPassword());
+        config.setJdbcUrl(dataSourceProperty.getUrl());
+        config.setDriverClassName(dataSourceProperty.getDriverClassName());
+        config.setPoolName(dataSourceProperty.getPoolName());
+        return new HikariDataSource(config);
+    }
 }

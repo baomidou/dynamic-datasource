@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReduceStockRequest {
 
-  private Long productId;
+    private Long productId;
 
-  private Integer amount;
+    private Integer amount;
 }

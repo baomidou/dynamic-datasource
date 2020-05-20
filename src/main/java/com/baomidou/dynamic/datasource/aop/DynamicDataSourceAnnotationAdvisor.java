@@ -32,37 +32,37 @@ import org.springframework.beans.factory.BeanFactoryAware;
  * @since 1.2.0
  */
 public class DynamicDataSourceAnnotationAdvisor extends AbstractPointcutAdvisor implements
-    BeanFactoryAware {
+        BeanFactoryAware {
 
-  private Advice advice;
+    private Advice advice;
 
-  private Pointcut pointcut;
+    private Pointcut pointcut;
 
-  public DynamicDataSourceAnnotationAdvisor(@NonNull DynamicDataSourceAnnotationInterceptor dynamicDataSourceAnnotationInterceptor) {
-    this.advice = dynamicDataSourceAnnotationInterceptor;
-    this.pointcut = buildPointcut();
-  }
-
-  @Override
-  public Pointcut getPointcut() {
-    return this.pointcut;
-  }
-
-  @Override
-  public Advice getAdvice() {
-    return this.advice;
-  }
-
-  @Override
-  public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-    if (this.advice instanceof BeanFactoryAware) {
-      ((BeanFactoryAware) this.advice).setBeanFactory(beanFactory);
+    public DynamicDataSourceAnnotationAdvisor(@NonNull DynamicDataSourceAnnotationInterceptor dynamicDataSourceAnnotationInterceptor) {
+        this.advice = dynamicDataSourceAnnotationInterceptor;
+        this.pointcut = buildPointcut();
     }
-  }
 
-  private Pointcut buildPointcut() {
-    Pointcut cpc = new AnnotationMatchingPointcut(DS.class, true);
-    Pointcut mpc = AnnotationMatchingPointcut.forMethodAnnotation(DS.class);
-    return new ComposablePointcut(cpc).union(mpc);
-  }
+    @Override
+    public Pointcut getPointcut() {
+        return this.pointcut;
+    }
+
+    @Override
+    public Advice getAdvice() {
+        return this.advice;
+    }
+
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        if (this.advice instanceof BeanFactoryAware) {
+            ((BeanFactoryAware) this.advice).setBeanFactory(beanFactory);
+        }
+    }
+
+    private Pointcut buildPointcut() {
+        Pointcut cpc = new AnnotationMatchingPointcut(DS.class, true);
+        Pointcut mpc = AnnotationMatchingPointcut.forMethodAnnotation(DS.class);
+        return new ComposablePointcut(cpc).union(mpc);
+    }
 }

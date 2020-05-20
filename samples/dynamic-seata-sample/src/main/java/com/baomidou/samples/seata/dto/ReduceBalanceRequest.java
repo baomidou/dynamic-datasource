@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReduceBalanceRequest {
 
-  private Long userId;
+    private Long userId;
 
-  private Integer price;
+    private Integer price;
 }

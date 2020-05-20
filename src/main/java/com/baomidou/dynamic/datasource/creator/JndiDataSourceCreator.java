@@ -16,8 +16,9 @@
  */
 package com.baomidou.dynamic.datasource.creator;
 
-import javax.sql.DataSource;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
+
+import javax.sql.DataSource;
 
 /**
  * JNDI数据源创建器
@@ -27,16 +28,16 @@ import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
  */
 public class JndiDataSourceCreator {
 
-  private static final JndiDataSourceLookup LOOKUP = new JndiDataSourceLookup();
+    private static final JndiDataSourceLookup LOOKUP = new JndiDataSourceLookup();
 
-  /**
-   * 创建基础数据源
-   *
-   * @param name 数据源参数
-   * @return 数据源
-   */
-  public DataSource createDataSource(String name) {
-    return LOOKUP.getDataSource(name);
-  }
+    /**
+     * 创建基础数据源
+     *
+     * @param name 数据源参数
+     * @return 数据源
+     */
+    public DataSource createDataSource(String name) {
+        return LOOKUP.getDataSource(name);
+    }
 
 }

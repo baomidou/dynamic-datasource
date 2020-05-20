@@ -6,6 +6,6 @@ import com.baomidou.samples.mybatisplus.entity.User;
 
 public interface UserService extends IService<User> {
 
-  void addUser(User user);
+    void addUser(User user);
 
 }
