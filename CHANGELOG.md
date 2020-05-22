@@ -1,3 +1,24 @@
+# v3.1.1
+
+- revert: 不使用NamedInheritableThreadLocal。
+- 设置默认spel解析方式为空,提供set方法可重定义解决复杂场景spel表达式问题。
+- 格式化正式工程为IDEA默认格式化方案。
+- 部分日志等级降低为debug。
+- druid部分日志添加集成引导。
+
+# v3.1.0
+
+- 删除数据源不允许删除主数据源。
+- 使用NamedInheritableThreadLocal。
+- 增加druid参数queryTimeOut配置。
+- 模块化creator和注册为BEAN。
+
+# v3.0.0
+
+- 支持 seata 分布式事务。
+- creator 模块化改造。
+- 解决启动类判断druid自动配置冲突问题。
+
 # v2.5.8
 
 - spel切换下的空指针异常处理。

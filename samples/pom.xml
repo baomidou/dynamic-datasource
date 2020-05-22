@@ -1,121 +1,121 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns="http://maven.apache.org/POM/4.0.0"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.2.6.RELEASE</version>
-    <relativePath/>
-  </parent>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.3.0.RELEASE</version>
+        <relativePath/>
+    </parent>
 
-  <groupId>com.baomidou</groupId>
-  <artifactId>dynamic-datsource-samples</artifactId>
-  <version>1.0.0</version>
-  <packaging>pom</packaging>
+    <groupId>com.baomidou</groupId>
+    <artifactId>dynamic-datsource-samples</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <java.version>1.8</java.version>
-  </properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+    </properties>
 
-  <modules>
-    <module>dynamic-add-remove-datasource</module>
-    <module>dynamic-druid-mybatis-sample</module>
-    <module>dynamic-jdbc-template-sample</module>
-    <module>dynamic-mybatis-sample</module>
-    <module>dynamic-mybatisplus2-sample</module>
-    <module>dynamic-mybatisplus3-sample</module>
-    <module>dynamic-nest-sample</module>
-    <module>dynamic-seata-sample</module>
-    <module>dynamic-spel-sample</module>
-    <module>load-datasource-from-jdbc</module>
-  </modules>
+    <modules>
+        <module>dynamic-add-remove-datasource</module>
+        <module>dynamic-druid-mybatis-sample</module>
+        <module>dynamic-jdbc-template-sample</module>
+        <module>dynamic-mybatis-sample</module>
+        <module>dynamic-mybatisplus2-sample</module>
+        <module>dynamic-mybatisplus3-sample</module>
+        <module>dynamic-nest-sample</module>
+        <module>dynamic-seata-sample</module>
+        <module>dynamic-spel-sample</module>
+        <module>load-datasource-from-jdbc</module>
+    </modules>
 
-  <dependencyManagement>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>2.1.2</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-spring-boot-starter</artifactId>
+                <version>1.9.6</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-starter</artifactId>
+                <version>1.1.22</version>
+            </dependency>
+            <dependency>
+                <groupId>p6spy</groupId>
+                <artifactId>p6spy</artifactId>
+                <version>3.9.0</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
-      <dependency>
-        <groupId>org.mybatis.spring.boot</groupId>
-        <artifactId>mybatis-spring-boot-starter</artifactId>
-        <version>2.1.2</version>
-      </dependency>
-      <dependency>
-        <groupId>com.github.xiaoymin</groupId>
-        <artifactId>knife4j-spring-boot-starter</artifactId>
-        <version>1.9.6</version>
-      </dependency>
-      <dependency>
-        <groupId>com.alibaba</groupId>
-        <artifactId>druid-spring-boot-starter</artifactId>
-        <version>1.1.22</version>
-      </dependency>
-      <dependency>
-        <groupId>p6spy</groupId>
-        <artifactId>p6spy</artifactId>
-        <version>3.9.0</version>
-      </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+            <version>3.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.200</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
-  </dependencyManagement>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.baomidou</groupId>
-      <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
-      <version>3.1.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
-      <version>1.4.200</version>
-    </dependency>
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
-        <configuration>
-          <source>${java.version}</source>
-          <target>${java.version}</target>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
-  <repositories>
-    <repository>
-      <id>central</id>
-      <name>aliyun maven</name>
-      <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
-      <layout>default</layout>
-      <!-- 是否开启发布版构件下载 -->
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <!-- 是否开启快照版构件下载 -->
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
+    <repositories>
+        <repository>
+            <id>central</id>
+            <name>aliyun maven</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+            <layout>default</layout>
+            <!-- 是否开启发布版构件下载 -->
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <!-- 是否开启快照版构件下载 -->
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
 </project>
