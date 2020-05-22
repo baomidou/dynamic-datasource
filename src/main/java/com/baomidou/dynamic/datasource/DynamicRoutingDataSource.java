@@ -45,7 +45,14 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DynamicRoutingDataSource extends AbstractRoutingDataSource implements InitializingBean, DisposableBean {
 
     private static final String UNDERLINE = "_";
-
+    /**
+     * 所有数据库
+     */
+    private final Map<String, DataSource> dataSourceMap = new LinkedHashMap<>();
+    /**
+     * 分组数据库
+     */
+    private final Map<String, DynamicGroupDataSource> groupDataSources = new ConcurrentHashMap<>();
     @Setter
     private DynamicDataSourceProvider provider;
     @Setter
@@ -56,14 +63,6 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
     private Class<? extends DynamicDataSourceStrategy> strategy;
     private boolean p6spy;
     private boolean seata;
-    /**
-     * 所有数据库
-     */
-    private Map<String, DataSource> dataSourceMap = new LinkedHashMap<>();
-    /**
-     * 分组数据库
-     */
-    private Map<String, DynamicGroupDataSource> groupDataSources = new ConcurrentHashMap<>();
 
     @Override
     public DataSource determineDataSource() {
@@ -135,11 +134,11 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
     private DataSource wrapDataSource(String ds, DataSource dataSource) {
         if (p6spy) {
             dataSource = new P6DataSource(dataSource);
-            log.info("dynamic-datasource [{}] wrap p6spy plugin", ds);
+            log.debug("dynamic-datasource [{}] wrap p6spy plugin", ds);
         }
         if (seata) {
             dataSource = new DataSourceProxy(dataSource);
-            log.info("dynamic-datasource [{}] wrap seata plugin", ds);
+            log.debug("dynamic-datasource [{}] wrap seata plugin", ds);
         }
         return dataSource;
     }

@@ -33,7 +33,7 @@ import java.util.List;
 public class DynamicDataSourceConfigure {
 
     @Getter
-    private List<Matcher> matchers = new LinkedList<>();
+    private final List<Matcher> matchers = new LinkedList<>();
 
     private DynamicDataSourceConfigure() {
     }

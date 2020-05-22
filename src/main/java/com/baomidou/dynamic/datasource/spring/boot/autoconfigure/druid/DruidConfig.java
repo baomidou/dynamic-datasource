@@ -249,7 +249,8 @@ public class DruidConfig {
             if (connectProperties == null) {
                 connectProperties = new Properties();
             }
-            log.info("dynamic-datasource detect druid publicKey,It is highly recommended that you use the built-in encryption method");
+            log.debug("dynamic-datasource detect druid publicKey,It is highly recommended that you use the built-in encryption method \n " +
+                    "https://github.com/baomidou/dynamic-datasource-spring-boot-starter/wiki/ENCODE");
             connectProperties.setProperty("config.decrypt", "true");
             connectProperties.setProperty("config.decrypt.key", publicKey);
         }

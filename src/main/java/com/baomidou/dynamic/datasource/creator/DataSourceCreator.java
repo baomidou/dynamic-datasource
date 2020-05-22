@@ -50,6 +50,8 @@ public class DataSourceCreator {
         try {
             Class.forName(DRUID_DATASOURCE);
             druidExists = true;
+            log.debug("dynamic-datasource detect druid,Please Notice \n " +
+                    "https://github.com/baomidou/dynamic-datasource-spring-boot-starter/wiki/Integration-With-Druid");
         } catch (ClassNotFoundException ignored) {
         }
         try {

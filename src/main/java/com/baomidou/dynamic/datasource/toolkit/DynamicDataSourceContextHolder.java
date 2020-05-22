@@ -16,7 +16,6 @@
  */
 package com.baomidou.dynamic.datasource.toolkit;
 
-import org.springframework.core.NamedThreadLocal;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayDeque;

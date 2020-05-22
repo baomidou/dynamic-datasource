@@ -64,7 +64,7 @@ public class DataSourceClassResolver {
         if (mpEnabled) {
             Object target = invocation.getThis();
             Class<?> targetClass = target.getClass();
-            return Proxy.isProxyClass(targetClass) ? (Class) mapperInterfaceField.get(Proxy.getInvocationHandler(target)) : targetClass;
+            return Proxy.isProxyClass(targetClass) ? (Class<?>) mapperInterfaceField.get(Proxy.getInvocationHandler(target)) : targetClass;
         }
         return invocation.getMethod().getDeclaringClass();
     }

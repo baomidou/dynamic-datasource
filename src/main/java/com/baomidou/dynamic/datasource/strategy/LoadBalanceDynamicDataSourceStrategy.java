@@ -31,7 +31,7 @@ public class LoadBalanceDynamicDataSourceStrategy implements DynamicDataSourceSt
     /**
      * 负载均衡计数器
      */
-    private AtomicInteger index = new AtomicInteger(0);
+    private final AtomicInteger index = new AtomicInteger(0);
 
     @Override
     public DataSource determineDataSource(List<DataSource> dataSources) {
