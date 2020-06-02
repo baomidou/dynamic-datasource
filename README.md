@@ -144,11 +144,6 @@ public class UserServiceImpl implements UserService {
 
 ---
 
-### 支持一下
-
-![uSA83t.png](https://images.gitee.com/uploads/images/2019/0921/225754_ef8c21e8_709883.png)
-[![uSVpFJ.png](https://images.gitee.com/uploads/images/2019/0921/230525_be693c65_709883.png)](https://imgchr.com/i/uSVpFJ)
-
 #### 赶紧集成体验一下吧！ 如果需要更多功能请点击下面链接查看详细文档！
 
 ---
