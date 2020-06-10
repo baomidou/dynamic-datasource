@@ -18,7 +18,9 @@ package com.baomidou.dynamic.datasource.support;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.util.StringUtils;
@@ -53,19 +55,14 @@ public class ScriptRunner {
             ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
             populator.setContinueOnError(continueOnError);
             populator.setSeparator(separator);
-            if (location.startsWith("classpath:")) {
-                location = location.substring(10);
-            }
-            ClassPathResource resource = new ClassPathResource(location);
-            if (resource.exists()) {
-                populator.addScript(resource);
-                try {
-                    DatabasePopulatorUtils.execute(populator, dataSource);
-                } catch (Exception e) {
-                    log.warn("execute sql error", e);
-                }
-            } else {
-                log.warn("could not find schema or data file {}", location);
+            try {
+                ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+                populator.addScripts(resolver.getResources(location));
+                DatabasePopulatorUtils.execute(populator, dataSource);
+            } catch (DataAccessException e) {
+                log.warn("execute sql error", e);
+            } catch (Exception e1) {
+                log.warn("failed to initialize dataSource from schema file {} ", location, e1);
             }
         }
     }
