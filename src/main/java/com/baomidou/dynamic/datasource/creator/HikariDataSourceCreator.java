@@ -22,6 +22,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 
@@ -42,8 +43,11 @@ public class HikariDataSourceCreator {
         config.setUsername(dataSourceProperty.getUsername());
         config.setPassword(dataSourceProperty.getPassword());
         config.setJdbcUrl(dataSourceProperty.getUrl());
-        config.setDriverClassName(dataSourceProperty.getDriverClassName());
         config.setPoolName(dataSourceProperty.getPoolName());
+        String driverClassName = dataSourceProperty.getDriverClassName();
+        if(!StringUtils.isEmpty(driverClassName)){
+            config.setDriverClassName(driverClassName);
+        }
         return new HikariDataSource(config);
     }
 }

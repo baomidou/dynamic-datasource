@@ -19,6 +19,7 @@ package com.baomidou.dynamic.datasource.provider;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.support.JdbcUtils;
+import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -53,6 +54,12 @@ public abstract class AbstractJdbcDataSourceProvider extends AbstractDataSourceP
      */
     private String password;
 
+
+    public AbstractJdbcDataSourceProvider(String url, String username, String password) {
+        this(null, url, username, password);
+    }
+
+
     public AbstractJdbcDataSourceProvider(String driverClassName, String url, String username, String password) {
         this.driverClassName = driverClassName;
         this.url = url;
@@ -65,8 +72,12 @@ public abstract class AbstractJdbcDataSourceProvider extends AbstractDataSourceP
         Connection conn = null;
         Statement stmt = null;
         try {
-            Class.forName(driverClassName);
-            log.info("成功加载数据库驱动程序");
+            // 由于 SPI 的支持，现在已无需显示加载驱动了
+            // 但在用户显示配置的情况下，进行主动加载
+            if (!StringUtils.isEmpty(driverClassName)){
+                Class.forName(driverClassName);
+                log.info("成功加载数据库驱动程序");
+            }
             conn = DriverManager.getConnection(url, username, password);
             log.info("成功获取数据库连接");
             stmt = conn.createStatement();
