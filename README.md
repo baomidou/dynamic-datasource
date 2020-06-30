@@ -22,6 +22,7 @@
     <a>
         <img src="https://img.shields.io/badge/springBoot-1.4+_1.5+_2.0+-green.svg" >
     </a>
+    <a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=ded31006508b57d2d732c81266dd2c26e33283f84464e2c294309d90b9674992">一建加入QQ群<img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="dynamic-sring-boot-starter" title="dynamic-sring-boot-starter"></a>
 </p>
 
 # 简介
@@ -149,3 +150,8 @@ public class UserServiceImpl implements UserService {
 ---
 
 [分布式事务，加密,Druid集成，MybatisPlus集成，动态增减数据源，自定义切换规则,纯读写分离插件等等更多更细致的文档在这里](https://github.com/baomidou/dynamic-datasource-spring-boot-starter/wiki)
+
+### 支持一下
+
+![uSA83t.png](https://images.gitee.com/uploads/images/2019/0921/225754_ef8c21e8_709883.png)
+![uSVpFJ.png](https://images.gitee.com/uploads/images/2019/0921/230525_be693c65_709883.png)
