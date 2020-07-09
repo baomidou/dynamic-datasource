@@ -130,7 +130,7 @@ public class DruidDataSourceCreator {
         Integer timeout = config.getRemoveAbandonedTimeoutMillis() == null ? druidConfig.getRemoveAbandonedTimeoutMillis()
                 : config.getRemoveAbandonedTimeoutMillis();
         if (timeout != null) {
-            dataSource.setRemoveAbandonedTimeout(timeout);
+            dataSource.setRemoveAbandonedTimeoutMillis(timeout);
         }
 
         Boolean abandoned = config.getRemoveAbandoned() == null ? druidConfig.getRemoveAbandoned() : config.getRemoveAbandoned();
