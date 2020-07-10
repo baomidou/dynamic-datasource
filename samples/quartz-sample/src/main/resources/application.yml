@@ -1,0 +1,36 @@
+spring:
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql://39.108.158.138:3306/quartz
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    dynamic:
+      datasource:
+        master:
+          username: sa
+          password: ""
+          url: jdbc:h2:mem:test
+          driver-class-name: org.h2.Driver
+        slave_1:
+          username: sa
+          password: ""
+          url: jdbc:h2:mem:test1
+          driver-class-name: org.h2.Driver
+        slave_2:
+          username: sa
+          password: ""
+          url: jdbc:h2:mem:test2
+          driver-class-name: org.h2.Driver
+        slave_3:
+          username: sa
+          password: ""
+          url: jdbc:h2:mem:test3
+          driver-class-name: org.h2.Driver
+  quartz:
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: always
+
+logging:
+  level:
+    com.baomidou: debug

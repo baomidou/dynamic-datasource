@@ -7,12 +7,12 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.3.0.RELEASE</version>
+        <version>2.3.1.RELEASE</version>
         <relativePath/>
     </parent>
 
     <groupId>com.baomidou</groupId>
-    <artifactId>dynamic-datsource-samples</artifactId>
+    <artifactId>samples</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
 
@@ -23,16 +23,17 @@
     </properties>
 
     <modules>
-        <module>dynamic-add-remove-datasource</module>
-        <module>dynamic-druid-mybatis-sample</module>
-        <module>dynamic-jdbc-template-sample</module>
-        <module>dynamic-mybatis-sample</module>
-        <module>dynamic-mybatisplus2-sample</module>
-        <module>dynamic-mybatisplus3-sample</module>
-        <module>dynamic-nest-sample</module>
-        <module>dynamic-seata-sample</module>
-        <module>dynamic-spel-sample</module>
-        <module>load-datasource-from-jdbc</module>
+        <module>add-remove-datasource-sample</module>
+        <module>druid-sample</module>
+        <module>jdbc-template-sample</module>
+        <module>load-datasource-from-jdbc-sample</module>
+        <module>mybatis-sample</module>
+        <module>mybatisplus2-sample</module>
+        <module>mybatisplus3-sample</module>
+        <module>nest-sample</module>
+        <module>quartz-sample</module>
+        <module>seata-sample</module>
+        <module>spel-sample</module>
     </modules>
 
     <dependencyManagement>
@@ -40,17 +41,12 @@
             <dependency>
                 <groupId>org.mybatis.spring.boot</groupId>
                 <artifactId>mybatis-spring-boot-starter</artifactId>
-                <version>2.1.2</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-spring-boot-starter</artifactId>
-                <version>1.9.6</version>
+                <version>2.1.3</version>
             </dependency>
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid-spring-boot-starter</artifactId>
-                <version>1.1.22</version>
+                <version>1.1.23</version>
             </dependency>
             <dependency>
                 <groupId>p6spy</groupId>
@@ -64,6 +60,15 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-spring-boot-starter</artifactId>
+            <version>2.0.4</version>
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>
