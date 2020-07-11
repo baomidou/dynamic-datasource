@@ -4,20 +4,21 @@ package com.baomidou.samples.mybatisplus3.controller;
 import com.baomidou.samples.mybatisplus3.entity.User;
 import com.baomidou.samples.mybatisplus3.service.UserService;
 import io.swagger.annotations.Api;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Random;
 
 @RestController
-@AllArgsConstructor
 @RequestMapping("/users")
 @Api(tags = "用户列表")
 public class UserController {
 
     private static final Random RANDOM = new Random();
-    private final UserService userService;
+
+    @Autowired
+    private UserService userService;
 
     @GetMapping("master")
     public List<User> users1() {
