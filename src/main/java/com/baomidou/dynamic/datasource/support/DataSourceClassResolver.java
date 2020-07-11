@@ -18,6 +18,7 @@ package com.baomidou.dynamic.datasource.support;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInvocation;
+import org.springframework.aop.framework.AopProxyUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
@@ -63,9 +64,26 @@ public class DataSourceClassResolver {
     public Class<?> targetClass(MethodInvocation invocation) throws IllegalAccessException {
         if (mpEnabled) {
             Object target = invocation.getThis();
-            Class<?> targetClass = target.getClass();
-            return Proxy.isProxyClass(targetClass) ? (Class<?>) mapperInterfaceField.get(Proxy.getInvocationHandler(target)) : targetClass;
+            return getInvocationHandler(target);
         }
         return invocation.getMethod().getDeclaringClass();
+    }
+
+    /**
+     * 用于处理嵌套代理
+     * @param target JDK 代理类对象
+     * @return InvocationHandler 的 Class
+     * @throws IllegalAccessException
+     */
+    protected Class<?> getInvocationHandler(Object target) throws IllegalAccessException {
+        Object current = target;
+        while (Proxy.isProxyClass(current.getClass())) {
+            Object currentRefObject = AopProxyUtils.getSingletonTarget(current);
+            if (currentRefObject == null) {
+                break;
+            }
+            current = currentRefObject;
+        }
+        return (Class) mapperInterfaceField.get(Proxy.getInvocationHandler(current));
     }
 }

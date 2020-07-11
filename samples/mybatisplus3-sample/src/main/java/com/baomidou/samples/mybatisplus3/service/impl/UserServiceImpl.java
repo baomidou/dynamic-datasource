@@ -5,18 +5,28 @@ import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.samples.mybatisplus3.entity.User;
 import com.baomidou.samples.mybatisplus3.mapper.UserMapper;
+import com.baomidou.samples.mybatisplus3.mapper.UserSlaveMapper;
 import com.baomidou.samples.mybatisplus3.service.UserService;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
+    @Resource
+    private UserSlaveMapper userSlaveMapper;
+
+    /**
+     * mapper 是嵌套代理.
+     * jdkProxyA->jdkProxyB->InvocationHandler
+     * @return
+     */
     @DS("slave")
     @Override
     public List<User> selectUsersFromSlave() {
-        return baseMapper.selectList(null);
+        return userSlaveMapper.selectList(null);
     }
 
     @Override
