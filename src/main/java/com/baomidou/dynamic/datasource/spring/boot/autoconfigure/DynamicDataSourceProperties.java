@@ -61,9 +61,9 @@ public class DynamicDataSourceProperties {
      */
     private Boolean p6spy = false;
     /**
-     * 是否使用seata,默认不使用
+     * 是否使用seata AT或XA,默认不使用
      */
-    private Boolean seata = false;
+    private String seata = null;
     /**
      * 是否使用 spring actuator 监控检查，默认不检查
      */
