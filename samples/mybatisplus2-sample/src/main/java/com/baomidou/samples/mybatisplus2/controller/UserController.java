@@ -5,7 +5,6 @@ import com.baomidou.samples.mybatisplus2.entity.User;
 import com.baomidou.samples.mybatisplus2.service.UserService;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Random;

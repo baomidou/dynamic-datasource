@@ -74,7 +74,7 @@ public abstract class AbstractJdbcDataSourceProvider extends AbstractDataSourceP
         try {
             // 由于 SPI 的支持，现在已无需显示加载驱动了
             // 但在用户显示配置的情况下，进行主动加载
-            if (!StringUtils.isEmpty(driverClassName)){
+            if (!StringUtils.isEmpty(driverClassName)) {
                 Class.forName(driverClassName);
                 log.info("成功加载数据库驱动程序");
             }

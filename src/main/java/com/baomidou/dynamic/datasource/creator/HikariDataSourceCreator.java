@@ -45,7 +45,7 @@ public class HikariDataSourceCreator {
         config.setJdbcUrl(dataSourceProperty.getUrl());
         config.setPoolName(dataSourceProperty.getPoolName());
         String driverClassName = dataSourceProperty.getDriverClassName();
-        if(!StringUtils.isEmpty(driverClassName)){
+        if (!StringUtils.isEmpty(driverClassName)) {
             config.setDriverClassName(driverClassName);
         }
         return new HikariDataSource(config);

@@ -35,8 +35,9 @@ import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import static com.baomidou.dynamic.datasource.support.DdConstants.SEATA_XA;
+
 import static com.baomidou.dynamic.datasource.support.DdConstants.SEATA_AT;
+import static com.baomidou.dynamic.datasource.support.DdConstants.SEATA_XA;
 
 /**
  * 核心动态数据源组件
@@ -242,10 +243,10 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
             throws NoSuchFieldException, IllegalAccessException, InvocationTargetException {
         if (!StringUtils.isEmpty(seata)) {
             if (SEATA_XA.equalsIgnoreCase(seata)) {
-                DataSourceProxyXA dataSourceProxyXA = (DataSourceProxyXA)dataSource;
+                DataSourceProxyXA dataSourceProxyXA = (DataSourceProxyXA) dataSource;
                 dataSource = dataSourceProxyXA;
             } else {
-                DataSourceProxy dataSourceProxy = (DataSourceProxy)dataSource;
+                DataSourceProxy dataSourceProxy = (DataSourceProxy) dataSource;
                 dataSource = dataSourceProxy.getTargetDataSource();
             }
         }

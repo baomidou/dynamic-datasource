@@ -4,7 +4,6 @@ import com.baomidou.samples.druid.entity.User;
 import com.baomidou.samples.druid.service.UserService;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Random;

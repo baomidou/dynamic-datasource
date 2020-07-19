@@ -71,6 +71,7 @@ public class DataSourceClassResolver {
 
     /**
      * 用于处理嵌套代理
+     *
      * @param target JDK 代理类对象
      * @return InvocationHandler 的 Class
      * @throws IllegalAccessException
@@ -84,6 +85,6 @@ public class DataSourceClassResolver {
             }
             current = currentRefObject;
         }
-        return (Class) mapperInterfaceField.get(Proxy.getInvocationHandler(current));
+        return (Class<?>) mapperInterfaceField.get(Proxy.getInvocationHandler(current));
     }
 }

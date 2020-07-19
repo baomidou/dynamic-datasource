@@ -63,7 +63,7 @@ public class DruidDataSourceCreator {
         dataSource.setUrl(dataSourceProperty.getUrl());
         dataSource.setName(dataSourceProperty.getPoolName());
         String driverClassName = dataSourceProperty.getDriverClassName();
-        if(!StringUtils.isEmpty(driverClassName)){
+        if (!StringUtils.isEmpty(driverClassName)) {
             dataSource.setDriverClassName(driverClassName);
         }
         DruidConfig config = dataSourceProperty.getDruid();
