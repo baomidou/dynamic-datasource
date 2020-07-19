@@ -5,7 +5,8 @@ spring:
     dynamic:
       primary: order
       strict: true
-      seata: true
+      #支持XA及AT模式
+      seata: AT
       datasource:
         order:
           username: root
@@ -25,8 +26,20 @@ spring:
           url: jdbc:mysql://39.108.158.138:3306/seata_product?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&useSSL=false
           driver-class-name: com.mysql.cj.jdbc.Driver
           schema: classpath:db/schema-product.sql
-
-  cloud:
-    alibaba:
-      seata:
-        tx-service-group: my_test_tx_group
+seata:
+  enabled: true
+  application-id: applicationName
+  tx-service-group: my_test_tx_group
+  #一定要是false
+  enable-auto-data-source-proxy: false
+  service:
+    vgroup-mapping:
+      #key与上面的tx-service-group的值对应
+      my_test_tx_group: default
+    grouplist:
+      #seata-server地址仅file注册中心需要
+      default: 127.0.0.1:8091
+  config:
+    type: file
+  registry:
+    type: file

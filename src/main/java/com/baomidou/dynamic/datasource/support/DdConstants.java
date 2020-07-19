@@ -41,4 +41,15 @@ public interface DdConstants {
      * HikariCp数据源
      */
     String HIKARI_DATASOURCE = "com.zaxxer.hikari.HikariDataSource";
+
+    /**
+     * SEATA XA模式
+     */
+    String SEATA_XA = "XA";
+
+    /**
+     * SEATA AT模式
+     */
+    String SEATA_AT = "AT";
+
 }
