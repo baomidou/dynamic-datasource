@@ -26,7 +26,7 @@
             <exclusions>
                 <exclusion>
                     <groupId>io.seata</groupId>
-                    <artifactId>seata-all</artifactId>
+                    <artifactId>seata-spring-boot-starter</artifactId>
                 </exclusion>
             </exclusions>
             <version>2.2.1.RELEASE</version>
