@@ -45,11 +45,11 @@ public interface DdConstants {
     /**
      * SEATA XA模式
      */
-    String SEATA_XA="XA";
+    String SEATA_XA = "XA";
 
     /**
      * SEATA AT模式
      */
-    String SEATA_AT="AT";
+    String SEATA_AT = "AT";
 
 }
