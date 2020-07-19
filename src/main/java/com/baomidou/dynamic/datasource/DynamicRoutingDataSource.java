@@ -56,7 +56,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
     /**
      * 分组数据库
      */
-    private final Map<String, DynamicGroupDataSource> groupDataSources = new ConcurrentHashMap<>();
+    private final Map<String, GroupDataSource> groupDataSources = new ConcurrentHashMap<>();
     @Setter
     private DynamicDataSourceProvider provider;
     @Setter
@@ -92,7 +92,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
      *
      * @return 当前所有的分组数据源
      */
-    public Map<String, DynamicGroupDataSource> getCurrentGroupDataSources() {
+    public Map<String, GroupDataSource> getCurrentGroupDataSources() {
         return groupDataSources;
     }
 
@@ -160,7 +160,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
                 groupDataSources.get(group).addDatasource(dataSource);
             } else {
                 try {
-                    DynamicGroupDataSource groupDatasource = new DynamicGroupDataSource(group, strategy.newInstance());
+                    GroupDataSource groupDatasource = new GroupDataSource(group, strategy.newInstance());
                     groupDatasource.addDatasource(dataSource);
                     groupDataSources.put(group, groupDatasource);
                 } catch (Exception e) {
@@ -280,5 +280,6 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
             throw new RuntimeException("dynamic-datasource Please check the setting of primary");
         }
     }
+
 
 }

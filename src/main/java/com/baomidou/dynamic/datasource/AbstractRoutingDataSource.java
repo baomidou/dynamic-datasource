@@ -16,11 +16,15 @@
  */
 package com.baomidou.dynamic.datasource;
 
+import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
+import lombok.Data;
 import org.springframework.jdbc.datasource.AbstractDataSource;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * 抽象动态获取数据源
@@ -59,5 +63,36 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource {
     @Override
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
         return (iface.isInstance(this) || determineDataSource().isWrapperFor(iface));
+    }
+
+    @Data
+    protected static class GroupDataSource {
+
+        private String groupName;
+
+        private DynamicDataSourceStrategy dynamicDataSourceStrategy;
+
+        private List<DataSource> dataSources = new LinkedList<>();
+
+        public GroupDataSource(String groupName, DynamicDataSourceStrategy dynamicDataSourceStrategy) {
+            this.groupName = groupName;
+            this.dynamicDataSourceStrategy = dynamicDataSourceStrategy;
+        }
+
+        public void addDatasource(DataSource dataSource) {
+            dataSources.add(dataSource);
+        }
+
+        public void removeDatasource(DataSource dataSource) {
+            dataSources.remove(dataSource);
+        }
+
+        public DataSource determineDataSource() {
+            return dynamicDataSourceStrategy.determineDataSource(dataSources);
+        }
+
+        public int size() {
+            return dataSources.size();
+        }
     }
 }
