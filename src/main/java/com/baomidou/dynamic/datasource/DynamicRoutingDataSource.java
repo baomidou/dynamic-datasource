@@ -18,7 +18,6 @@ package com.baomidou.dynamic.datasource;
 
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
-import com.baomidou.dynamic.datasource.support.DdConstants;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import com.p6spy.engine.spy.P6DataSource;
 import io.seata.rm.datasource.DataSourceProxy;
@@ -36,6 +35,8 @@ import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import static com.baomidou.dynamic.datasource.support.DdConstants.SEATA_XA;
+import static com.baomidou.dynamic.datasource.support.DdConstants.SEATA_AT;
 
 /**
  * 核心动态数据源组件
@@ -139,10 +140,12 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
             log.debug("dynamic-datasource [{}] wrap p6spy plugin", ds);
         }
         if (!StringUtils.isEmpty(seata)) {
-            if (DdConstants.SEATA_XA.equalsIgnoreCase(seata)) {
+            if (SEATA_XA.equalsIgnoreCase(seata)) {
                 dataSource = new DataSourceProxyXA(dataSource);
-            } else {
+            } else if (SEATA_AT.equalsIgnoreCase(seata)) {
                 dataSource = new DataSourceProxy(dataSource);
+            } else {
+                throw new RuntimeException("only supports Seata XA and AT modes");
             }
             log.debug("dynamic-datasource [{}] wrap seata plugin transaction mode [{}]", ds, seata);
         }
@@ -238,7 +241,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
     private void closeDataSource(String name, DataSource dataSource)
             throws NoSuchFieldException, IllegalAccessException, InvocationTargetException {
         if (!StringUtils.isEmpty(seata)) {
-            if (DdConstants.SEATA_XA.equalsIgnoreCase(seata)) {
+            if (SEATA_XA.equalsIgnoreCase(seata)) {
                 DataSourceProxyXA dataSourceProxyXA = (DataSourceProxyXA)dataSource;
                 dataSource = dataSourceProxyXA;
             } else {
