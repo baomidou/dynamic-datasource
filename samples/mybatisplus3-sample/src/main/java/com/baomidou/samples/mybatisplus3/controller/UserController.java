@@ -5,6 +5,7 @@ import com.baomidou.samples.mybatisplus3.entity.User;
 import com.baomidou.samples.mybatisplus3.service.UserService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Random;

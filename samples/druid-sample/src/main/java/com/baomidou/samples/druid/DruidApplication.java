@@ -7,7 +7,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @Slf4j
-@SpringBootApplication(exclude = DruidDataSourceAutoConfigure.class)
+@SpringBootApplication(exclude = DruidDataSourceAutoConfigure.class)// ←←←←← look at here
 @MapperScan("com.baomidou.samples.druid.mapper")
 public class DruidApplication {
 

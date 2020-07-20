@@ -10,10 +10,10 @@ import javax.sql.DataSource;
 
 @Slf4j
 @SpringBootApplication
-public class JdbcApplication {
+public class JdbcTemplateApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(JdbcApplication.class, args);
+        SpringApplication.run(JdbcTemplateApplication.class, args);
         log.info("open http://localhost:8080/doc.html");
     }
 
