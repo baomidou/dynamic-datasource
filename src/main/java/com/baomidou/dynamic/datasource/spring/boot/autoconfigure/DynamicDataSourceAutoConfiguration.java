@@ -59,7 +59,9 @@ import java.util.Map;
 @AllArgsConstructor
 @EnableConfigurationProperties(DynamicDataSourceProperties.class)
 @AutoConfigureBefore(DataSourceAutoConfiguration.class)
-@Import(value = {DruidDynamicDataSourceConfiguration.class, DynamicDataSourceCreatorAutoConfiguration.class})
+@Import(value = {DruidDynamicDataSourceConfiguration.class,
+        DynamicDataSourceCreatorAutoConfiguration.class,
+        DataSourceAutoConfiguration.class})
 @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class DynamicDataSourceAutoConfiguration {
 
