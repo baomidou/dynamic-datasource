@@ -31,7 +31,7 @@ spring:
           keyGenerator:
             type: SNOWFLAKE
             column: order_id
-#    encrypt:
+  #    encrypt:
 #      tables:
 #        t_order:
 #          columns:
