@@ -31,15 +31,6 @@ spring:
           keyGenerator:
             type: SNOWFLAKE
             column: order_id
-  #    encrypt:
-#      tables:
-#        t_order:
-#          columns:
-#            user_id:
-#              plainColumn: user_decrypt
-#      encryptors:
-#        encryptor_aes:
-#          type: aes
   # 动态数据源配置
   datasource:
     dynamic:
