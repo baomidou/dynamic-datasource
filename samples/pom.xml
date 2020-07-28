@@ -33,6 +33,7 @@
         <module>nest-sample</module>
         <module>quartz-sample</module>
         <module>seata-sample</module>
+        <module>sharding-jdbc-sample</module>
         <module>spel-sample</module>
     </modules>
 
