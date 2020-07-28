@@ -20,7 +20,7 @@
         <img src="https://img.shields.io/badge/JDK-1.7+-green.svg" >
     </a>
     <a>
-        <img src="https://img.shields.io/badge/springBoot-1.4+_1.5+_2.0+-green.svg" >
+        <img src="https://img.shields.io/badge/springBoot-1.5+_2.x.x+-green.svg" >
     </a>
     <a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=ded31006508b57d2d732c81266dd2c26e33283f84464e2c294309d90b9674992"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="dynamic-sring-boot-starter" title="dynamic-sring-boot-starter"></a>
 </p>
@@ -39,13 +39,12 @@ dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成�
 2. 内置敏感参数加密和启动初始化表结构schema数据库database。
 3. 提供对Druid，Mybatis-Plus，P6sy，Jndi的快速集成。
 4. 简化Druid和HikariCp配置，提供全局参数配置。
-5. 提供自定义数据源来源接口(默认使用yml或properties配置)。
-6. 提供项目启动后增减数据源方案。
+5. 支持自定义数据源来源接口(默认使用yml或properties配置)。
+6. 支持项目启动后动态增减数据源方案。
 7. 提供Mybatis环境下的  **纯读写分离** 方案。
-8. 使用spel动态参数解析数据源，如从session，header或参数中获取数据源。（多租户架构神器）
-9. 提供多层数据源嵌套切换。（ServiceA >>>  ServiceB >>> ServiceC，每个Service都是不同的数据源）
-10. 提供 **不使用注解**  而   **使用 正则 或 spel**    来切换数据源方案（实验性功能）。
-11. **基于seata的分布式事务支持。**
+8. 支持使用 **spel动态参数** 解析数据源，如从session，header或参数中获取数据源。
+9. 支持多层数据源嵌套切换。（ServiceA >>>  ServiceB >>> ServiceC）
+10. 提供  **基于seata的分布式事务方案。**
 
 # 约定
 
@@ -54,6 +53,7 @@ dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成�
 3. 切换数据源可以是组名，也可以是具体数据源名称。组名则切换时采用负载均衡算法切换。
 4. 默认的数据源名称为  **master** ，你可以通过 `spring.datasource.dynamic.primary` 修改。
 5. 方法上的注解优先于类上注解。
+6. 强烈建议只在service的类和方法上添加注解，不建议在mapper上添加注解。
 
 # 使用方法
 
@@ -131,13 +131,13 @@ public class UserServiceImpl implements UserService {
   @Autowired
   private JdbcTemplate jdbcTemplate;
 
-  public List<Map<String, Object>> selectAll() {
+  public List selectAll() {
     return  jdbcTemplate.queryForList("select * from user");
   }
   
   @Override
   @DS("slave_1")
-  public List<Map<String, Object>> selectByCondition() {
+  public List selectByCondition() {
     return  jdbcTemplate.queryForList("select * from user where age >10");
   }
 }
