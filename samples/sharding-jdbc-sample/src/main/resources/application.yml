@@ -2,7 +2,7 @@ spring:
   # shardingjdbc 配置
   shardingsphere:
     datasource:
-      names: shardingmaster,shardingslave0
+      names: shardingmaster,shardingslave0,shardingslave1
       shardingmaster:
         type: com.zaxxer.hikari.HikariDataSource
         driver-class-name: org.h2.Driver
@@ -15,11 +15,17 @@ spring:
         jdbc-url: jdbc:h2:mem:test
         username: sa
         password: ""
+      shardingslave1:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: org.h2.Driver
+        jdbc-url: jdbc:h2:mem:test
+        username: sa
+        password: ""
     masterslave:
       name: ms
       load-balance-algorithm-type: round_robin
       master-data-source-name: shardingmaster
-      slave-data-source-names: shardingslave0
+      slave-data-source-names: shardingslave0,shardingslave1
     sharding:
       tables:
         t_order:
@@ -36,6 +42,12 @@ spring:
     dynamic:
       datasource:
         master:
+          username: sa
+          password: ""
+          url: jdbc:h2:mem:master
+          driver-class-name: org.h2.Driver
+          schema: db/schema.sql
+        test:
           username: sa
           password: ""
           url: jdbc:h2:mem:test

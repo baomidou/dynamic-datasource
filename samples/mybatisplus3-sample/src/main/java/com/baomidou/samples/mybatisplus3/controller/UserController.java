@@ -30,6 +30,11 @@ public class UserController {
         return userService.selectUsersFromSlave();
     }
 
+    @GetMapping("special-slave")
+    public List<User> specialUsers() {
+        return userService.specialSelectUsersFromSlave();
+    }
+
     @PostMapping
     public User addUser() {
         User user = new User();

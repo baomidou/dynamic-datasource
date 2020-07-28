@@ -21,6 +21,7 @@ public class UserController {
 
     /**
      * 动态数据源的主库
+     *
      * @return
      */
     @GetMapping("master")
@@ -29,11 +30,11 @@ public class UserController {
     }
 
 
-
     /**
      * 动态数据源代理的sharding-jdbc的从库,经过两次选择
      * 第一次:  dynamic-ds => sharding-ds
      * 第二次:  sharding-ds => slave
+     *
      * @return
      */
     @GetMapping("sharding")
@@ -45,6 +46,7 @@ public class UserController {
      * 动态数据源代理的sharding-jdbc的主库,经过两次选择
      * 第一次:  dynamic-ds => sharding-ds
      * 第二次:  sharding-ds => master
+     *
      * @return
      */
     @PostMapping("sharding")
@@ -60,6 +62,7 @@ public class UserController {
      * 动态数据源代理的sharding-jdbc的主库,经过两次选择
      * 第一次:  dynamic-ds => sharding-ds
      * 第二次:  sharding-ds => master
+     *
      * @return
      */
     @DeleteMapping("sharding/{id}")
