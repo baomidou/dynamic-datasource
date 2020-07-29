@@ -20,7 +20,7 @@
         <img src="https://img.shields.io/badge/JDK-1.7+-green.svg" >
     </a>
     <a>
-        <img src="https://img.shields.io/badge/springBoot-1.5+_2.x.x+-green.svg" >
+        <img src="https://img.shields.io/badge/springBoot-1.5.x___2.x.x-green.svg" >
     </a>
     <a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=ded31006508b57d2d732c81266dd2c26e33283f84464e2c294309d90b9674992"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="dynamic-sring-boot-starter" title="dynamic-sring-boot-starter"></a>
 </p>
@@ -29,22 +29,24 @@
 
 dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成多数据源的启动器。
 
-其支持 **Jdk 1.7+,    SpringBoot 1.4.x  1.5.x   2.0.x**。
+其支持 **Jdk 1.7+,    SpringBoot 1.4.x  1.5.x   2.x.x**。
 
 **示例项目** 可参考项目下的samples目录。 
 
 # 特性
 
-1. 数据源分组，适用于多种场景 纯粹多库  读写分离  一主多从  混合模式。
-2. 内置敏感参数加密和启动初始化表结构schema数据库database。
-3. 提供对Druid，Mybatis-Plus，P6sy，Jndi的快速集成。
-4. 简化Druid和HikariCp配置，提供全局参数配置。
-5. 支持自定义数据源来源接口(默认使用yml或properties配置)。
-6. 支持项目启动后动态增减数据源方案。
-7. 提供Mybatis环境下的  **纯读写分离** 方案。
-8. 支持使用 **spel动态参数** 解析数据源，如从session，header或参数中获取数据源。
-9. 支持多层数据源嵌套切换。（ServiceA >>>  ServiceB >>> ServiceC）
-10. 提供  **基于seata的分布式事务方案。**
+1. 支持数据源分组，适用于多种场景 纯粹多库  读写分离  一主多从  混合模式。
+2. 支持数据库敏感配置信息加密 ENC()。
+3. 支持每个数据库独立初始化表结构schema和数据库database。
+4. 提供对Druid，Mybatis-Plus，P6sy，Jndi的快速集成。
+5. 简化Druid和HikariCp配置，提供全局参数配置。配置一次，全局通用。
+6. 提供自定义数据源来源方案。
+7. 提供项目启动后 **动态增加移除数据源** 方案。
+8. 提供Mybatis环境下的  **纯读写分离** 方案。
+9. 提供使用 **spel动态参数** 解析数据源方案。内置spel，session，header，支持自定义。
+10. 支持多层数据源嵌套切换。（ServiceA >>>  ServiceB >>> ServiceC）。
+11. 提供对sharding-jdbc,quartz等第三方库集成的方案。
+12. 提供  **基于seata的分布式事务方案。**
 
 # 约定
 
@@ -73,13 +75,13 @@ spring:
   datasource:
     dynamic:
       primary: master #设置默认的数据源或者数据源组,默认值即为master
-      strict: false #设置严格模式,默认false不启动. 启动后在未匹配到指定数据源时候回抛出异常,不启动会使用默认数据源.
+      strict: false #设置严格模式,默认false不启动. 启动后在未匹配到指定数据源时候会抛出异常,不启动则使用默认数据源.
       datasource:
         master:
           url: jdbc:mysql://xx.xx.xx.xx:3306/dynamic
           username: root
           password: 123456
-          driver-class-name: com.mysql.jdbc.Driver
+          driver-class-name: com.mysql.jdbc.Driver # 3.2.0开始支持SPI可省略此配置
         slave_1:
           url: jdbc:mysql://xx.xx.xx.xx:3307/dynamic
           username: root
