@@ -16,12 +16,10 @@
  */
 package com.baomidou.dynamic.datasource;
 
+import com.baomidou.dynamic.datasource.enums.SeataMode;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
-import com.p6spy.engine.spy.P6DataSource;
-import io.seata.rm.datasource.DataSourceProxy;
-import io.seata.rm.datasource.xa.DataSourceProxyXA;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
@@ -29,15 +27,9 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static com.baomidou.dynamic.datasource.support.DdConstants.SEATA_AT;
-import static com.baomidou.dynamic.datasource.support.DdConstants.SEATA_XA;
 
 /**
  * 核心动态数据源组件
@@ -62,11 +54,13 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
     @Setter
     private String primary;
     @Setter
-    private boolean strict;
+    private Boolean strict;
     @Setter
     private Class<? extends DynamicDataSourceStrategy> strategy;
-    private boolean p6spy;
-    private String seata;
+    @Setter
+    private Boolean p6spy;
+    @Setter
+    private Boolean seata;
 
     @Override
     public DataSource determineDataSource() {
@@ -126,7 +120,6 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
      */
     public synchronized void addDataSource(String ds, DataSource dataSource) {
         if (!dataSourceMap.containsKey(ds)) {
-            dataSource = wrapDataSource(ds, dataSource);
             dataSourceMap.put(ds, dataSource);
             this.addGroupDataSource(ds, dataSource);
             log.info("dynamic-datasource - load a datasource named [{}] success", ds);
@@ -135,23 +128,6 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
         }
     }
 
-    private DataSource wrapDataSource(String ds, DataSource dataSource) {
-        if (p6spy) {
-            dataSource = new P6DataSource(dataSource);
-            log.debug("dynamic-datasource [{}] wrap p6spy plugin", ds);
-        }
-        if (!StringUtils.isEmpty(seata)) {
-            if (SEATA_XA.equalsIgnoreCase(seata)) {
-                dataSource = new DataSourceProxyXA(dataSource);
-            } else if (SEATA_AT.equalsIgnoreCase(seata)) {
-                dataSource = new DataSourceProxy(dataSource);
-            } else {
-                throw new RuntimeException("only supports Seata XA and AT modes");
-            }
-            log.debug("dynamic-datasource [{}] wrap seata plugin transaction mode [{}]", ds, seata);
-        }
-        return dataSource;
-    }
 
     private void addGroupDataSource(String ds, DataSource dataSource) {
         if (ds.contains(UNDERLINE)) {
@@ -186,7 +162,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
         if (dataSourceMap.containsKey(ds)) {
             DataSource dataSource = dataSourceMap.get(ds);
             try {
-                closeDataSource(ds, dataSource);
+                ((DynamicItemDataSource) dataSource).close();
             } catch (Exception e) {
                 throw new RuntimeException("dynamic-datasource - remove the database named " + ds + " failed", e);
             }
@@ -203,69 +179,33 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
         }
     }
 
-    public void setP6spy(boolean p6spy) {
-        if (p6spy) {
-            try {
-                Class.forName("com.p6spy.engine.spy.P6DataSource");
-                log.info("dynamic-datasource detect P6SPY plugin and enabled it");
-                this.p6spy = true;
-            } catch (Exception e) {
-                log.warn("dynamic-datasource enabled P6SPY ,however without p6spy dependency");
-            }
-        } else {
-            this.p6spy = false;
-        }
-    }
-
-    public void setSeata(String seata) {
-        if (!StringUtils.isEmpty(seata)) {
-            try {
-                Class.forName("io.seata.rm.datasource.DataSourceProxy");
-                this.seata = seata;
-                log.info("dynamic-datasource detect ALIBABA SEATA and enabled it");
-            } catch (Exception e) {
-                this.seata = null;
-                log.warn("dynamic-datasource enabled ALIBABA SEATA  ,however without seata dependency");
-            }
-        }
-    }
-
     @Override
     public void destroy() throws Exception {
         log.info("dynamic-datasource start closing ....");
         for (Map.Entry<String, DataSource> item : dataSourceMap.entrySet()) {
-            closeDataSource(item.getKey(), item.getValue());
+            ((DynamicItemDataSource) item.getValue()).close();
         }
         log.info("dynamic-datasource all closed success,bye");
     }
 
-    private void closeDataSource(String name, DataSource dataSource)
-            throws NoSuchFieldException, IllegalAccessException, InvocationTargetException {
-        if (!StringUtils.isEmpty(seata)) {
-            if (SEATA_XA.equalsIgnoreCase(seata)) {
-                DataSourceProxyXA dataSourceProxyXA = (DataSourceProxyXA) dataSource;
-                dataSource = dataSourceProxyXA;
-            } else {
-                DataSourceProxy dataSourceProxy = (DataSourceProxy) dataSource;
-                dataSource = dataSourceProxy.getTargetDataSource();
-            }
-        }
-        if (p6spy) {
-            Field realDataSourceField = P6DataSource.class.getDeclaredField("realDataSource");
-            realDataSourceField.setAccessible(true);
-            dataSource = (DataSource) realDataSourceField.get(dataSource);
-        }
-        Class<? extends DataSource> clazz = dataSource.getClass();
-        try {
-            Method closeMethod = clazz.getDeclaredMethod("close");
-            closeMethod.invoke(dataSource);
-        } catch (NoSuchMethodException e) {
-            log.warn("dynamic-datasource close the datasource named [{}] failed,", name);
-        }
-    }
-
     @Override
     public void afterPropertiesSet() throws Exception {
+        if (p6spy) {
+            try {
+                Class.forName("com.p6spy.engine.spy.P6DataSource");
+                log.info("dynamic-datasource detect P6SPY plugin and enabled it");
+            } catch (Exception e) {
+                throw new RuntimeException("dynamic-datasource enabled P6SPY ,however without p6spy dependency", e);
+            }
+        }
+        if (seata) {
+            try {
+                Class.forName("io.seata.rm.datasource.DataSourceProxy");
+                log.info("dynamic-datasource detect ALIBABA SEATA and enabled it");
+            } catch (Exception e) {
+                throw new RuntimeException("ddynamic-datasource enabled ALIBABA SEATA,however without seata dependency", e);
+            }
+        }
         Map<String, DataSource> dataSources = provider.loadDataSources();
         // 添加并分组数据源
         for (Map.Entry<String, DataSource> dsItem : dataSources.entrySet()) {
@@ -280,6 +220,4 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
             throw new RuntimeException("dynamic-datasource Please check the setting of primary");
         }
     }
-
-
 }

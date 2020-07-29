@@ -82,6 +82,7 @@ public class DynamicDataSourceAutoConfiguration {
         dataSource.setProvider(dynamicDataSourceProvider);
         dataSource.setP6spy(properties.getP6spy());
         dataSource.setSeata(properties.getSeata());
+        dataSource.setSeataMode(properties.getSeataMode());
         return dataSource;
     }
 

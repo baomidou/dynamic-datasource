@@ -38,11 +38,11 @@ public class ScriptRunner {
     /**
      * 错误是否继续
      */
-    private boolean continueOnError;
+    private final boolean continueOnError;
     /**
      * 分隔符
      */
-    private String separator;
+    private final String separator;
 
     /**
      * 执行数据库脚本

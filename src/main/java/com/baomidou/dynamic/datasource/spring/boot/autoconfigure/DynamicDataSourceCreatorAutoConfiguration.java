@@ -40,7 +40,7 @@ public class DynamicDataSourceCreatorAutoConfiguration {
         dataSourceCreator.setJndiDataSourceCreator(jndiDataSourceCreator());
         dataSourceCreator.setDruidDataSourceCreator(druidDataSourceCreator());
         dataSourceCreator.setHikariDataSourceCreator(hikariDataSourceCreator());
-        dataSourceCreator.setGlobalPublicKey(properties.getPublicKey());
+        dataSourceCreator.setProperties(properties);
         return dataSourceCreator;
     }
 

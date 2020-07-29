@@ -14,31 +14,19 @@
  * limitations under the License.
  * <pre/>
  */
-package com.baomidou.dynamic.datasource.support;
+package com.baomidou.dynamic.datasource.enums;
 
 /**
- * 动态数据源常量
- *
- * @author jobob
- * @since 2019-10-08
+ * @author TaoYu
+ * @date 2020/7/20
  */
-public interface DdConstants {
-
+public enum SeataMode {
     /**
-     * 数据源：主库
+     * XA 模式
      */
-    String MASTER = "master";
+    XA,
     /**
-     * 数据源：从库
+     * AT 模式
      */
-    String SLAVE = "slave";
-
-    /**
-     * DRUID数据源类
-     */
-    String DRUID_DATASOURCE = "com.alibaba.druid.pool.DruidDataSource";
-    /**
-     * HikariCp数据源
-     */
-    String HIKARI_DATASOURCE = "com.zaxxer.hikari.HikariDataSource";
+    AT
 }
