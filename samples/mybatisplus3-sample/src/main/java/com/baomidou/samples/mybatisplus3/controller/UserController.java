@@ -1,12 +1,14 @@
 package com.baomidou.samples.mybatisplus3.controller;
 
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.samples.mybatisplus3.entity.User;
 import com.baomidou.samples.mybatisplus3.service.UserService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Random;
 
@@ -20,6 +22,19 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Resource(name = "userSlaveServiceImpl")
+    UserService userSlaveService;
+
+    @GetMapping("lambda/master/getOne")
+    public User lambdaMasterGetOne() {
+        return userService.getOne(Wrappers.<User>lambdaQuery().eq(User::getId, 1));
+    }
+
+    @GetMapping("lambda/slave/getOne")
+    public User lambdaSlaveGetOne() {
+        return userSlaveService.getOne(Wrappers.<User>lambdaQuery().eq(User::getId, 1));
+    }
+
     @GetMapping("master")
     public List<User> users1() {
         return userService.list();
@@ -27,7 +42,7 @@ public class UserController {
 
     @GetMapping("slave")
     public List<User> users2() {
-        return userService.selectUsersFromSlave();
+        return userSlaveService.selectUsersFromSlave();
     }
 
     @GetMapping("special-slave")

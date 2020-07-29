@@ -6,18 +6,18 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * 自定义对mapper的增强.
+ * 用于测试： 当mapper存在嵌套的代理时,需要拿到最原始的 InvocationHandler 才能处理
  */
 @Configuration
 public class CustomAutoProxyCreator {
-
     /**
-     * 这里是测试代码，开发人员不要拷贝此代码。
-     * 当mapper存在嵌套的代理时,需要拿到最原始的 InvocationHandler 才能处理
+     * 这里为了测试多个后置处理器的情况, 实际项目中不用加这个配置
+     * @return
      */
-    @Bean
-    public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
-        DefaultAdvisorAutoProxyCreator proxyCreator = new DefaultAdvisorAutoProxyCreator();
-        proxyCreator.setProxyTargetClass(true);
-        return proxyCreator;
-    }
+//    @Bean
+//    public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
+//        DefaultAdvisorAutoProxyCreator proxyCreator = new DefaultAdvisorAutoProxyCreator();
+//        proxyCreator.setProxyTargetClass(true);
+//        return proxyCreator;
+//    }
 }
