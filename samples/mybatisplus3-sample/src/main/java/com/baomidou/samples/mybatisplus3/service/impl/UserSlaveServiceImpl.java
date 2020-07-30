@@ -15,7 +15,7 @@ import java.util.List;
 public class UserSlaveServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     @Override
-    public List<User> selectUsersFromSlave() {
+    public List<User> selectUsers() {
         return baseMapper.selectList(null);
     }
 

@@ -1,6 +1,7 @@
 package com.baomidou.samples.mybatisplus3.service.impl;
 
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.samples.mybatisplus3.entity.User;
 import com.baomidou.samples.mybatisplus3.mapper.UserMapper;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@DS("master")
 @Primary
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
@@ -22,7 +24,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * @return
      */
     @Override
-    public List<User> selectUsersFromSlave() {
+    public List<User> selectUsers() {
         return baseMapper.selectList(null);
     }
 

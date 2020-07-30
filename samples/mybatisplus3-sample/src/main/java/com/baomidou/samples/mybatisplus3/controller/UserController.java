@@ -37,17 +37,12 @@ public class UserController {
 
     @GetMapping("master")
     public List<User> users1() {
-        return userService.list();
+        return userService.selectUsers();
     }
 
     @GetMapping("slave")
     public List<User> users2() {
-        return userSlaveService.selectUsersFromSlave();
-    }
-
-    @GetMapping("special-slave")
-    public List<User> specialUsers() {
-        return userService.specialSelectUsersFromSlave();
+        return userSlaveService.selectUsers();
     }
 
     @PostMapping

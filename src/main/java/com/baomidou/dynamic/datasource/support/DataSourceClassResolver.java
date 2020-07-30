@@ -194,7 +194,7 @@ public class DataSourceClassResolver {
         }
         Class<?> targetClass = targetObject.getClass();
         Class<?> userClass = ClassUtils.getUserClass(targetClass);
-
+        // JDK代理时,  获取实现类的方法声明.  method: 接口的方法, specificMethod: 实现类方法
         Method specificMethod = ClassUtils.getMostSpecificMethod(method, userClass);
 
         specificMethod = BridgeMethodResolver.findBridgedMethod(specificMethod);
