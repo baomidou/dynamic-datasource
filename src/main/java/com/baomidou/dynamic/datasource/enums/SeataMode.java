@@ -17,8 +17,9 @@
 package com.baomidou.dynamic.datasource.enums;
 
 /**
+ * Seata 支持的模式枚举
+ *
  * @author TaoYu
- * @date 2020/7/20
  */
 public enum SeataMode {
     /**
