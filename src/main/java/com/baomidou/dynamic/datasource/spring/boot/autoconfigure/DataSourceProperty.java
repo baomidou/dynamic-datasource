@@ -82,11 +82,11 @@ public class DataSourceProperty {
     /**
      *
      */
-    private Boolean seata=true;
+    private Boolean seata = true;
     /**
      *
      */
-    private Boolean p6spy=true;
+    private Boolean p6spy = true;
     /**
      * 错误是否继续 默认 true
      */

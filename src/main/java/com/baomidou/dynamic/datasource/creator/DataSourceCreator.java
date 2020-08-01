@@ -16,7 +16,7 @@
  */
 package com.baomidou.dynamic.datasource.creator;
 
-import com.baomidou.dynamic.datasource.DynamicItemDataSource;
+import com.baomidou.dynamic.datasource.ds.ItemDataSource;
 import com.baomidou.dynamic.datasource.enums.SeataMode;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
@@ -135,7 +135,7 @@ public class DataSourceCreator {
             targetDataSource = SeataMode.XA == seataMode ? new DataSourceProxyXA(dataSource) : new DataSourceProxy(dataSource);
             log.debug("dynamic-datasource [{}] wrap seata plugin transaction mode [{}]", name, seataMode);
         }
-        return new DynamicItemDataSource(name, dataSource, targetDataSource, p6spy, seata, seataMode);
+        return new ItemDataSource(name, dataSource, targetDataSource, p6spy, seata, seataMode);
     }
 
     /**

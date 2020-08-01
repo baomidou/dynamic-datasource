@@ -14,53 +14,50 @@
  * limitations under the License.
  * <pre/>
  */
-package com.baomidou.dynamic.datasource;
+package com.baomidou.dynamic.datasource.ds;
 
-import com.baomidou.dynamic.datasource.enums.SeataMode;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.datasource.AbstractDataSource;
 
 import javax.sql.DataSource;
-import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-@Slf4j
-@Data
-@AllArgsConstructor
-public class DynamicItemDataSource extends AbstractDataSource {
+/**
+ * 抽象动态获取数据源
+ *
+ * @author TaoYu
+ * @since 2.2.0
+ */
+public abstract class AbstractRoutingDataSource extends AbstractDataSource {
 
-    private String name;
-
-    private DataSource realDataSource;
-
-    private DataSource dataSource;
-
-    private Boolean p6spy;
-
-    private Boolean seata;
-
-    private SeataMode seataMode;
+    /**
+     * 子类实现决定最终数据源
+     *
+     * @return 数据源
+     */
+    protected abstract DataSource determineDataSource();
 
     @Override
     public Connection getConnection() throws SQLException {
-        return dataSource.getConnection();
+        return determineDataSource().getConnection();
     }
 
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
-        return dataSource.getConnection(username, password);
+        return determineDataSource().getConnection(username, password);
     }
 
-    public void close() throws Exception {
-        Class<? extends DataSource> clazz = realDataSource.getClass();
-        try {
-            Method closeMethod = clazz.getDeclaredMethod("close");
-            closeMethod.invoke(dataSource);
-        } catch (NoSuchMethodException e) {
-            log.warn("dynamic-datasource close the datasource named [{}] failed,", name);
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        if (iface.isInstance(this)) {
+            return (T) this;
         }
+        return determineDataSource().unwrap(iface);
+    }
+
+    @Override
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        return (iface.isInstance(this) || determineDataSource().isWrapperFor(iface));
     }
 }
