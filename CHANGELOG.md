@@ -4,6 +4,7 @@
 - 支持配置driverClassName为非必须属性。@Hccake
 - 支持独立配置每个库的p6spy和seata的开启状态。
 - 修复druid设置超时回收时间方法错误。 @liupeng
+- 支持自定义注解，需继承DS。 @liupeng
 - 修复spring.aop.auto=false下不支持问题。  @刘尚
 - 修复多层代理无法获取InvocationHandler的实现类的问题。 @刘尚
 - 修复mybatisPlus3下直接调用lamba方法不支持问题。 @刘尚
