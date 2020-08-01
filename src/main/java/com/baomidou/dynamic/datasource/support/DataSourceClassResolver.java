@@ -17,7 +17,6 @@
 package com.baomidou.dynamic.datasource.support;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
-import io.seata.common.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.core.BridgeMethodResolver;
@@ -31,7 +30,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 获取对mybatis-plus的支持
+ * 数据源解析器
  *
  * @author TaoYu
  * @since 2.3.0
@@ -53,7 +52,7 @@ public class DataSourceClassResolver {
             } catch (ClassNotFoundException e2) {
                 try {
                     proxyClass = Class.forName("org.apache.ibatis.binding.MapperProxy");
-                } catch (ClassNotFoundException e3) {
+                } catch (ClassNotFoundException ignored) {
                 }
             }
         }
@@ -69,20 +68,25 @@ public class DataSourceClassResolver {
     }
 
     /**
+     * 缓存方法对应的数据源
+     */
+    private final Map<Object, String> dsCache = new ConcurrentHashMap<>();
+
+    /**
      * 默认的获取数据源名称方式
      *
-     * @param targetObject
-     * @return
+     * @param targetObject 目标对象
+     * @return ds
      */
-    protected DatasourceHolder getDefaultDataSourceHolder(Object targetObject) {
+    protected String getDefaultDataSourceAttr(Object targetObject) {
         Class<?> targetClass = targetObject.getClass();
         // 如果不是代理类, 从当前类开始, 不断的找父类的声明
         if (!Proxy.isProxyClass(targetClass)) {
             Class<?> currentClass = targetClass;
             while (currentClass != Object.class) {
-                DatasourceHolder datasourceHolder = findDataSourceAttribute(currentClass);
-                if (datasourceHolder != null) {
-                    return datasourceHolder;
+                String datasourceAttr = findDataSourceAttribute(currentClass);
+                if (datasourceAttr != null) {
+                    return datasourceAttr;
                 }
                 currentClass = currentClass.getSuperclass();
             }
@@ -102,7 +106,6 @@ public class DataSourceClassResolver {
      *
      * @param target JDK 代理类对象
      * @return InvocationHandler 的 Class
-     * @throws IllegalAccessException
      */
     protected Class<?> getMapperInterfaceClass(Object target) {
         Object current = target;
@@ -122,41 +125,27 @@ public class DataSourceClassResolver {
         return null;
     }
 
-    // 空的数据源持有者,  虽然目前@DS 只有一个属性, 相比用String存储, 不如用对象和@DS映射更合适
-    private DatasourceHolder NULL_DS = new DatasourceHolder(StringUtils.EMPTY);
-
     /**
      * 从缓存获取数据
      *
-     * @param method
-     * @param targetObject
-     * @return
-     * @throws IllegalAccessException
+     * @param method       方法
+     * @param targetObject 目标对象
+     * @return ds
      */
     public String findDSKey(Method method, Object targetObject) {
         if (method.getDeclaringClass() == Object.class) {
-            return StringUtils.EMPTY;
+            return "";
         }
-        Class<?> targetClass = targetObject.getClass();
-
-        Object cacheKey = getCacheKey(method, targetClass);
-        DatasourceHolder cached = this.dsCache.get(cacheKey);
-        if (cached != null) {
-            if (cached == NULL_DS) {
-                return StringUtils.EMPTY;
-            } else {
-                return cached.getValue();
+        Object cacheKey = getCacheKey(method, targetObject.getClass());
+        String ds = this.dsCache.get(cacheKey);
+        if (ds == null) {
+            ds = computeDatasource(method, targetObject);
+            if (ds == null) {
+                ds = "";
             }
-        } else {
-            DatasourceHolder dsAttr = computeDatasourceHolder(method, targetObject);
-            if (dsAttr == null) {
-                dsAttr = NULL_DS;
-            }
-            this.dsCache.put(cacheKey, dsAttr);
-            return dsAttr.getValue();
+            this.dsCache.put(cacheKey, ds);
         }
-
-
+        return ds;
     }
 
     /**
@@ -164,31 +153,24 @@ public class DataSourceClassResolver {
      *
      * @param method      方法
      * @param targetClass 方法声明的类
-     * @return
+     * @return cacheKey
      */
     protected Object getCacheKey(Method method, Class<?> targetClass) {
         return new MethodClassKey(method, targetClass);
     }
 
     /**
-     * 缓存方法对应的数据源, 有了缓存才能更快
-     */
-    private final Map<Object, DatasourceHolder> dsCache = new ConcurrentHashMap<>();
-
-    /**
      * 查找注解的顺序
      * 1. 从当前方法
-     * - 方法声明的类
      * 2. 桥接方法
-     * - 桥接方法声明的类
      * 3. 从当前类开始一直找到Object
      * 4. 支持mybatis-plus, mybatis-spring
      *
-     * @param method      方法
+     * @param method       方法
      * @param targetObject 目标对象
-     * @return
+     * @return ds
      */
-    private DatasourceHolder computeDatasourceHolder(Method method, Object targetObject) {
+    private String computeDatasource(Method method, Object targetObject) {
         if (!Modifier.isPublic(method.getModifiers())) {
             return null;
         }
@@ -199,7 +181,7 @@ public class DataSourceClassResolver {
 
         specificMethod = BridgeMethodResolver.findBridgedMethod(specificMethod);
         // 从当前方法查找
-        DatasourceHolder dsAttr = findDataSourceAttribute(specificMethod);
+        String dsAttr = findDataSourceAttribute(specificMethod);
         if (dsAttr != null) {
             return dsAttr;
         }
@@ -222,36 +204,21 @@ public class DataSourceClassResolver {
             }
         }
 
-        return getDefaultDataSourceHolder(targetObject);
+        return getDefaultDataSourceAttr(targetObject);
     }
 
     /**
      * 通过 AnnotatedElement 查找标记的注解, 映射为  DatasourceHolder
      *
-     * @param ae
+     * @param ae AnnotatedElement
      * @return 数据源映射持有者
      */
-    private DatasourceHolder findDataSourceAttribute(AnnotatedElement ae) {
+    private String findDataSourceAttribute(AnnotatedElement ae) {
         AnnotationAttributes attributes = AnnotatedElementUtils.getMergedAnnotationAttributes(ae, DS.class);
         if (attributes != null) {
-            final String value = attributes.getString("value");
-            return new DatasourceHolder(value);
+            return attributes.getString("value");
         }
         return null;
     }
 
-    /**
-     * 第一期先隐藏这个实现类
-     */
-    protected class DatasourceHolder {
-        private String value;
-
-        public DatasourceHolder(final String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return this.value;
-        }
-    }
 }
