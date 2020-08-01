@@ -13,4 +13,6 @@ public interface UserService extends IService<User> {
     void addUser(User user);
 
     void deleteUserById(Long id);
+
+    List<User> selectSlaveUsers();
 }

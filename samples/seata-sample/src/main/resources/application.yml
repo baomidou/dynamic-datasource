@@ -5,8 +5,8 @@ spring:
     dynamic:
       primary: order
       strict: true
-      #支持XA及AT模式
-      seata: AT
+      seata: true    #开启seata代理，开启后默认每个数据源都代理，如果某个不需要代理可单独关闭
+      seata-mode: AT #支持XA及AT模式,默认AT
       datasource:
         order:
           username: root
@@ -26,6 +26,12 @@ spring:
           url: jdbc:mysql://39.108.158.138:3306/seata_product?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&useSSL=false
           driver-class-name: com.mysql.cj.jdbc.Driver
           schema: classpath:db/schema-product.sql
+        test:
+          username: sa
+          password: ""
+          url: jdbc:h2:mem:test
+          driver-class-name: org.h2.Driver
+          seata: false #这个数据源不需要seata
 seata:
   enabled: true
   application-id: applicationName
@@ -38,7 +44,7 @@ seata:
       my_test_tx_group: default
     grouplist:
       #seata-server地址仅file注册中心需要
-      default: 127.0.0.1:8091
+      default: 39.108.158.138:8091
   config:
     type: file
   registry:

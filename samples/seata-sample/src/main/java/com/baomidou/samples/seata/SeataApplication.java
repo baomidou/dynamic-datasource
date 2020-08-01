@@ -6,7 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication(exclude = DruidDataSourceAutoConfigure.class)
-@MapperScan("com.baomidou.samples.seata.dao")
+@MapperScan("com.baomidou.samples.seata.mapper")
 public class SeataApplication {
 
     public static void main(String[] args) {

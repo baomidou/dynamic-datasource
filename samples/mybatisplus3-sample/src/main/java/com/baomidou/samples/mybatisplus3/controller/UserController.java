@@ -1,14 +1,12 @@
 package com.baomidou.samples.mybatisplus3.controller;
 
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.samples.mybatisplus3.entity.User;
 import com.baomidou.samples.mybatisplus3.service.UserService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.Random;
 
@@ -21,28 +19,20 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
-    @Resource(name = "userSlaveServiceImpl")
-    UserService userSlaveService;
-
-    @GetMapping("lambda/master/getOne")
-    public User lambdaMasterGetOne() {
-        return userService.getOne(Wrappers.<User>lambdaQuery().eq(User::getId, 1));
+    
+    @GetMapping("/lambda")
+    public List<User> lambdaUsers() {
+        return userService.lambdaQuery().list();
     }
 
-    @GetMapping("lambda/slave/getOne")
-    public User lambdaSlaveGetOne() {
-        return userSlaveService.getOne(Wrappers.<User>lambdaQuery().eq(User::getId, 1));
-    }
-
-    @GetMapping("master")
-    public List<User> users1() {
+    @GetMapping
+    public List<User> users() {
         return userService.selectUsers();
     }
 
-    @GetMapping("slave")
-    public List<User> users2() {
-        return userSlaveService.selectUsers();
+    @GetMapping("/slave")
+    public List<User> slaveUsers() {
+        return userService.selectSlaveUsers();
     }
 
     @PostMapping
@@ -54,9 +44,10 @@ public class UserController {
         return user;
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public String deleteUser(@PathVariable Long id) {
         userService.deleteUserById(id);
         return "成功删除用户" + id;
     }
+
 }

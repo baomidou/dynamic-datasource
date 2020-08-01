@@ -10,14 +10,14 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class CustomAutoProxyCreator {
+
     /**
-     * 这里为了测试多个后置处理器的情况, 实际项目中不用加这个配置
-     * @return
+     * 这里为了测试多个后置处理器的情况, 实际项目中不要加这个配置
      */
-//    @Bean
-//    public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
-//        DefaultAdvisorAutoProxyCreator proxyCreator = new DefaultAdvisorAutoProxyCreator();
-//        proxyCreator.setProxyTargetClass(true);
-//        return proxyCreator;
-//    }
+    @Bean
+    public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
+        DefaultAdvisorAutoProxyCreator proxyCreator = new DefaultAdvisorAutoProxyCreator();
+        proxyCreator.setProxyTargetClass(true);
+        return proxyCreator;
+    }
 }

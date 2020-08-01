@@ -2,7 +2,7 @@ package com.baomidou.samples.seata.service.impl;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.samples.seata.common.OrderStatus;
-import com.baomidou.samples.seata.dao.OrderDao;
+import com.baomidou.samples.seata.mapper.OrderMapper;
 import com.baomidou.samples.seata.dto.PlaceOrderRequest;
 import com.baomidou.samples.seata.entity.Order;
 import com.baomidou.samples.seata.service.AccountService;
@@ -10,6 +10,7 @@ import com.baomidou.samples.seata.service.OrderService;
 import com.baomidou.samples.seata.service.ProductService;
 import io.seata.core.context.RootContext;
 import io.seata.spring.annotation.GlobalTransactional;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +19,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
+@Slf4j
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    private static final Logger log = LoggerFactory.getLogger(OrderServiceImpl.class);
-
     @Resource
-    private OrderDao orderDao;
+    private OrderMapper orderMapper;
     @Autowired
     private AccountService accountService;
     @Autowired
@@ -50,7 +50,7 @@ public class OrderServiceImpl implements OrderService {
                 .amount(amount)
                 .build();
 
-        orderDao.insert(order);
+        orderMapper.insert(order);
         log.info("订单一阶段生成，等待扣库存付款中");
         // 扣减库存并计算总价
         Double totalPrice = productService.reduceStock(productId, amount);
@@ -59,7 +59,7 @@ public class OrderServiceImpl implements OrderService {
 
         order.setStatus(OrderStatus.SUCCESS);
         order.setTotalPrice(totalPrice);
-        orderDao.updateById(order);
+        orderMapper.updateById(order);
         log.info("订单已成功下单");
         log.info("=============ORDER END=================");
     }

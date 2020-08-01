@@ -1,8 +1,8 @@
 package com.baomidou.samples.seata.service.impl;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
-import com.baomidou.samples.seata.dao.ProductDao;
 import com.baomidou.samples.seata.entity.Product;
+import com.baomidou.samples.seata.mapper.ProductMapper;
 import com.baomidou.samples.seata.service.ProductService;
 import io.seata.core.context.RootContext;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,7 @@ import javax.annotation.Resource;
 public class ProductServiceImpl implements ProductService {
 
     @Resource
-    private ProductDao productDao;
+    private ProductMapper productMapper;
 
     /**
      * 事务传播特性设置为 REQUIRES_NEW 开启新的事务
@@ -30,7 +30,7 @@ public class ProductServiceImpl implements ProductService {
         log.info("当前 XID: {}", RootContext.getXID());
 
         // 检查库存
-        Product product = productDao.selectById(productId);
+        Product product = productMapper.selectById(productId);
         Integer stock = product.getStock();
         log.info("商品编号为 {} 的库存为{},订单商品数量为{}", productId, stock, amount);
 
@@ -42,7 +42,7 @@ public class ProductServiceImpl implements ProductService {
         // 扣减库存
         int currentStock = stock - amount;
         product.setStock(currentStock);
-        productDao.updateById(product);
+        productMapper.updateById(product);
         double totalPrice = product.getPrice() * amount;
         log.info("扣减商品编号为 {} 库存成功,扣减后库存为{}, {} 件商品总价为 {} ", productId, currentStock, amount, totalPrice);
         log.info("=============PRODUCT END=================");
