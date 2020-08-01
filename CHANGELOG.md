@@ -8,6 +8,8 @@
 - 修复多层代理无法获取InvocationHandler的实现类的问题。 @刘尚
 - 修复mybatisPlus3下直接调用lamba方法不支持问题。 @刘尚
 - seata集成优化和示例项目更新1.3.0。  @a364176773
+- 调用DataSourceCreator创建的数据源会包装成ItemDataSource，存储原dataSource和包装后的dataSource。
+- DynamicRoutingDataSource内部关闭数据源优化。
 - breakChange: 去除以前的实验性功能，如正则切换。
 - 示例项目新增quartz和sharding-jdbc的集成。
 - 示例项目整体更新。
