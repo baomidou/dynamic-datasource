@@ -35,7 +35,20 @@ public class DynamicDataSourceAnnotationInterceptor implements MethodInterceptor
      * The identification of SPEL.
      */
     private static final String DYNAMIC_PREFIX = "#";
-    private static final DataSourceClassResolver RESOLVER = new DataSourceClassResolver();
+    private DataSourceClassResolver dataSourceClassResolver;
+
+    public DynamicDataSourceAnnotationInterceptor() {
+        this(true);
+    }
+
+    /**
+     *
+     * @param allowPublicOnly 只允许public方法进行数据源切换
+     */
+    public DynamicDataSourceAnnotationInterceptor(Boolean allowPublicOnly) {
+        dataSourceClassResolver = new DataSourceClassResolver(allowPublicOnly);
+    }
+
     @Setter
     private DsProcessor dsProcessor;
 
@@ -50,7 +63,7 @@ public class DynamicDataSourceAnnotationInterceptor implements MethodInterceptor
     }
 
     private String determineDatasource(MethodInvocation invocation) {
-        String key = RESOLVER.findDSKey(invocation.getMethod(), invocation.getThis());
+        String key = dataSourceClassResolver.findDSKey(invocation.getMethod(), invocation.getThis());
         return (!key.isEmpty() && key.startsWith(DYNAMIC_PREFIX)) ? dsProcessor.determineDatasource(invocation, key) : key;
     }
 }

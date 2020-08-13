@@ -42,6 +42,8 @@ public class DataSourceClassResolver {
 
     private static Field mapperInterfaceField;
 
+    private boolean publicMethodsOnly = true;
+
     static {
         Class<?> proxyClass = null;
         try {
@@ -65,6 +67,17 @@ public class DataSourceClassResolver {
                 e.printStackTrace();
             }
         }
+    }
+
+    public DataSourceClassResolver() {
+    }
+
+    /**
+     * 加入扩展, 给外部一个修改aop条件的机会
+     * @param publicMethodsOnly 只允许公共的方法, 默认为true
+     */
+    public DataSourceClassResolver(boolean publicMethodsOnly) {
+        this.publicMethodsOnly = publicMethodsOnly;
     }
 
     /**
@@ -159,6 +172,10 @@ public class DataSourceClassResolver {
         return new MethodClassKey(method, targetClass);
     }
 
+    protected boolean allowPublicMethodsOnly() {
+        return publicMethodsOnly;
+    }
+
     /**
      * 查找注解的顺序
      * 1. 从当前方法
@@ -171,7 +188,7 @@ public class DataSourceClassResolver {
      * @return ds
      */
     private String computeDatasource(Method method, Object targetObject) {
-        if (!Modifier.isPublic(method.getModifiers())) {
+        if (allowPublicMethodsOnly() && !Modifier.isPublic(method.getModifiers())) {
             return null;
         }
         Class<?> targetClass = targetObject.getClass();

@@ -100,4 +100,8 @@ public class DynamicDataSourceProperties {
      * 全局默认publicKey
      */
     private String publicKey = CryptoUtils.DEFAULT_PUBLIC_KEY_STRING;
+    /**
+     * aop 切面是否只允许切 public 方法
+     */
+    private boolean allowPublicOnly = true;
 }
