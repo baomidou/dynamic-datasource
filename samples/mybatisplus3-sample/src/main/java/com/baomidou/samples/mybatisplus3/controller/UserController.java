@@ -19,35 +19,28 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-    
-    @GetMapping("/lambda")
-    public List<User> lambdaUsers() {
-        return userService.lambdaQuery().list();
+
+    /**
+     * 简单事务切换测试
+     */
+    @PostMapping("/test")
+    public void test(){
+        userService.test();
     }
 
-    @GetMapping
-    public List<User> users() {
-        return userService.selectUsers();
-    }
-
-    @GetMapping("/slave")
-    public List<User> slaveUsers() {
-        return userService.selectSlaveUsers();
-    }
-
-    @PostMapping
-    public User addUser() {
-        User user = new User();
-        user.setName("测试用户" + RANDOM.nextInt());
-        user.setAge(RANDOM.nextInt(100));
-        userService.addUser(user);
-        return user;
-    }
-
-    @DeleteMapping("/{id}")
-    public String deleteUser(@PathVariable Long id) {
-        userService.deleteUserById(id);
-        return "成功删除用户" + id;
+    /**
+     * service嵌套事务切换测试同一个事务管理器是否回滚
+     *
+     *
+     *TODO 这里回滚有点问题
+     *  DynamicRoutingDataSource和ItemDataSource冲突，导致事务管理器失效，
+     *  运行了doRollback 但是数据没恢复
+     *
+     *
+     */
+    @PostMapping("/test2")
+    public void test2(){
+//        userService.test2();
     }
 
 }

@@ -31,7 +31,7 @@ import java.util.Map;
  */
 @Slf4j
 @AllArgsConstructor
-public class YmlDynamicDataSourceProvider extends AbstractDataSourceProvider implements DynamicDataSourceProvider {
+public class YmlDynamicDataSourceProvider extends AbstractDataSourceProvider {
 
     /**
      * 所有数据源

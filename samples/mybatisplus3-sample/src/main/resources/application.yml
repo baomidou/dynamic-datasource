@@ -3,26 +3,15 @@ spring:
     dynamic:
       datasource:
         master:
-          username: sa
-          password: ""
-          url: jdbc:h2:mem:test
-          driver-class-name: org.h2.Driver
-          schema: db/schema.sql
+          username: root
+          password: 123456
+          url: jdbc:mysql://localhost:3306/zs-1?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+          driver-class-name: com.mysql.jdbc.Driver
         slave_1:
-          username: sa
-          password: ""
-          url: jdbc:h2:mem:test
-          driver-class-name: org.h2.Driver
-        slave_2:
-          username: sa
-          password: ""
-          url: jdbc:h2:mem:test
-          driver-class-name: org.h2.Driver
-        slave_3:
-          username: sa
-          password: ""
-          url: jdbc:h2:mem:test
-          driver-class-name: org.h2.Driver
+          username: root
+          password: 123456
+          url: jdbc:mysql://localhost:3306/zs-2?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+          driver-class-name: com.mysql.jdbc.Driver
 logging:
   level:
     com.baomidou: debug

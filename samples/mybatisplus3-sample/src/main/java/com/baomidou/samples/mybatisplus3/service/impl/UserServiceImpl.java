@@ -1,39 +1,53 @@
 package com.baomidou.samples.mybatisplus3.service.impl;
 
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.samples.mybatisplus3.entity.User;
 import com.baomidou.samples.mybatisplus3.mapper.UserMapper;
-import com.baomidou.samples.mybatisplus3.mapper.UserSlaveMapper;
 import com.baomidou.samples.mybatisplus3.service.UserService;
+import com.baomidou.samples.mybatisplus3.service.UserTwoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.util.List;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
-    @Resource
-    private UserSlaveMapper slaveMapper;
+
+    @Autowired
+    private UserTwoService userTwoService;
 
     @Override
-    public List<User> selectUsers() {
-        return baseMapper.selectList(null);
-    }
+    @DS("master")
+    @Transactional(rollbackFor = Exception.class)
+    public void test() {
+        User user=new User();
+        user.setName("主");
+        user.setAge(22);
 
-    @Override
-    public void addUser(User user) {
         baseMapper.insert(user);
+
+        userTwoService.insert();
     }
 
     @Override
-    public void deleteUserById(Long id) {
-        baseMapper.deleteById(id);
+    @DS("slave_1")
+    @Transactional(rollbackFor = Exception.class)
+    public void test2() {
+        User user=new User();
+        user.setName("主");
+        user.setAge(22);
+
+        baseMapper.insert(user);
+        int i=1/0;
+//        userSlaveService.insert2();
+
     }
 
-    @Override
-    public List<User> selectSlaveUsers() {
-        return slaveMapper.selectList(null);
-    }
 }

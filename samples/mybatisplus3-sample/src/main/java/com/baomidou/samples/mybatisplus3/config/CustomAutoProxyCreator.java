@@ -1,8 +1,10 @@
 package com.baomidou.samples.mybatisplus3.config;
 
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 /**
  * 自定义对mapper的增强.
@@ -10,6 +12,8 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class CustomAutoProxyCreator {
+
+
 
     /**
      * 这里为了测试多个后置处理器的情况, 实际项目中不要加这个配置
@@ -20,4 +24,6 @@ public class CustomAutoProxyCreator {
         proxyCreator.setProxyTargetClass(true);
         return proxyCreator;
     }
+
+
 }

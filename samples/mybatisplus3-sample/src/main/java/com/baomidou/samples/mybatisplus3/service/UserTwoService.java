@@ -1,12 +1,13 @@
 package com.baomidou.samples.mybatisplus3.service;
 
-
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.samples.mybatisplus3.entity.User;
 
-public interface UserService extends IService<User> {
+/**
+ * @Author: zs
+ * @Date: 2020/8/26 14:28
+ */
+public interface UserTwoService extends IService<User> {
 
-    void test();
-
-    void test2();
+    void insert();
 }
