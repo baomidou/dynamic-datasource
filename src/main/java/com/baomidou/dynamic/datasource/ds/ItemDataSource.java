@@ -63,7 +63,9 @@ public class ItemDataSource extends AbstractDataSource implements Closeable {
         Class<? extends DataSource> clazz = realDataSource.getClass();
         try {
             Method closeMethod = clazz.getDeclaredMethod("close");
-            closeMethod.invoke(dataSource);
+            // #fix 275
+            // closeMethod.invoke(dataSource);
+            closeMethod.invoke(realDataSource);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             log.warn("dynamic-datasource close the datasource named [{}] failed,", name, e);
         }
