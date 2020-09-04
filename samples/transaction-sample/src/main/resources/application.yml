@@ -1,0 +1,40 @@
+spring:
+  datasource:
+    dynamic:
+##     必须配置数据源的自动提交属性为 false
+#      hikari:
+#        isAutoCommit: false
+#    使用 druid 连接池时，需要打开此配置
+      druid:
+        default-auto-commit: false
+      datasource:
+        master:
+          username: sa
+          password: ""
+          url: jdbc:h2:mem:a
+          schema: db/schema-a.sql
+          default-auto-commit: false
+        b:
+          username: sa
+          password: ""
+          url: jdbc:h2:mem:b
+          schema: db/schema-b.sql
+          default-auto-commit: false
+        c:
+          username: sa
+          password: ""
+          url: jdbc:h2:mem:c
+          schema: db/schema-c.sql
+          default-auto-commit: false
+
+
+mybatis-plus:
+  mapper-locations: classpath:/mapper/**/*Mapper.xml
+  global-config:
+    banner: false
+    db-config:
+      id-type: auto
+      insert-strategy: not_empty
+      update-strategy: not_empty
+      logic-delete-value: "NOW()" # 逻辑已删除值(使用当前时间标识)
+      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)

@@ -35,6 +35,7 @@
         <module>seata-sample</module>
         <module>sharding-jdbc-sample</module>
         <module>spel-sample</module>
+        <module>transaction-sample</module>
     </modules>
 
     <dependencyManagement>
