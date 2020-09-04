@@ -25,6 +25,7 @@ import com.baomidou.dynamic.datasource.strategy.LoadBalanceDynamicDataSourceStra
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import com.p6spy.engine.spy.P6DataSource;
 import io.seata.rm.datasource.DataSourceProxy;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
@@ -60,6 +61,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
     private DynamicDataSourceProvider provider;
     @Setter
     private Class<? extends DynamicDataSourceStrategy> strategy = LoadBalanceDynamicDataSourceStrategy.class;
+    @Getter
     @Setter
     private String primary = "master";
     @Setter
