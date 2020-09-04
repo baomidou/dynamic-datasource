@@ -98,14 +98,17 @@ public class DynamicDataSourceAutoConfiguration {
         return advisor;
     }
 
+    @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "seata", havingValue = "false",
+        matchIfMissing = true)
     @Bean
-    public Advisor
-        localTransactionAdvisor(DynamicTransactionAdvisor dynamicTransactionAdvisor) {
+    public Advisor localTransactionAdvisor(DynamicTransactionAdvisor dynamicTransactionAdvisor) {
         AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
         pointcut.setExpression("@annotation(org.springframework.web.bind.annotation.RequestMapping)");
         return new DefaultPointcutAdvisor(pointcut, dynamicTransactionAdvisor);
     }
 
+    @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "seata", havingValue = "false",
+        matchIfMissing = true)
     @Bean
     @ConditionalOnMissingBean
     public DynamicTransactionAdvisor dynamicTransactionAdvisor() {
