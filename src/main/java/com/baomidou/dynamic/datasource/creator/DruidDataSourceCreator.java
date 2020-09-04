@@ -66,6 +66,7 @@ public class DruidDataSourceCreator {
         if (!StringUtils.isEmpty(driverClassName)) {
             dataSource.setDriverClassName(driverClassName);
         }
+        dataSource.setDefaultAutoCommit(this.druidConfig.isDefaultAutoCommit());
         DruidConfig config = dataSourceProperty.getDruid();
         Properties properties = config.toProperties(druidConfig);
         String filters = properties.getProperty("druid.filters");

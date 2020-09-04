@@ -41,6 +41,7 @@ import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.Dr
 @Slf4j
 public class DruidConfig {
 
+    private boolean defaultAutoCommit = true;
     private Integer initialSize;
     private Integer maxActive;
     private Integer minIdle;
