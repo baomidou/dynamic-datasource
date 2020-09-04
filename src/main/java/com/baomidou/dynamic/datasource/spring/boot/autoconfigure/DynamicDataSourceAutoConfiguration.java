@@ -101,7 +101,7 @@ public class DynamicDataSourceAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public Advisor
-        dynamicTransactionAdvisor(DynamicTransactionAdvisor dynamicTransactionAdvisor) {
+        transactionAdvisor(DynamicTransactionAdvisor dynamicTransactionAdvisor) {
         AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
         pointcut.setExpression("@annotation(org.springframework.web.bind.annotation.RequestMapping)");
         return new DefaultPointcutAdvisor(pointcut, dynamicTransactionAdvisor);
