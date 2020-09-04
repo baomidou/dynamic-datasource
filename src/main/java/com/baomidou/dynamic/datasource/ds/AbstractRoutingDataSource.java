@@ -16,6 +16,9 @@
  */
 package com.baomidou.dynamic.datasource.ds;
 
+import com.baomidou.dynamic.datasource.ds.proxy.ConnectionFactory;
+import com.baomidou.dynamic.datasource.ds.proxy.ConnectionProxy;
+import com.baomidou.dynamic.datasource.ds.proxy.TransactionContext;
 import org.springframework.jdbc.datasource.AbstractDataSource;
 
 import javax.sql.DataSource;
@@ -39,12 +42,18 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource {
 
     @Override
     public Connection getConnection() throws SQLException {
-        return determineDataSource().getConnection();
+        return getConnectionProxy(determineDataSource().getConnection());
     }
 
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
-        return determineDataSource().getConnection(username, password);
+        return getConnectionProxy(determineDataSource().getConnection(username, password));
+    }
+
+    public Connection getConnectionProxy(Connection connection) throws SQLException {
+        ConnectionProxy connectionProxy = new ConnectionProxy(connection);
+        ConnectionFactory.putConnection(TransactionContext.getXID(), connectionProxy);
+        return connectionProxy;
     }
 
     @Override
