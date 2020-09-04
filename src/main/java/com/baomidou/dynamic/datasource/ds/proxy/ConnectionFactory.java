@@ -16,6 +16,7 @@
  */
 package com.baomidou.dynamic.datasource.ds.proxy;
 
+import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 
 import java.sql.SQLException;
@@ -61,7 +62,25 @@ public class ConnectionFactory {
         }
     }
 
-    public static List<ConnectionProxy> notify(String xid, Boolean state) {
+    public static ConnectionProxy getConnection() {
+        lock.lock();
+        try {
+            List<ConnectionProxy> list = concurrentHashMap.get(TransactionContext.getXID());
+            if (!CollectionUtils.isEmpty(list)) {
+                String ds = DynamicDataSourceContextHolder.peek();
+                for (ConnectionProxy connectionProxy : list) {
+                    if (connectionProxy.getDs().equals(ds)) {
+                        return connectionProxy;
+                    }
+                }
+            }
+        } finally {
+            lock.unlock();
+        }
+        return null;
+    }
+
+    public static void notify(String xid, Boolean state) {
         lock.lock();
         try {
             List<ConnectionProxy> list = concurrentHashMap.get(xid);
@@ -69,11 +88,11 @@ public class ConnectionFactory {
                 list.forEach(conn -> {
                     conn.notify(state);
                 });
+                concurrentHashMap.remove(xid);
             }
         } finally {
             lock.unlock();
         }
-        return concurrentHashMap.get(xid);
     }
 
     public static void remove(String xid) {

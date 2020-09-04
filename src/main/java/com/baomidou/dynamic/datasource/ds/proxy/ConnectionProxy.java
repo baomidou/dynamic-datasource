@@ -51,8 +51,15 @@ public class ConnectionProxy implements Connection {
 
     private Connection connection;
 
+    private String ds;
+
     public ConnectionProxy(Connection connection) {
         this.connection = connection;
+    }
+
+    public ConnectionProxy(Connection connection, String ds) {
+        this.connection = connection;
+        this.ds = ds;
     }
 
     public void notify(Boolean commit) {
@@ -348,5 +355,13 @@ public class ConnectionProxy implements Connection {
 
     public void setConnection(Connection connection) {
         this.connection = connection;
+    }
+
+    public String getDs() {
+        return ds;
+    }
+
+    public void setDs(String ds) {
+        this.ds = ds;
     }
 }
