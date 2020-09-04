@@ -7,6 +7,7 @@ spring:
           password: ""
           url: jdbc:h2:mem:test;DB_CLOSE_ON_EXIT=FALSE
           driver-class-name: org.h2.Driver
+          schema: db/schema.sql
         salve:
           username: sa
           password: ""
