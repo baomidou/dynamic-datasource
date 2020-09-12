@@ -56,8 +56,6 @@ public class DataSourceCreator {
         try {
             Class.forName(DRUID_DATASOURCE);
             druidExists = true;
-            log.debug("dynamic-datasource detect druid,Please Notice \n " +
-                    "https://github.com/baomidou/dynamic-datasource-spring-boot-starter/wiki/Integration-With-Druid");
         } catch (ClassNotFoundException ignored) {
         }
         try {
@@ -123,19 +121,21 @@ public class DataSourceCreator {
 
     private DataSource wrapDataSource(DataSource dataSource, DataSourceProperty dataSourceProperty) {
         String name = dataSourceProperty.getPoolName();
-        Boolean p6spy = dataSourceProperty.getP6spy();
         DataSource targetDataSource = dataSource;
-        if (properties.getP6spy() && p6spy) {
+
+        Boolean enabledP6spy = properties.getP6spy() && dataSourceProperty.getP6spy();
+        if (enabledP6spy) {
             targetDataSource = new P6DataSource(dataSource);
             log.debug("dynamic-datasource [{}] wrap p6spy plugin", name);
         }
-        Boolean seata = dataSourceProperty.getSeata();
+
+        Boolean enabledSeata = properties.getSeata() && dataSourceProperty.getSeata();
         SeataMode seataMode = properties.getSeataMode();
-        if (properties.getSeata() && seata) {
+        if (enabledSeata) {
             targetDataSource = SeataMode.XA == seataMode ? new DataSourceProxyXA(dataSource) : new DataSourceProxy(dataSource);
             log.debug("dynamic-datasource [{}] wrap seata plugin transaction mode [{}]", name, seataMode);
         }
-        return new ItemDataSource(name, dataSource, targetDataSource, p6spy, seata, seataMode);
+        return new ItemDataSource(name, dataSource, targetDataSource, enabledP6spy, enabledSeata, seataMode);
     }
 
     /**
@@ -187,5 +187,4 @@ public class DataSourceCreator {
         }
         return hikariDataSourceCreator.createDataSource(dataSourceProperty);
     }
-
 }
