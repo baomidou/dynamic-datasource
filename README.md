@@ -31,7 +31,7 @@ dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成�
 
 其支持 **Jdk 1.7+,    SpringBoot 1.4.x  1.5.x   2.x.x**。
 
-**示例项目** 可参考项目下的samples目录。 
+**示例项目** https://gitee.com/baomidou/dynamic-datasource-samples 。
 
 # 特性
 
@@ -117,9 +117,7 @@ spring:                               spring:                               spri
 
 3. 使用  **@DS**  切换数据源。
 
-**@DS** 可以注解在方法上和类上，**同时存在方法注解优先于类上注解**。
-
-强烈建议只注解在service实现上。
+**@DS** 可以注解在方法上或类上，**同时存在就近原则 方法上注解 优先于 类上注解**。
 
 |     注解      |                   结果                   |
 | :-----------: | :--------------------------------------: |
