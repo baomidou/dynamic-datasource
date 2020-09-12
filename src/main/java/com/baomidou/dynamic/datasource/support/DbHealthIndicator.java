@@ -43,11 +43,11 @@ public class DbHealthIndicator extends AbstractHealthIndicator {
     /**
      * 维护数据源健康状况
      */
-    private static Map<String, Boolean> DB_HEALTH = new ConcurrentHashMap<>();
+    private static final Map<String, Boolean> DB_HEALTH = new ConcurrentHashMap<>();
     /**
      * 当前执行数据源
      */
-    private DataSource dataSource;
+    private final DataSource dataSource;
 
     public DbHealthIndicator(DataSource dataSource) {
         this.dataSource = dataSource;

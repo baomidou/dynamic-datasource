@@ -20,6 +20,7 @@ import javax.crypto.Cipher;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
@@ -187,7 +188,7 @@ public class CryptoUtils {
             cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.ENCRYPT_MODE, fakePublicKey);
         }
-        return Base64.byteArrayToBase64(cipher.doFinal(plainText.getBytes("UTF-8")));
+        return Base64.byteArrayToBase64(cipher.doFinal(plainText.getBytes(StandardCharsets.UTF_8)));
     }
 
     public static byte[][] genKeyPairBytes(int keySize) {

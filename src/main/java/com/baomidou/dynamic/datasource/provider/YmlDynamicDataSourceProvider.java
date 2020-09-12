@@ -36,7 +36,7 @@ public class YmlDynamicDataSourceProvider extends AbstractDataSourceProvider {
     /**
      * 所有数据源
      */
-    private Map<String, DataSourceProperty> dataSourcePropertiesMap;
+    private final Map<String, DataSourceProperty> dataSourcePropertiesMap;
 
     @Override
     public Map<String, DataSource> loadDataSources() {

@@ -37,7 +37,7 @@ public class Base64 {
      * This array is a lookup table that translates 6-bit positive integer index values into their "Base64 Alphabet" equivalents as specified
      * in Table 1 of RFC 2045.
      */
-    private static final char intToBase64[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
+    private static final char[] intToBase64 = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
             'L', 'M',
             'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
             'g', 'h',
@@ -49,7 +49,7 @@ public class Base64 {
      * This is NOT the real Base64 Alphabet as per in Table 1 of RFC 2045. This alternate alphabet does not use the capital letters. It is
      * designed for use in environments where "case folding" occurs.
      */
-    private static final char intToAltBase64[] = {'!', '"', '#', '$', '%', '&', '\'', '(', ')', ',',
+    private static final char[] intToAltBase64 = {'!', '"', '#', '$', '%', '&', '\'', '(', ')', ',',
             '-', '.', ':',
             ';', '<', '>', '@', '[', ']', '^', '`', '_', '{', '|', '}', '~', 'a', 'b', 'c', 'd', 'e', 'f',
             'g', 'h',
@@ -61,7 +61,7 @@ public class Base64 {
      * into their 6-bit positive integer equivalents. Characters that are not in the Base64 alphabet but fall within the bounds of the array
      * are translated to -1.
      */
-    private static final byte base64ToInt[] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    private static final byte[] base64ToInt = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
             -1, -1, -1,
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
             -1, -1, -1, 62,
@@ -73,7 +73,7 @@ public class Base64 {
     /**
      * This array is the analogue of base64ToInt, but for the nonstandard variant that avoids the use of uppercase alphabetic characters.
      */
-    private static final byte altBase64ToInt[] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    private static final byte[] altBase64ToInt = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
             -1, -1, -1, -1,
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, -1,
             62, 9, 10,

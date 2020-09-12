@@ -40,19 +40,19 @@ public abstract class AbstractJdbcDataSourceProvider extends AbstractDataSourceP
     /**
      * JDBC driver
      */
-    private String driverClassName;
+    private final String driverClassName;
     /**
      * JDBC url 地址
      */
-    private String url;
+    private final String url;
     /**
      * JDBC 用户名
      */
-    private String username;
+    private final String username;
     /**
      * JDBC 密码
      */
-    private String password;
+    private final String password;
 
 
     public AbstractJdbcDataSourceProvider(String url, String username, String password) {
