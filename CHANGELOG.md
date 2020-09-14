@@ -1,3 +1,12 @@
+# v3.2.1
+
+- 提供注解查找非public方法的扩展。 @刘尚
+- 修复数据源关闭的错误。 @zuihou
+- 修复创建ItemDatasource参数错误。
+- 修复自定义注解在方法上失效。
+- 添加默认的Master和Slave注解。
+- 示例项目整体迁出为独立项目https://gitee.com/baomidou/dynamic-datasource-samples 。
+
 # v3.2.0
 
 - 支持通配符扫描schema文件。 @superlyao
