@@ -103,5 +103,5 @@ public class DynamicDataSourceProperties {
     /**
      * aop 切面是否只允许切 public 方法
      */
-    private boolean allowPublicOnly = true;
+    private boolean allowedPublicOnly = true;
 }

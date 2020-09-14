@@ -87,8 +87,7 @@ public class DynamicDataSourceAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public DynamicDataSourceAnnotationAdvisor dynamicDatasourceAnnotationAdvisor(DsProcessor dsProcessor) {
-        DynamicDataSourceAnnotationInterceptor interceptor = new DynamicDataSourceAnnotationInterceptor(properties.isAllowPublicOnly());
-        interceptor.setDsProcessor(dsProcessor);
+        DynamicDataSourceAnnotationInterceptor interceptor = new DynamicDataSourceAnnotationInterceptor(properties.isAllowedPublicOnly(), dsProcessor);
         DynamicDataSourceAnnotationAdvisor advisor = new DynamicDataSourceAnnotationAdvisor(interceptor);
         advisor.setOrder(properties.getOrder());
         return advisor;

@@ -42,8 +42,6 @@ public class DataSourceClassResolver {
 
     private static Field mapperInterfaceField;
 
-    private boolean publicMethodsOnly = true;
-
     static {
         Class<?> proxyClass = null;
         try {
@@ -69,73 +67,19 @@ public class DataSourceClassResolver {
         }
     }
 
-    public DataSourceClassResolver() {
-    }
-
-    /**
-     * 加入扩展, 给外部一个修改aop条件的机会
-     * @param publicMethodsOnly 只允许公共的方法, 默认为true
-     */
-    public DataSourceClassResolver(boolean publicMethodsOnly) {
-        this.publicMethodsOnly = publicMethodsOnly;
-    }
-
     /**
      * 缓存方法对应的数据源
      */
     private final Map<Object, String> dsCache = new ConcurrentHashMap<>();
+    private final boolean allowedPublicOnly;
 
     /**
-     * 默认的获取数据源名称方式
+     * 加入扩展, 给外部一个修改aop条件的机会
      *
-     * @param targetObject 目标对象
-     * @return ds
+     * @param allowedPublicOnly 只允许公共的方法, 默认为true
      */
-    protected String getDefaultDataSourceAttr(Object targetObject) {
-        Class<?> targetClass = targetObject.getClass();
-        // 如果不是代理类, 从当前类开始, 不断的找父类的声明
-        if (!Proxy.isProxyClass(targetClass)) {
-            Class<?> currentClass = targetClass;
-            while (currentClass != Object.class) {
-                String datasourceAttr = findDataSourceAttribute(currentClass);
-                if (datasourceAttr != null) {
-                    return datasourceAttr;
-                }
-                currentClass = currentClass.getSuperclass();
-            }
-        }
-        // mybatis-plus, mybatis-spring 的获取方式
-        if (mpEnabled) {
-            final Class<?> clazz = getMapperInterfaceClass(targetObject);
-            if (clazz != null) {
-                return findDataSourceAttribute(clazz);
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 用于处理嵌套代理
-     *
-     * @param target JDK 代理类对象
-     * @return InvocationHandler 的 Class
-     */
-    protected Class<?> getMapperInterfaceClass(Object target) {
-        Object current = target;
-        while (Proxy.isProxyClass(current.getClass())) {
-            Object currentRefObject = AopProxyUtils.getSingletonTarget(current);
-            if (currentRefObject == null) {
-                break;
-            }
-            current = currentRefObject;
-        }
-        try {
-            if (Proxy.isProxyClass(current.getClass())) {
-                return (Class<?>) mapperInterfaceField.get(Proxy.getInvocationHandler(current));
-            }
-        } catch (IllegalAccessException ignore) {
-        }
-        return null;
+    public DataSourceClassResolver(boolean allowedPublicOnly) {
+        this.allowedPublicOnly = allowedPublicOnly;
     }
 
     /**
@@ -149,7 +93,7 @@ public class DataSourceClassResolver {
         if (method.getDeclaringClass() == Object.class) {
             return "";
         }
-        Object cacheKey = getCacheKey(method, targetObject.getClass());
+        Object cacheKey = new MethodClassKey(method, targetObject.getClass());
         String ds = this.dsCache.get(cacheKey);
         if (ds == null) {
             ds = computeDatasource(method, targetObject);
@@ -162,25 +106,10 @@ public class DataSourceClassResolver {
     }
 
     /**
-     * 获取缓存key,  默认通过spring的方式
-     *
-     * @param method      方法
-     * @param targetClass 方法声明的类
-     * @return cacheKey
-     */
-    protected Object getCacheKey(Method method, Class<?> targetClass) {
-        return new MethodClassKey(method, targetClass);
-    }
-
-    protected boolean allowPublicMethodsOnly() {
-        return publicMethodsOnly;
-    }
-
-    /**
      * 查找注解的顺序
-     * 1. 从当前方法
+     * 1. 当前方法
      * 2. 桥接方法
-     * 3. 从当前类开始一直找到Object
+     * 3. 当前类开始一直找到Object
      * 4. 支持mybatis-plus, mybatis-spring
      *
      * @param method       方法
@@ -188,7 +117,7 @@ public class DataSourceClassResolver {
      * @return ds
      */
     private String computeDatasource(Method method, Object targetObject) {
-        if (allowPublicMethodsOnly() && !Modifier.isPublic(method.getModifiers())) {
+        if (allowedPublicOnly && !Modifier.isPublic(method.getModifiers())) {
             return null;
         }
         Class<?> targetClass = targetObject.getClass();
@@ -220,8 +149,60 @@ public class DataSourceClassResolver {
                 return dsAttr;
             }
         }
-
         return getDefaultDataSourceAttr(targetObject);
+    }
+
+    /**
+     * 默认的获取数据源名称方式
+     *
+     * @param targetObject 目标对象
+     * @return ds
+     */
+    private String getDefaultDataSourceAttr(Object targetObject) {
+        Class<?> targetClass = targetObject.getClass();
+        // 如果不是代理类, 从当前类开始, 不断的找父类的声明
+        if (!Proxy.isProxyClass(targetClass)) {
+            Class<?> currentClass = targetClass;
+            while (currentClass != Object.class) {
+                String datasourceAttr = findDataSourceAttribute(currentClass);
+                if (datasourceAttr != null) {
+                    return datasourceAttr;
+                }
+                currentClass = currentClass.getSuperclass();
+            }
+        }
+        // mybatis-plus, mybatis-spring 的获取方式
+        if (mpEnabled) {
+            final Class<?> clazz = getMapperInterfaceClass(targetObject);
+            if (clazz != null) {
+                return findDataSourceAttribute(clazz);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 用于处理嵌套代理
+     *
+     * @param target JDK 代理类对象
+     * @return InvocationHandler 的 Class
+     */
+    private Class<?> getMapperInterfaceClass(Object target) {
+        Object current = target;
+        while (Proxy.isProxyClass(current.getClass())) {
+            Object currentRefObject = AopProxyUtils.getSingletonTarget(current);
+            if (currentRefObject == null) {
+                break;
+            }
+            current = currentRefObject;
+        }
+        try {
+            if (Proxy.isProxyClass(current.getClass())) {
+                return (Class<?>) mapperInterfaceField.get(Proxy.getInvocationHandler(current));
+            }
+        } catch (IllegalAccessException ignore) {
+        }
+        return null;
     }
 
     /**
@@ -237,5 +218,4 @@ public class DataSourceClassResolver {
         }
         return null;
     }
-
 }

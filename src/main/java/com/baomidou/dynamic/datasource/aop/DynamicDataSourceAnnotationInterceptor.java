@@ -19,7 +19,6 @@ package com.baomidou.dynamic.datasource.aop;
 import com.baomidou.dynamic.datasource.processor.DsProcessor;
 import com.baomidou.dynamic.datasource.support.DataSourceClassResolver;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
-import lombok.Setter;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
@@ -35,34 +34,27 @@ public class DynamicDataSourceAnnotationInterceptor implements MethodInterceptor
      * The identification of SPEL.
      */
     private static final String DYNAMIC_PREFIX = "#";
-    private DataSourceClassResolver dataSourceClassResolver;
 
-    public DynamicDataSourceAnnotationInterceptor() {
-        this(true);
+    private final DataSourceClassResolver dataSourceClassResolver;
+    private final DsProcessor dsProcessor;
+
+    public DynamicDataSourceAnnotationInterceptor(Boolean allowedPublicOnly, DsProcessor dsProcessor) {
+        dataSourceClassResolver = new DataSourceClassResolver(allowedPublicOnly);
+        this.dsProcessor = dsProcessor;
     }
-
-    /**
-     *
-     * @param allowPublicOnly 只允许public方法进行数据源切换
-     */
-    public DynamicDataSourceAnnotationInterceptor(Boolean allowPublicOnly) {
-        dataSourceClassResolver = new DataSourceClassResolver(allowPublicOnly);
-    }
-
-    @Setter
-    private DsProcessor dsProcessor;
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
         try {
-            DynamicDataSourceContextHolder.push(determineDatasource(invocation));
+            String dsKey = determineDatasourceKey(invocation);
+            DynamicDataSourceContextHolder.push(dsKey);
             return invocation.proceed();
         } finally {
             DynamicDataSourceContextHolder.poll();
         }
     }
 
-    private String determineDatasource(MethodInvocation invocation) {
+    private String determineDatasourceKey(MethodInvocation invocation) {
         String key = dataSourceClassResolver.findDSKey(invocation.getMethod(), invocation.getThis());
         return (!key.isEmpty() && key.startsWith(DYNAMIC_PREFIX)) ? dsProcessor.determineDatasource(invocation, key) : key;
     }
