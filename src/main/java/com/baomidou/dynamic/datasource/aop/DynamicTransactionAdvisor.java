@@ -22,6 +22,9 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import java.util.UUID;
 
+/**
+ * @author funkye
+ */
 public class DynamicTransactionAdvisor implements MethodInterceptor {
 
     @Override

@@ -103,7 +103,7 @@ public class DynamicDataSourceAutoConfiguration {
     @Bean
     public Advisor localTransactionAdvisor(DynamicTransactionAdvisor dynamicTransactionAdvisor) {
         AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
-        pointcut.setExpression("@annotation(org.springframework.web.bind.annotation.RequestMapping)");
+        pointcut.setExpression("@annotation(com.baomidou.dynamic.datasource.annotation.DSTransactional)");
         return new DefaultPointcutAdvisor(pointcut, dynamicTransactionAdvisor);
     }
 

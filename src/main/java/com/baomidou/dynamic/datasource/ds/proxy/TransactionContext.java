@@ -20,10 +20,18 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author funkye
+ */
 public class TransactionContext {
 
-    private static final ThreadLocal<Map<String, String>> CONTEXT_HOLDER =
-        ThreadLocal.withInitial(() -> new HashMap<>());
+    private static final ThreadLocal<Map<String, String>> CONTEXT_HOLDER = new ThreadLocal<Map<String, String>>() {
+        @Override
+        protected Map<String, String> initialValue() {
+            return new HashMap<>();
+        }
+
+    };
 
     private static final String XID = "LOCAL_XID";
 

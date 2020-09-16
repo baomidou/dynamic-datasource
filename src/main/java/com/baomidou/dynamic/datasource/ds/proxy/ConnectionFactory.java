@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * @author 陈健斌
+ * @author funkye
  */
 public class ConnectionFactory {
 
@@ -85,9 +85,9 @@ public class ConnectionFactory {
         try {
             List<ConnectionProxy> list = concurrentHashMap.get(xid);
             if (!CollectionUtils.isEmpty(list)) {
-                list.forEach(conn -> {
+                for (ConnectionProxy conn : list) {
                     conn.notify(state);
-                });
+                }
                 concurrentHashMap.remove(xid);
             }
         } finally {
