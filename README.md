@@ -31,7 +31,7 @@ dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成�
 
 其支持 **Jdk 1.7+,    SpringBoot 1.4.x  1.5.x   2.x.x**。
 
-**示例项目**  https://github.com/dynamic-datasource/dynamic-datasource-samples
+## [文档 | Documentation ](https://dynamic-datasource.github.io/dynamic-datasource-doc/)
 
 # 特性
 
@@ -146,13 +146,7 @@ public class UserServiceImpl implements UserService {
 
 ---
 
-#### 赶紧集成体验一下吧！ 如果需要更多功能请点击下面链接查看详细文档！
-
----
-[常见问题请点我](https://github.com/baomidou/dynamic-datasource-spring-boot-starter/wiki/FAQ)
-[分布式事务，加密,Druid集成，MybatisPlus集成，动态增减数据源，自定义切换规则,纯读写分离插件等等更多更细致的文档在这里](https://github.com/baomidou/dynamic-datasource-spring-boot-starter/wiki)
-
-### 支持一下
+# 捐赠
 
 ![uSA83t.png](https://images.gitee.com/uploads/images/2019/0921/225754_ef8c21e8_709883.png)
 ![uSVpFJ.png](https://images.gitee.com/uploads/images/2019/0921/230525_be693c65_709883.png)
