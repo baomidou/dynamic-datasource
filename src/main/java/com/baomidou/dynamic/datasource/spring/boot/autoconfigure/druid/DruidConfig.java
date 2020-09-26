@@ -50,6 +50,10 @@ public class DruidConfig {
     private Integer statSqlMaxSize;
     private Long minEvictableIdleTimeMillis;
     private Long maxEvictableIdleTimeMillis;
+    private String defaultCatalog;
+    private Boolean defaultAutoCommit;
+    private Boolean defaultReadOnly;
+    private Integer defaultTransactionIsolation;
     private Boolean testWhileIdle;
     private Boolean testOnBorrow;
     private Boolean testOnReturn;
