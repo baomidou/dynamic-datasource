@@ -98,21 +98,14 @@ public class DynamicDataSourceAutoConfiguration {
         return advisor;
     }
 
+    @Role(value = BeanDefinition.ROLE_INFRASTRUCTURE)
     @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "seata", havingValue = "false",
         matchIfMissing = true)
     @Bean
-    public Advisor localTransactionAdvisor(DynamicTransactionAdvisor dynamicTransactionAdvisor) {
+    public Advisor localTransactionAdvisor() {
         AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
         pointcut.setExpression("@annotation(com.baomidou.dynamic.datasource.annotation.DSTransactional)");
-        return new DefaultPointcutAdvisor(pointcut, dynamicTransactionAdvisor);
-    }
-
-    @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "seata", havingValue = "false",
-        matchIfMissing = true)
-    @Bean
-    @ConditionalOnMissingBean
-    public DynamicTransactionAdvisor dynamicTransactionAdvisor() {
-        return new DynamicTransactionAdvisor();
+        return new DefaultPointcutAdvisor(pointcut, new DynamicTransactionAdvisor());
     }
 
     @Bean
