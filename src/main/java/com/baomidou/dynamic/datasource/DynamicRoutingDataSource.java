@@ -23,6 +23,10 @@ import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
 import com.baomidou.dynamic.datasource.strategy.LoadBalanceDynamicDataSourceStrategy;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
+import com.baomidou.dynamic.datasource.transaction.TransactionType;
+import com.baomidou.dynamic.datasource.transaction.TransactionTypeHolder;
+import com.baomidou.dynamic.datasource.util.ForceExecuteCallback;
+import com.baomidou.dynamic.datasource.util.ForceExecuteTemplate;
 import com.p6spy.engine.spy.P6DataSource;
 import io.seata.rm.datasource.DataSourceProxy;
 import lombok.Setter;
@@ -32,11 +36,19 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
+import java.io.PrintWriter;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
 /**
  * 核心动态数据源组件
@@ -45,7 +57,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 1.0.0
  */
 @Slf4j
-public class DynamicRoutingDataSource extends AbstractRoutingDataSource implements InitializingBean, DisposableBean {
+public class DynamicRoutingDataSource implements InitializingBean, DisposableBean,DataSource {
 
     private static final String UNDERLINE = "_";
     /**
@@ -69,14 +81,17 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
     @Setter
     private Boolean seata = false;
 
-    @Override
-    public DataSource determineDataSource() {
-        return getDataSource(DynamicDataSourceContextHolder.peek());
-    }
+    private final ForceExecuteTemplate<Connection> forceExecuteTemplate = new ForceExecuteTemplate();
+
+
 
     private DataSource determinePrimaryDataSource() {
         log.debug("dynamic-datasource switch to the primary datasource");
         return groupDataSources.containsKey(primary) ? groupDataSources.get(primary).determineDataSource() : dataSourceMap.get(primary);
+    }
+
+    public DataSource determineDataSource() {
+        return getDataSource(DynamicDataSourceContextHolder.peek());
     }
 
     /**
@@ -255,6 +270,157 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
                 log.info("dynamic-datasource detect ALIBABA SEATA and enabled it");
             } catch (Exception e) {
                 throw new RuntimeException("dynamic-datasource enabled ALIBABA SEATA,however without seata dependency", e);
+            }
+        }
+    }
+
+    @Override
+    public PrintWriter getLogWriter() throws SQLException {
+        return null;
+    }
+
+    @Override
+    public void setLogWriter(PrintWriter out) throws SQLException {
+
+    }
+
+    @Override
+    public void setLoginTimeout(int seconds) throws SQLException {
+
+    }
+
+    @Override
+    public int getLoginTimeout() throws SQLException {
+        return 0;
+    }
+
+    @Override
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        return Logger.getLogger("global");
+    }
+
+    @Override
+    public Connection getConnection() throws SQLException {
+        return (Connection) Proxy.newProxyInstance(Connection.class.getClassLoader(),new Class[]{Connection.class},new ConnectionProxy());
+    }
+
+    @Override
+    public Connection getConnection(String username, String password) throws SQLException {
+        return (Connection) Proxy.newProxyInstance(Connection.class.getClassLoader(),new Class[]{Connection.class},new ConnectionProxy(username,password));
+    }
+
+    @Override
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        if (iface.isInstance(this)) {
+            return (T) this;
+        }
+        return determineDataSource().unwrap(iface);
+    }
+
+    @Override
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        return (iface.isInstance(this) || determineDataSource().isWrapperFor(iface));
+    }
+
+    private class ConnectionProxy implements InvocationHandler {
+
+        private String userName;
+        private String password;
+        private boolean usePwd;
+        private boolean autoCommit = true;
+
+        /**
+         * cache connection
+         */
+        private Map<String,Connection> cachedConnectionMap = new HashMap<>(8);
+
+        private ConnectionProxy(){}
+
+        private ConnectionProxy(String userName,String password){
+            this.userName = userName;
+            this.password = password;
+            this.usePwd = true;
+        }
+
+
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            String methodName = method.getName();
+            if("close".equals(methodName)){
+                close();
+            }else if("commit".equals(methodName)){
+                commit();
+            }else if("rollback".equals(methodName)){
+                rollback();
+            } else if("setAutoCommit".equals(methodName)){
+                setAutoCommit((Boolean) args[0]);
+            }
+            String dsId = DynamicDataSourceContextHolder.peek();
+            Connection connection = cachedConnectionMap.get(dsId);
+            if(connection==null){
+                DataSource dataSource = determineDataSource();
+                connection = usePwd ? dataSource.getConnection(userName,password) : dataSource.getConnection();
+                if(!autoCommit){
+                    connection.setAutoCommit(false);
+                }
+                cachedConnectionMap.put(dsId,connection);
+            }
+
+            return method.invoke(connection,args);
+        }
+
+
+
+        private void setAutoCommit(final boolean autoCommit) throws SQLException {
+            this.autoCommit = autoCommit;
+            if (TransactionType.LOCAL == TransactionType.LOCAL) {
+                forceExecuteTemplate.execute(cachedConnectionMap.values(), new ForceExecuteCallback<Connection>() {
+                    @Override
+                    public void execute(Connection connection) throws SQLException {
+                        connection.setAutoCommit(autoCommit);
+                    }
+                });
+            }else{
+                //todo
+            }
+        }
+
+        private void commit() throws SQLException {
+            if(TransactionTypeHolder.get() == TransactionType.LOCAL) {
+                forceExecuteTemplate.execute(cachedConnectionMap.values(), new ForceExecuteCallback<Connection>() {
+                    @Override
+                    public void execute(Connection connection) throws SQLException {
+                        connection.commit();
+                    }
+                });
+            }else{
+                //todo
+            }
+        }
+
+        private void rollback() throws SQLException {
+            if(TransactionTypeHolder.get() == TransactionType.LOCAL) {
+                forceExecuteTemplate.execute(cachedConnectionMap.values(), new ForceExecuteCallback<Connection>() {
+                    @Override
+                    public void execute(Connection connection) throws SQLException {
+                        connection.rollback();
+                    }
+                });
+            }else{
+                //todo
+            }
+        }
+
+        private void close() throws SQLException {
+            if(TransactionTypeHolder.get() == TransactionType.LOCAL) {
+                forceExecuteTemplate.execute(cachedConnectionMap.values(), new ForceExecuteCallback<Connection>() {
+                    @Override
+                    public void execute(Connection connection) throws SQLException {
+                        connection.close();
+                    }
+                });
+            }else{
+                //todo
             }
         }
     }
