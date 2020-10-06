@@ -354,26 +354,28 @@ public class DynamicRoutingDataSource implements InitializingBean, DisposableBea
                 rollback();
             } else if("setAutoCommit".equals(methodName)){
                 setAutoCommit((Boolean) args[0]);
-            }
-            String dsId = DynamicDataSourceContextHolder.peek();
-            Connection connection = cachedConnectionMap.get(dsId);
-            if(connection==null){
-                DataSource dataSource = determineDataSource();
-                connection = usePwd ? dataSource.getConnection(userName,password) : dataSource.getConnection();
-                if(!autoCommit){
-                    connection.setAutoCommit(false);
+            } else {
+                String dsId = DynamicDataSourceContextHolder.peek();
+                Connection connection = cachedConnectionMap.get(dsId);
+                if (connection == null) {
+                    DataSource dataSource = determineDataSource();
+                    connection = usePwd ? dataSource.getConnection(userName, password) : dataSource.getConnection();
+                    if (!autoCommit) {
+                        connection.setAutoCommit(false);
+                    }
+                    cachedConnectionMap.put(dsId, connection);
                 }
-                cachedConnectionMap.put(dsId,connection);
-            }
 
-            return method.invoke(connection,args);
+                return method.invoke(connection, args);
+            }
+            return null;
         }
 
 
 
         private void setAutoCommit(final boolean autoCommit) throws SQLException {
             this.autoCommit = autoCommit;
-            if (TransactionType.LOCAL == TransactionType.LOCAL) {
+            if (TransactionTypeHolder.get() == TransactionType.LOCAL) {
                 forceExecuteTemplate.execute(cachedConnectionMap.values(), new ForceExecuteCallback<Connection>() {
                     @Override
                     public void execute(Connection connection) throws SQLException {
@@ -419,6 +421,7 @@ public class DynamicRoutingDataSource implements InitializingBean, DisposableBea
                         connection.close();
                     }
                 });
+                cachedConnectionMap.clear();
             }else{
                 //todo
             }
