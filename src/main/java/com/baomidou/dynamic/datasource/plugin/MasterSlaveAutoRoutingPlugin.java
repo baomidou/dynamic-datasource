@@ -16,19 +16,25 @@
  */
 package com.baomidou.dynamic.datasource.plugin;
 
+import com.baomidou.dynamic.datasource.exception.CannotSelectDataSourceException;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
 import com.baomidou.dynamic.datasource.support.DbHealthIndicator;
 import com.baomidou.dynamic.datasource.support.DdConstants;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
+import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
-import org.apache.ibatis.plugin.*;
+import org.apache.ibatis.plugin.Interceptor;
+import org.apache.ibatis.plugin.Intercepts;
+import org.apache.ibatis.plugin.Invocation;
+import org.apache.ibatis.plugin.Plugin;
+import org.apache.ibatis.plugin.Signature;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 
 import java.util.Properties;
 
@@ -40,6 +46,7 @@ import java.util.Properties;
  */
 @Intercepts({
         @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class}),
+        @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class}),
         @Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class})})
 @Slf4j
 public class MasterSlaveAutoRoutingPlugin implements Interceptor {
@@ -51,16 +58,14 @@ public class MasterSlaveAutoRoutingPlugin implements Interceptor {
     public Object intercept(Invocation invocation) throws Throwable {
         Object[] args = invocation.getArgs();
         MappedStatement ms = (MappedStatement) args[0];
-        boolean empty = true;
+        String pushedDataSource = null;
         try {
-            empty = StringUtils.isEmpty(DynamicDataSourceContextHolder.peek());
-            if (empty) {
-                DynamicDataSourceContextHolder.push(getDataSource(ms));
-            }
+            String dataSource = getDataSource(ms);
+            pushedDataSource = DynamicDataSourceContextHolder.push(dataSource);
             return invocation.proceed();
         } finally {
-            if (empty) {
-                DynamicDataSourceContextHolder.clear();
+            if (pushedDataSource != null) {
+                DynamicDataSourceContextHolder.poll();
             }
         }
     }
@@ -72,20 +77,40 @@ public class MasterSlaveAutoRoutingPlugin implements Interceptor {
      * @return 获取真实的数据源名称
      */
     public String getDataSource(MappedStatement mappedStatement) {
-        String slave = DdConstants.SLAVE;
+        String currentDataSource = SqlCommandType.SELECT == mappedStatement.getSqlCommandType() ? DdConstants.SLAVE : DdConstants.MASTER;
+        String dataSource = null;
         if (properties.isHealth()) {
-            /*
-             * 根据从库健康状况，判断是否切到主库
-             */
-            boolean health = DbHealthIndicator.getDbHealth(DdConstants.SLAVE);
-            if (!health) {
-                health = DbHealthIndicator.getDbHealth(DdConstants.MASTER);
+            // 当前数据源是从库
+            if (DdConstants.SLAVE.equalsIgnoreCase(currentDataSource)) {
+                boolean health = DbHealthIndicator.getDbHealth(DdConstants.SLAVE);
                 if (health) {
-                    slave = DdConstants.MASTER;
+                    dataSource = DdConstants.SLAVE;
+                } else {
+                    if (log.isWarnEnabled()) {
+                        log.warn("从库无法连接, 请检查数据库配置");
+                    }
                 }
             }
+            // 从库无法连接, 或者当前数据源需要操作主库
+            if (dataSource == null) {
+                // 当前数据源是从库，并且从库是健康的
+                boolean health = DbHealthIndicator.getDbHealth(DdConstants.MASTER);
+                if (health) {
+                    dataSource = DdConstants.MASTER;
+                } else {
+                    if (log.isWarnEnabled()) {
+                        log.warn("主库无法连接, 请检查数据库配置");
+                    }
+                }
+            }
+            // 主从都连不上, 不应该继续连接数据库了
+            if (dataSource == null) {
+                throw new CannotSelectDataSourceException("无法选择数据源");
+            }
+        } else {
+            dataSource = currentDataSource;
         }
-        return SqlCommandType.SELECT == mappedStatement.getSqlCommandType() ? slave : DdConstants.MASTER;
+        return dataSource;
     }
 
     @Override

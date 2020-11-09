@@ -19,6 +19,7 @@ package com.baomidou.dynamic.datasource.support;
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
+import org.springframework.boot.actuate.health.Status;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.IncorrectResultSetColumnCountException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -60,7 +61,8 @@ public class DbHealthIndicator extends AbstractHealthIndicator {
      * @return 健康状况
      */
     public static boolean getDbHealth(String dataSource) {
-        return DB_HEALTH.get(dataSource);
+        Boolean isHealth = DB_HEALTH.get(dataSource);
+        return isHealth != null && isHealth;
     }
 
     /**
@@ -86,6 +88,7 @@ public class DbHealthIndicator extends AbstractHealthIndicator {
                 } finally {
                     DB_HEALTH.put(dataSource.getKey(), 1 == result);
                     builder.withDetail(dataSource.getKey(), result);
+                    builder.status(1 == result ? Status.UP : Status.DOWN);
                 }
             }
         }
