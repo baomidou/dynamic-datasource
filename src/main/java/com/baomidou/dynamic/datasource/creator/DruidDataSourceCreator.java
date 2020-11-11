@@ -38,6 +38,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import static com.baomidou.dynamic.datasource.support.DdConstants.DRUID_DATASOURCE;
+
 /**
  * Druid数据源创建器
  *
@@ -45,7 +47,20 @@ import java.util.Properties;
  * @since 2020/1/21
  */
 @Data
-public class DruidDataSourceCreator {
+public class DruidDataSourceCreator implements DataSourceCreator {
+
+    /**
+     * 是否存在druid
+     */
+    private static Boolean druidExists = false;
+
+    static {
+        try {
+            Class.forName(DRUID_DATASOURCE);
+            druidExists = true;
+        } catch (ClassNotFoundException ignored) {
+        }
+    }
 
     private DruidConfig gConfig;
 
@@ -56,7 +71,18 @@ public class DruidDataSourceCreator {
         this.gConfig = gConfig;
     }
 
-    public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
+    /**
+     * 创建Druid数据源
+     *
+     * @param dataSourceProperty 数据源参数
+     * @param publicKey publicKey
+     * @return 数据源
+     */
+    @Override
+    public DataSource createDataSource(DataSourceProperty dataSourceProperty, String publicKey) {
+        if (StringUtils.isEmpty(dataSourceProperty.getPublicKey())) {
+            dataSourceProperty.setPublicKey(publicKey);
+        }
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUsername(dataSourceProperty.getUsername());
         dataSource.setPassword(dataSourceProperty.getPassword());
@@ -108,6 +134,12 @@ public class DruidDataSourceCreator {
             throw new ErrorCreateDataSourceException("druid create error", e);
         }
         return dataSource;
+    }
+
+    @Override
+    public boolean support(DataSourceProperty dataSourceProperty) {
+        Class<? extends DataSource> type = dataSourceProperty.getType();
+        return (type == null && druidExists) || (type != null && DRUID_DATASOURCE.equals(type.getName()));
     }
 
     private void setParam(DruidDataSource dataSource, DruidConfig config) {
