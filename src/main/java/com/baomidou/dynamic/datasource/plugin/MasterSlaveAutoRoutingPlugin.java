@@ -32,6 +32,14 @@ import org.apache.ibatis.plugin.Intercepts;
 import org.apache.ibatis.plugin.Invocation;
 import org.apache.ibatis.plugin.Plugin;
 import org.apache.ibatis.plugin.Signature;
+import org.apache.ibatis.reflection.DefaultReflectorFactory;
+import org.apache.ibatis.reflection.MetaObject;
+import org.apache.ibatis.reflection.ReflectorFactory;
+import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
+import org.apache.ibatis.reflection.factory.ObjectFactory;
+import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
+import org.apache.ibatis.reflection.wrapper.ObjectWrapperFactory;
+import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +61,10 @@ public class MasterSlaveAutoRoutingPlugin implements Interceptor {
 
     @Autowired
     private DynamicDataSourceProperties properties;
+
+    @Autowired(required = false)
+    private DbHealthIndicator dbHealthIndicator;
+
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
@@ -82,7 +94,7 @@ public class MasterSlaveAutoRoutingPlugin implements Interceptor {
         if (properties.isHealth()) {
             // 当前数据源是从库
             if (DdConstants.SLAVE.equalsIgnoreCase(currentDataSource)) {
-                boolean health = DbHealthIndicator.getDbHealth(DdConstants.SLAVE);
+                boolean health = dbHealthIndicator.getDbHealth(DdConstants.SLAVE);
                 if (health) {
                     dataSource = DdConstants.SLAVE;
                 } else {
@@ -94,7 +106,7 @@ public class MasterSlaveAutoRoutingPlugin implements Interceptor {
             // 从库无法连接, 或者当前数据源需要操作主库
             if (dataSource == null) {
                 // 当前数据源是从库，并且从库是健康的
-                boolean health = DbHealthIndicator.getDbHealth(DdConstants.MASTER);
+                boolean health = dbHealthIndicator.getDbHealth(DdConstants.MASTER);
                 if (health) {
                     dataSource = DdConstants.MASTER;
                 } else {
@@ -113,12 +125,43 @@ public class MasterSlaveAutoRoutingPlugin implements Interceptor {
         return dataSource;
     }
 
+    protected ReflectorFactory reflectorFactory = new DefaultReflectorFactory();
+    protected ObjectFactory objectFactory = new DefaultObjectFactory();
+    protected ObjectWrapperFactory objectWrapperFactory = new DefaultObjectWrapperFactory();
+
     @Override
     public Object plugin(Object target) {
-        return target instanceof Executor ? Plugin.wrap(target, this) : target;
+
+        if (target instanceof Executor) {
+            Object wrapper = target;
+
+            MetaObject executorMetaObject = newMetaObject(target);
+            // 支持mybatis缓存和 mp的缓存
+            boolean delegate = executorMetaObject.hasGetter("delegate");
+            if (delegate) {
+                wrapper = executorMetaObject.getValue("delegate");
+            }
+            Executor baseWrapper = (Executor) wrapper;
+
+            // set base executor to this
+            Executor wrapExecutor = (Executor) Plugin.wrap(baseWrapper, this);
+            baseWrapper.setExecutorWrapper(wrapExecutor);
+            // 将当前对象的代理设置为缓存
+            if(delegate){
+                wrapExecutor.setExecutorWrapper((Executor) target);
+                executorMetaObject.setValue("delegate", wrapExecutor);
+            }
+            return wrapExecutor;
+        }
+        return target;
+    }
+
+    private MetaObject newMetaObject(Object target) {
+        return MetaObject.forObject(target, objectFactory, objectWrapperFactory, reflectorFactory);
     }
 
     @Override
     public void setProperties(Properties properties) {
+        String orDefault = properties.getProperty("cacheEnable", "true");
     }
 }

@@ -17,6 +17,7 @@
 package com.baomidou.dynamic.datasource.support;
 
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.Status;
@@ -45,13 +46,21 @@ public class DbHealthIndicator extends AbstractHealthIndicator {
      * 维护数据源健康状况
      */
     private static final Map<String, Boolean> DB_HEALTH = new ConcurrentHashMap<>();
+
+    private final String validQuery;
+
     /**
      * 当前执行数据源
      */
     private final DataSource dataSource;
 
     public DbHealthIndicator(DataSource dataSource) {
+        this(dataSource, DynamicDataSourceProperties.DEFAULT_VALID_QUERY);
+    }
+
+    public DbHealthIndicator(DataSource dataSource, String validQuery) {
         this.dataSource = dataSource;
+        this.validQuery = validQuery;
     }
 
     /**
@@ -60,7 +69,7 @@ public class DbHealthIndicator extends AbstractHealthIndicator {
      * @param dataSource 数据源名称
      * @return 健康状况
      */
-    public static boolean getDbHealth(String dataSource) {
+    public boolean getDbHealth(String dataSource) {
         Boolean isHealth = DB_HEALTH.get(dataSource);
         return isHealth != null && isHealth;
     }
@@ -81,23 +90,40 @@ public class DbHealthIndicator extends AbstractHealthIndicator {
         if (dataSource instanceof DynamicRoutingDataSource) {
             Map<String, DataSource> dataSourceMap = ((DynamicRoutingDataSource) dataSource).getCurrentDataSources();
             // 循环检查当前数据源是否可用
+            Boolean available = null;
+            Boolean disable = null;
             for (Map.Entry<String, DataSource> dataSource : dataSourceMap.entrySet()) {
-                Integer result = 0;
+                Boolean resultAvailable = false;
                 try {
-                    result = query(dataSource.getValue());
+                    resultAvailable = queryAvailable(dataSource.getValue());
+                } catch (Throwable ignore){
                 } finally {
-                    DB_HEALTH.put(dataSource.getKey(), 1 == result);
-                    builder.withDetail(dataSource.getKey(), result);
-                    builder.status(1 == result ? Status.UP : Status.DOWN);
+                    DB_HEALTH.put(dataSource.getKey(), resultAvailable);
+                    builder.withDetail(dataSource.getKey(), resultAvailable);
+
+                    if (resultAvailable) {
+                        available = true;
+                    } else {
+                        disable = true;
+                    }
                 }
             }
+            if (available != null) {
+                if (disable != null) {
+                    builder.status(Status.OUT_OF_SERVICE);
+                } else {
+                    builder.status(Status.UP);
+                }
+            }else{
+                builder.status(Status.DOWN);
+            }
+
         }
     }
 
 
-    private Integer query(DataSource dataSource) {
-        //todo 这里应该可以配置或者可重写？
-        List<Integer> results = new JdbcTemplate(dataSource).query("SELECT 1", new RowMapper<Integer>() {
+    private Boolean queryAvailable(DataSource dataSource) {
+        List<Integer> results = new JdbcTemplate(dataSource).query(this.validQuery, new RowMapper<Integer>() {
 
             @Override
             public Integer mapRow(ResultSet resultSet, int i) throws SQLException {
@@ -109,6 +135,6 @@ public class DbHealthIndicator extends AbstractHealthIndicator {
                 return (Integer) JdbcUtils.getResultSetValue(resultSet, 1, Integer.class);
             }
         });
-        return DataAccessUtils.requiredSingleResult(results);
+        return DataAccessUtils.requiredSingleResult(results) == 1;
     }
 }
