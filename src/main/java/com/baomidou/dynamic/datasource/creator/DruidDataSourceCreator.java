@@ -47,7 +47,7 @@ import static com.baomidou.dynamic.datasource.support.DdConstants.DRUID_DATASOUR
  * @since 2020/1/21
  */
 @Data
-public class DruidDataSourceCreator implements DataSourceCreator {
+public class DruidDataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator {
 
     /**
      * 是否存在druid

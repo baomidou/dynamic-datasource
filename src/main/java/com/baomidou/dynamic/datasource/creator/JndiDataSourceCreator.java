@@ -31,7 +31,7 @@ import static com.baomidou.dynamic.datasource.creator.DataSourceCreator.JNDI_ORD
  * @since 2020/1/27
  */
 @Order(JNDI_ORDER)
-public class JndiDataSourceCreator implements DataSourceCreator {
+public class JndiDataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator {
 
     private static final JndiDataSourceLookup LOOKUP = new JndiDataSourceLookup();
 

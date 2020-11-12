@@ -42,7 +42,7 @@ public abstract class AbstractDataSourceProvider implements DynamicDataSourcePro
                 poolName = item.getKey();
             }
             dataSourceProperty.setPoolName(poolName);
-            dataSourceMap.put(poolName, compositeDataSourceCreator.createDataSource(dataSourceProperty,null));
+            dataSourceMap.put(poolName, compositeDataSourceCreator.createDataSource(dataSourceProperty));
         }
         return dataSourceMap;
     }

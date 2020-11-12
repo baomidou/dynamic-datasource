@@ -21,6 +21,11 @@ import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourcePrope
 import javax.sql.DataSource;
 
 /**
+ *
+ * 默认按照以下顺序创建数据源:
+ * <pre>
+ *	JNDI(1000) > DRUID(2000) > HIKARI(3000) > BASIC(5000)
+ * </pre>
  * @author ls9527
  */
 public interface DataSourceCreator {
@@ -29,7 +34,13 @@ public interface DataSourceCreator {
     int DEFAULT_ORDER = 5000;
 
     /**
-     * create DataSource by DataSourceProperty
+     * 通过属性创建数据源
+     * @param dataSourceProperty
+     * @return
+     */
+    DataSource createDataSource(DataSourceProperty dataSourceProperty);
+    /**
+     * 通过属性创建数据源
      *
      * @param dataSourceProperty
      * @param publicKey
@@ -37,5 +48,10 @@ public interface DataSourceCreator {
      */
     DataSource createDataSource(DataSourceProperty dataSourceProperty, String publicKey);
 
+    /**
+     * 当前创建器是否支持根据此属性创建
+     * @param dataSourceProperty
+     * @return
+     */
     boolean support(DataSourceProperty dataSourceProperty);
 }

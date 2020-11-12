@@ -44,6 +44,11 @@ public class CompositeDataSourceCreator implements DataSourceCreator {
     private DynamicDataSourceProperties properties;
     private List<DataSourceCreator> dataSourceCreator;
 
+    @Override
+    public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
+        return createDataSource(dataSourceProperty, properties.getPublicKey());
+    }
+
     /**
      * 创建数据源
      *
@@ -62,7 +67,7 @@ public class CompositeDataSourceCreator implements DataSourceCreator {
         if (factory == null) {
             throw new IllegalStateException("factory must not be null,please check the DataSourceCreator");
         }
-        DataSource dataSource = factory.createDataSource(dataSourceProperty, properties.getPublicKey());
+        DataSource dataSource = factory.createDataSource(dataSourceProperty, publicKey);
         this.runScrip(dataSource, dataSourceProperty);
         return wrapDataSource(dataSource, dataSourceProperty);
     }
