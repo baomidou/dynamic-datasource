@@ -80,7 +80,7 @@ public class BasicDataSourceCreator extends AbstractDataSourceCreator implements
      * 创建基础数据源
      *
      * @param dataSourceProperty 数据源参数
-     * @param publicKey
+     * @param publicKey 解密公钥
      * @return 数据源
      */
     @Override
