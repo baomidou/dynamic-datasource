@@ -48,6 +48,15 @@ public class JndiDataSourceCreator extends AbstractDataSourceCreator implements 
         return LOOKUP.getDataSource(dataSourceProperty.getJndiName());
     }
 
+    /**
+     * 老的调用方式的兼容
+     * @param jndiName
+     * @return
+     */
+    public DataSource createDataSource(String jndiName) {
+        return LOOKUP.getDataSource(jndiName);
+    }
+
     @Override
     public boolean support(DataSourceProperty dataSourceProperty) {
         String jndiName = dataSourceProperty.getJndiName();
