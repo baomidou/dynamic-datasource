@@ -34,7 +34,6 @@ import org.springframework.util.StringUtils;
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -126,30 +125,39 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
      * @param dataSource 数据源
      */
     public synchronized void addDataSource(String ds, DataSource dataSource) {
-        if (!dataSourceMap.containsKey(ds)) {
-            dataSourceMap.put(ds, dataSource);
-            this.addGroupDataSource(ds, dataSource);
-            log.info("dynamic-datasource - load a datasource named [{}] success", ds);
-        } else {
-            log.warn("dynamic-datasource - load a datasource named [{}] failed, because it already exist", ds);
+        DataSource oldDataSource = dataSourceMap.put(ds, dataSource);
+        // 新数据源添加到分组
+        this.addGroupDataSource(ds, dataSource);
+        // 关闭老的数据源
+        if(oldDataSource!=null){
+            try {
+                closeDataSource(oldDataSource);
+            } catch (Exception e) {
+                log.error("dynamic-datasource - remove the database named [{}]  failed", ds, e);
+            }
         }
+
+        log.info("dynamic-datasource - load a datasource named [{}] success", ds);
     }
 
-
+    /**
+     * 新数据源添加到分组
+     * @param ds 新数据源的名字
+     * @param dataSource 新数据源
+     */
     private void addGroupDataSource(String ds, DataSource dataSource) {
         if (ds.contains(UNDERLINE)) {
             String group = ds.split(UNDERLINE)[0];
-            if (groupDataSources.containsKey(group)) {
-                groupDataSources.get(group).addDatasource(dataSource);
-            } else {
+            GroupDataSource groupDataSource = groupDataSources.get(group);
+            if (groupDataSource == null) {
                 try {
-                    GroupDataSource groupDatasource = new GroupDataSource(group, strategy.newInstance());
-                    groupDatasource.addDatasource(dataSource);
-                    groupDataSources.put(group, groupDatasource);
+                    groupDataSource = new GroupDataSource(group, strategy.getDeclaredConstructor().newInstance());
+                    groupDataSources.put(group, groupDataSource);
                 } catch (Exception e) {
                     throw new RuntimeException("dynamic-datasource - add the datasource named " + ds + " error", e);
                 }
             }
+            groupDataSource.addDatasource(ds, dataSource);
         }
     }
 
@@ -166,17 +174,22 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
             throw new RuntimeException("could not remove primary datasource");
         }
         if (dataSourceMap.containsKey(ds)) {
-            DataSource dataSource = dataSourceMap.get(ds);
+            DataSource dataSource = dataSourceMap.remove(ds);
             try {
                 closeDataSource(dataSource);
             } catch (Exception e) {
                 log.error("dynamic-datasource - remove the database named [{}]  failed", ds, e);
             }
-            dataSourceMap.remove(ds);
+
             if (ds.contains(UNDERLINE)) {
                 String group = ds.split(UNDERLINE)[0];
                 if (groupDataSources.containsKey(group)) {
-                    groupDataSources.get(group).removeDatasource(dataSource);
+                    DataSource oldDataSource = groupDataSources.get(group).removeDatasource(ds);
+                    if(oldDataSource == null){
+                        if(log.isWarnEnabled()){
+                            log.warn("fail for remove datasource from group. dataSource: {} ,group: {}", ds , group);
+                        }
+                    }
                 }
             }
             log.info("dynamic-datasource - remove the database named [{}] success", ds);
