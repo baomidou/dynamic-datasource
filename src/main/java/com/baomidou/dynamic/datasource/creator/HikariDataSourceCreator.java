@@ -36,7 +36,7 @@ import static com.baomidou.dynamic.datasource.support.DdConstants.HIKARI_DATASOU
  */
 @Data
 @AllArgsConstructor
-public class HikariDataSourceCreator implements DataSourceCreator {
+public class HikariDataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator {
 
     /**
      * 是否存在hikari

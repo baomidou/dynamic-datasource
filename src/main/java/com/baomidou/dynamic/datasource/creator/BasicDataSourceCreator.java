@@ -37,7 +37,7 @@ import static com.baomidou.dynamic.datasource.creator.DataSourceCreator.DEFAULT_
 @Data
 @Slf4j
 @Order(DEFAULT_ORDER)
-public class BasicDataSourceCreator implements DataSourceCreator {
+public class BasicDataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator {
 
     private static Method createMethod;
     private static Method typeMethod;
@@ -80,7 +80,7 @@ public class BasicDataSourceCreator implements DataSourceCreator {
      * 创建基础数据源
      *
      * @param dataSourceProperty 数据源参数
-     * @param publicKey
+     * @param publicKey 解密公钥
      * @return 数据源
      */
     @Override
