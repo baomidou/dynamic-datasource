@@ -49,9 +49,6 @@ import static com.baomidou.dynamic.datasource.support.DdConstants.DRUID_DATASOUR
 @Data
 public class DruidDataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator {
 
-    /**
-     * 是否存在druid
-     */
     private static Boolean druidExists = false;
 
     static {
@@ -71,13 +68,6 @@ public class DruidDataSourceCreator extends AbstractDataSourceCreator implements
         this.gConfig = gConfig;
     }
 
-    /**
-     * 创建Druid数据源
-     *
-     * @param dataSourceProperty 数据源参数
-     * @param publicKey publicKey
-     * @return 数据源
-     */
     @Override
     public DataSource createDataSource(DataSourceProperty dataSourceProperty, String publicKey) {
         if (StringUtils.isEmpty(dataSourceProperty.getPublicKey())) {
@@ -134,12 +124,6 @@ public class DruidDataSourceCreator extends AbstractDataSourceCreator implements
             throw new ErrorCreateDataSourceException("druid create error", e);
         }
         return dataSource;
-    }
-
-    @Override
-    public boolean support(DataSourceProperty dataSourceProperty) {
-        Class<? extends DataSource> type = dataSourceProperty.getType();
-        return (type == null && druidExists) || (type != null && DRUID_DATASOURCE.equals(type.getName()));
     }
 
     private void setParam(DruidDataSource dataSource, DruidConfig config) {
@@ -213,6 +197,11 @@ public class DruidDataSourceCreator extends AbstractDataSourceCreator implements
         if (transactionQueryTimeout != null) {
             dataSource.setTransactionQueryTimeout(transactionQueryTimeout);
         }
+    }
 
+    @Override
+    public boolean support(DataSourceProperty dataSourceProperty) {
+        Class<? extends DataSource> type = dataSourceProperty.getType();
+        return (type == null && druidExists) || (type != null && DRUID_DATASOURCE.equals(type.getName()));
     }
 }

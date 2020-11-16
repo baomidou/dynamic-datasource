@@ -39,39 +39,32 @@ import java.util.List;
  */
 @Slf4j
 @Setter
-public class CompositeDataSourceCreator implements DataSourceCreator {
+public class DefaultDataSourceCreator implements DataSourceCreator {
 
     private DynamicDataSourceProperties properties;
-    private List<DataSourceCreator> dataSourceCreator;
+    private List<DataSourceCreator> creators;
 
     @Override
     public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
         return createDataSource(dataSourceProperty, properties.getPublicKey());
     }
 
-    /**
-     * 创建数据源
-     *
-     * @param dataSourceProperty 数据源信息
-     * @return 数据源
-     */
     @Override
     public DataSource createDataSource(DataSourceProperty dataSourceProperty, String publicKey) {
-        DataSourceCreator factory = null;
-        for (DataSourceCreator dataSourceCreator : this.dataSourceCreator) {
-            if (dataSourceCreator.support(dataSourceProperty)) {
-                factory = dataSourceCreator;
+        DataSourceCreator dataSourceCreator = null;
+        for (DataSourceCreator creator : this.creators) {
+            if (creator.support(dataSourceProperty)) {
+                dataSourceCreator = creator;
                 break;
             }
         }
-        if (factory == null) {
-            throw new IllegalStateException("factory must not be null,please check the DataSourceCreator");
+        if (dataSourceCreator == null) {
+            throw new IllegalStateException("creator must not be null,please check the DataSourceCreator");
         }
-        DataSource dataSource = factory.createDataSource(dataSourceProperty, publicKey);
+        DataSource dataSource = dataSourceCreator.createDataSource(dataSourceProperty, publicKey);
         this.runScrip(dataSource, dataSourceProperty);
         return wrapDataSource(dataSource, dataSourceProperty);
     }
-
 
     private void runScrip(DataSource dataSource, DataSourceProperty dataSourceProperty) {
         String schema = dataSourceProperty.getSchema();
@@ -106,11 +99,9 @@ public class CompositeDataSourceCreator implements DataSourceCreator {
         return new ItemDataSource(name, dataSource, targetDataSource, enabledP6spy, enabledSeata, seataMode);
     }
 
-
-    public void setDataSourceCreatorFactory(List<DataSourceCreator> dataSourceCreator) {
-        this.dataSourceCreator = dataSourceCreator;
+    public void setDataSourceCreators(List<DataSourceCreator> dataSourceCreator) {
+        this.creators = dataSourceCreator;
     }
-
 
     @Override
     public boolean support(DataSourceProperty dataSourceProperty) {

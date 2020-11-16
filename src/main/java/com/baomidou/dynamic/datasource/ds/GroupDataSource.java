@@ -44,17 +44,17 @@ public class GroupDataSource {
     }
 
     /**
-     * 新数据源添加到分组
-     * @param ds 新数据源的名字
-     * @param dataSource 新数据源
+     * add a new datasource to this group
+     *
+     * @param ds         the name of the datasource
+     * @param dataSource datasource
      */
     public DataSource addDatasource(String ds, DataSource dataSource) {
-       return dataSourceMap.put(ds, dataSource);
+        return dataSourceMap.put(ds, dataSource);
     }
 
     /**
-     *
-     * @param ds 新数据源的名字
+     * @param ds the name of the datasource
      */
     public DataSource removeDatasource(String ds) {
         return dataSourceMap.remove(ds);

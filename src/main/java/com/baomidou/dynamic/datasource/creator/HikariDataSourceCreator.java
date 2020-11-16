@@ -38,9 +38,6 @@ import static com.baomidou.dynamic.datasource.support.DdConstants.HIKARI_DATASOU
 @AllArgsConstructor
 public class HikariDataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator {
 
-    /**
-     * 是否存在hikari
-     */
     private static Boolean hikariExists = false;
 
     static {
@@ -54,13 +51,6 @@ public class HikariDataSourceCreator extends AbstractDataSourceCreator implement
 
     private HikariCpConfig hikariCpConfig;
 
-    /**
-     * 创建Hikari数据源
-     *
-     * @param dataSourceProperty 数据源参数
-     * @return 数据源
-     * @author 离世庭院 小锅盖
-     */
     @Override
     public DataSource createDataSource(DataSourceProperty dataSourceProperty, String publicKey) {
         if (StringUtils.isEmpty(dataSourceProperty.getPublicKey())) {
@@ -84,5 +74,4 @@ public class HikariDataSourceCreator extends AbstractDataSourceCreator implement
         Class<? extends DataSource> type = dataSourceProperty.getType();
         return (type == null && hikariExists) || (type != null && HIKARI_DATASOURCE.equals(type.getName()));
     }
-
 }

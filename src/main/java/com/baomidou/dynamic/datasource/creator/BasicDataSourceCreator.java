@@ -20,13 +20,10 @@ import com.baomidou.dynamic.datasource.exception.ErrorCreateDataSourceException;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.annotation.Order;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Method;
-
-import static com.baomidou.dynamic.datasource.creator.DataSourceCreator.DEFAULT_ORDER;
 
 /**
  * 基础数据源创建器
@@ -36,7 +33,6 @@ import static com.baomidou.dynamic.datasource.creator.DataSourceCreator.DEFAULT_
  */
 @Data
 @Slf4j
-@Order(DEFAULT_ORDER)
 public class BasicDataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator {
 
     private static Method createMethod;
@@ -80,7 +76,7 @@ public class BasicDataSourceCreator extends AbstractDataSourceCreator implements
      * 创建基础数据源
      *
      * @param dataSourceProperty 数据源参数
-     * @param publicKey 解密公钥
+     * @param publicKey          解密公钥
      * @return 数据源
      */
     @Override
@@ -106,5 +102,4 @@ public class BasicDataSourceCreator extends AbstractDataSourceCreator implements
     public boolean support(DataSourceProperty dataSourceProperty) {
         return true;
     }
-
 }

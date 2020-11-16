@@ -129,7 +129,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
         // 新数据源添加到分组
         this.addGroupDataSource(ds, dataSource);
         // 关闭老的数据源
-        if(oldDataSource!=null){
+        if (oldDataSource != null) {
             try {
                 closeDataSource(oldDataSource);
             } catch (Exception e) {
@@ -142,7 +142,8 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
 
     /**
      * 新数据源添加到分组
-     * @param ds 新数据源的名字
+     *
+     * @param ds         新数据源的名字
      * @param dataSource 新数据源
      */
     private void addGroupDataSource(String ds, DataSource dataSource) {
@@ -185,9 +186,9 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
                 String group = ds.split(UNDERLINE)[0];
                 if (groupDataSources.containsKey(group)) {
                     DataSource oldDataSource = groupDataSources.get(group).removeDatasource(ds);
-                    if(oldDataSource == null){
-                        if(log.isWarnEnabled()){
-                            log.warn("fail for remove datasource from group. dataSource: {} ,group: {}", ds , group);
+                    if (oldDataSource == null) {
+                        if (log.isWarnEnabled()) {
+                            log.warn("fail for remove datasource from group. dataSource: {} ,group: {}", ds, group);
                         }
                     }
                 }

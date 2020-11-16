@@ -30,11 +30,6 @@ import java.sql.SQLException;
  */
 public abstract class AbstractRoutingDataSource extends AbstractDataSource {
 
-    /**
-     * 子类实现决定最终数据源
-     *
-     * @return 数据源
-     */
     protected abstract DataSource determineDataSource();
 
     @Override
