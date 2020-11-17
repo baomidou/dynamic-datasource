@@ -16,6 +16,7 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
+import com.baomidou.dynamic.datasource.enums.CheckMode;
 import com.baomidou.dynamic.datasource.enums.SeataMode;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.hikari.HikariCpConfig;
@@ -65,6 +66,10 @@ public class DynamicDataSourceProperties {
      * 是否使用开启seata，默认不开启
      */
     private Boolean seata = false;
+    /**
+     * 无法匹配数据源时的检查模式
+     */
+    private CheckMode checkMode = CheckMode.STACK_LOG;
     /**
      * seata使用模式，默认AT
      */

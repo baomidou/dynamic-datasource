@@ -76,6 +76,7 @@ public class DynamicDataSourceAutoConfiguration {
         DynamicRoutingDataSource dataSource = new DynamicRoutingDataSource();
         dataSource.setPrimary(properties.getPrimary());
         dataSource.setStrict(properties.getStrict());
+        dataSource.setCheckMode(properties.getCheckMode());
         dataSource.setStrategy(properties.getStrategy());
         dataSource.setProvider(dynamicDataSourceProvider);
         dataSource.setP6spy(properties.getP6spy());

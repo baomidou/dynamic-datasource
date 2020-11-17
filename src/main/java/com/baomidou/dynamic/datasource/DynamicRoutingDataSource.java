@@ -19,6 +19,7 @@ package com.baomidou.dynamic.datasource;
 import com.baomidou.dynamic.datasource.ds.AbstractRoutingDataSource;
 import com.baomidou.dynamic.datasource.ds.GroupDataSource;
 import com.baomidou.dynamic.datasource.ds.ItemDataSource;
+import com.baomidou.dynamic.datasource.enums.CheckMode;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
 import com.baomidou.dynamic.datasource.strategy.LoadBalanceDynamicDataSourceStrategy;
@@ -36,6 +37,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static com.baomidou.dynamic.datasource.enums.CheckMode.STACK_LOG;
+import static com.baomidou.dynamic.datasource.enums.CheckMode.STRICT;
 
 /**
  * 核心动态数据源组件
@@ -67,6 +71,8 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
     private Boolean p6spy = false;
     @Setter
     private Boolean seata = false;
+    @Setter
+    private CheckMode checkMode;
 
     @Override
     public DataSource determineDataSource() {
@@ -112,10 +118,17 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
             log.debug("dynamic-datasource switch to the datasource named [{}]", ds);
             return dataSourceMap.get(ds);
         }
-        if (strict) {
-            throw new RuntimeException("dynamic-datasource could not find a datasource named" + ds);
+        if (strict || checkMode == STRICT) {
+            throw new RuntimeException("dynamic-datasource could not find a datasource named " + ds);
+        } else if (checkMode == STACK_LOG) {
+            log.warn("dynamic-datasource can not find a datasource named , dsKey: {}, allDSNames: {}", ds, dataSourceMap.keySet(), new StackTraceException());
+        } else if (checkMode == CheckMode.LOG) {
+            log.warn("dynamic-datasource can not find a datasource named , dsKey: {}, allDSNames: {}", ds, dataSourceMap.keySet());
         }
         return determinePrimaryDataSource();
+    }
+
+    private static class StackTraceException extends Exception {
     }
 
     /**
