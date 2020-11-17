@@ -128,6 +128,10 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
         return determinePrimaryDataSource();
     }
 
+    /**
+     * 调用栈异常
+     * 用于打印调用栈, 无异常含义
+     */
     private static class StackTraceException extends Exception {
     }
 
