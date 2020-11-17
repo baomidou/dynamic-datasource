@@ -17,12 +17,9 @@
 package com.baomidou.dynamic.datasource.creator;
 
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
-import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 
 import javax.sql.DataSource;
-
-import static com.baomidou.dynamic.datasource.creator.DataSourceCreator.JNDI_ORDER;
 
 /**
  * JNDI数据源创建器
@@ -30,22 +27,24 @@ import static com.baomidou.dynamic.datasource.creator.DataSourceCreator.JNDI_ORD
  * @author TaoYu
  * @since 2020/1/27
  */
-@Order(JNDI_ORDER)
 public class JndiDataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator {
 
     private static final JndiDataSourceLookup LOOKUP = new JndiDataSourceLookup();
-
 
     /**
      * 创建JNDI数据源
      *
      * @param dataSourceProperty jndi数据源名称
-     * @param publicKey publicKey
+     * @param publicKey          publicKey
      * @return 数据源
      */
     @Override
     public DataSource createDataSource(DataSourceProperty dataSourceProperty, String publicKey) {
         return LOOKUP.getDataSource(dataSourceProperty.getJndiName());
+    }
+
+    public DataSource createDataSource(String jndiName) {
+        return LOOKUP.getDataSource(jndiName);
     }
 
     @Override

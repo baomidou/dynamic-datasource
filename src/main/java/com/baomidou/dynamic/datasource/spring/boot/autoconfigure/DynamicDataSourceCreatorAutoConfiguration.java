@@ -17,12 +17,7 @@
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.baomidou.dynamic.datasource.creator.BasicDataSourceCreator;
-import com.baomidou.dynamic.datasource.creator.CompositeDataSourceCreator;
-import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
-import com.baomidou.dynamic.datasource.creator.DruidDataSourceCreator;
-import com.baomidou.dynamic.datasource.creator.HikariDataSourceCreator;
-import com.baomidou.dynamic.datasource.creator.JndiDataSourceCreator;
+import com.baomidou.dynamic.datasource.creator.*;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,33 +31,40 @@ import org.springframework.core.annotation.Order;
 
 import java.util.List;
 
+/**
+ * @author TaoYu
+ */
 @Slf4j
 @Configuration
 @AllArgsConstructor
 @EnableConfigurationProperties(DynamicDataSourceProperties.class)
 public class DynamicDataSourceCreatorAutoConfiguration {
 
+    private static final int JNDI_ORDER = 1000;
     private static final int DRUID_ORDER = 2000;
     private static final int HIKARI_ORDER = 3000;
+    private static final int DEFAULT_ORDER = 5000;
     private final DynamicDataSourceProperties properties;
 
     @Primary
     @Bean
     @ConditionalOnMissingBean
-    public CompositeDataSourceCreator dataSourceCreator(List<DataSourceCreator> dataSourceCreator) {
-        CompositeDataSourceCreator compositeDataSourceCreator = new CompositeDataSourceCreator();
-        compositeDataSourceCreator.setProperties(properties);
-        compositeDataSourceCreator.setDataSourceCreatorFactory(dataSourceCreator);
-        return compositeDataSourceCreator;
+    public DefaultDataSourceCreator dataSourceCreator(List<DataSourceCreator> dataSourceCreators) {
+        DefaultDataSourceCreator defaultDataSourceCreator = new DefaultDataSourceCreator();
+        defaultDataSourceCreator.setProperties(properties);
+        defaultDataSourceCreator.setDataSourceCreators(dataSourceCreators);
+        return defaultDataSourceCreator;
     }
 
     @Bean
+    @Order(DEFAULT_ORDER)
     @ConditionalOnMissingBean
     public BasicDataSourceCreator basicDataSourceCreator() {
         return new BasicDataSourceCreator();
     }
 
     @Bean
+    @Order(JNDI_ORDER)
     @ConditionalOnMissingBean
     public JndiDataSourceCreator jndiDataSourceCreator() {
         return new JndiDataSourceCreator();
@@ -73,7 +75,7 @@ public class DynamicDataSourceCreatorAutoConfiguration {
      */
     @ConditionalOnClass(DruidDataSource.class)
     @Configuration
-    public class DruidDataSourceCreatorConfiguration{
+    public class DruidDataSourceCreatorConfiguration {
         @Bean
         @Order(DRUID_ORDER)
         @ConditionalOnMissingBean
@@ -88,7 +90,7 @@ public class DynamicDataSourceCreatorAutoConfiguration {
      */
     @ConditionalOnClass(HikariDataSource.class)
     @Configuration
-    public class HikariDataSourceCreatorConfiguration{
+    public class HikariDataSourceCreatorConfiguration {
         @Bean
         @Order(HIKARI_ORDER)
         @ConditionalOnMissingBean

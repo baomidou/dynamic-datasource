@@ -20,8 +20,9 @@ import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
 import lombok.Data;
 
 import javax.sql.DataSource;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 组数据源
@@ -35,26 +36,35 @@ public class GroupDataSource {
 
     private DynamicDataSourceStrategy dynamicDataSourceStrategy;
 
-    private List<DataSource> dataSources = new LinkedList<>();
+    private Map<String, DataSource> dataSourceMap = new ConcurrentHashMap<>();
 
     public GroupDataSource(String groupName, DynamicDataSourceStrategy dynamicDataSourceStrategy) {
         this.groupName = groupName;
         this.dynamicDataSourceStrategy = dynamicDataSourceStrategy;
     }
 
-    public void addDatasource(DataSource dataSource) {
-        dataSources.add(dataSource);
+    /**
+     * add a new datasource to this group
+     *
+     * @param ds         the name of the datasource
+     * @param dataSource datasource
+     */
+    public DataSource addDatasource(String ds, DataSource dataSource) {
+        return dataSourceMap.put(ds, dataSource);
     }
 
-    public void removeDatasource(DataSource dataSource) {
-        dataSources.remove(dataSource);
+    /**
+     * @param ds the name of the datasource
+     */
+    public DataSource removeDatasource(String ds) {
+        return dataSourceMap.remove(ds);
     }
 
     public DataSource determineDataSource() {
-        return dynamicDataSourceStrategy.determineDataSource(dataSources);
+        return dynamicDataSourceStrategy.determineDataSource(new ArrayList<>(dataSourceMap.values()));
     }
 
     public int size() {
-        return dataSources.size();
+        return dataSourceMap.size();
     }
 }

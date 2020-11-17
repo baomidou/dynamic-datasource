@@ -16,7 +16,7 @@
  */
 package com.baomidou.dynamic.datasource.provider;
 
-import com.baomidou.dynamic.datasource.creator.CompositeDataSourceCreator;
+import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ import java.util.Map;
 public abstract class AbstractDataSourceProvider implements DynamicDataSourceProvider {
 
     @Autowired
-    private CompositeDataSourceCreator compositeDataSourceCreator;
+    private DefaultDataSourceCreator defaultDataSourceCreator;
 
     protected Map<String, DataSource> createDataSourceMap(
             Map<String, DataSourceProperty> dataSourcePropertiesMap) {
@@ -42,7 +42,7 @@ public abstract class AbstractDataSourceProvider implements DynamicDataSourcePro
                 poolName = item.getKey();
             }
             dataSourceProperty.setPoolName(poolName);
-            dataSourceMap.put(poolName, compositeDataSourceCreator.createDataSource(dataSourceProperty));
+            dataSourceMap.put(poolName, defaultDataSourceCreator.createDataSource(dataSourceProperty));
         }
         return dataSourceMap;
     }
