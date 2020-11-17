@@ -16,13 +16,25 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
-import com.baomidou.dynamic.datasource.creator.*;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.baomidou.dynamic.datasource.creator.BasicDataSourceCreator;
+import com.baomidou.dynamic.datasource.creator.CompositeDataSourceCreator;
+import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
+import com.baomidou.dynamic.datasource.creator.DruidDataSourceCreator;
+import com.baomidou.dynamic.datasource.creator.HikariDataSourceCreator;
+import com.baomidou.dynamic.datasource.creator.JndiDataSourceCreator;
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.core.annotation.Order;
+
+import java.util.List;
 
 @Slf4j
 @Configuration
@@ -30,18 +42,18 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties(DynamicDataSourceProperties.class)
 public class DynamicDataSourceCreatorAutoConfiguration {
 
+    private static final int DRUID_ORDER = 2000;
+    private static final int HIKARI_ORDER = 3000;
     private final DynamicDataSourceProperties properties;
 
+    @Primary
     @Bean
     @ConditionalOnMissingBean
-    public DataSourceCreator dataSourceCreator() {
-        DataSourceCreator dataSourceCreator = new DataSourceCreator();
-        dataSourceCreator.setBasicDataSourceCreator(basicDataSourceCreator());
-        dataSourceCreator.setJndiDataSourceCreator(jndiDataSourceCreator());
-        dataSourceCreator.setDruidDataSourceCreator(druidDataSourceCreator());
-        dataSourceCreator.setHikariDataSourceCreator(hikariDataSourceCreator());
-        dataSourceCreator.setProperties(properties);
-        return dataSourceCreator;
+    public CompositeDataSourceCreator dataSourceCreator(List<DataSourceCreator> dataSourceCreator) {
+        CompositeDataSourceCreator compositeDataSourceCreator = new CompositeDataSourceCreator();
+        compositeDataSourceCreator.setProperties(properties);
+        compositeDataSourceCreator.setDataSourceCreatorFactory(dataSourceCreator);
+        return compositeDataSourceCreator;
     }
 
     @Bean
@@ -56,15 +68,33 @@ public class DynamicDataSourceCreatorAutoConfiguration {
         return new JndiDataSourceCreator();
     }
 
-    @Bean
-    @ConditionalOnMissingBean
-    public DruidDataSourceCreator druidDataSourceCreator() {
-        return new DruidDataSourceCreator(properties.getDruid());
+    /**
+     * 存在Druid数据源时, 加入创建器
+     */
+    @ConditionalOnClass(DruidDataSource.class)
+    @Configuration
+    public class DruidDataSourceCreatorConfiguration{
+        @Bean
+        @Order(DRUID_ORDER)
+        @ConditionalOnMissingBean
+        public DruidDataSourceCreator druidDataSourceCreator() {
+            return new DruidDataSourceCreator(properties.getDruid());
+        }
+
     }
 
-    @Bean
-    @ConditionalOnMissingBean
-    public HikariDataSourceCreator hikariDataSourceCreator() {
-        return new HikariDataSourceCreator(properties.getHikari());
+    /**
+     * 存在Hikari数据源时, 加入创建器
+     */
+    @ConditionalOnClass(HikariDataSource.class)
+    @Configuration
+    public class HikariDataSourceCreatorConfiguration{
+        @Bean
+        @Order(HIKARI_ORDER)
+        @ConditionalOnMissingBean
+        public HikariDataSourceCreator hikariDataSourceCreator() {
+            return new HikariDataSourceCreator(properties.getHikari());
+        }
     }
+
 }
