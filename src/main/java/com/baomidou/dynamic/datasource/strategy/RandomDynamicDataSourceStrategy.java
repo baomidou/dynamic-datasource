@@ -32,4 +32,9 @@ public class RandomDynamicDataSourceStrategy implements DynamicDataSourceStrateg
     public DataSource determineDataSource(List<DataSource> dataSources) {
         return dataSources.get(ThreadLocalRandom.current().nextInt(dataSources.size()));
     }
+
+    @Override
+    public String determineDSKey(List<String> dsNames) {
+        return dsNames.get(ThreadLocalRandom.current().nextInt(dsNames.size()));
+    }
 }

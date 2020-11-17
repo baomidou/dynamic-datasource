@@ -17,6 +17,7 @@
 package com.baomidou.dynamic.datasource.strategy;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,5 +36,14 @@ public interface DynamicDataSourceStrategy {
      * @param dataSources given dataSources
      * @return final dataSource
      */
+    @Deprecated
     DataSource determineDataSource(List<DataSource> dataSources);
+
+    /**
+     * determine a database from the given dataSources
+     *
+     * @param dsNames given dataSources
+     * @return final dataSource
+     */
+    String determineDSKey(List<String> dsNames);
 }

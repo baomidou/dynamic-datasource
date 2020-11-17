@@ -16,6 +16,8 @@
  */
 package com.baomidou.dynamic.datasource.plugin;
 
+import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
+import com.baomidou.dynamic.datasource.ds.GroupDataSource;
 import com.baomidou.dynamic.datasource.exception.CannotSelectDataSourceException;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
 import com.baomidou.dynamic.datasource.support.DbHealthIndicator;
@@ -39,11 +41,14 @@ import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
 import org.apache.ibatis.reflection.factory.ObjectFactory;
 import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
 import org.apache.ibatis.reflection.wrapper.ObjectWrapperFactory;
-import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 
+import javax.annotation.Resource;
+import javax.sql.DataSource;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -62,8 +67,12 @@ public class MasterSlaveAutoRoutingPlugin implements Interceptor {
     @Autowired
     private DynamicDataSourceProperties properties;
 
+    @Lazy
     @Autowired(required = false)
     private DbHealthIndicator dbHealthIndicator;
+
+    @Autowired
+    protected DataSource dynamicDataSource;
 
 
     @Override
@@ -92,11 +101,15 @@ public class MasterSlaveAutoRoutingPlugin implements Interceptor {
         String currentDataSource = SqlCommandType.SELECT == mappedStatement.getSqlCommandType() ? DdConstants.SLAVE : DdConstants.MASTER;
         String dataSource = null;
         if (properties.isHealth()) {
+            DynamicRoutingDataSource dynamicRoutingDataSource = (DynamicRoutingDataSource) dynamicDataSource;
             // 当前数据源是从库
             if (DdConstants.SLAVE.equalsIgnoreCase(currentDataSource)) {
-                boolean health = dbHealthIndicator.getDbHealth(DdConstants.SLAVE);
+                Map<String, GroupDataSource> currentGroupDataSources = dynamicRoutingDataSource.getCurrentGroupDataSources();
+                GroupDataSource groupDataSource = currentGroupDataSources.get(DdConstants.SLAVE);
+                String dsKey = groupDataSource.determineDsKey();
+                boolean health = dbHealthIndicator.getDbHealth(dsKey);
                 if (health) {
-                    dataSource = DdConstants.SLAVE;
+                    dataSource = dsKey;
                 } else {
                     if (log.isWarnEnabled()) {
                         log.warn("从库无法连接, 请检查数据库配置");
@@ -106,9 +119,12 @@ public class MasterSlaveAutoRoutingPlugin implements Interceptor {
             // 从库无法连接, 或者当前数据源需要操作主库
             if (dataSource == null) {
                 // 当前数据源是从库，并且从库是健康的
-                boolean health = dbHealthIndicator.getDbHealth(DdConstants.MASTER);
+                Map<String, GroupDataSource> currentGroupDataSources = dynamicRoutingDataSource.getCurrentGroupDataSources();
+                GroupDataSource groupDataSource = currentGroupDataSources.get(DdConstants.MASTER);
+                String dsKey = groupDataSource.determineDsKey();
+                boolean health = dbHealthIndicator.getDbHealth(dsKey);
                 if (health) {
-                    dataSource = DdConstants.MASTER;
+                    dataSource = dsKey;
                 } else {
                     if (log.isWarnEnabled()) {
                         log.warn("主库无法连接, 请检查数据库配置");
@@ -147,7 +163,7 @@ public class MasterSlaveAutoRoutingPlugin implements Interceptor {
             Executor wrapExecutor = (Executor) Plugin.wrap(baseWrapper, this);
             baseWrapper.setExecutorWrapper(wrapExecutor);
             // 将当前对象的代理设置为缓存
-            if(delegate){
+            if (delegate) {
                 wrapExecutor.setExecutorWrapper((Executor) target);
                 executorMetaObject.setValue("delegate", wrapExecutor);
             }
