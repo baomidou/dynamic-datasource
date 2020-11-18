@@ -175,7 +175,12 @@ public class DataSourceClassResolver {
         if (mpEnabled) {
             final Class<?> clazz = getMapperInterfaceClass(targetObject);
             if (clazz != null) {
-                return findDataSourceAttribute(clazz);
+                String datasourceAttr = findDataSourceAttribute(clazz);
+                if (datasourceAttr != null) {
+                    return datasourceAttr;
+                }
+                // 尝试从其父接口获取
+                return findDataSourceAttribute(clazz.getSuperclass());
             }
         }
         return null;
