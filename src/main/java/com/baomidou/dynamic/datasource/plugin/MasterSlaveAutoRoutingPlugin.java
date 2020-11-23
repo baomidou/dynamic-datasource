@@ -18,10 +18,9 @@ package com.baomidou.dynamic.datasource.plugin;
 
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.ds.GroupDataSource;
-import com.baomidou.dynamic.datasource.exception.CannotSelectDataSourceException;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
-import com.baomidou.dynamic.datasource.support.DbHealthIndicator;
 import com.baomidou.dynamic.datasource.support.DdConstants;
+import com.baomidou.dynamic.datasource.support.HealthCheckAdapter;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.cache.CacheKey;
@@ -34,19 +33,11 @@ import org.apache.ibatis.plugin.Intercepts;
 import org.apache.ibatis.plugin.Invocation;
 import org.apache.ibatis.plugin.Plugin;
 import org.apache.ibatis.plugin.Signature;
-import org.apache.ibatis.reflection.DefaultReflectorFactory;
-import org.apache.ibatis.reflection.MetaObject;
-import org.apache.ibatis.reflection.ReflectorFactory;
-import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
-import org.apache.ibatis.reflection.factory.ObjectFactory;
-import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
-import org.apache.ibatis.reflection.wrapper.ObjectWrapperFactory;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 
-import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.util.Map;
 import java.util.Properties;
@@ -69,11 +60,10 @@ public class MasterSlaveAutoRoutingPlugin implements Interceptor {
 
     @Lazy
     @Autowired(required = false)
-    private DbHealthIndicator dbHealthIndicator;
+    private HealthCheckAdapter healthCheckAdapter;
 
     @Autowired
     protected DataSource dynamicDataSource;
-
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
@@ -107,33 +97,27 @@ public class MasterSlaveAutoRoutingPlugin implements Interceptor {
                 Map<String, GroupDataSource> currentGroupDataSources = dynamicRoutingDataSource.getCurrentGroupDataSources();
                 GroupDataSource groupDataSource = currentGroupDataSources.get(DdConstants.SLAVE);
                 String dsKey = groupDataSource.determineDsKey();
-                boolean health = dbHealthIndicator.getDbHealth(dsKey);
+                boolean health = healthCheckAdapter.getHealth(dsKey);
                 if (health) {
                     dataSource = dsKey;
                 } else {
                     if (log.isWarnEnabled()) {
-                        log.warn("从库无法连接, 请检查数据库配置");
+                        log.warn("从库无法连接, 请检查数据库配置, key: {}", dsKey);
                     }
                 }
             }
             // 从库无法连接, 或者当前数据源需要操作主库
             if (dataSource == null) {
-                // 当前数据源是从库，并且从库是健康的
+                // 当前数据源是主库
                 Map<String, GroupDataSource> currentGroupDataSources = dynamicRoutingDataSource.getCurrentGroupDataSources();
                 GroupDataSource groupDataSource = currentGroupDataSources.get(DdConstants.MASTER);
-                String dsKey = groupDataSource.determineDsKey();
-                boolean health = dbHealthIndicator.getDbHealth(dsKey);
-                if (health) {
-                    dataSource = dsKey;
-                } else {
+                dataSource = groupDataSource.determineDsKey();
+                boolean health = healthCheckAdapter.getHealth(dataSource);
+                if (!health) {
                     if (log.isWarnEnabled()) {
-                        log.warn("主库无法连接, 请检查数据库配置");
+                        log.warn("主库无法连接, 请检查数据库配置, key: {}", dataSource);
                     }
                 }
-            }
-            // 主从都连不上, 不应该继续连接数据库了
-            if (dataSource == null) {
-                throw new CannotSelectDataSourceException("无法选择数据源");
             }
         } else {
             dataSource = currentDataSource;
@@ -141,43 +125,12 @@ public class MasterSlaveAutoRoutingPlugin implements Interceptor {
         return dataSource;
     }
 
-    protected ReflectorFactory reflectorFactory = new DefaultReflectorFactory();
-    protected ObjectFactory objectFactory = new DefaultObjectFactory();
-    protected ObjectWrapperFactory objectWrapperFactory = new DefaultObjectWrapperFactory();
-
     @Override
     public Object plugin(Object target) {
-
-        if (target instanceof Executor) {
-            Object wrapper = target;
-
-            MetaObject executorMetaObject = newMetaObject(target);
-            // 支持mybatis缓存和 mp的缓存
-            boolean delegate = executorMetaObject.hasGetter("delegate");
-            if (delegate) {
-                wrapper = executorMetaObject.getValue("delegate");
-            }
-            Executor baseWrapper = (Executor) wrapper;
-
-            // set base executor to this
-            Executor wrapExecutor = (Executor) Plugin.wrap(baseWrapper, this);
-            baseWrapper.setExecutorWrapper(wrapExecutor);
-            // 将当前对象的代理设置为缓存
-            if (delegate) {
-                wrapExecutor.setExecutorWrapper((Executor) target);
-                executorMetaObject.setValue("delegate", wrapExecutor);
-            }
-            return wrapExecutor;
-        }
-        return target;
-    }
-
-    private MetaObject newMetaObject(Object target) {
-        return MetaObject.forObject(target, objectFactory, objectWrapperFactory, reflectorFactory);
+        return Plugin.wrap(target, this);
     }
 
     @Override
     public void setProperties(Properties properties) {
-        String orDefault = properties.getProperty("cacheEnable", "true");
     }
 }
