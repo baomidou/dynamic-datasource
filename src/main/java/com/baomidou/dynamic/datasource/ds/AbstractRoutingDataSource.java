@@ -52,7 +52,7 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource {
                 connection != null ? connection : determineDataSource().getConnection(username, password));
     }
 
-    public Connection getConnectionProxy(Connection connection) throws SQLException {
+    public Connection getConnectionProxy(Connection connection) {
         if (StringUtils.isBlank(TransactionContext.getXID()) || connection instanceof ConnectionProxy) {
             return connection;
         }
