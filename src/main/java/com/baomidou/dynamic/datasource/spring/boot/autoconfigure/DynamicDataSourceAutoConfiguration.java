@@ -19,6 +19,7 @@ package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationInterceptor;
+import com.baomidou.dynamic.datasource.aop.DynamicTransactionAdvisor;
 import com.baomidou.dynamic.datasource.processor.DsHeaderProcessor;
 import com.baomidou.dynamic.datasource.processor.DsProcessor;
 import com.baomidou.dynamic.datasource.processor.DsSessionProcessor;
@@ -29,6 +30,9 @@ import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidDyna
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.aop.Advisor;
+import org.springframework.aop.aspectj.AspectJExpressionPointcut;
+import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -91,6 +95,16 @@ public class DynamicDataSourceAutoConfiguration {
         DynamicDataSourceAnnotationAdvisor advisor = new DynamicDataSourceAnnotationAdvisor(interceptor);
         advisor.setOrder(properties.getOrder());
         return advisor;
+    }
+
+    @Role(value = BeanDefinition.ROLE_INFRASTRUCTURE)
+    @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "seata", havingValue = "false",
+        matchIfMissing = true)
+    @Bean
+    public Advisor localTransactionAdvisor() {
+        AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
+        pointcut.setExpression("@annotation(com.baomidou.dynamic.datasource.annotation.DSTransactional)");
+        return new DefaultPointcutAdvisor(pointcut, new DynamicTransactionAdvisor());
     }
 
     @Bean

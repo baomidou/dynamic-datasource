@@ -16,6 +16,11 @@
  */
 package com.baomidou.dynamic.datasource.ds;
 
+import com.baomidou.dynamic.datasource.ds.proxy.ConnectionFactory;
+import com.baomidou.dynamic.datasource.ds.proxy.ConnectionProxy;
+import com.baomidou.dynamic.datasource.ds.proxy.TransactionContext;
+import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import org.springframework.jdbc.datasource.AbstractDataSource;
 
 import javax.sql.DataSource;
@@ -34,12 +39,26 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource {
 
     @Override
     public Connection getConnection() throws SQLException {
-        return determineDataSource().getConnection();
+        Connection connection =
+            StringUtils.isNotBlank(TransactionContext.getXID()) ? ConnectionFactory.getConnection() : null;
+        return getConnectionProxy(connection != null ? connection : determineDataSource().getConnection());
     }
 
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
-        return determineDataSource().getConnection(username, password);
+        Connection connection =
+            StringUtils.isNotBlank(TransactionContext.getXID()) ? ConnectionFactory.getConnection() : null;
+        return getConnectionProxy(
+            connection != null ? connection : determineDataSource().getConnection(username, password));
+    }
+
+    public Connection getConnectionProxy(Connection connection) throws SQLException {
+        if (StringUtils.isBlank(TransactionContext.getXID()) || connection instanceof ConnectionProxy) {
+            return connection;
+        }
+        ConnectionProxy connectionProxy = new ConnectionProxy(connection, DynamicDataSourceContextHolder.peek());
+        ConnectionFactory.putConnection(TransactionContext.getXID(), connectionProxy);
+        return connectionProxy;
     }
 
     @Override
