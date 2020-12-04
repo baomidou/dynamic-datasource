@@ -16,11 +16,12 @@
  */
 package com.baomidou.dynamic.datasource.aop;
 
-import com.baomidou.dynamic.datasource.ds.proxy.ConnectionFactory;
-import com.baomidou.dynamic.datasource.ds.proxy.TransactionContext;
+import com.baomidou.dynamic.datasource.tx.ConnectionFactory;
+import com.baomidou.dynamic.datasource.tx.TransactionContext;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+
 import java.util.UUID;
 
 /**
@@ -33,7 +34,7 @@ public class DynamicTransactionAdvisor implements MethodInterceptor {
         if (StringUtils.isNotBlank(TransactionContext.getXID())) {
             return methodInvocation.proceed();
         }
-        Boolean state = true;
+        boolean state = true;
         Object o;
         String xid = UUID.randomUUID().toString();
         TransactionContext.bind(xid);

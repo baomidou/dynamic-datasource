@@ -98,8 +98,7 @@ public class DynamicDataSourceAutoConfiguration {
     }
 
     @Role(value = BeanDefinition.ROLE_INFRASTRUCTURE)
-    @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "seata", havingValue = "false",
-        matchIfMissing = true)
+    @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "seata", havingValue = "false", matchIfMissing = true)
     @Bean
     public Advisor localTransactionAdvisor() {
         AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();

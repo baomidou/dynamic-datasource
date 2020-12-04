@@ -14,17 +14,24 @@
  * limitations under the License.
  * <pre/>
  */
-package com.baomidou.dynamic.datasource.annotation;
+package com.baomidou.dynamic.datasource.toolkit;
 
-import java.lang.annotation.*;
+public class StringUtils {
 
-/**
- * multi data source transaction
- *
- * @author funkye
- */
-@Target({ElementType.TYPE, ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface DSTransactional {
+    public static boolean isBlank(String str) {
+        int strLen;
+        if (str == null || (strLen = str.length()) == 0) {
+            return true;
+        }
+        for (int i = 0; i < strLen; i++) {
+            if ((!Character.isWhitespace(str.charAt(i)))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isNotBlank(String str) {
+        return !org.apache.commons.lang.StringUtils.isBlank(str);
+    }
 }

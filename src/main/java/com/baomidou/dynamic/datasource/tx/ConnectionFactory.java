@@ -14,7 +14,7 @@
  * limitations under the License.
  * <pre/>
  */
-package com.baomidou.dynamic.datasource.ds.proxy;
+package com.baomidou.dynamic.datasource.tx;
 
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
@@ -31,9 +31,9 @@ import java.util.concurrent.locks.ReentrantLock;
 public class ConnectionFactory {
 
     private static volatile ConcurrentHashMap<String, List<ConnectionProxy>> concurrentHashMap =
-        new ConcurrentHashMap<>();
+            new ConcurrentHashMap<>();
 
-    private static ReentrantLock lock = new ReentrantLock();
+    private static final ReentrantLock LOCK = new ReentrantLock();
 
     public static ConcurrentHashMap<String, List<ConnectionProxy>> getConcurrentHashMap() {
         return concurrentHashMap;
@@ -44,7 +44,7 @@ public class ConnectionFactory {
     }
 
     public static void putConnection(String xid, ConnectionProxy connection) {
-        lock.lock();
+        LOCK.lock();
         try {
             List<ConnectionProxy> list = concurrentHashMap.get(xid);
             if (CollectionUtils.isEmpty(list)) {
@@ -58,12 +58,12 @@ public class ConnectionFactory {
             }
             list.add(connection);
         } finally {
-            lock.unlock();
+            LOCK.unlock();
         }
     }
 
     public static ConnectionProxy getConnection() {
-        lock.lock();
+        LOCK.lock();
         try {
             List<ConnectionProxy> list = concurrentHashMap.get(TransactionContext.getXID());
             if (!CollectionUtils.isEmpty(list)) {
@@ -75,13 +75,13 @@ public class ConnectionFactory {
                 }
             }
         } finally {
-            lock.unlock();
+            LOCK.unlock();
         }
         return null;
     }
 
     public static void notify(String xid, Boolean state) {
-        lock.lock();
+        LOCK.lock();
         try {
             List<ConnectionProxy> list = concurrentHashMap.get(xid);
             if (!CollectionUtils.isEmpty(list)) {
@@ -91,7 +91,7 @@ public class ConnectionFactory {
                 concurrentHashMap.remove(xid);
             }
         } finally {
-            lock.unlock();
+            LOCK.unlock();
         }
     }
 

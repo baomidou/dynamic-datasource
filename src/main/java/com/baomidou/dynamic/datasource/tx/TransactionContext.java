@@ -14,9 +14,10 @@
  * limitations under the License.
  * <pre/>
  */
-package com.baomidou.dynamic.datasource.ds.proxy;
+package com.baomidou.dynamic.datasource.tx;
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +31,6 @@ public class TransactionContext {
         protected Map<String, String> initialValue() {
             return new HashMap<>();
         }
-
     };
 
     private static final String XID = "LOCAL_XID";
