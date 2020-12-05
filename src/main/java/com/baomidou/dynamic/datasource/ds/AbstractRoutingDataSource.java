@@ -16,12 +16,12 @@
  */
 package com.baomidou.dynamic.datasource.ds;
 
+import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import com.baomidou.dynamic.datasource.tx.ConnectionFactory;
 import com.baomidou.dynamic.datasource.tx.ConnectionProxy;
 import com.baomidou.dynamic.datasource.tx.TransactionContext;
-import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
-import com.baomidou.dynamic.datasource.toolkit.StringUtils;
 import org.springframework.jdbc.datasource.AbstractDataSource;
+import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -39,25 +39,29 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource {
 
     @Override
     public Connection getConnection() throws SQLException {
-        Connection connection =
-                StringUtils.isNotBlank(TransactionContext.getXID()) ? ConnectionFactory.getConnection() : null;
-        return getConnectionProxy(connection != null ? connection : determineDataSource().getConnection());
+        String xid = TransactionContext.getXID();
+        if (StringUtils.isEmpty(xid)) {
+            return determineDataSource().getConnection();
+        } else {
+            ConnectionProxy connection = ConnectionFactory.getConnection(xid);
+            return connection == null ? getConnectionProxy(xid, determineDataSource().getConnection()) : connection;
+        }
     }
 
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
-        Connection connection =
-                StringUtils.isNotBlank(TransactionContext.getXID()) ? ConnectionFactory.getConnection() : null;
-        return getConnectionProxy(
-                connection != null ? connection : determineDataSource().getConnection(username, password));
+        String xid = TransactionContext.getXID();
+        if (StringUtils.isEmpty(xid)) {
+            return determineDataSource().getConnection(username, password);
+        } else {
+            ConnectionProxy connection = ConnectionFactory.getConnection(xid);
+            return connection == null ? getConnectionProxy(xid, determineDataSource().getConnection(username, password)) : connection;
+        }
     }
 
-    public Connection getConnectionProxy(Connection connection) {
-        if (StringUtils.isBlank(TransactionContext.getXID()) || connection instanceof ConnectionProxy) {
-            return connection;
-        }
+    private Connection getConnectionProxy(String xid, Connection connection) {
         ConnectionProxy connectionProxy = new ConnectionProxy(connection, DynamicDataSourceContextHolder.peek());
-        ConnectionFactory.putConnection(TransactionContext.getXID(), connectionProxy);
+        ConnectionFactory.putConnection(xid, connectionProxy);
         return connectionProxy;
     }
 

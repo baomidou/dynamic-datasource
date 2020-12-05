@@ -16,8 +16,7 @@
  */
 package com.baomidou.dynamic.datasource.tx;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.*;
 import java.util.Map;
@@ -27,17 +26,12 @@ import java.util.concurrent.Executor;
 /**
  * @author funkye
  */
+@Slf4j
 public class ConnectionProxy implements Connection {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionProxy.class);
 
     private Connection connection;
 
     private String ds;
-
-    public ConnectionProxy(Connection connection) {
-        this.connection = connection;
-    }
 
     public ConnectionProxy(Connection connection, String ds) {
         this.connection = connection;
@@ -53,7 +47,7 @@ public class ConnectionProxy implements Connection {
             }
             connection.close();
         } catch (Exception e) {
-            LOGGER.error(e.getLocalizedMessage(), e);
+            log.error(e.getLocalizedMessage(), e);
         }
     }
 

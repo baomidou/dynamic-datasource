@@ -16,7 +16,7 @@
  */
 package com.baomidou.dynamic.datasource.tx;
 
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +42,7 @@ public class TransactionContext {
      */
     public static String getXID() {
         String xid = CONTEXT_HOLDER.get().get(XID);
-        if (StringUtils.isNotBlank(xid)) {
+        if (!StringUtils.isEmpty(xid)) {
             return xid;
         }
         return null;

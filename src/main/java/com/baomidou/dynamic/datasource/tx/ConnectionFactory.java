@@ -17,7 +17,7 @@
 package com.baomidou.dynamic.datasource.tx;
 
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
-import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import org.springframework.util.CollectionUtils;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -31,12 +31,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ConnectionFactory {
 
     private static final ThreadLocal<Map<String, List<ConnectionProxy>>> CONNECTION_HOLDER =
-        new ThreadLocal<Map<String, List<ConnectionProxy>>>() {
-            @Override
-            protected Map<String, List<ConnectionProxy>> initialValue() {
-                return new ConcurrentHashMap<>();
-            }
-        };
+            new ThreadLocal<Map<String, List<ConnectionProxy>>>() {
+                @Override
+                protected Map<String, List<ConnectionProxy>> initialValue() {
+                    return new ConcurrentHashMap<>();
+                }
+            };
 
     public static void putConnection(String xid, ConnectionProxy connection) {
         synchronized (xid) {
@@ -56,8 +56,7 @@ public class ConnectionFactory {
 
     }
 
-    public static ConnectionProxy getConnection() {
-        String xid = TransactionContext.getXID();
+    public static ConnectionProxy getConnection(String xid) {
         synchronized (xid) {
             Map<String, List<ConnectionProxy>> concurrentHashMap = CONNECTION_HOLDER.get();
             List<ConnectionProxy> list = concurrentHashMap.get(xid);
