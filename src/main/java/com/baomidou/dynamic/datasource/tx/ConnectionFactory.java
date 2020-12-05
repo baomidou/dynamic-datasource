@@ -22,30 +22,25 @@ import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author funkye
  */
 public class ConnectionFactory {
 
-    private static volatile ConcurrentHashMap<String, List<ConnectionProxy>> concurrentHashMap =
-            new ConcurrentHashMap<>();
-
-    private static final ReentrantLock LOCK = new ReentrantLock();
-
-    public static ConcurrentHashMap<String, List<ConnectionProxy>> getConcurrentHashMap() {
-        return concurrentHashMap;
-    }
-
-    public static void setConcurrentHashMap(ConcurrentHashMap<String, List<ConnectionProxy>> concurrentHashMap) {
-        ConnectionFactory.concurrentHashMap = concurrentHashMap;
-    }
+    private static final ThreadLocal<Map<String, List<ConnectionProxy>>> CONNECTION_HOLDER =
+        new ThreadLocal<Map<String, List<ConnectionProxy>>>() {
+            @Override
+            protected Map<String, List<ConnectionProxy>> initialValue() {
+                return new ConcurrentHashMap<>();
+            }
+        };
 
     public static void putConnection(String xid, ConnectionProxy connection) {
-        LOCK.lock();
-        try {
+        synchronized (xid) {
+            Map<String, List<ConnectionProxy>> concurrentHashMap = CONNECTION_HOLDER.get();
             List<ConnectionProxy> list = concurrentHashMap.get(xid);
             if (CollectionUtils.isEmpty(list)) {
                 list = new ArrayList<>();
@@ -57,15 +52,15 @@ public class ConnectionFactory {
                 e.printStackTrace();
             }
             list.add(connection);
-        } finally {
-            LOCK.unlock();
         }
+
     }
 
     public static ConnectionProxy getConnection() {
-        LOCK.lock();
-        try {
-            List<ConnectionProxy> list = concurrentHashMap.get(TransactionContext.getXID());
+        String xid = TransactionContext.getXID();
+        synchronized (xid) {
+            Map<String, List<ConnectionProxy>> concurrentHashMap = CONNECTION_HOLDER.get();
+            List<ConnectionProxy> list = concurrentHashMap.get(xid);
             if (!CollectionUtils.isEmpty(list)) {
                 String ds = DynamicDataSourceContextHolder.peek();
                 for (ConnectionProxy connectionProxy : list) {
@@ -74,28 +69,25 @@ public class ConnectionFactory {
                     }
                 }
             }
-        } finally {
-            LOCK.unlock();
         }
         return null;
     }
 
     public static void notify(String xid, Boolean state) {
-        LOCK.lock();
-        try {
-            List<ConnectionProxy> list = concurrentHashMap.get(xid);
-            if (!CollectionUtils.isEmpty(list)) {
-                for (ConnectionProxy conn : list) {
-                    conn.notify(state);
+        synchronized (xid) {
+            try {
+                Map<String, List<ConnectionProxy>> concurrentHashMap = CONNECTION_HOLDER.get();
+                List<ConnectionProxy> list = concurrentHashMap.get(xid);
+                if (!CollectionUtils.isEmpty(list)) {
+                    for (ConnectionProxy conn : list) {
+                        conn.notify(state);
+                    }
+                    concurrentHashMap.remove(xid);
                 }
-                concurrentHashMap.remove(xid);
+            } finally {
+                CONNECTION_HOLDER.remove();
             }
-        } finally {
-            LOCK.unlock();
         }
     }
 
-    public static void remove(String xid) {
-        concurrentHashMap.remove(xid);
-    }
 }
