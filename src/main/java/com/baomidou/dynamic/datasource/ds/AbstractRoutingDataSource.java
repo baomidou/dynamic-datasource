@@ -40,29 +40,35 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource {
     @Override
     public Connection getConnection() throws SQLException {
         String xid = TransactionContext.getXID();
-        if (StringUtils.isEmpty(xid)) {
-            return determineDataSource().getConnection();
-        } else {
-            ConnectionProxy connection = ConnectionFactory.getConnection(xid);
-            return connection == null ? getConnectionProxy(xid, determineDataSource().getConnection()) : connection;
+        if (!StringUtils.isEmpty(xid)) {
+            String dsKey = DynamicDataSourceContextHolder.peek();
+            if (!StringUtils.isEmpty(dsKey)) {
+                Connection connection = ConnectionFactory.getConnection(dsKey);
+                if (connection == null) {
+                    connection = determineDataSource().getConnection();
+                    ConnectionFactory.putConnection(new ConnectionProxy(dsKey, connection));
+                    return connection;
+                }
+            }
         }
+        return determineDataSource().getConnection();
     }
 
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
         String xid = TransactionContext.getXID();
-        if (StringUtils.isEmpty(xid)) {
-            return determineDataSource().getConnection(username, password);
-        } else {
-            ConnectionProxy connection = ConnectionFactory.getConnection(xid);
-            return connection == null ? getConnectionProxy(xid, determineDataSource().getConnection(username, password)) : connection;
+        if (!StringUtils.isEmpty(xid)) {
+            String dsKey = DynamicDataSourceContextHolder.peek();
+            if (!StringUtils.isEmpty(dsKey)) {
+                Connection connection = ConnectionFactory.getConnection(dsKey);
+                if (connection == null) {
+                    connection = determineDataSource().getConnection(username, password);
+                    ConnectionFactory.putConnection(new ConnectionProxy(dsKey, connection));
+                    return connection;
+                }
+            }
         }
-    }
-
-    private Connection getConnectionProxy(String xid, Connection connection) {
-        ConnectionProxy connectionProxy = new ConnectionProxy(connection, DynamicDataSourceContextHolder.peek());
-        ConnectionFactory.putConnection(xid, connectionProxy);
-        return connectionProxy;
+        return determineDataSource().getConnection(username, password);
     }
 
     @Override

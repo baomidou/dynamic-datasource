@@ -38,15 +38,15 @@ public class DynamicTransactionAdvisor implements MethodInterceptor {
         }
         boolean state = true;
         Object o;
-        String xid = UUID.randomUUID().toString();
-        TransactionContext.bind(xid);
+        TransactionContext.bind(UUID.randomUUID().toString());
         try {
             o = methodInvocation.proceed();
         } catch (Exception e) {
             state = false;
             throw e;
         } finally {
-            ConnectionFactory.notify(xid, state);
+            ConnectionFactory.notify(state);
+
             TransactionContext.remove();
         }
         return o;

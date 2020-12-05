@@ -16,76 +16,52 @@
  */
 package com.baomidou.dynamic.datasource.tx;
 
-import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
-import org.springframework.util.CollectionUtils;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author funkye
  */
 public class ConnectionFactory {
 
-    private static final ThreadLocal<Map<String, List<ConnectionProxy>>> CONNECTION_HOLDER =
-            new ThreadLocal<Map<String, List<ConnectionProxy>>>() {
+    private static final ThreadLocal<List<ConnectionProxy>> CONNECTION_HOLDER =
+            new ThreadLocal<List<ConnectionProxy>>() {
                 @Override
-                protected Map<String, List<ConnectionProxy>> initialValue() {
-                    return new ConcurrentHashMap<>();
+                protected List<ConnectionProxy> initialValue() {
+                    return new ArrayList<>();
                 }
             };
 
-    public static void putConnection(String xid, ConnectionProxy connection) {
-        synchronized (xid) {
-            Map<String, List<ConnectionProxy>> concurrentHashMap = CONNECTION_HOLDER.get();
-            List<ConnectionProxy> list = concurrentHashMap.get(xid);
-            if (CollectionUtils.isEmpty(list)) {
-                list = new ArrayList<>();
-                concurrentHashMap.put(xid, list);
-            }
-            try {
-                connection.setAutoCommit(false);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            list.add(connection);
+    public static void putConnection(ConnectionProxy connection) {
+        List<ConnectionProxy> list = CONNECTION_HOLDER.get();
+        try {
+            connection.setAutoCommit(false);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
+        list.add(connection);
     }
 
-    public static ConnectionProxy getConnection(String xid) {
-        synchronized (xid) {
-            Map<String, List<ConnectionProxy>> concurrentHashMap = CONNECTION_HOLDER.get();
-            List<ConnectionProxy> list = concurrentHashMap.get(xid);
-            if (!CollectionUtils.isEmpty(list)) {
-                String ds = DynamicDataSourceContextHolder.peek();
-                for (ConnectionProxy connectionProxy : list) {
-                    if (connectionProxy.getDs().equals(ds)) {
-                        return connectionProxy;
-                    }
-                }
+    public static ConnectionProxy getConnection(String ds) {
+        List<ConnectionProxy> list = CONNECTION_HOLDER.get();
+        for (ConnectionProxy connectionProxy : list) {
+            if (connectionProxy.getDs().equals(ds)) {
+                return connectionProxy;
             }
         }
+
         return null;
     }
 
-    public static void notify(String xid, Boolean state) {
-        synchronized (xid) {
-            try {
-                Map<String, List<ConnectionProxy>> concurrentHashMap = CONNECTION_HOLDER.get();
-                List<ConnectionProxy> list = concurrentHashMap.get(xid);
-                if (!CollectionUtils.isEmpty(list)) {
-                    for (ConnectionProxy conn : list) {
-                        conn.notify(state);
-                    }
-                    concurrentHashMap.remove(xid);
-                }
-            } finally {
-                CONNECTION_HOLDER.remove();
+    public static void notify(Boolean state) {
+        try {
+            List<ConnectionProxy> list = CONNECTION_HOLDER.get();
+            for (ConnectionProxy conn : list) {
+                conn.notify(state);
             }
+        } finally {
+            CONNECTION_HOLDER.remove();
         }
     }
 

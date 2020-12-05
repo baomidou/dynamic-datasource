@@ -33,7 +33,7 @@ public class ConnectionProxy implements Connection {
 
     private String ds;
 
-    public ConnectionProxy(Connection connection, String ds) {
+    public ConnectionProxy(String ds, Connection connection) {
         this.connection = connection;
         this.ds = ds;
     }
