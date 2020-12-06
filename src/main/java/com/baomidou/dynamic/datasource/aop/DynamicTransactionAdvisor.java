@@ -45,8 +45,11 @@ public class DynamicTransactionAdvisor implements MethodInterceptor {
             state = false;
             throw e;
         } finally {
-            ConnectionFactory.notify(state);
-
+            if (state) {
+                ConnectionFactory.commit();
+            } else {
+                ConnectionFactory.rollback();
+            }
             TransactionContext.remove();
         }
         return o;

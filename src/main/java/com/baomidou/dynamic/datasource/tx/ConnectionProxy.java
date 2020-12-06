@@ -38,27 +38,16 @@ public class ConnectionProxy implements Connection {
         this.ds = ds;
     }
 
-    public void notify(Boolean commit) {
-        try {
-            if (commit) {
-                connection.commit();
-            } else {
-                connection.rollback();
-            }
-            connection.close();
-        } catch (Exception e) {
-            log.error(e.getLocalizedMessage(), e);
-        }
-    }
-
     @Override
     public void commit() throws SQLException {
-        // connection.commit();
+        connection.commit();
+        connection.close();
     }
 
     @Override
     public void rollback() throws SQLException {
-        // connection.rollback();
+        connection.rollback();
+        connection.close();
     }
 
     @Override
@@ -73,7 +62,7 @@ public class ConnectionProxy implements Connection {
 
     @Override
     public void setAutoCommit(boolean autoCommit) throws SQLException {
-        connection.setAutoCommit(false);
+        connection.setAutoCommit(autoCommit);
     }
 
     @Override

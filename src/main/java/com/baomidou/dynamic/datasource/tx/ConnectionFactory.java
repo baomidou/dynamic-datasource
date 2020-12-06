@@ -17,52 +17,63 @@
 package com.baomidou.dynamic.datasource.tx;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author funkye
  */
 public class ConnectionFactory {
 
-    private static final ThreadLocal<List<ConnectionProxy>> CONNECTION_HOLDER =
-            new ThreadLocal<List<ConnectionProxy>>() {
+    private static final ThreadLocal<Map<String, ConnectionProxy>> CONNECTION_HOLDER =
+            new ThreadLocal<Map<String, ConnectionProxy>>() {
                 @Override
-                protected List<ConnectionProxy> initialValue() {
-                    return new ArrayList<>();
+                protected Map<String, ConnectionProxy> initialValue() {
+                    return new ConcurrentHashMap<>();
                 }
             };
 
-    public static void putConnection(ConnectionProxy connection) {
-        List<ConnectionProxy> list = CONNECTION_HOLDER.get();
-        try {
-            connection.setAutoCommit(false);
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public static void putConnection(String dsKey, ConnectionProxy connection) {
+        Map<String, ConnectionProxy> map = CONNECTION_HOLDER.get();
+        if (!map.containsKey(dsKey)) {
+            try {
+                connection.setAutoCommit(false);
+                map.put(dsKey, connection);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-        list.add(connection);
     }
 
     public static ConnectionProxy getConnection(String ds) {
-        List<ConnectionProxy> list = CONNECTION_HOLDER.get();
-        for (ConnectionProxy connectionProxy : list) {
-            if (connectionProxy.getDs().equals(ds)) {
-                return connectionProxy;
-            }
-        }
-
-        return null;
+        return CONNECTION_HOLDER.get().get(ds);
     }
 
-    public static void notify(Boolean state) {
+    public static void commit() {
         try {
-            List<ConnectionProxy> list = CONNECTION_HOLDER.get();
-            for (ConnectionProxy conn : list) {
-                conn.notify(state);
+            for (ConnectionProxy conn : CONNECTION_HOLDER.get().values()) {
+                try {
+                    conn.commit();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         } finally {
             CONNECTION_HOLDER.remove();
         }
     }
 
+    public static void rollback() {
+        try {
+            for (ConnectionProxy conn : CONNECTION_HOLDER.get().values()) {
+                try {
+                    conn.rollback();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } finally {
+            CONNECTION_HOLDER.remove();
+        }
+    }
 }

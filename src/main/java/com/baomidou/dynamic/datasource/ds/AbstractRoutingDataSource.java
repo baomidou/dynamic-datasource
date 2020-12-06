@@ -43,12 +43,12 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource {
         if (!StringUtils.isEmpty(xid)) {
             String dsKey = DynamicDataSourceContextHolder.peek();
             if (!StringUtils.isEmpty(dsKey)) {
-                Connection connection = ConnectionFactory.getConnection(dsKey);
-                if (connection == null) {
-                    connection = determineDataSource().getConnection();
-                    ConnectionFactory.putConnection(new ConnectionProxy(dsKey, connection));
-                    return connection;
+                ConnectionProxy connectionProxy = ConnectionFactory.getConnection(dsKey);
+                if (connectionProxy == null) {
+                    connectionProxy = new ConnectionProxy(dsKey, determineDataSource().getConnection());
+                    ConnectionFactory.putConnection(dsKey, connectionProxy);
                 }
+                return connectionProxy;
             }
         }
         return determineDataSource().getConnection();
@@ -60,12 +60,12 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource {
         if (!StringUtils.isEmpty(xid)) {
             String dsKey = DynamicDataSourceContextHolder.peek();
             if (!StringUtils.isEmpty(dsKey)) {
-                Connection connection = ConnectionFactory.getConnection(dsKey);
-                if (connection == null) {
-                    connection = determineDataSource().getConnection(username, password);
-                    ConnectionFactory.putConnection(new ConnectionProxy(dsKey, connection));
-                    return connection;
+                ConnectionProxy connectionProxy = ConnectionFactory.getConnection(dsKey);
+                if (connectionProxy == null) {
+                    connectionProxy = new ConnectionProxy(dsKey, determineDataSource().getConnection(username, password));
+                    ConnectionFactory.putConnection(dsKey, connectionProxy);
                 }
+                return connectionProxy;
             }
         }
         return determineDataSource().getConnection(username, password);
