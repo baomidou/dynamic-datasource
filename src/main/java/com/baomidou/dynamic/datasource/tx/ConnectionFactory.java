@@ -30,62 +30,38 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ConnectionFactory {
 
-    private static final ThreadLocal<Map<String, List<ConnectionProxy>>> CONNECTION_HOLDER =
-            new ThreadLocal<Map<String, List<ConnectionProxy>>>() {
-                @Override
-                protected Map<String, List<ConnectionProxy>> initialValue() {
-                    return new ConcurrentHashMap<>();
-                }
-            };
-
-    public static void putConnection(String xid, ConnectionProxy connection) {
-        synchronized (xid) {
-            Map<String, List<ConnectionProxy>> concurrentHashMap = CONNECTION_HOLDER.get();
-            List<ConnectionProxy> list = concurrentHashMap.get(xid);
-            if (CollectionUtils.isEmpty(list)) {
-                list = new ArrayList<>();
-                concurrentHashMap.put(xid, list);
+    private static final ThreadLocal<Map<String, ConnectionProxy>> CONNECTION_HOLDER =
+        new ThreadLocal<Map<String, ConnectionProxy>>() {
+            @Override
+            protected Map<String, ConnectionProxy> initialValue() {
+                return new ConcurrentHashMap<>();
             }
+        };
+
+    public static void putConnection(String ds, ConnectionProxy connection) {
+        Map<String, ConnectionProxy> concurrentHashMap = CONNECTION_HOLDER.get();
+        if (!concurrentHashMap.containsKey(ds)) {
             try {
                 connection.setAutoCommit(false);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            list.add(connection);
+            concurrentHashMap.put(ds, connection);
         }
-
     }
 
-    public static ConnectionProxy getConnection(String xid) {
-        synchronized (xid) {
-            Map<String, List<ConnectionProxy>> concurrentHashMap = CONNECTION_HOLDER.get();
-            List<ConnectionProxy> list = concurrentHashMap.get(xid);
-            if (!CollectionUtils.isEmpty(list)) {
-                String ds = DynamicDataSourceContextHolder.peek();
-                for (ConnectionProxy connectionProxy : list) {
-                    if (connectionProxy.getDs().equals(ds)) {
-                        return connectionProxy;
-                    }
-                }
-            }
-        }
-        return null;
+    public static ConnectionProxy getConnection(String ds) {
+        return CONNECTION_HOLDER.get().get(ds);
     }
 
-    public static void notify(String xid, Boolean state) {
-        synchronized (xid) {
-            try {
-                Map<String, List<ConnectionProxy>> concurrentHashMap = CONNECTION_HOLDER.get();
-                List<ConnectionProxy> list = concurrentHashMap.get(xid);
-                if (!CollectionUtils.isEmpty(list)) {
-                    for (ConnectionProxy conn : list) {
-                        conn.notify(state);
-                    }
-                    concurrentHashMap.remove(xid);
-                }
-            } finally {
-                CONNECTION_HOLDER.remove();
+    public static void notify(Boolean state) {
+        try {
+            Map<String, ConnectionProxy> concurrentHashMap = CONNECTION_HOLDER.get();
+            for (ConnectionProxy connectionProxy : concurrentHashMap.values()) {
+                connectionProxy.notify(state);
             }
+        } finally {
+            CONNECTION_HOLDER.remove();
         }
     }
 

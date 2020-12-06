@@ -46,7 +46,7 @@ public class DynamicTransactionAdvisor implements MethodInterceptor {
             state = false;
             throw e;
         } finally {
-            ConnectionFactory.notify(xid, state);
+            ConnectionFactory.notify(state);
             TransactionContext.remove();
         }
         return o;
