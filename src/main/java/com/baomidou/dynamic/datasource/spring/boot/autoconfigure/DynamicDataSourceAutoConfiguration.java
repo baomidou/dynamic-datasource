@@ -90,7 +90,7 @@ public class DynamicDataSourceAutoConfiguration {
     @Role(value = BeanDefinition.ROLE_INFRASTRUCTURE)
     @Bean
     @ConditionalOnMissingBean
-    public Advisor dynamicDatasourceAnnotationAdvisor(DsProcessor dsProcessor) {
+    public DynamicDataSourceAnnotationAdvisor dynamicDatasourceAnnotationAdvisor(DsProcessor dsProcessor) {
         DynamicDataSourceAnnotationInterceptor interceptor = new DynamicDataSourceAnnotationInterceptor(properties.isAllowedPublicOnly(), dsProcessor);
         DynamicDataSourceAnnotationAdvisor advisor = new DynamicDataSourceAnnotationAdvisor(interceptor);
         advisor.setOrder(properties.getOrder());
@@ -100,7 +100,7 @@ public class DynamicDataSourceAutoConfiguration {
     @Role(value = BeanDefinition.ROLE_INFRASTRUCTURE)
     @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "seata", havingValue = "false", matchIfMissing = true)
     @Bean
-    public Advisor localTransactionAdvisor() {
+    public Advisor dynamicTransactionAdvisor() {
         AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
         pointcut.setExpression("@annotation(com.baomidou.dynamic.datasource.annotation.DSTransactional)");
         return new DefaultPointcutAdvisor(pointcut, new DynamicTransactionAdvisor());
