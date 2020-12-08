@@ -58,7 +58,7 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource {
             String ds = DynamicDataSourceContextHolder.peek();
             ConnectionProxy connection = ConnectionFactory.getConnection(ds);
             return connection == null ? getConnectionProxy(ds, determineDataSource().getConnection(username, password))
-                : connection;
+                    : connection;
         }
     }
 

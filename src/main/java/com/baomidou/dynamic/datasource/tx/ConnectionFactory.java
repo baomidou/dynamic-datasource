@@ -16,12 +16,7 @@
  */
 package com.baomidou.dynamic.datasource.tx;
 
-import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
-import org.springframework.util.CollectionUtils;
-
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -31,12 +26,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ConnectionFactory {
 
     private static final ThreadLocal<Map<String, ConnectionProxy>> CONNECTION_HOLDER =
-        new ThreadLocal<Map<String, ConnectionProxy>>() {
-            @Override
-            protected Map<String, ConnectionProxy> initialValue() {
-                return new ConcurrentHashMap<>();
-            }
-        };
+            new ThreadLocal<Map<String, ConnectionProxy>>() {
+                @Override
+                protected Map<String, ConnectionProxy> initialValue() {
+                    return new ConcurrentHashMap<>();
+                }
+            };
 
     public static void putConnection(String ds, ConnectionProxy connection) {
         Map<String, ConnectionProxy> concurrentHashMap = CONNECTION_HOLDER.get();
