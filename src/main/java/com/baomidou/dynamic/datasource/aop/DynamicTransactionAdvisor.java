@@ -18,20 +18,22 @@ package com.baomidou.dynamic.datasource.aop;
 
 import com.baomidou.dynamic.datasource.tx.ConnectionFactory;
 import com.baomidou.dynamic.datasource.tx.TransactionContext;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.springframework.util.StringUtils;
 
 import java.util.UUID;
 
 /**
  * @author funkye
  */
+@Slf4j
 public class DynamicTransactionAdvisor implements MethodInterceptor {
 
     @Override
     public Object invoke(MethodInvocation methodInvocation) throws Throwable {
-        if (StringUtils.isNotBlank(TransactionContext.getXID())) {
+        if (!StringUtils.isEmpty(TransactionContext.getXID())) {
             return methodInvocation.proceed();
         }
         boolean state = true;
@@ -44,7 +46,7 @@ public class DynamicTransactionAdvisor implements MethodInterceptor {
             state = false;
             throw e;
         } finally {
-            ConnectionFactory.notify(xid, state);
+            ConnectionFactory.notify(state);
             TransactionContext.remove();
         }
         return o;
