@@ -1,3 +1,13 @@
+# v3.3.0
+
+- feat:重要：本地多数据源事物支持。 @FUNKYE
+- feat:底层数据源保存方式修改为ConcurrentHashMap。 @刘尚
+- revert:重构底层Creator的创建规则。@刘尚
+- feat:添加同名数据源覆盖老数据源。@刘尚
+- feat:支持部分从接口继承DS的场景。@CQJames
+- fix:修复Druid防火墙一个参数设置错误。@mrf
+- fix:修复极端情况下的设置数据源异常处理。@happier233
+
 # v3.2.1
 
 - 提供注解查找非public方法的扩展。 @刘尚
@@ -14,7 +24,7 @@
 - 支持独立配置每个库的p6spy和seata的开启状态。
 - 修复druid设置超时回收时间方法错误。 @liupeng
 - 支持自定义注解，需继承DS。 @liupeng
-- 修复spring.aop.auto=false下不支持问题。  @刘尚
+- 修复spring.aop.auto=false下不支持问题。 @刘尚
 - 修复多层代理无法获取InvocationHandler的实现类的问题。 @刘尚
 - 修复mybatisPlus3下直接调用lamba方法不支持问题。 @刘尚
 - seata集成优化和示例项目更新1.3.0。  @a364176773
@@ -83,7 +93,6 @@
 - 修复关闭数据源异常。
 - 修复日志打印小错误。
 - 新增严格模式。
-
 
 # v2.5.3
 
