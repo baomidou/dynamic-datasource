@@ -60,7 +60,7 @@ public final class DruidWallConfigUtil {
         }
         Integer tempSelectLimit = c.getSelectLimit() == null ? g.getSelectLimit() : c.getSelectLimit();
         if (tempSelectLimit != null) {
-            c.setSelectLimit(tempSelectLimit);
+            wallConfig.setSelectLimit(tempSelectLimit);
         }
 
         Boolean tempCallAllow = c.getCallAllow() == null ? g.getCallAllow() : c.getCallAllow();
