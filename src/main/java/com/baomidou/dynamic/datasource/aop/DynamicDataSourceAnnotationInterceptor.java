@@ -45,9 +45,9 @@ public class DynamicDataSourceAnnotationInterceptor implements MethodInterceptor
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
+        String dsKey = determineDatasourceKey(invocation);
+        DynamicDataSourceContextHolder.push(dsKey);
         try {
-            String dsKey = determineDatasourceKey(invocation);
-            DynamicDataSourceContextHolder.push(dsKey);
             return invocation.proceed();
         } finally {
             DynamicDataSourceContextHolder.poll();
