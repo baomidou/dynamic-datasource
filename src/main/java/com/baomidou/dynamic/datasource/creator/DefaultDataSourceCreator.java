@@ -93,7 +93,11 @@ public class DefaultDataSourceCreator implements DataSourceCreator {
         Boolean enabledSeata = properties.getSeata() && dataSourceProperty.getSeata();
         SeataMode seataMode = properties.getSeataMode();
         if (enabledSeata) {
-            targetDataSource = SeataMode.XA == seataMode ? new DataSourceProxyXA(dataSource) : new DataSourceProxy(dataSource);
+            if (SeataMode.XA == seataMode) {
+                targetDataSource = new DataSourceProxyXA(dataSource);
+            } else {
+                targetDataSource = new DataSourceProxy(dataSource);
+            }
             log.debug("dynamic-datasource [{}] wrap seata plugin transaction mode [{}]", name, seataMode);
         }
         return new ItemDataSource(name, dataSource, targetDataSource, enabledP6spy, enabledSeata, seataMode);
