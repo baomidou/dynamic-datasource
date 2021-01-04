@@ -50,7 +50,7 @@ dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成�
 11. 支持  **多层数据源嵌套切换** 。（ServiceA >>>  ServiceB >>> ServiceC）。
 12. 提供对shiro，sharding-jdbc,quartz等第三方库集成的方案,注意事项和示例。
 13. 提供  **基于seata的分布式事务方案。** 附：不支持原生spring事务。
-13. 提供  **本地多数据源事务方案。** 附：不支持原生spring事务。
+14. 提供  **本地多数据源事务方案。** 附：不支持原生spring事务。
 
 # 约定
 
