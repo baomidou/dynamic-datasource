@@ -74,7 +74,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
-            <version>1.2.3</version>
+            <version>1.2.4</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -103,13 +103,13 @@
         <dependency>
             <groupId>p6spy</groupId>
             <artifactId>p6spy</artifactId>
-            <version>3.8.7</version>
+            <version>3.9.1</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>io.seata</groupId>
             <artifactId>seata-all</artifactId>
-            <version>1.4.0</version>
+            <version>1.4.1</version>
             <exclusions>
                 <exclusion>
                     <artifactId>druid</artifactId>
