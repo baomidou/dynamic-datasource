@@ -40,10 +40,10 @@ import java.util.List;
 @EnableConfigurationProperties(DynamicDataSourceProperties.class)
 public class DynamicDataSourceCreatorAutoConfiguration {
 
-    private static final int JNDI_ORDER = 1000;
-    private static final int DRUID_ORDER = 2000;
-    private static final int HIKARI_ORDER = 3000;
-    private static final int DEFAULT_ORDER = 5000;
+    public static final int JNDI_ORDER = 1000;
+    public static final int DRUID_ORDER = 2000;
+    public static final int HIKARI_ORDER = 3000;
+    public static final int DEFAULT_ORDER = 5000;
     private final DynamicDataSourceProperties properties;
 
     @Primary
