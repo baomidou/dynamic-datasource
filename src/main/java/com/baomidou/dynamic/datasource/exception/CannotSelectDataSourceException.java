@@ -14,27 +14,21 @@
  * limitations under the License.
  * <pre/>
  */
-package com.baomidou.dynamic.datasource.strategy;
-
-import javax.sql.DataSource;
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
+package com.baomidou.dynamic.datasource.exception;
 
 /**
- * Random strategy to switch a database
+ * exception when  druid dataSource cannot select
  *
- * @author TaoYu Kanyuxia
- * @since 1.0.0
+ * @author TaoYu
+ * @since 2.5.6
  */
-public class RandomDynamicDataSourceStrategy implements DynamicDataSourceStrategy {
+public class CannotSelectDataSourceException extends RuntimeException {
 
-    @Override
-    public DataSource determineDataSource(List<DataSource> dataSources) {
-        return dataSources.get(ThreadLocalRandom.current().nextInt(dataSources.size()));
+    public CannotSelectDataSourceException(String message) {
+        super(message);
     }
 
-    @Override
-    public String determineDSKey(List<String> dsNames) {
-        return dsNames.get(ThreadLocalRandom.current().nextInt(dsNames.size()));
+    public CannotSelectDataSourceException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

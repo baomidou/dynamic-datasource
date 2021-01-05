@@ -65,8 +65,10 @@ public final class DynamicDataSourceContextHolder {
      *
      * @param ds 数据源名称
      */
-    public static void push(String ds) {
-        LOOKUP_KEY_HOLDER.get().push(StringUtils.isEmpty(ds) ? "" : ds);
+    public static String push(String ds) {
+        String dataSourceStr = StringUtils.isEmpty(ds) ? "" : ds;
+        LOOKUP_KEY_HOLDER.get().push(dataSourceStr);
+        return dataSourceStr;
     }
 
     /**
