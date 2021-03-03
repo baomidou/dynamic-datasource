@@ -48,15 +48,11 @@ public class DbHealthIndicator extends AbstractHealthIndicator {
      */
     private final DataSource dataSource;
 
-
-    public DbHealthIndicator(DataSource dataSource, String validQuery,HealthCheckAdapter healthCheckAdapter) {
+    public DbHealthIndicator(DataSource dataSource, String validQuery, HealthCheckAdapter healthCheckAdapter) {
         this.dataSource = dataSource;
         this.validQuery = validQuery;
         this.healthCheckAdapter = healthCheckAdapter;
     }
-
-
-
 
     @Override
     protected void doHealthCheck(Health.Builder builder) throws Exception {
@@ -69,7 +65,7 @@ public class DbHealthIndicator extends AbstractHealthIndicator {
                 Boolean resultAvailable = false;
                 try {
                     resultAvailable = queryAvailable(dataSource.getValue());
-                } catch (Throwable ignore){
+                } catch (Throwable ignore) {
                 } finally {
                     healthCheckAdapter.putHealth(dataSource.getKey(), resultAvailable);
                     builder.withDetail(dataSource.getKey(), resultAvailable);
@@ -87,7 +83,7 @@ public class DbHealthIndicator extends AbstractHealthIndicator {
                 } else {
                     builder.status(Status.UP);
                 }
-            }else{
+            } else {
                 builder.status(Status.DOWN);
             }
 

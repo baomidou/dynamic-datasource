@@ -28,11 +28,7 @@ import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
-import org.apache.ibatis.plugin.Interceptor;
-import org.apache.ibatis.plugin.Intercepts;
-import org.apache.ibatis.plugin.Invocation;
-import org.apache.ibatis.plugin.Plugin;
-import org.apache.ibatis.plugin.Signature;
+import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,14 +52,14 @@ import java.util.Properties;
 public class MasterSlaveAutoRoutingPlugin implements Interceptor {
 
     @Autowired
+    protected DataSource dynamicDataSource;
+
+    @Autowired
     private DynamicDataSourceProperties properties;
 
     @Lazy
     @Autowired(required = false)
     private HealthCheckAdapter healthCheckAdapter;
-
-    @Autowired
-    protected DataSource dynamicDataSource;
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
@@ -101,9 +97,7 @@ public class MasterSlaveAutoRoutingPlugin implements Interceptor {
                 if (health) {
                     dataSource = dsKey;
                 } else {
-                    if (log.isWarnEnabled()) {
-                        log.warn("从库无法连接, 请检查数据库配置, key: {}", dsKey);
-                    }
+                    log.warn("从库无法连接, 请检查数据库配置, key: {}", dsKey);
                 }
             }
             // 从库无法连接, 或者当前数据源需要操作主库
@@ -114,9 +108,7 @@ public class MasterSlaveAutoRoutingPlugin implements Interceptor {
                 dataSource = groupDataSource.determineDsKey();
                 boolean health = healthCheckAdapter.getHealth(dataSource);
                 if (!health) {
-                    if (log.isWarnEnabled()) {
-                        log.warn("主库无法连接, 请检查数据库配置, key: {}", dataSource);
-                    }
+                    log.warn("主库无法连接, 请检查数据库配置, key: {}", dataSource);
                 }
             }
         } else {

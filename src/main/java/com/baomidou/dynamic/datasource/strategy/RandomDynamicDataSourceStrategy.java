@@ -16,7 +16,6 @@
  */
 package com.baomidou.dynamic.datasource.strategy;
 
-import javax.sql.DataSource;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -27,11 +26,6 @@ import java.util.concurrent.ThreadLocalRandom;
  * @since 1.0.0
  */
 public class RandomDynamicDataSourceStrategy implements DynamicDataSourceStrategy {
-
-    @Override
-    public DataSource determineDataSource(List<DataSource> dataSources) {
-        return dataSources.get(ThreadLocalRandom.current().nextInt(dataSources.size()));
-    }
 
     @Override
     public String determineDSKey(List<String> dsNames) {

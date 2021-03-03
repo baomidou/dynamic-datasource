@@ -29,9 +29,8 @@ public class HealthCheckAdapter {
      */
     private static final Map<String, Boolean> DB_HEALTH = new ConcurrentHashMap<>();
 
-
     public void putHealth(String key, Boolean healthState) {
-        DB_HEALTH.put(key,healthState);
+        DB_HEALTH.put(key, healthState);
     }
 
     /**

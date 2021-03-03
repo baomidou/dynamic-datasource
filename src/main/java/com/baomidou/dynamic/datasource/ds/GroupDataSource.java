@@ -60,17 +60,15 @@ public class GroupDataSource {
         return dataSourceMap.remove(ds);
     }
 
-    public DataSource determineDataSource() {
-        String dsKey = determineDsKey();
-        return dataSourceMap.get(dsKey);
-    }
-
     public String determineDsKey() {
         return dynamicDataSourceStrategy.determineDSKey(new ArrayList<>(dataSourceMap.keySet()));
+    }
+
+    public DataSource determineDataSource() {
+        return dataSourceMap.get(determineDsKey());
     }
 
     public int size() {
         return dataSourceMap.size();
     }
-
 }
