@@ -16,18 +16,18 @@
 package com.baomidou.dynamic.datasource.exception;
 
 /**
- * exception when  druid dataSource cannot select
+ * exception when dataSource cannot select
  *
  * @author TaoYu
  * @since 2.5.6
  */
-public class CannotSelectDataSourceException extends RuntimeException {
+public class CannotFindDataSourceException extends RuntimeException {
 
-    public CannotSelectDataSourceException(String message) {
+    public CannotFindDataSourceException(String message) {
         super(message);
     }
 
-    public CannotSelectDataSourceException(String message, Throwable cause) {
+    public CannotFindDataSourceException(String message, Throwable cause) {
         super(message, cause);
     }
 }
