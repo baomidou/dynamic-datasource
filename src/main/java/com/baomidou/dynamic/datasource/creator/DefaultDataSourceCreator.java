@@ -39,18 +39,12 @@ import java.util.List;
  */
 @Slf4j
 @Setter
-public class DefaultDataSourceCreator implements DataSourceCreator {
+public class DefaultDataSourceCreator {
 
     private DynamicDataSourceProperties properties;
     private List<DataSourceCreator> creators;
 
-    @Override
     public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
-        return createDataSource(dataSourceProperty, properties.getPublicKey());
-    }
-
-    @Override
-    public DataSource createDataSource(DataSourceProperty dataSourceProperty, String publicKey) {
         DataSourceCreator dataSourceCreator = null;
         for (DataSourceCreator creator : this.creators) {
             if (creator.support(dataSourceProperty)) {
@@ -61,7 +55,7 @@ public class DefaultDataSourceCreator implements DataSourceCreator {
         if (dataSourceCreator == null) {
             throw new IllegalStateException("creator must not be null,please check the DataSourceCreator");
         }
-        DataSource dataSource = dataSourceCreator.createDataSource(dataSourceProperty, publicKey);
+        DataSource dataSource = dataSourceCreator.createDataSource(dataSourceProperty, properties.getPublicKey());
         this.runScrip(dataSource, dataSourceProperty);
         return wrapDataSource(dataSource, dataSourceProperty);
     }
@@ -101,14 +95,5 @@ public class DefaultDataSourceCreator implements DataSourceCreator {
             log.debug("dynamic-datasource [{}] wrap seata plugin transaction mode [{}]", name, seataMode);
         }
         return new ItemDataSource(name, dataSource, targetDataSource, enabledP6spy, enabledSeata, seataMode);
-    }
-
-    public void setDataSourceCreators(List<DataSourceCreator> dataSourceCreator) {
-        this.creators = dataSourceCreator;
-    }
-
-    @Override
-    public boolean support(DataSourceProperty dataSourceProperty) {
-        return true;
     }
 }

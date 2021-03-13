@@ -52,7 +52,7 @@ public class DynamicDataSourceCreatorAutoConfiguration {
     public DefaultDataSourceCreator dataSourceCreator(List<DataSourceCreator> dataSourceCreators) {
         DefaultDataSourceCreator defaultDataSourceCreator = new DefaultDataSourceCreator();
         defaultDataSourceCreator.setProperties(properties);
-        defaultDataSourceCreator.setDataSourceCreators(dataSourceCreators);
+        defaultDataSourceCreator.setCreators(dataSourceCreators);
         return defaultDataSourceCreator;
     }
 
