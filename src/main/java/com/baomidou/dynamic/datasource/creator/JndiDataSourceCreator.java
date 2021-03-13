@@ -31,6 +31,10 @@ public class JndiDataSourceCreator implements DataSourceCreator {
 
     private static final JndiDataSourceLookup LOOKUP = new JndiDataSourceLookup();
 
+    public DataSource createDataSource(String jndiName) {
+        return LOOKUP.getDataSource(jndiName);
+    }
+
     /**
      * 创建JNDI数据源
      *
