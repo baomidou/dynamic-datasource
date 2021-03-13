@@ -29,7 +29,7 @@ import java.util.UUID;
  * @author funkye
  */
 @Slf4j
-public class DynamicTransactionAdvisor implements MethodInterceptor {
+public class DynamicLocalTransactionAdvisor implements MethodInterceptor {
 
     @Override
     public Object invoke(MethodInvocation methodInvocation) throws Throwable {

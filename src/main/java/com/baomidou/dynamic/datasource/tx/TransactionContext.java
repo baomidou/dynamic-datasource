@@ -18,22 +18,12 @@ package com.baomidou.dynamic.datasource.tx;
 
 import org.springframework.util.StringUtils;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * @author funkye
  */
 public class TransactionContext {
 
-    private static final ThreadLocal<Map<String, String>> CONTEXT_HOLDER = new ThreadLocal<Map<String, String>>() {
-        @Override
-        protected Map<String, String> initialValue() {
-            return new HashMap<>();
-        }
-    };
-
-    private static final String XID = "LOCAL_XID";
+    private static final ThreadLocal<String> CONTEXT_HOLDER = new ThreadLocal<>();
 
     /**
      * Gets xid.
@@ -41,7 +31,7 @@ public class TransactionContext {
      * @return the xid
      */
     public static String getXID() {
-        String xid = CONTEXT_HOLDER.get().get(XID);
+        String xid = CONTEXT_HOLDER.get();
         if (!StringUtils.isEmpty(xid)) {
             return xid;
         }
@@ -54,7 +44,7 @@ public class TransactionContext {
      * @return the string
      */
     public static String unbind(String xid) {
-        CONTEXT_HOLDER.get().remove(xid);
+        CONTEXT_HOLDER.remove();
         return xid;
     }
 
@@ -64,7 +54,7 @@ public class TransactionContext {
      * @return the string
      */
     public static String bind(String xid) {
-        CONTEXT_HOLDER.get().put(XID, xid);
+        CONTEXT_HOLDER.set(xid);
         return xid;
     }
 

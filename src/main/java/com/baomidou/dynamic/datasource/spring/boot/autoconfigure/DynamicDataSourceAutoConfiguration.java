@@ -19,7 +19,7 @@ package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationInterceptor;
-import com.baomidou.dynamic.datasource.aop.DynamicTransactionAdvisor;
+import com.baomidou.dynamic.datasource.aop.DynamicLocalTransactionAdvisor;
 import com.baomidou.dynamic.datasource.processor.DsHeaderProcessor;
 import com.baomidou.dynamic.datasource.processor.DsProcessor;
 import com.baomidou.dynamic.datasource.processor.DsSessionProcessor;
@@ -103,7 +103,7 @@ public class DynamicDataSourceAutoConfiguration {
     public Advisor dynamicTransactionAdvisor() {
         AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
         pointcut.setExpression("@annotation(com.baomidou.dynamic.datasource.annotation.DSTransactional)");
-        return new DefaultPointcutAdvisor(pointcut, new DynamicTransactionAdvisor());
+        return new DefaultPointcutAdvisor(pointcut, new DynamicLocalTransactionAdvisor());
     }
 
     @Bean
