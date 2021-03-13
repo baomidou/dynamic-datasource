@@ -1,8 +1,19 @@
+# v3.3.2
+
+- feat:重要更新-支持无数据源启动，支持配置懒启动数据源。
+- refactor:重要更新-Druid不再默认启动wall的filter。
+- refactor:重要更新-DataSourceCreator移除含有publicKey的方法，由DefaultDataSourceCreator传递。
+- refactor:DefaultDataSourceCreator独立不继承DataSourceCreator。
+- refactor:简化本地事务ThreadLocal。
+- feat: 健康检查优化。
+- style:license format。
+- chore:remove travis。
+
 # v3.3.1
 
 - fix: 修复打包后强制依赖seata报错。
 
-# v3.3.0
+# v3.3.0 BUG版本不能使用
 
 - feat:重要：本地多数据源事物支持。 @FUNKYE
 - feat:底层数据源保存方式修改为ConcurrentHashMap。 @刘尚
@@ -46,7 +57,7 @@
 - 部分日志等级降低为debug。
 - druid部分日志添加集成引导。
 
-# v3.1.0
+# v3.1.0 BUG版本不能使用
 
 - 删除数据源不允许删除主数据源。
 - 使用NamedInheritableThreadLocal。
@@ -153,17 +164,17 @@
 - 重构多级数据源切换。
 - 示例项目重构。
 
-# v2.3.3 问题版本-不能使用
+# v2.3.3 BUG版本不能使用
 - 支持嵌套下多级的数据源切换(service1 mysql调用service2 oracle)。
 
 https://gitee.com/baomidou/dynamic-datasource-spring-boot-starter/issues/IO33C
 
 - 修复spel对request和session的支持。
 
-# v2.3.2 问题版本-不能使用
+# v2.3.2 BUG版本不能使用
 - 修复在不需要session的场景中自动注入session。
 
-# v2.3.1 问题版本-不能使用
+# v2.3.1 BUG版本不能使用
 - 修复2.3.0中使用spel session 和header的取值错误。
 
 # v.2.3.0
@@ -179,7 +190,7 @@ https://gitee.com/baomidou/dynamic-datasource-spring-boot-starter/issues/IO33C
 - 增加在组内数据源为空时使用默认数据源。
 - 去除启动时校验组内只有单个数据源。
 
-# v2.2.2 问题版本-不能使用
+# v2.2.2 BUG版本不能使用
 
 - 修复上个版本mp3适配失败的Bug。
 

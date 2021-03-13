@@ -38,20 +38,21 @@ dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成�
 
 # 特性
 
-1. 支持 **数据源分组** ，适用于多种场景 纯粹多库  读写分离  一主多从  混合模式。
-2. 支持数据库敏感配置信息 **加密**  ENC()。
-3. 支持每个数据库独立初始化表结构schema和数据库database。
-4. 支持 **自定义注解** ，需继承DS(3.2.0+)。
-5. 提供对Druid，Mybatis-Plus，P6sy，Jndi的快速集成。
-6. 简化Druid和HikariCp配置，提供 **全局参数配置** 。配置一次，全局通用。
-7. 提供 **自定义数据源来源** 方案。
-8. 提供项目启动后 **动态增加移除数据源** 方案。
-9. 提供Mybatis环境下的  **纯读写分离** 方案。
-10. 提供使用 **spel动态参数** 解析数据源方案。内置spel，session，header，支持自定义。
-11. 支持  **多层数据源嵌套切换** 。（ServiceA >>>  ServiceB >>> ServiceC）。
-12. 提供对shiro，sharding-jdbc,quartz等第三方库集成的方案,注意事项和示例。
-13. 提供  **基于seata的分布式事务方案。** 附：不支持原生spring事务。
-14. 提供  **本地多数据源事务方案。** 附：不支持原生spring事务。
+1. 支持 **数据源分组** ，适用于多种场景 纯粹多库 读写分离 一主多从 混合模式。
+2. 支持无数据源启动，支持配置懒启动数据源(3.3.2+)。
+3. 支持数据库敏感配置信息 **加密**  ENC()。
+4. 支持每个数据库独立初始化表结构schema和数据库database。
+5. 支持 **自定义注解** ，需继承DS(3.2.0+)。
+6. 提供对Druid，Mybatis-Plus，P6sy，Jndi的快速集成。
+7. 简化Druid和HikariCp配置，提供 **全局参数配置** 。配置一次，全局通用。
+8. 提供 **自定义数据源来源** 方案。
+9. 提供项目启动后 **动态增加移除数据源** 方案。
+10. 提供Mybatis环境下的  **纯读写分离** 方案。
+11. 提供使用 **spel动态参数** 解析数据源方案。内置spel，session，header，支持自定义。
+12. 支持  **多层数据源嵌套切换** 。（ServiceA >>>  ServiceB >>> ServiceC）。
+13. 提供对shiro，sharding-jdbc,quartz等第三方库集成的方案,注意事项和示例。
+14. 提供  **基于seata的分布式事务方案。** 附：不支持原生spring事务。
+15. 提供  **本地多数据源事务方案。** 附：不支持原生spring事务(3.3.1+)。
 
 # 约定
 
@@ -60,7 +61,7 @@ dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成�
 3. 切换数据源可以是组名，也可以是具体数据源名称。组名则切换时采用负载均衡算法切换。
 4. 默认的数据源名称为  **master** ，你可以通过 `spring.datasource.dynamic.primary` 修改。
 5. 方法上的注解优先于类上注解。
-6. 强烈建议只在service的类和方法上添加注解，不建议在mapper上添加注解。
+6. DS支持继承抽象类上的DS，暂不支持继承接口上的DS。
 
 # 使用方法
 
@@ -80,7 +81,8 @@ spring:
   datasource:
     dynamic:
       primary: master #设置默认的数据源或者数据源组,默认值即为master
-      strict: false #设置严格模式,默认false不启动. 启动后在未匹配到指定数据源时候会抛出异常,不启动则使用默认数据源.
+      lazy: false #默认立即初始化数据源，true则支持在需要建立连接时再初始化数据源
+      strict: false #设置严格模式,默认false不启动. 启动后在未匹配到指定数据源时候会抛出异常,不启动则使用默认数据源
       datasource:
         master:
           url: jdbc:mysql://xx.xx.xx.xx:3306/dynamic
@@ -101,6 +103,7 @@ spring:
           data: db/data.sql # 配置则生效,自动初始化数据
           continue-on-error: true # 默认true,初始化失败是否继续
           separator: ";" # sql默认分号分隔符
+          lazy: true #可独立配置是否启用懒启动
           
        #......省略
        #以上会配置一个默认库master，一个组slave下有两个子库slave_1,slave_2
