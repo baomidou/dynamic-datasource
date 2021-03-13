@@ -178,7 +178,7 @@ public class DruidConfig {
         //filters单独处理，默认了stat,wall
         String filters = this.filters == null ? g.getFilters() : this.filters;
         if (filters == null) {
-            filters = "stat,wall";
+            filters = "stat";
         }
         if (publicKey != null && publicKey.length() > 0 && !filters.contains("config")) {
             filters += ",config";
@@ -253,8 +253,8 @@ public class DruidConfig {
             if (connectProperties == null) {
                 connectProperties = new Properties();
             }
-            log.debug("dynamic-datasource detect druid publicKey,It is highly recommended that you use the built-in encryption method \n " +
-                    "https://github.com/baomidou/dynamic-datasource-spring-boot-starter/wiki/ENCODE");
+            log.info("dynamic-datasource detect druid publicKey,It is highly recommended that you use the built-in encryption method \n " +
+                    "https://dynamic-datasource.com/guide/advance/Encode.html");
             connectProperties.setProperty("config.decrypt", "true");
             connectProperties.setProperty("config.decrypt.key", publicKey);
         }
