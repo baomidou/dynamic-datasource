@@ -55,37 +55,6 @@ public class HikariDataSourceCreator extends AbstractDataSourceCreator implement
 
     private HikariCpConfig hikariCpConfig;
 
-    @Override
-    public DataSource createDataSource(DataSourceProperty dataSourceProperty, String publicKey) {
-        if (StringUtils.isEmpty(dataSourceProperty.getPublicKey())) {
-            dataSourceProperty.setPublicKey(publicKey);
-        }
-        HikariConfig config = dataSourceProperty.getHikari().toHikariConfig(hikariCpConfig);
-        config.setUsername(dataSourceProperty.getUsername());
-        config.setPassword(dataSourceProperty.getPassword());
-        config.setJdbcUrl(dataSourceProperty.getUrl());
-        config.setPoolName(dataSourceProperty.getPoolName());
-        String driverClassName = dataSourceProperty.getDriverClassName();
-        if (!StringUtils.isEmpty(driverClassName)) {
-            config.setDriverClassName(driverClassName);
-        }
-        config.validate();
-        HikariDataSource dataSource = new HikariDataSource();
-        try {
-            configCopyMethod.invoke(config, dataSource);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException("HikariConfig failed to copy to HikariDataSource", e);
-        }
-        return dataSource;
-    }
-
-
-    @Override
-    public boolean support(DataSourceProperty dataSourceProperty) {
-        Class<? extends DataSource> type = dataSourceProperty.getType();
-        return (type == null && hikariExists) || (type != null && HIKARI_DATASOURCE.equals(type.getName()));
-    }
-
     /**
      * to support springboot 1.5 and 2.x
      * HikariConfig 2.x use 'copyState' to copy config
@@ -104,7 +73,39 @@ public class HikariDataSourceCreator extends AbstractDataSourceCreator implement
             return;
         } catch (NoSuchMethodException ignored) {
         }
-
         throw new RuntimeException("HikariConfig does not has 'copyState' or 'copyStateTo' method!");
+    }
+
+    @Override
+    public DataSource createDataSource(DataSourceProperty dataSourceProperty, String publicKey) {
+        if (StringUtils.isEmpty(dataSourceProperty.getPublicKey())) {
+            dataSourceProperty.setPublicKey(publicKey);
+        }
+        HikariConfig config = dataSourceProperty.getHikari().toHikariConfig(hikariCpConfig);
+        config.setUsername(dataSourceProperty.getUsername());
+        config.setPassword(dataSourceProperty.getPassword());
+        config.setJdbcUrl(dataSourceProperty.getUrl());
+        config.setPoolName(dataSourceProperty.getPoolName());
+        String driverClassName = dataSourceProperty.getDriverClassName();
+        if (!StringUtils.isEmpty(driverClassName)) {
+            config.setDriverClassName(driverClassName);
+        }
+        if (!dataSourceProperty.getLazy()) {
+            return new HikariDataSource(config);
+        }
+        config.validate();
+        HikariDataSource dataSource = new HikariDataSource();
+        try {
+            configCopyMethod.invoke(config, dataSource);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException("HikariConfig failed to copy to HikariDataSource", e);
+        }
+        return dataSource;
+    }
+
+    @Override
+    public boolean support(DataSourceProperty dataSourceProperty) {
+        Class<? extends DataSource> type = dataSourceProperty.getType();
+        return (type == null && hikariExists) || (type != null && HIKARI_DATASOURCE.equals(type.getName()));
     }
 }

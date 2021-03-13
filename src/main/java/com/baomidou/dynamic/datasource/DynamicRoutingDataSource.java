@@ -250,7 +250,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
         } else if (dataSourceMap.containsKey(primary)) {
             log.info("dynamic-datasource initial loaded [{}] datasource,primary datasource named [{}]", dataSources.size(), primary);
         } else {
-            throw new RuntimeException("dynamic-datasource Please check the setting of primary");
+            log.warn("dynamic-datasource initial loaded [{}] datasource,Please add your primary datasource or check your configuration", dataSources.size());
         }
     }
 

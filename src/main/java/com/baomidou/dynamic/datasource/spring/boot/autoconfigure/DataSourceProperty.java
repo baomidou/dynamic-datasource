@@ -88,6 +88,10 @@ public class DataSourceProperty {
      */
     private Boolean p6spy = true;
     /**
+     * lazy init datasource
+     */
+    private Boolean lazy;
+    /**
      * 错误是否继续 默认 true
      */
     private boolean continueOnError = true;

@@ -66,6 +66,10 @@ public class DynamicDataSourceProperties {
      */
     private Boolean seata = false;
     /**
+     * 是否懒加载数据源
+     */
+    private Boolean lazy = false;
+    /**
      * seata使用模式，默认AT
      */
     private SeataMode seataMode = SeataMode.AT;

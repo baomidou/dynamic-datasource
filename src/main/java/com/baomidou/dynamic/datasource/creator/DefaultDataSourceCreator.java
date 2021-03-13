@@ -55,6 +55,10 @@ public class DefaultDataSourceCreator {
         if (dataSourceCreator == null) {
             throw new IllegalStateException("creator must not be null,please check the DataSourceCreator");
         }
+        Boolean lazy = dataSourceProperty.getLazy();
+        if (lazy == null) {
+            dataSourceProperty.setLazy(properties.getLazy());
+        }
         DataSource dataSource = dataSourceCreator.createDataSource(dataSourceProperty, properties.getPublicKey());
         this.runScrip(dataSource, dataSourceProperty);
         return wrapDataSource(dataSource, dataSourceProperty);

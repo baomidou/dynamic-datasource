@@ -84,46 +84,56 @@ public class DruidDataSourceCreator extends AbstractDataSourceCreator implements
         }
         DruidConfig config = dataSourceProperty.getDruid();
         Properties properties = config.toProperties(gConfig);
-        String filters = properties.getProperty("druid.filters");
-        List<Filter> proxyFilters = new ArrayList<>(2);
-        if (!StringUtils.isEmpty(filters) && filters.contains("stat")) {
-            StatFilter statFilter = new StatFilter();
-            statFilter.configFromProperties(properties);
-            proxyFilters.add(statFilter);
-        }
-        if (!StringUtils.isEmpty(filters) && filters.contains("wall")) {
-            WallConfig wallConfig = DruidWallConfigUtil.toWallConfig(dataSourceProperty.getDruid().getWall(), gConfig.getWall());
-            WallFilter wallFilter = new WallFilter();
-            wallFilter.setConfig(wallConfig);
-            proxyFilters.add(wallFilter);
-        }
-        if (!StringUtils.isEmpty(filters) && filters.contains("slf4j")) {
-            Slf4jLogFilter slf4jLogFilter = new Slf4jLogFilter();
-            // 由于properties上面被用了，LogFilter不能使用configFromProperties方法，这里只能一个个set了。
-            DruidSlf4jConfig slf4jConfig = gConfig.getSlf4j();
-            slf4jLogFilter.setStatementLogEnabled(slf4jConfig.getEnable());
-            slf4jLogFilter.setStatementExecutableSqlLogEnable(slf4jConfig.getStatementExecutableSqlLogEnable());
-            proxyFilters.add(slf4jLogFilter);
-        }
 
+        List<Filter> proxyFilters = this.initFilters(dataSourceProperty, properties);
+        dataSource.setProxyFilters(proxyFilters);
+
+        dataSource.configFromPropety(properties);
+        //连接参数单独设置
+        dataSource.setConnectProperties(config.getConnectionProperties());
+        //设置druid内置properties不支持的的参数
+        this.setParam(dataSource, config);
+
+        if (!dataSourceProperty.getLazy()) {
+            try {
+                dataSource.init();
+            } catch (SQLException e) {
+                throw new ErrorCreateDataSourceException("druid create error", e);
+            }
+        }
+        return dataSource;
+    }
+
+    private List<Filter> initFilters(DataSourceProperty dataSourceProperty, Properties properties) {
+        List<Filter> proxyFilters = new ArrayList<>(2);
+        String filters = properties.getProperty("druid.filters");
+        if (!StringUtils.isEmpty(filters)) {
+            if (filters.contains("stat")) {
+                StatFilter statFilter = new StatFilter();
+                statFilter.configFromProperties(properties);
+                proxyFilters.add(statFilter);
+            }
+            if (filters.contains("wall")) {
+                WallConfig wallConfig = DruidWallConfigUtil.toWallConfig(dataSourceProperty.getDruid().getWall(), gConfig.getWall());
+                WallFilter wallFilter = new WallFilter();
+                wallFilter.setConfig(wallConfig);
+                proxyFilters.add(wallFilter);
+            }
+            if (filters.contains("slf4j")) {
+                Slf4jLogFilter slf4jLogFilter = new Slf4jLogFilter();
+                // 由于properties上面被用了，LogFilter不能使用configFromProperties方法，这里只能一个个set了。
+                DruidSlf4jConfig slf4jConfig = gConfig.getSlf4j();
+                slf4jLogFilter.setStatementLogEnabled(slf4jConfig.getEnable());
+                slf4jLogFilter.setStatementExecutableSqlLogEnable(slf4jConfig.getStatementExecutableSqlLogEnable());
+                proxyFilters.add(slf4jLogFilter);
+            }
+        }
         if (this.applicationContext != null) {
             for (String filterId : gConfig.getProxyFilters()) {
                 proxyFilters.add(this.applicationContext.getBean(filterId, Filter.class));
             }
         }
-        dataSource.setProxyFilters(proxyFilters);
-        dataSource.configFromPropety(properties);
-        //连接参数单独设置
-        dataSource.setConnectProperties(config.getConnectionProperties());
-        //设置druid内置properties不支持的的参数
-        setParam(dataSource, config);
-
-        try {
-            dataSource.init();
-        } catch (SQLException e) {
-            throw new ErrorCreateDataSourceException("druid create error", e);
-        }
-        return dataSource;
+        return proxyFilters;
     }
 
     private void setParam(DruidDataSource dataSource, DruidConfig config) {
