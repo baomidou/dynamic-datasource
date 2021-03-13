@@ -39,15 +39,6 @@ public interface DataSourceCreator {
     DataSource createDataSource(DataSourceProperty dataSourceProperty);
 
     /**
-     * 通过属性创建数据源
-     *
-     * @param dataSourceProperty 数据源属性
-     * @param publicKey          解密公钥
-     * @return 被创建的数据源
-     */
-    DataSource createDataSource(DataSourceProperty dataSourceProperty, String publicKey);
-
-    /**
      * 当前创建器是否支持根据此属性创建
      *
      * @param dataSourceProperty 数据源属性

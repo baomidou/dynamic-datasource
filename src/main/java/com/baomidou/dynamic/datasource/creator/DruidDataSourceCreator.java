@@ -47,7 +47,7 @@ import static com.baomidou.dynamic.datasource.support.DdConstants.DRUID_DATASOUR
  * @since 2020/1/21
  */
 @Data
-public class DruidDataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator {
+public class DruidDataSourceCreator implements DataSourceCreator {
 
     private static Boolean druidExists = false;
 
@@ -69,10 +69,7 @@ public class DruidDataSourceCreator extends AbstractDataSourceCreator implements
     }
 
     @Override
-    public DataSource createDataSource(DataSourceProperty dataSourceProperty, String publicKey) {
-        if (StringUtils.isEmpty(dataSourceProperty.getPublicKey())) {
-            dataSourceProperty.setPublicKey(publicKey);
-        }
+    public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUsername(dataSourceProperty.getUsername());
         dataSource.setPassword(dataSourceProperty.getPassword());

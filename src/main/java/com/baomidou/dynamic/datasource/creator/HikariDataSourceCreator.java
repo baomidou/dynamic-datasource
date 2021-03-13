@@ -38,7 +38,7 @@ import static com.baomidou.dynamic.datasource.support.DdConstants.HIKARI_DATASOU
  */
 @Data
 @AllArgsConstructor
-public class HikariDataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator {
+public class HikariDataSourceCreator implements DataSourceCreator {
 
     private static Boolean hikariExists = false;
     private static Method configCopyMethod = null;
@@ -77,10 +77,7 @@ public class HikariDataSourceCreator extends AbstractDataSourceCreator implement
     }
 
     @Override
-    public DataSource createDataSource(DataSourceProperty dataSourceProperty, String publicKey) {
-        if (StringUtils.isEmpty(dataSourceProperty.getPublicKey())) {
-            dataSourceProperty.setPublicKey(publicKey);
-        }
+    public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
         HikariConfig config = dataSourceProperty.getHikari().toHikariConfig(hikariCpConfig);
         config.setUsername(dataSourceProperty.getUsername());
         config.setPassword(dataSourceProperty.getPassword());

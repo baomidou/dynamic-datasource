@@ -55,11 +55,18 @@ public class DefaultDataSourceCreator {
         if (dataSourceCreator == null) {
             throw new IllegalStateException("creator must not be null,please check the DataSourceCreator");
         }
+
+        String publicKey = dataSourceProperty.getPublicKey();
+        if (StringUtils.isEmpty(publicKey)) {
+            dataSourceProperty.setPublicKey(properties.getPublicKey());
+        }
+
         Boolean lazy = dataSourceProperty.getLazy();
         if (lazy == null) {
             dataSourceProperty.setLazy(properties.getLazy());
         }
-        DataSource dataSource = dataSourceCreator.createDataSource(dataSourceProperty, properties.getPublicKey());
+
+        DataSource dataSource = dataSourceCreator.createDataSource(dataSourceProperty);
         this.runScrip(dataSource, dataSourceProperty);
         return wrapDataSource(dataSource, dataSourceProperty);
     }
