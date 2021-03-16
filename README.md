@@ -82,7 +82,7 @@ spring:
     dynamic:
       primary: master #设置默认的数据源或者数据源组,默认值即为master
       lazy: false #默认立即初始化数据源，true则支持在需要建立连接时再初始化数据源
-      strict: false #设置严格模式,默认false不启动. 启动后在未匹配到指定数据源时候会抛出异常,不启动则使用默认数据源
+      strict: false #严格匹配数据源,默认false. true未匹配到指定数据源时抛异常,false使用默认数据源
       datasource:
         master:
           url: jdbc:mysql://xx.xx.xx.xx:3306/dynamic
