@@ -19,10 +19,11 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.context.expression.MethodBasedEvaluationContext;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
-import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.BeanResolver;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.ParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import java.lang.reflect.Method;
 
@@ -63,6 +64,7 @@ public class DsSpelExpressionProcessor extends DsProcessor {
             return null;
         }
     };
+    private BeanResolver beanResolver;
 
     @Override
     public boolean matches(String key) {
@@ -73,12 +75,17 @@ public class DsSpelExpressionProcessor extends DsProcessor {
     public String doDetermineDatasource(MethodInvocation invocation, String key) {
         Method method = invocation.getMethod();
         Object[] arguments = invocation.getArguments();
-        EvaluationContext context = new MethodBasedEvaluationContext(null, method, arguments, NAME_DISCOVERER);
+        StandardEvaluationContext context = new MethodBasedEvaluationContext(null, method, arguments, NAME_DISCOVERER);
+        context.setBeanResolver(beanResolver);
         final Object value = PARSER.parseExpression(key, parserContext).getValue(context);
         return value == null ? null : value.toString();
     }
 
     public void setParserContext(ParserContext parserContext) {
         this.parserContext = parserContext;
+    }
+
+    public void setBeanResolver(BeanResolver beanResolver) {
+        this.beanResolver = beanResolver;
     }
 }
