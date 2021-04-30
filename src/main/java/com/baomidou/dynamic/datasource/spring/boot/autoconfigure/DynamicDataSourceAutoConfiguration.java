@@ -61,7 +61,7 @@ import java.util.Map;
 @Configuration
 @AllArgsConstructor
 @EnableConfigurationProperties(DynamicDataSourceProperties.class)
-@AutoConfigureBefore(DataSourceAutoConfiguration.class)
+@AutoConfigureBefore(value = DataSourceAutoConfiguration.class, name = "com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure")
 @Import(value = {DruidDynamicDataSourceConfiguration.class, DynamicDataSourceCreatorAutoConfiguration.class, DynamicDataSourceHealthCheckConfiguration.class})
 @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class DynamicDataSourceAutoConfiguration {
