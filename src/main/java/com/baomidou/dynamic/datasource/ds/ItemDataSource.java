@@ -58,6 +58,26 @@ public class ItemDataSource extends AbstractDataSource implements Closeable {
     }
 
     @Override
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        return super.isWrapperFor(iface) || iface.isInstance(realDataSource) || iface.isInstance(dataSource);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T unwrap(Class<T> iface) {
+        if (iface.isInstance(this)) {
+            return (T) this;
+        }
+        if (iface.isInstance(realDataSource)) {
+            return (T) realDataSource;
+        }
+        if (iface.isInstance(dataSource)) {
+            return (T) dataSource;
+        }
+        return null;
+    }
+
+    @Override
     public void close() {
         Class<? extends DataSource> clazz = realDataSource.getClass();
         try {
