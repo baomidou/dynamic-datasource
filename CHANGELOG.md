@@ -1,6 +1,13 @@
-# v3.3.3
+# v3.3.4
+
+- fix: 修复上个版本更改Advisor引起的数据源不能切换严重错误。
+- feat: 新增beecp连接池支持。
+- fix: ItemDataSource的wrap修复，获得真实连接。
+
+# v3.3.3 严重BUG版本不能使用
 
 - feat:重要更新-Druid不用再手动排除。
+- spel解析新增beanFactory。
 
 # v3.3.2
 
