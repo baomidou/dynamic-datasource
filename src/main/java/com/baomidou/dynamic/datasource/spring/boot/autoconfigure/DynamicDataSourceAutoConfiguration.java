@@ -90,7 +90,6 @@ public class DynamicDataSourceAutoConfiguration {
 
     @Role(value = BeanDefinition.ROLE_INFRASTRUCTURE)
     @Bean
-    @ConditionalOnMissingBean
     public Advisor dynamicDatasourceAnnotationAdvisor(DsProcessor dsProcessor) {
         DynamicDataSourceAnnotationInterceptor interceptor = new DynamicDataSourceAnnotationInterceptor(properties.isAllowedPublicOnly(), dsProcessor);
         DynamicDataSourceAnnotationAdvisor advisor = new DynamicDataSourceAnnotationAdvisor(interceptor);
