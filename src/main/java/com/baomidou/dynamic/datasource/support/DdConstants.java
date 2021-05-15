@@ -40,4 +40,8 @@ public interface DdConstants {
      * HikariCp数据源
      */
     String HIKARI_DATASOURCE = "com.zaxxer.hikari.HikariDataSource";
+    /**
+     * BeeCp数据源
+     */
+    String BEECP_DATASOURCE = "cn.beecp.BeeDataSource";
 }

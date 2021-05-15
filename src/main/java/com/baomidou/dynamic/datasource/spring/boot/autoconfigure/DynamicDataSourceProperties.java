@@ -16,6 +16,7 @@
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
 import com.baomidou.dynamic.datasource.enums.SeataMode;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.beecp.BeeCpConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.hikari.HikariCpConfig;
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
@@ -102,6 +103,12 @@ public class DynamicDataSourceProperties {
      */
     @NestedConfigurationProperty
     private HikariCpConfig hikari = new HikariCpConfig();
+
+    /**
+     * BeeCp全局参数配置
+     */
+    @NestedConfigurationProperty
+    private BeeCpConfig beecp = new BeeCpConfig();
 
     /**
      * 全局默认publicKey

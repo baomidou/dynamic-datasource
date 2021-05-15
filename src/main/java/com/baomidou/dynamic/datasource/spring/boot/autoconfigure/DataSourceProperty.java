@@ -15,6 +15,7 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.beecp.BeeCpConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.hikari.HikariCpConfig;
 import com.baomidou.dynamic.datasource.toolkit.CryptoUtils;
@@ -108,6 +109,12 @@ public class DataSourceProperty {
      */
     @NestedConfigurationProperty
     private HikariCpConfig hikari = new HikariCpConfig();
+
+    /**
+     * BeeCp参数配置
+     */
+    @NestedConfigurationProperty
+    private BeeCpConfig beecp = new BeeCpConfig();
 
     /**
      * 解密公匙(如果未设置默认使用全局的)

@@ -15,6 +15,7 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
+import cn.beecp.BeeDataSource;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.baomidou.dynamic.datasource.creator.*;
 import com.zaxxer.hikari.HikariDataSource;
@@ -42,6 +43,7 @@ public class DynamicDataSourceCreatorAutoConfiguration {
     public static final int JNDI_ORDER = 1000;
     public static final int DRUID_ORDER = 2000;
     public static final int HIKARI_ORDER = 3000;
+    public static final int BEECP_ORDER = 4000;
     public static final int DEFAULT_ORDER = 5000;
     private final DynamicDataSourceProperties properties;
 
@@ -95,6 +97,21 @@ public class DynamicDataSourceCreatorAutoConfiguration {
         @ConditionalOnMissingBean
         public HikariDataSourceCreator hikariDataSourceCreator() {
             return new HikariDataSourceCreator(properties.getHikari());
+        }
+    }
+
+    /**
+     * 存在BeeCp数据源时, 加入创建器
+     */
+    @ConditionalOnClass(BeeDataSource.class)
+    @Configuration
+    public class BeeCpDataSourceCreatorConfiguration {
+
+        @Bean
+        @Order(BEECP_ORDER)
+        @ConditionalOnMissingBean
+        public BeeCpDataSourceCreator beeCpDataSourceCreator() {
+            return new BeeCpDataSourceCreator(properties.getBeecp());
         }
     }
 
