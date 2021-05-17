@@ -41,12 +41,6 @@ public class HikariCpConfig {
     private static final long MAX_LIFETIME = MINUTES.toMillis(30);
     private static final int DEFAULT_POOL_SIZE = 10;
 
-    private String username;
-    private String password;
-    private String driverClassName;
-    private String jdbcUrl;
-    private String poolName;
-
     private String catalog;
     private Long connectionTimeout;
     private Long validationTimeout;
