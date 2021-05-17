@@ -29,7 +29,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import static com.baomidou.dynamic.datasource.support.DdConstants.BEECP_DATASOURCE;
-import static com.baomidou.dynamic.datasource.support.DdConstants.HIKARI_DATASOURCE;
 
 /**
  * BeeCp数据源创建器
@@ -43,13 +42,15 @@ import static com.baomidou.dynamic.datasource.support.DdConstants.HIKARI_DATASOU
 public class BeeCpDataSourceCreator implements DataSourceCreator {
 
     private static Boolean beeCpExists = false;
-    private static Method configCopyMethod = null;
+    private static Method copyToMethod = null;
 
     static {
         try {
-            Class.forName(HIKARI_DATASOURCE);
+            Class.forName(BEECP_DATASOURCE);
             beeCpExists = true;
-        } catch (ClassNotFoundException ignored) {
+            copyToMethod = BeeDataSourceConfig.class.getDeclaredMethod("copyTo", BeeDataSourceConfig.class);
+            copyToMethod.setAccessible(true);
+        } catch (ClassNotFoundException | NoSuchMethodException ignored) {
         }
     }
 
@@ -71,10 +72,8 @@ public class BeeCpDataSourceCreator implements DataSourceCreator {
         }
         BeeDataSource beeDataSource = new BeeDataSource();
         try {
-            Method copyToMethod = BeeDataSourceConfig.class.getDeclaredMethod("copyTo", BeeDataSourceConfig.class);
-            copyToMethod.setAccessible(true);
             copyToMethod.invoke(config, beeDataSource);
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+        } catch (InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
         }
         return beeDataSource;
