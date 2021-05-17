@@ -44,4 +44,8 @@ public interface DdConstants {
      * BeeCp数据源
      */
     String BEECP_DATASOURCE = "cn.beecp.BeeDataSource";
+    /**
+     * DBCP2数据源
+     */
+    String DBCP2_DATASOURCE = "org.apache.commons.dbcp2.BasicDataSource";
 }

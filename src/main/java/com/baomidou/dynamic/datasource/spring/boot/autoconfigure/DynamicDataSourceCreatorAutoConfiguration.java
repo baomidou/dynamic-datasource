@@ -21,6 +21,7 @@ import com.baomidou.dynamic.datasource.creator.*;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -44,7 +45,9 @@ public class DynamicDataSourceCreatorAutoConfiguration {
     public static final int DRUID_ORDER = 2000;
     public static final int HIKARI_ORDER = 3000;
     public static final int BEECP_ORDER = 4000;
-    public static final int DEFAULT_ORDER = 5000;
+    public static final int DBCP2_ORDER = 5000;
+    public static final int DEFAULT_ORDER = 6000;
+
     private final DynamicDataSourceProperties properties;
 
     @Primary
@@ -112,6 +115,21 @@ public class DynamicDataSourceCreatorAutoConfiguration {
         @ConditionalOnMissingBean
         public BeeCpDataSourceCreator beeCpDataSourceCreator() {
             return new BeeCpDataSourceCreator(properties.getBeecp());
+        }
+    }
+
+    /**
+     * 存在BeeCp数据源时, 加入创建器
+     */
+    @ConditionalOnClass(BasicDataSource.class)
+    @Configuration
+    public class DBCP2DataSourceCreatorConfiguration {
+
+        @Bean
+        @Order(DBCP2_ORDER)
+        @ConditionalOnMissingBean
+        public Dbcp2DataSourceCreator dbcp2DataSourceCreator() {
+            return new Dbcp2DataSourceCreator(properties.getDbcp2());
         }
     }
 
