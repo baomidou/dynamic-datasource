@@ -43,7 +43,8 @@ dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成�
 - 支持每个数据库独立初始化表结构schema和数据库database。
 - 支持无数据源启动，支持懒加载数据源（需要的时候再创建连接）。
 - 支持 **自定义注解** ，需继承DS(3.2.0+)。
-- 提供并简化对Druid，HikariCp，Mybatis-Plus，Quartz，ShardingJdbc，P6sy，Jndi组件的快速集成。
+- 提供并简化对Druid，HikariCp，BeeCp,Dbcp2的快速集成。
+- 提供对Mybatis-Plus，Quartz，ShardingJdbc，P6sy，Jndi等组件的集成方案。
 - 提供 **自定义数据源来源** 方案（如全从数据库加载）。
 - 提供项目启动后 **动态增加移除数据源** 方案。
 - 提供Mybatis环境下的  **纯读写分离** 方案。
