@@ -52,7 +52,7 @@ public class HikariDataSourceCreator implements DataSourceCreator {
         }
     }
 
-    private HikariCpConfig hikariCpConfig;
+    private HikariCpConfig gConfig;
 
     /**
      * to support springboot 1.5 and 2.x
@@ -77,7 +77,7 @@ public class HikariDataSourceCreator implements DataSourceCreator {
 
     @Override
     public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
-        HikariConfig config = dataSourceProperty.getHikari().toHikariConfig(hikariCpConfig);
+        HikariConfig config = dataSourceProperty.getHikari().toHikariConfig(gConfig);
         config.setUsername(dataSourceProperty.getUsername());
         config.setPassword(dataSourceProperty.getPassword());
         config.setJdbcUrl(dataSourceProperty.getUrl());
