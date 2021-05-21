@@ -19,6 +19,7 @@ import cn.beecp.BeeDataSource;
 import cn.beecp.BeeDataSourceConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.beecp.BeeCpConfig;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.beecp.BeeCpUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -54,11 +55,11 @@ public class BeeCpDataSourceCreator implements DataSourceCreator {
         }
     }
 
-    private BeeCpConfig beeCpConfig;
+    private BeeCpConfig gConfig;
 
     @Override
     public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
-        BeeDataSourceConfig config = dataSourceProperty.getBeecp().toBeeCpConfig(beeCpConfig);
+        BeeDataSourceConfig config = BeeCpUtils.createConfig(gConfig, dataSourceProperty.getBeecp());
         config.setUsername(dataSourceProperty.getUsername());
         config.setPassword(dataSourceProperty.getPassword());
         config.setJdbcUrl(dataSourceProperty.getUrl());
