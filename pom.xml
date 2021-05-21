@@ -12,7 +12,7 @@
 
     <groupId>com.baomidou</groupId>
     <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
-    <version>3.3.5</version>
+    <version>3.3.6</version>
     <packaging>jar</packaging>
 
     <name>dynamic-datasource-spring-boot-starter</name>
