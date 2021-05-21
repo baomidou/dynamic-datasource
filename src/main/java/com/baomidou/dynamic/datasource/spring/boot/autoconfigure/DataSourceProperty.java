@@ -81,11 +81,11 @@ public class DataSourceProperty {
      */
     private String data;
     /**
-     *
+     * 是否启用seata
      */
     private Boolean seata = true;
     /**
-     *
+     * 是否启用p6spy
      */
     private Boolean p6spy = true;
     /**
