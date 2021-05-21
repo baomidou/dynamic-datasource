@@ -17,7 +17,9 @@ package com.baomidou.dynamic.datasource.creator;
 
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.dbcp2.Dbcp2Config;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.dbcp2.Dbcp2Utils;
 import lombok.Data;
+import lombok.SneakyThrows;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.util.StringUtils;
 
@@ -26,10 +28,10 @@ import javax.sql.DataSource;
 import static com.baomidou.dynamic.datasource.support.DdConstants.DBCP2_DATASOURCE;
 
 /**
- * Druid数据源创建器
+ * DBCP数据源创建器
  *
  * @author TaoYu
- * @since 2020/1/21
+ * @since 2021/5/18
  */
 @Data
 public class Dbcp2DataSourceCreator implements DataSourceCreator {
@@ -51,15 +53,18 @@ public class Dbcp2DataSourceCreator implements DataSourceCreator {
     }
 
     @Override
+    @SneakyThrows
     public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
-        Dbcp2Config config = dataSourceProperty.getDbcp2();
-        BasicDataSource dataSource = config.toDbcpDataSource(gConfig);
+        BasicDataSource dataSource = Dbcp2Utils.createDataSource(gConfig, dataSourceProperty.getDbcp2());
         dataSource.setUsername(dataSourceProperty.getUsername());
         dataSource.setPassword(dataSourceProperty.getPassword());
         dataSource.setUrl(dataSourceProperty.getUrl());
         String driverClassName = dataSourceProperty.getDriverClassName();
         if (!StringUtils.isEmpty(driverClassName)) {
             dataSource.setDriverClassName(driverClassName);
+        }
+        if (!dataSourceProperty.getLazy()) {
+            dataSource.start();
         }
         return dataSource;
     }
