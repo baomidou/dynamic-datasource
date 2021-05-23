@@ -11,6 +11,9 @@
     <a >
         <img src="https://github.com/baomidou/dynamic-datasource-spring-boot-starter/workflows/CodeQL/badge.svg?branch=master" >
     </a>
+   <a>
+        <img src="https://badgen.net/github/stars/baomidou/dynamic-datasource-spring-boot-starter" >
+    </a>
     <a href="http://mvnrepository.com/artifact/com.baomidou/dynamic-datasource-spring-boot-starter" target="_blank">
         <img src="https://img.shields.io/maven-central/v/com.baomidou/dynamic-datasource-spring-boot-starter.svg" >
     </a>
@@ -23,7 +26,13 @@
     <a>
         <img src="https://img.shields.io/badge/springBoot-1.5.x__2.x.x-green.svg" >
     </a>
-    <a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=ded31006508b57d2d732c81266dd2c26e33283f84464e2c294309d90b9674992"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="dynamic-sring-boot-starter" title="dynamic-sring-boot-starter"></a>
+    <a>
+        <img src="https://img.shields.io/badge/IntelliJ%20IDEA-提供支持-blue.svg" >
+    </a>
+    <a>
+        <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" >
+    </a>
+    <a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=ded31006508b57d2d732c81266dd2c26e33283f84464e2c294309d90b9674992"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="dynamic-sring-boot-starter" title="dynamic-sring-boot-starter"></a>
 </p>
 
 # 简介
