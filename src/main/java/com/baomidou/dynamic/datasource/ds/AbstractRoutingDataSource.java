@@ -43,8 +43,8 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource {
             return determineDataSource().getConnection();
         } else {
             String ds = DynamicDataSourceContextHolder.peek();
-            ConnectionProxy connection = ConnectionFactory.getConnection(ds);
-            return connection == null ? getConnectionProxy(ds, determineDataSource().getConnection()) : connection;
+            return ds == null ? getConnectionProxy( determineDataSource().getConnection()) :
+                    ConnectionFactory.getConnection(ds);
         }
     }
 
@@ -52,16 +52,16 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource {
     public Connection getConnection(String username, String password) throws SQLException {
         String xid = TransactionContext.getXID();
         if (StringUtils.isEmpty(xid)) {
-            return determineDataSource().getConnection(username, password);
+            return determineDataSource().getConnection();
         } else {
             String ds = DynamicDataSourceContextHolder.peek();
-            ConnectionProxy connection = ConnectionFactory.getConnection(ds);
-            return connection == null ? getConnectionProxy(ds, determineDataSource().getConnection(username, password))
-                    : connection;
+            return  ds == null  ? getConnectionProxy(determineDataSource().getConnection(username, password)) :
+                    ConnectionFactory.getConnection(ds);
         }
     }
 
-    private Connection getConnectionProxy(String ds, Connection connection) {
+    private Connection getConnectionProxy(Connection connection) {
+        String ds = DynamicDataSourceContextHolder.peek();
         ConnectionProxy connectionProxy = new ConnectionProxy(connection, ds);
         ConnectionFactory.putConnection(ds, connectionProxy);
         return connectionProxy;
