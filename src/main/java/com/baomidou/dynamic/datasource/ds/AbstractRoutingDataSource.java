@@ -43,7 +43,9 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource {
             return determineDataSource().getConnection();
         } else {
             String ds = DynamicDataSourceContextHolder.peek();
-            return ds == null ? getConnectionProxy( determineDataSource().getConnection()) :
+            Connection connection = ds == null  ? getConnectionProxy(determineDataSource().getConnection()) :
+                    ConnectionFactory.getConnection(ds);
+            return   connection== null  ? getConnectionProxy(determineDataSource().getConnection()) :
                     ConnectionFactory.getConnection(ds);
         }
     }
@@ -55,7 +57,9 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource {
             return determineDataSource().getConnection();
         } else {
             String ds = DynamicDataSourceContextHolder.peek();
-            return  ds == null  ? getConnectionProxy(determineDataSource().getConnection(username, password)) :
+            Connection connection = ds == null  ? getConnectionProxy(determineDataSource().getConnection(username, password)) :
+                    ConnectionFactory.getConnection(ds);
+            return   connection== null  ? getConnectionProxy(determineDataSource().getConnection(username, password)) :
                     ConnectionFactory.getConnection(ds);
         }
     }
