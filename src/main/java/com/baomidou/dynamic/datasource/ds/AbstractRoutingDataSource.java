@@ -43,13 +43,8 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource {
             return determineDataSource().getConnection();
         } else {
             String ds = DynamicDataSourceContextHolder.peek();
-            if (StringUtils.isEmpty(ds)) {
-                getConnectionProxy(determineDataSource().getConnection());
-                ds = DynamicDataSourceContextHolder.peek();
-            }
             ConnectionProxy connection = ConnectionFactory.getConnection(ds);
-            return connection == null ? getConnectionProxy(determineDataSource().getConnection()) :
-                    ConnectionFactory.getConnection(ds);
+            return connection == null ? getConnectionProxy(ds, determineDataSource().getConnection()) : connection;
         }
     }
 
@@ -57,21 +52,16 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource {
     public Connection getConnection(String username, String password) throws SQLException {
         String xid = TransactionContext.getXID();
         if (StringUtils.isEmpty(xid)) {
-            return determineDataSource().getConnection();
+            return determineDataSource().getConnection(username, password);
         } else {
             String ds = DynamicDataSourceContextHolder.peek();
-            if (StringUtils.isEmpty(ds)) {
-                getConnectionProxy(determineDataSource().getConnection(username, password));
-                ds = DynamicDataSourceContextHolder.peek();
-            }
             ConnectionProxy connection = ConnectionFactory.getConnection(ds);
-            return connection == null ? getConnectionProxy(determineDataSource().getConnection(username, password)) :
-                    ConnectionFactory.getConnection(ds);
+            return connection == null ? getConnectionProxy(ds, determineDataSource().getConnection(username, password))
+                    : connection;
         }
     }
 
-    private Connection getConnectionProxy(Connection connection) {
-        String ds = DynamicDataSourceContextHolder.peek();
+    private Connection getConnectionProxy(String ds, Connection connection) {
         ConnectionProxy connectionProxy = new ConnectionProxy(connection, ds);
         ConnectionFactory.putConnection(ds, connectionProxy);
         return connectionProxy;

@@ -72,8 +72,6 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
 
     private DataSource determinePrimaryDataSource() {
         log.debug("dynamic-datasource switch to the primary datasource");
-        //解决多数据源事务当前线程获取为空的问题
-        DynamicDataSourceContextHolder.push(primary);
         DataSource dataSource = dataSourceMap.get(primary);
         if (dataSource != null) {
             return dataSource;
