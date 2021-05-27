@@ -84,7 +84,9 @@ public class DynamicDataSourceAutoConfiguration implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         if (!CollectionUtils.isEmpty(dynamicDataSourcePropertiesCustomizerList)) {
-            dynamicDataSourcePropertiesCustomizerList.forEach(i -> i.customize(properties));
+            for (DynamicDataSourcePropertiesCustomizer customizer : dynamicDataSourcePropertiesCustomizerList) {
+                customizer.customize(properties);
+            }
         }
     }
 
