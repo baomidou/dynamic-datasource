@@ -63,7 +63,7 @@ public class Dbcp2DataSourceCreator implements DataSourceCreator {
         if (!StringUtils.isEmpty(driverClassName)) {
             dataSource.setDriverClassName(driverClassName);
         }
-        if (!dataSourceProperty.getLazy()) {
+        if (Boolean.FALSE.equals(dataSourceProperty.getLazy())) {
             dataSource.start();
         }
         return dataSource;

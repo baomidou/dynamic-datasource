@@ -90,7 +90,7 @@ public class DruidDataSourceCreator implements DataSourceCreator {
         //设置druid内置properties不支持的的参数
         this.setParam(dataSource, config);
 
-        if (!dataSourceProperty.getLazy()) {
+        if (Boolean.FALSE.equals(dataSourceProperty.getLazy())) {
             try {
                 dataSource.init();
             } catch (SQLException e) {

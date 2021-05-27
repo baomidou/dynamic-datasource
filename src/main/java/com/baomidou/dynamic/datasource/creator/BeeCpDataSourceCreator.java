@@ -68,7 +68,7 @@ public class BeeCpDataSourceCreator implements DataSourceCreator {
         if (!StringUtils.isEmpty(driverClassName)) {
             config.setDriverClassName(driverClassName);
         }
-        if (!dataSourceProperty.getLazy()) {
+        if (Boolean.FALSE.equals(dataSourceProperty.getLazy())) {
             return new BeeDataSource(config);
         }
         BeeDataSource beeDataSource = new BeeDataSource();

@@ -86,7 +86,7 @@ public class HikariDataSourceCreator implements DataSourceCreator {
         if (!StringUtils.isEmpty(driverClassName)) {
             config.setDriverClassName(driverClassName);
         }
-        if (!dataSourceProperty.getLazy()) {
+        if (Boolean.FALSE.equals(dataSourceProperty.getLazy())) {
             return new HikariDataSource(config);
         }
         config.validate();
