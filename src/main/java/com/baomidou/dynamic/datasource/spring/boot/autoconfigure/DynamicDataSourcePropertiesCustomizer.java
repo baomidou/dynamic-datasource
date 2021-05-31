@@ -1,7 +1,6 @@
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
 
-@FunctionalInterface
 public interface DynamicDataSourcePropertiesCustomizer {
 
     /**
