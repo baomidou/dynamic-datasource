@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
+
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationInterceptor;
@@ -45,6 +46,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Role;
 import org.springframework.context.expression.BeanFactoryResolver;
 import org.springframework.util.CollectionUtils;
+
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.Map;
@@ -68,22 +70,13 @@ public class DynamicDataSourceAutoConfiguration implements InitializingBean {
 
     private final DynamicDataSourceProperties properties;
 
-    private final List<DynamicDataSourcePropertiesCustomizer> dynamicDataSourcePropertiesCustomizerList;
+    private final List<DynamicDataSourcePropertiesCustomizer> dataSourcePropertiesCustomizers;
 
     public DynamicDataSourceAutoConfiguration(
             DynamicDataSourceProperties properties,
-            ObjectProvider<List<DynamicDataSourcePropertiesCustomizer>> dynamicDataSourcePropertiesCustomizerList) {
+            ObjectProvider<List<DynamicDataSourcePropertiesCustomizer>> dataSourcePropertiesCustomizers) {
         this.properties = properties;
-        this.dynamicDataSourcePropertiesCustomizerList = dynamicDataSourcePropertiesCustomizerList.getIfAvailable();
-    }
-
-    @Override
-    public void afterPropertiesSet() {
-        if (!CollectionUtils.isEmpty(dynamicDataSourcePropertiesCustomizerList)) {
-            for (DynamicDataSourcePropertiesCustomizer customizer : dynamicDataSourcePropertiesCustomizerList) {
-                customizer.customize(properties);
-            }
-        }
+        this.dataSourcePropertiesCustomizers = dataSourcePropertiesCustomizers.getIfAvailable();
     }
 
     @Bean
@@ -134,6 +127,15 @@ public class DynamicDataSourceAutoConfiguration implements InitializingBean {
         headerProcessor.setNextProcessor(sessionProcessor);
         sessionProcessor.setNextProcessor(spelExpressionProcessor);
         return headerProcessor;
+    }
+
+    @Override
+    public void afterPropertiesSet() {
+        if (!CollectionUtils.isEmpty(dataSourcePropertiesCustomizers)) {
+            for (DynamicDataSourcePropertiesCustomizer customizer : dataSourcePropertiesCustomizers) {
+                customizer.customize(properties);
+            }
+        }
     }
 
 }
