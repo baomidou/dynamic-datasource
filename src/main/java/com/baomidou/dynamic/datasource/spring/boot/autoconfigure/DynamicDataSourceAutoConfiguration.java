@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
-
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationInterceptor;
@@ -27,12 +26,13 @@ import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.provider.YmlDynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidDynamicDataSourceConfiguration;
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -44,8 +44,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Role;
 import org.springframework.context.expression.BeanFactoryResolver;
-
+import org.springframework.util.CollectionUtils;
 import javax.sql.DataSource;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -59,14 +60,31 @@ import java.util.Map;
  */
 @Slf4j
 @Configuration
-@AllArgsConstructor
 @EnableConfigurationProperties(DynamicDataSourceProperties.class)
 @AutoConfigureBefore(value = DataSourceAutoConfiguration.class, name = "com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure")
 @Import(value = {DruidDynamicDataSourceConfiguration.class, DynamicDataSourceCreatorAutoConfiguration.class, DynamicDataSourceHealthCheckConfiguration.class})
 @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
-public class DynamicDataSourceAutoConfiguration {
+public class DynamicDataSourceAutoConfiguration implements InitializingBean {
 
     private final DynamicDataSourceProperties properties;
+
+    private final List<DynamicDataSourcePropertiesCustomizer> dynamicDataSourcePropertiesCustomizerList;
+
+    public DynamicDataSourceAutoConfiguration(
+            DynamicDataSourceProperties properties,
+            ObjectProvider<List<DynamicDataSourcePropertiesCustomizer>> dynamicDataSourcePropertiesCustomizerList) {
+        this.properties = properties;
+        this.dynamicDataSourcePropertiesCustomizerList = dynamicDataSourcePropertiesCustomizerList.getIfAvailable();
+    }
+
+    @Override
+    public void afterPropertiesSet() {
+        if (!CollectionUtils.isEmpty(dynamicDataSourcePropertiesCustomizerList)) {
+            for (DynamicDataSourcePropertiesCustomizer customizer : dynamicDataSourcePropertiesCustomizerList) {
+                customizer.customize(properties);
+            }
+        }
+    }
 
     @Bean
     @ConditionalOnMissingBean
