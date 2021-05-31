@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
-
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationInterceptor;
@@ -48,7 +47,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Role;
 import org.springframework.context.expression.BeanFactoryResolver;
 import org.springframework.util.CollectionUtils;
-
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.Map;
