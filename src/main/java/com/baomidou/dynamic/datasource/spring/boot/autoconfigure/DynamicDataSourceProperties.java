@@ -123,4 +123,9 @@ public class DynamicDataSourceProperties {
      * aop 切面是否只允许切 public 方法
      */
     private boolean allowedPublicOnly = true;
+
+    /**
+     * 是否开启指定事物管理器，默认 {@code false}
+     */
+    private boolean assignTm = false;
 }
