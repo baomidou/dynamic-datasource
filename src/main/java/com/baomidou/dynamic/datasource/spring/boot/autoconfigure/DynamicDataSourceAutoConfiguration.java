@@ -49,7 +49,6 @@ import org.springframework.util.CollectionUtils;
 
 import javax.sql.DataSource;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 动态数据源核心自动配置类
@@ -80,20 +79,18 @@ public class DynamicDataSourceAutoConfiguration implements InitializingBean {
     }
 
     @Bean
-    @ConditionalOnMissingBean
-    public DynamicDataSourceProvider dynamicDataSourceProvider() {
-        Map<String, DataSourceProperty> datasourceMap = properties.getDatasource();
-        return new YmlDynamicDataSourceProvider(datasourceMap);
+    public DynamicDataSourceProvider ymlDynamicDataSourceProvider() {
+        return new YmlDynamicDataSourceProvider(properties.getDatasource());
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public DataSource dataSource(DynamicDataSourceProvider dynamicDataSourceProvider) {
+    public DataSource dataSource(List<DynamicDataSourceProvider> providers) {
         DynamicRoutingDataSource dataSource = new DynamicRoutingDataSource();
         dataSource.setPrimary(properties.getPrimary());
         dataSource.setStrict(properties.getStrict());
         dataSource.setStrategy(properties.getStrategy());
-        dataSource.setProvider(dynamicDataSourceProvider);
+        dataSource.setProviders(providers);
         dataSource.setP6spy(properties.getP6spy());
         dataSource.setSeata(properties.getSeata());
         return dataSource;

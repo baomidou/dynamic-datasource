@@ -30,6 +30,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -52,7 +54,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
      */
     private final Map<String, GroupDataSource> groupDataSources = new ConcurrentHashMap<>();
     @Setter
-    private DynamicDataSourceProvider provider;
+    private List<DynamicDataSourceProvider> providers;
     @Setter
     private Class<? extends DynamicDataSourceStrategy> strategy = LoadBalanceDynamicDataSourceStrategy.class;
     @Setter
@@ -221,7 +223,10 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
         // 检查开启了配置但没有相关依赖
         checkEnv();
         // 添加并分组数据源
-        Map<String, DataSource> dataSources = provider.loadDataSources();
+        Map<String, DataSource> dataSources = new HashMap<>();
+        for (DynamicDataSourceProvider provider : providers) {
+            dataSources.putAll(provider.loadDataSources());
+        }
         for (Map.Entry<String, DataSource> dsItem : dataSources.entrySet()) {
             addDataSource(dsItem.getKey(), dsItem.getValue());
         }
