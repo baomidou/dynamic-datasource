@@ -85,12 +85,11 @@ public class DynamicDataSourceAutoConfiguration implements InitializingBean {
 
     @Bean
     @ConditionalOnMissingBean
-    public DataSource dataSource(List<DynamicDataSourceProvider> providers) {
+    public DataSource dataSource() {
         DynamicRoutingDataSource dataSource = new DynamicRoutingDataSource();
         dataSource.setPrimary(properties.getPrimary());
         dataSource.setStrict(properties.getStrict());
         dataSource.setStrategy(properties.getStrategy());
-        dataSource.setProviders(providers);
         dataSource.setP6spy(properties.getP6spy());
         dataSource.setSeata(properties.getSeata());
         return dataSource;

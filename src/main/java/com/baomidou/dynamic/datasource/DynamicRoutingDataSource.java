@@ -27,6 +27,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
@@ -53,7 +54,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
      * 分组数据库
      */
     private final Map<String, GroupDataSource> groupDataSources = new ConcurrentHashMap<>();
-    @Setter
+    @Autowired
     private List<DynamicDataSourceProvider> providers;
     @Setter
     private Class<? extends DynamicDataSourceStrategy> strategy = LoadBalanceDynamicDataSourceStrategy.class;
