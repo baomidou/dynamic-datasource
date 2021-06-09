@@ -16,8 +16,8 @@
 package com.baomidou.dynamic.datasource.aop;
 
 
+import com.baomidou.dynamic.datasource.processor.DsProcessor;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -39,15 +39,20 @@ import java.util.Properties;
  * @since 3.4.0
  */
 @Slf4j
-@NoArgsConstructor
 public class DynamicDatasourceNamedInterceptor implements MethodInterceptor {
 
+    private static final String DYNAMIC_PREFIX = "#";
     private final Map<String, String> nameMap = new HashMap<>();
+    private final DsProcessor dsProcessor;
+
+    public DynamicDatasourceNamedInterceptor(DsProcessor dsProcessor) {
+        this.dsProcessor = dsProcessor;
+    }
 
     @Nullable
     @Override
     public Object invoke(@Nonnull MethodInvocation invocation) throws Throwable {
-        String dsKey = determineDatasourceKey(invocation.getMethod());
+        String dsKey = determineDatasourceKey(invocation);
         DynamicDataSourceContextHolder.push(dsKey);
         try {
             return invocation.proceed();
@@ -99,7 +104,18 @@ public class DynamicDatasourceNamedInterceptor implements MethodInterceptor {
         }
     }
 
-    private String determineDatasourceKey(Method method) {
+
+    private boolean isMatch(String methodName, String mappedName) {
+        return PatternMatchUtils.simpleMatch(mappedName, methodName);
+    }
+
+    private String determineDatasourceKey(MethodInvocation invocation) {
+        String key = findDsKey(invocation);
+        return (key != null && key.startsWith(DYNAMIC_PREFIX)) ? dsProcessor.determineDatasource(invocation, key) : key;
+    }
+
+    private String findDsKey(MethodInvocation invocation) {
+        Method method = invocation.getMethod();
         if (!ClassUtils.isUserLevelMethod(method)) {
             return null;
         }
@@ -120,9 +136,5 @@ public class DynamicDatasourceNamedInterceptor implements MethodInterceptor {
             }
         }
         return dsKey;
-    }
-
-    private boolean isMatch(String methodName, String mappedName) {
-        return PatternMatchUtils.simpleMatch(mappedName, methodName);
     }
 }
