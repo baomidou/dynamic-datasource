@@ -17,11 +17,11 @@ package com.baomidou.dynamic.datasource;
 
 import com.baomidou.dynamic.datasource.ds.AbstractRoutingDataSource;
 import com.baomidou.dynamic.datasource.ds.GroupDataSource;
-import com.baomidou.dynamic.datasource.ds.ItemDataSource;
 import com.baomidou.dynamic.datasource.exception.CannotFindDataSourceException;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
 import com.baomidou.dynamic.datasource.strategy.LoadBalanceDynamicDataSourceStrategy;
+import com.baomidou.dynamic.datasource.toolkit.DatabasebUtils;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -203,11 +203,8 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
         }
     }
 
-    /**
-     * 关闭数据源
-     */
     private void closeDataSource(DataSource dataSource) throws Exception {
-        ((ItemDataSource) dataSource).close();
+        DatabasebUtils.closeDataSource(dataSource);
     }
 
     @Override
