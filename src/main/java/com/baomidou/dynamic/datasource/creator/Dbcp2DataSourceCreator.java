@@ -17,7 +17,7 @@ package com.baomidou.dynamic.datasource.creator;
 
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.dbcp2.Dbcp2Config;
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.dbcp2.Dbcp2Utils;
+import com.baomidou.dynamic.datasource.toolkit.ConfigMergeCreator;
 import lombok.Data;
 import lombok.SneakyThrows;
 import org.apache.commons.dbcp2.BasicDataSource;
@@ -36,6 +36,7 @@ import static com.baomidou.dynamic.datasource.support.DdConstants.DBCP2_DATASOUR
 @Data
 public class Dbcp2DataSourceCreator implements DataSourceCreator {
 
+    private static final ConfigMergeCreator<Dbcp2Config, BasicDataSource> MERGE_CREATOR = new ConfigMergeCreator<>("Dbcp2", Dbcp2Config.class, BasicDataSource.class);
     private static Boolean dbcp2Exists = false;
 
     static {
@@ -55,7 +56,7 @@ public class Dbcp2DataSourceCreator implements DataSourceCreator {
     @Override
     @SneakyThrows
     public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
-        BasicDataSource dataSource = Dbcp2Utils.createDataSource(gConfig, dataSourceProperty.getDbcp2());
+        BasicDataSource dataSource = MERGE_CREATOR.create(gConfig, dataSourceProperty.getDbcp2());
         dataSource.setUsername(dataSourceProperty.getUsername());
         dataSource.setPassword(dataSourceProperty.getPassword());
         dataSource.setUrl(dataSourceProperty.getUrl());

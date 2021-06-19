@@ -53,7 +53,6 @@ public class DatabasebUtils {
      * close db
      *
      * @param dataSource db
-     * @throws Exception
      */
     public void closeDataSource(DataSource dataSource) throws Exception {
         if (dataSource instanceof ItemDataSource) {

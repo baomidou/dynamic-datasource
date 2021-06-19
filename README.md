@@ -41,10 +41,6 @@ dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成�
 
 其支持 **Jdk 1.7+,    SpringBoot 1.4.x  1.5.x   2.x.x**。
 
-## 文档 | Documentation
-
-[详细文档](https://www.kancloud.cn/tracy5546/dynamic-datasource/2264611)
-
 # 特性
 
 - 支持 **数据源分组** ，适用于多种场景 纯粹多库 读写分离 一主多从 混合模式。
@@ -106,7 +102,6 @@ spring:
           username: ENC(xxxxx)
           password: ENC(xxxxx)
           driver-class-name: com.mysql.jdbc.Driver
-          
        #......省略
        #以上会配置一个默认库master，一个组slave下有两个子库slave_1,slave_2
 ```
@@ -152,10 +147,3 @@ public class UserServiceImpl implements UserService {
   }
 }
 ```
-
----
-
-# 捐赠
-
-![uSA83t.png](https://images.gitee.com/uploads/images/2019/0921/225754_ef8c21e8_709883.png)
-![uSVpFJ.png](https://images.gitee.com/uploads/images/2019/0921/230525_be693c65_709883.png)

@@ -17,6 +17,7 @@ package com.baomidou.dynamic.datasource.creator;
 
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.hikari.HikariCpConfig;
+import com.baomidou.dynamic.datasource.toolkit.ConfigMergeCreator;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.AllArgsConstructor;
@@ -39,11 +40,11 @@ import static com.baomidou.dynamic.datasource.support.DdConstants.HIKARI_DATASOU
 @AllArgsConstructor
 public class HikariDataSourceCreator implements DataSourceCreator {
 
+    private static final ConfigMergeCreator<HikariCpConfig, HikariConfig> MERGE_CREATOR = new ConfigMergeCreator<>("HikariCp", HikariCpConfig.class, HikariConfig.class);
     private static Boolean hikariExists = false;
     private static Method configCopyMethod = null;
 
     static {
-
         try {
             Class.forName(HIKARI_DATASOURCE);
             hikariExists = true;
@@ -77,7 +78,7 @@ public class HikariDataSourceCreator implements DataSourceCreator {
 
     @Override
     public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
-        HikariConfig config = dataSourceProperty.getHikari().toHikariConfig(gConfig);
+        HikariConfig config = MERGE_CREATOR.create(gConfig, dataSourceProperty.getHikari());
         config.setUsername(dataSourceProperty.getUsername());
         config.setPassword(dataSourceProperty.getPassword());
         config.setJdbcUrl(dataSourceProperty.getUrl());

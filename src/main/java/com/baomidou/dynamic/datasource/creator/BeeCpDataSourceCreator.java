@@ -19,7 +19,7 @@ import cn.beecp.BeeDataSource;
 import cn.beecp.BeeDataSourceConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.beecp.BeeCpConfig;
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.beecp.BeeCpUtils;
+import com.baomidou.dynamic.datasource.toolkit.ConfigMergeCreator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +42,8 @@ import static com.baomidou.dynamic.datasource.support.DdConstants.BEECP_DATASOUR
 @AllArgsConstructor
 public class BeeCpDataSourceCreator implements DataSourceCreator {
 
+    private static final ConfigMergeCreator<BeeCpConfig, BeeDataSourceConfig> MERGE_CREATOR = new ConfigMergeCreator<>("BeeCp", BeeCpConfig.class, BeeDataSourceConfig.class);
+
     private static Boolean beeCpExists = false;
     private static Method copyToMethod = null;
 
@@ -59,7 +61,7 @@ public class BeeCpDataSourceCreator implements DataSourceCreator {
 
     @Override
     public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
-        BeeDataSourceConfig config = BeeCpUtils.createConfig(gConfig, dataSourceProperty.getBeecp());
+        BeeDataSourceConfig config = MERGE_CREATOR.create(gConfig, dataSourceProperty.getBeecp());
         config.setUsername(dataSourceProperty.getUsername());
         config.setPassword(dataSourceProperty.getPassword());
         config.setJdbcUrl(dataSourceProperty.getUrl());
