@@ -26,6 +26,7 @@ import com.baomidou.dynamic.datasource.processor.DsSpelExpressionProcessor;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.provider.YmlDynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidDynamicDataSourceConfiguration;
+import com.baomidou.dynamic.datasource.spring.ext.AnnotationTransactionAttributeSourceReplacer;
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.Advisor;
@@ -127,6 +128,12 @@ public class DynamicDataSourceAutoConfiguration implements InitializingBean {
         headerProcessor.setNextProcessor(sessionProcessor);
         sessionProcessor.setNextProcessor(spelExpressionProcessor);
         return headerProcessor;
+    }
+
+    @Bean
+    @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "assignTm", havingValue = "false")
+    public AnnotationTransactionAttributeSourceReplacer attributeSourceReplacer() {
+        return new AnnotationTransactionAttributeSourceReplacer();
     }
 
     @Override
