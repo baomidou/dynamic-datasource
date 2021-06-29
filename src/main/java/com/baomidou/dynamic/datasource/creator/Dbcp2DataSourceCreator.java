@@ -19,8 +19,6 @@ import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourcePrope
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.dbcp2.Dbcp2Config;
 import com.baomidou.dynamic.datasource.toolkit.ConfigMergeCreator;
-import lombok.Data;
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.dbcp2.Dbcp2Utils;
 import lombok.SneakyThrows;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.util.StringUtils;
