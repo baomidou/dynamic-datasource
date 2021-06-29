@@ -18,10 +18,9 @@ package com.baomidou.dynamic.datasource.creator;
 import cn.beecp.BeeDataSource;
 import cn.beecp.BeeDataSourceConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.beecp.BeeCpConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.beecp.BeeCpUtils;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
@@ -38,9 +37,7 @@ import static com.baomidou.dynamic.datasource.support.DdConstants.BEECP_DATASOUR
  * @since 2020/5/14
  */
 @Slf4j
-@Data
-@AllArgsConstructor
-public class BeeCpDataSourceCreator implements DataSourceCreator {
+public class BeeCpDataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator {
 
     private static Boolean beeCpExists = false;
     private static Method copyToMethod = null;
@@ -55,10 +52,15 @@ public class BeeCpDataSourceCreator implements DataSourceCreator {
         }
     }
 
-    private BeeCpConfig gConfig;
+    private final BeeCpConfig gConfig;
+
+    public BeeCpDataSourceCreator(DynamicDataSourceProperties dynamicDataSourceProperties) {
+        super(dynamicDataSourceProperties);
+        this.gConfig = dynamicDataSourceProperties.getBeecp();
+    }
 
     @Override
-    public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
+    public DataSource doCreateDataSource(DataSourceProperty dataSourceProperty) {
         BeeDataSourceConfig config = BeeCpUtils.createConfig(gConfig, dataSourceProperty.getBeecp());
         config.setUsername(dataSourceProperty.getUsername());
         config.setPassword(dataSourceProperty.getPassword());

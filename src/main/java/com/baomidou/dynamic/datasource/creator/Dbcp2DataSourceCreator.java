@@ -16,9 +16,9 @@
 package com.baomidou.dynamic.datasource.creator;
 
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.dbcp2.Dbcp2Config;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.dbcp2.Dbcp2Utils;
-import lombok.Data;
 import lombok.SneakyThrows;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.util.StringUtils;
@@ -33,8 +33,7 @@ import static com.baomidou.dynamic.datasource.support.DdConstants.DBCP2_DATASOUR
  * @author TaoYu
  * @since 2021/5/18
  */
-@Data
-public class Dbcp2DataSourceCreator implements DataSourceCreator {
+public class Dbcp2DataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator {
 
     private static Boolean dbcp2Exists = false;
 
@@ -46,15 +45,16 @@ public class Dbcp2DataSourceCreator implements DataSourceCreator {
         }
     }
 
-    private Dbcp2Config gConfig;
+    private final Dbcp2Config gConfig;
 
-    public Dbcp2DataSourceCreator(Dbcp2Config gConfig) {
-        this.gConfig = gConfig;
+    public Dbcp2DataSourceCreator(DynamicDataSourceProperties dynamicDataSourceProperties) {
+        super(dynamicDataSourceProperties);
+        this.gConfig = dynamicDataSourceProperties.getDbcp2();
     }
 
     @Override
     @SneakyThrows
-    public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
+    public DataSource doCreateDataSource(DataSourceProperty dataSourceProperty) {
         BasicDataSource dataSource = Dbcp2Utils.createDataSource(gConfig, dataSourceProperty.getDbcp2());
         dataSource.setUsername(dataSourceProperty.getUsername());
         dataSource.setPassword(dataSourceProperty.getPassword());
