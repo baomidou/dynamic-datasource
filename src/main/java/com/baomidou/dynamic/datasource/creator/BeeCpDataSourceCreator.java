@@ -18,10 +18,9 @@ package com.baomidou.dynamic.datasource.creator;
 import cn.beecp.BeeDataSource;
 import cn.beecp.BeeDataSourceConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.beecp.BeeCpConfig;
 import com.baomidou.dynamic.datasource.toolkit.ConfigMergeCreator;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
@@ -38,9 +37,7 @@ import static com.baomidou.dynamic.datasource.support.DdConstants.BEECP_DATASOUR
  * @since 2020/5/14
  */
 @Slf4j
-@Data
-@AllArgsConstructor
-public class BeeCpDataSourceCreator implements DataSourceCreator {
+public class BeeCpDataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator {
 
     private static final ConfigMergeCreator<BeeCpConfig, BeeDataSourceConfig> MERGE_CREATOR = new ConfigMergeCreator<>("BeeCp", BeeCpConfig.class, BeeDataSourceConfig.class);
 
@@ -57,10 +54,15 @@ public class BeeCpDataSourceCreator implements DataSourceCreator {
         }
     }
 
-    private BeeCpConfig gConfig;
+    private final BeeCpConfig gConfig;
+
+    public BeeCpDataSourceCreator(DynamicDataSourceProperties dynamicDataSourceProperties) {
+        super(dynamicDataSourceProperties);
+        this.gConfig = dynamicDataSourceProperties.getBeecp();
+    }
 
     @Override
-    public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
+    public DataSource doCreateDataSource(DataSourceProperty dataSourceProperty) {
         BeeDataSourceConfig config = MERGE_CREATOR.create(gConfig, dataSourceProperty.getBeecp());
         config.setUsername(dataSourceProperty.getUsername());
         config.setPassword(dataSourceProperty.getPassword());
