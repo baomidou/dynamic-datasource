@@ -118,7 +118,7 @@ public class DynamicDataSourceCreatorAutoConfiguration {
     }
 
     /**
-     * 存在BeeCp数据源时, 加入创建器
+     * 存在Dbcp2数据源时, 加入创建器
      */
     @ConditionalOnClass(BasicDataSource.class)
     @Configuration
