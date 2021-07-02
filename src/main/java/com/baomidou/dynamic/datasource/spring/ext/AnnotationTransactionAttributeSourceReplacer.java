@@ -33,17 +33,17 @@ public class AnnotationTransactionAttributeSourceReplacer implements Instantiati
 
     @Override
     public PropertyValues postProcessPropertyValues(PropertyValues propertyValues, PropertyDescriptor[] propertyDescriptors, Object o, String s) throws BeansException {
-        return null;
+        return propertyValues;
     }
 
     @Override
     public Object postProcessBeforeInitialization(Object o, String s) throws BeansException {
-        return null;
+        return o;
     }
 
     @Override
     public Object postProcessAfterInitialization(Object o, String s) throws BeansException {
-        return null;
+        return o;
     }
 
     @Override
