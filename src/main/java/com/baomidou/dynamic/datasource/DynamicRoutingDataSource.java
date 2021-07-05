@@ -88,19 +88,41 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
 
     /**
      * 获取当前所有的数据源
+     * please use getDataSources()
      *
      * @return 当前所有数据源
      */
+    @Deprecated
     public Map<String, DataSource> getCurrentDataSources() {
         return dataSourceMap;
     }
 
     /**
+     * 获取所有的数据源
+     *
+     * @return 当前所有数据源
+     */
+    public Map<String, DataSource> getDataSources() {
+        return dataSourceMap;
+    }
+
+    /**
      * 获取的当前所有的分组数据源
+     * please use getGroupDataSources()
      *
      * @return 当前所有的分组数据源
      */
+    @Deprecated
     public Map<String, GroupDataSource> getCurrentGroupDataSources() {
+        return groupDataSources;
+    }
+
+    /**
+     * 获取的所有的分组数据源
+     *
+     * @return 当前所有的分组数据源
+     */
+    public Map<String, GroupDataSource> getGroupDataSources() {
         return groupDataSources;
     }
 
