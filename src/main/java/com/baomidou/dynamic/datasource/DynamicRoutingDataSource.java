@@ -160,11 +160,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
         this.addGroupDataSource(ds, dataSource);
         // 关闭老的数据源
         if (oldDataSource != null) {
-            try {
-                closeDataSource(oldDataSource);
-            } catch (Exception e) {
-                log.error("dynamic-datasource - remove the database named [{}]  failed", ds, e);
-            }
+            DatabasebUtils.closeDataSource(ds, oldDataSource);
         }
         log.info("dynamic-datasource - add a datasource named [{}] success", ds);
     }
@@ -205,20 +201,14 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
         }
         if (dataSourceMap.containsKey(ds)) {
             DataSource dataSource = dataSourceMap.remove(ds);
-            try {
-                closeDataSource(dataSource);
-            } catch (Exception e) {
-                log.error("dynamic-datasource - remove the database named [{}]  failed", ds, e);
-            }
+            DatabasebUtils.closeDataSource(ds, dataSource);
 
             if (ds.contains(UNDERLINE)) {
                 String group = ds.split(UNDERLINE)[0];
                 if (groupDataSources.containsKey(group)) {
                     DataSource oldDataSource = groupDataSources.get(group).removeDatasource(ds);
                     if (oldDataSource == null) {
-                        if (log.isWarnEnabled()) {
-                            log.warn("fail for remove datasource from group. dataSource: {} ,group: {}", ds, group);
-                        }
+                        log.warn("fail for remove datasource from group. dataSource: {} ,group: {}", ds, group);
                     }
                 }
             }
@@ -228,15 +218,11 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
         }
     }
 
-    private void closeDataSource(DataSource dataSource) throws Exception {
-        DatabasebUtils.closeDataSource(dataSource);
-    }
-
     @Override
     public void destroy() throws Exception {
         log.info("dynamic-datasource start closing ....");
         for (Map.Entry<String, DataSource> item : dataSourceMap.entrySet()) {
-            closeDataSource(item.getValue());
+            DatabasebUtils.closeDataSource(item.getKey(), item.getValue());
         }
         log.info("dynamic-datasource all closed success,bye");
     }

@@ -19,6 +19,7 @@ import com.baomidou.dynamic.datasource.ds.ItemDataSource;
 import com.p6spy.engine.spy.P6DataSource;
 import io.seata.rm.datasource.DataSourceProxy;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
@@ -30,6 +31,7 @@ import java.lang.reflect.Method;
  * @author TaoYu
  * @since 3.4.0
  */
+@Slf4j
 @UtilityClass
 public class DatabasebUtils {
 
@@ -53,6 +55,20 @@ public class DatabasebUtils {
      * close db
      *
      * @param dataSource db
+     */
+    public void closeDataSource(String name, DataSource dataSource) {
+        try {
+            closeDataSource(dataSource);
+        } catch (Exception e) {
+            log.warn("dynamic-datasource closed to the datasource named [{}] error", name, e);
+        }
+    }
+
+    /**
+     * close db
+     *
+     * @param dataSource db
+     * @throws Exception close error
      */
     public void closeDataSource(DataSource dataSource) throws Exception {
         if (dataSource instanceof ItemDataSource) {
