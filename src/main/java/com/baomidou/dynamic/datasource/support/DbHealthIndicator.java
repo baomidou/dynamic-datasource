@@ -56,7 +56,7 @@ public class DbHealthIndicator extends AbstractHealthIndicator {
     @Override
     protected void doHealthCheck(Health.Builder builder) throws Exception {
         if (dataSource instanceof DynamicRoutingDataSource) {
-            Map<String, DataSource> dataSourceMap = ((DynamicRoutingDataSource) dataSource).getCurrentDataSources();
+            Map<String, DataSource> dataSourceMap = ((DynamicRoutingDataSource) dataSource).getDataSources();
             // 循环检查当前数据源是否可用
             Boolean available = null;
             Boolean disable = null;

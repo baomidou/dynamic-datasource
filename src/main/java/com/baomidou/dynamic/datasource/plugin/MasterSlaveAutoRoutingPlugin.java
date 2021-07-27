@@ -89,7 +89,7 @@ public class MasterSlaveAutoRoutingPlugin implements Interceptor {
             DynamicRoutingDataSource dynamicRoutingDataSource = (DynamicRoutingDataSource) dynamicDataSource;
             // 当前数据源是从库
             if (DdConstants.SLAVE.equalsIgnoreCase(currentDataSource)) {
-                Map<String, GroupDataSource> currentGroupDataSources = dynamicRoutingDataSource.getCurrentGroupDataSources();
+                Map<String, GroupDataSource> currentGroupDataSources = dynamicRoutingDataSource.getGroupDataSources();
                 GroupDataSource groupDataSource = currentGroupDataSources.get(DdConstants.SLAVE);
                 String dsKey = groupDataSource.determineDsKey();
                 boolean health = healthCheckAdapter.getHealth(dsKey);
@@ -102,7 +102,7 @@ public class MasterSlaveAutoRoutingPlugin implements Interceptor {
             // 从库无法连接, 或者当前数据源需要操作主库
             if (dataSource == null) {
                 // 当前数据源是主库
-                Map<String, GroupDataSource> currentGroupDataSources = dynamicRoutingDataSource.getCurrentGroupDataSources();
+                Map<String, GroupDataSource> currentGroupDataSources = dynamicRoutingDataSource.getGroupDataSources();
                 GroupDataSource groupDataSource = currentGroupDataSources.get(DdConstants.MASTER);
                 dataSource = groupDataSource.determineDsKey();
                 boolean health = healthCheckAdapter.getHealth(dataSource);
