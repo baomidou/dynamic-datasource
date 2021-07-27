@@ -17,12 +17,14 @@ package com.baomidou.dynamic.datasource;
 
 import com.baomidou.dynamic.datasource.ds.AbstractRoutingDataSource;
 import com.baomidou.dynamic.datasource.ds.GroupDataSource;
+import com.baomidou.dynamic.datasource.ds.ItemDataSource;
 import com.baomidou.dynamic.datasource.exception.CannotFindDataSourceException;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
 import com.baomidou.dynamic.datasource.strategy.LoadBalanceDynamicDataSourceStrategy;
-import com.baomidou.dynamic.datasource.toolkit.DatabasebUtils;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
+import com.p6spy.engine.spy.P6DataSource;
+import io.seata.rm.datasource.DataSourceProxy;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
@@ -31,6 +33,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -160,7 +164,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
         this.addGroupDataSource(ds, dataSource);
         // 关闭老的数据源
         if (oldDataSource != null) {
-            DatabasebUtils.closeDataSource(ds, oldDataSource);
+            closeDataSource(ds, oldDataSource);
         }
         log.info("dynamic-datasource - add a datasource named [{}] success", ds);
     }
@@ -201,8 +205,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
         }
         if (dataSourceMap.containsKey(ds)) {
             DataSource dataSource = dataSourceMap.remove(ds);
-            DatabasebUtils.closeDataSource(ds, dataSource);
-
+            closeDataSource(ds, dataSource);
             if (ds.contains(UNDERLINE)) {
                 String group = ds.split(UNDERLINE)[0];
                 if (groupDataSources.containsKey(group)) {
@@ -222,7 +225,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
     public void destroy() throws Exception {
         log.info("dynamic-datasource start closing ....");
         for (Map.Entry<String, DataSource> item : dataSourceMap.entrySet()) {
-            DatabasebUtils.closeDataSource(item.getKey(), item.getValue());
+            closeDataSource(item.getKey(), item.getValue());
         }
         log.info("dynamic-datasource all closed success,bye");
     }
@@ -265,6 +268,39 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
             } catch (Exception e) {
                 throw new RuntimeException("dynamic-datasource enabled ALIBABA SEATA,however without seata dependency", e);
             }
+        }
+    }
+
+    /**
+     * close db
+     *
+     * @param ds         dsName
+     * @param dataSource db
+     */
+    private void closeDataSource(String ds, DataSource dataSource) {
+        try {
+            if (dataSource instanceof ItemDataSource) {
+                ((ItemDataSource) dataSource).close();
+            } else {
+                if (seata) {
+                    if (dataSource instanceof DataSourceProxy) {
+                        DataSourceProxy dataSourceProxy = (DataSourceProxy) dataSource;
+                        dataSource = dataSourceProxy.getTargetDataSource();
+                    }
+                }
+                if (p6spy) {
+                    if (dataSource instanceof P6DataSource) {
+                        Field realDataSourceField = P6DataSource.class.getDeclaredField("realDataSource");
+                        realDataSourceField.setAccessible(true);
+                        dataSource = (DataSource) realDataSourceField.get(dataSource);
+                    }
+                }
+                Class<? extends DataSource> clazz = dataSource.getClass();
+                Method closeMethod = clazz.getDeclaredMethod("close");
+                closeMethod.invoke(dataSource);
+            }
+        } catch (Exception e) {
+            log.warn("dynamic-datasource closed datasource named [{}] failed", ds, e);
         }
     }
 
