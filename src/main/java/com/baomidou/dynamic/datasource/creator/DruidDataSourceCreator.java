@@ -203,6 +203,26 @@ public class DruidDataSourceCreator extends AbstractDataSourceCreator implements
         if (transactionQueryTimeout != null) {
             dataSource.setTransactionQueryTimeout(transactionQueryTimeout);
         }
+
+        Integer initialSize = config.getInitialSize() == null ? gConfig.getInitialSize() : config.getInitialSize();
+        if (initialSize != null) {
+            dataSource.setInitialSize(initialSize);
+        }
+
+        Integer minIdle = config.getMinIdle() == null ? gConfig.getMinIdle() : config.getMinIdle();
+        if (minIdle != null) {
+            dataSource.setMinIdle(minIdle);
+        }
+
+        Integer maxActive = config.getMaxActive() == null ? gConfig.getMaxActive() : config.getMaxActive();
+        if (maxActive != null) {
+            dataSource.setMaxActive(maxActive);
+        }
+
+        Integer maxWait = config.getMaxWait() == null ? gConfig.getMaxWait() : config.getMaxWait();
+        if (maxWait != null) {
+            dataSource.setMaxWait(maxWait);
+        }
     }
 
     @Override
