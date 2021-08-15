@@ -295,9 +295,11 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
                         dataSource = (DataSource) realDataSourceField.get(dataSource);
                     }
                 }
-                Class<? extends DataSource> clazz = dataSource.getClass();
-                Method closeMethod = clazz.getDeclaredMethod("close");
-                closeMethod.invoke(dataSource);
+                if (!(dataSource instanceof AutoCloseable)) {
+                    Class<? extends DataSource> clazz = dataSource.getClass();
+                    Method closeMethod = clazz.getDeclaredMethod("close");
+                    closeMethod.invoke(dataSource);
+                }
             }
         } catch (Exception e) {
             log.warn("dynamic-datasource closed datasource named [{}] failed", ds, e);
