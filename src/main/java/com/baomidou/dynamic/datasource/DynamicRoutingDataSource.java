@@ -299,7 +299,10 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
                 Method closeMethod = null;
                 for(Class<?> clazz = dataSource.getClass(); clazz != Object.class; clazz = clazz.getSuperclass()) {  
                     try {  
-                        closeMethod = clazz.getDeclaredMethod("close") ;  
+                        closeMethod = clazz.getDeclaredMethod("close");
+                        if (closeMethod != null) {
+                            break;
+                        }
                     } catch (Exception ignored){}  
                 }
                 if (closeMethod != null) {
