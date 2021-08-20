@@ -59,7 +59,7 @@ dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成�
 - 提供Mybatis环境下的  **纯读写分离** 方案。
 - 提供使用 **spel动态参数** 解析数据源方案。内置spel，session，header，支持自定义。
 - 支持  **多层数据源嵌套切换** 。（ServiceA >>>  ServiceB >>> ServiceC）。
-- 提供  **基于seata的分布式事务方案。
+- 提供  **基于seata的分布式事务方案** 。
 - 提供  **本地多数据源事务方案。**
 
 # 约定
