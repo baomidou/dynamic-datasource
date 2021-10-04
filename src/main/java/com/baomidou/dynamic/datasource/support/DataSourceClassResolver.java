@@ -61,7 +61,7 @@ public class DataSourceClassResolver {
                 mapperInterfaceField.setAccessible(true);
                 mpEnabled = true;
             } catch (NoSuchFieldException e) {
-                e.printStackTrace();
+                log.error("get mapperInterface method error",e);
             }
         }
     }
