@@ -97,6 +97,7 @@ public class DynamicDataSourceAutoConfiguration implements InitializingBean {
 
     @Role(value = BeanDefinition.ROLE_INFRASTRUCTURE)
     @Bean
+    @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "defaultAnnotation", havingValue = "true", matchIfMissing = true)
     public Advisor dynamicDatasourceAnnotationAdvisor(DsProcessor dsProcessor) {
         DynamicDataSourceAnnotationInterceptor interceptor = new DynamicDataSourceAnnotationInterceptor(properties.isAllowedPublicOnly(), dsProcessor);
         DynamicDataSourceAnnotationAdvisor advisor = new DynamicDataSourceAnnotationAdvisor(interceptor);

@@ -123,4 +123,9 @@ public class DynamicDataSourceProperties {
      * aop 切面是否只允许切 public 方法
      */
     private boolean allowedPublicOnly = true;
+
+    /**
+     * 是否启用默认注解
+     */
+    private boolean defaultAnnotation =true;
 }
