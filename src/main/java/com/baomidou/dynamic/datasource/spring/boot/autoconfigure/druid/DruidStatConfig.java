@@ -30,4 +30,6 @@ public class DruidStatConfig {
     private Boolean logSlowSql;
 
     private Boolean mergeSql;
+
+    private String slowSqlLogLevel;
 }
