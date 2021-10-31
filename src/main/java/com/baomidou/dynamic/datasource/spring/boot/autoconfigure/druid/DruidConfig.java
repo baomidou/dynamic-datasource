@@ -285,6 +285,10 @@ public class DruidConfig {
         if (slowSqlMillis != null) {
             properties.setProperty(STAT_SLOW_SQL_MILLIS, slowSqlMillis.toString());
         }
+        String slowSqlLogLevel = stat.getSlowSqlLogLevel() == null ? g.stat.getSlowSqlLogLevel() : stat.getSlowSqlLogLevel();
+        if (slowSqlLogLevel != null && slowSqlLogLevel.length() > 0) {
+            properties.setProperty(STAT_SLOW_SQL_LOG_LEVEL, slowSqlLogLevel);
+        }
 
         Boolean mergeSql = stat.getMergeSql() == null ? g.stat.getMergeSql() : stat.getMergeSql();
         if (mergeSql != null && mergeSql) {

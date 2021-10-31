@@ -59,5 +59,6 @@ public interface DruidConsts {
     String STAT_SQL_MAX_SIZE = "druid.stat.sql.MaxSize";
     String STAT_LOG_SLOW_SQL = "druid.stat.logSlowSql";
     String STAT_SLOW_SQL_MILLIS = "druid.stat.slowSqlMillis";
+    String STAT_SLOW_SQL_LOG_LEVEL = "druid.stat.slowSqlLogLevel";
     String STAT_MERGE_SQL = "druid.stat.mergeSql";
 }
