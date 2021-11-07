@@ -48,8 +48,7 @@ import java.util.Map;
 public class DynamicDataSourceProperties {
 
     public static final String PREFIX = "spring.datasource.dynamic";
-    public static final String HEALTH = PREFIX + ".health";
-    public static final String DEFAULT_VALID_QUERY = "SELECT 1";
+
     /**
      * 必须设置默认的库,默认master
      */
@@ -74,14 +73,6 @@ public class DynamicDataSourceProperties {
      * seata使用模式，默认AT
      */
     private SeataMode seataMode = SeataMode.AT;
-    /**
-     * 是否使用 spring actuator 监控检查，默认不检查
-     */
-    private boolean health = false;
-    /**
-     * 监控检查SQL
-     */
-    private String healthValidQuery = DEFAULT_VALID_QUERY;
     /**
      * 每一个数据源
      */
@@ -127,5 +118,5 @@ public class DynamicDataSourceProperties {
     /**
      * 是否启用默认注解
      */
-    private boolean defaultAnnotation =true;
+    private boolean defaultAnnotation = true;
 }
