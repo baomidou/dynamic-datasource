@@ -29,7 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
-import org.springframework.core.Ordered;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -82,10 +81,6 @@ public class DynamicDataSourceProperties {
      */
     private Class<? extends DynamicDataSourceStrategy> strategy = LoadBalanceDynamicDataSourceStrategy.class;
     /**
-     * aop切面顺序，默认优先级最高
-     */
-    private Integer order = Ordered.HIGHEST_PRECEDENCE;
-    /**
      * Druid全局参数配置
      */
     @NestedConfigurationProperty
@@ -110,13 +105,10 @@ public class DynamicDataSourceProperties {
      * 全局默认publicKey
      */
     private String publicKey = CryptoUtils.DEFAULT_PUBLIC_KEY_STRING;
-    /**
-     * aop 切面是否只允许切 public 方法
-     */
-    private boolean allowedPublicOnly = true;
 
     /**
-     * 是否启用默认注解
+     * aop with default ds annotation
      */
-    private boolean defaultAnnotation = true;
+    @NestedConfigurationProperty
+    private DynamicDatasourceAopProperties aop = new DynamicDatasourceAopProperties();
 }

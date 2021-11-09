@@ -97,17 +97,18 @@ public class DynamicDataSourceAutoConfiguration implements InitializingBean {
 
     @Role(value = BeanDefinition.ROLE_INFRASTRUCTURE)
     @Bean
-    @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "defaultAnnotation", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX + ".aop", name = "enabled", havingValue = "true", matchIfMissing = true)
     public Advisor dynamicDatasourceAnnotationAdvisor(DsProcessor dsProcessor) {
-        DynamicDataSourceAnnotationInterceptor interceptor = new DynamicDataSourceAnnotationInterceptor(properties.isAllowedPublicOnly(), dsProcessor);
+        DynamicDatasourceAopProperties aopProperties = properties.getAop();
+        DynamicDataSourceAnnotationInterceptor interceptor = new DynamicDataSourceAnnotationInterceptor(aopProperties.getAllowedPublicOnly(), dsProcessor);
         DynamicDataSourceAnnotationAdvisor advisor = new DynamicDataSourceAnnotationAdvisor(interceptor);
-        advisor.setOrder(properties.getOrder());
+        advisor.setOrder(aopProperties.getOrder());
         return advisor;
     }
 
     @Role(value = BeanDefinition.ROLE_INFRASTRUCTURE)
-    @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "seata", havingValue = "false", matchIfMissing = true)
     @Bean
+    @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "seata", havingValue = "false", matchIfMissing = true)
     public Advisor dynamicTransactionAdvisor() {
         AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
         pointcut.setExpression("@annotation(com.baomidou.dynamic.datasource.annotation.DSTransactional)");
