@@ -73,14 +73,6 @@ public class DataSourceProperty {
      */
     private String jndiName;
     /**
-     * 自动运行的建表脚本
-     */
-    private String schema;
-    /**
-     * 自动运行的数据脚本
-     */
-    private String data;
-    /**
      * 是否启用seata
      */
     private Boolean seata = true;
@@ -93,13 +85,10 @@ public class DataSourceProperty {
      */
     private Boolean lazy;
     /**
-     * 错误是否继续 默认 true
+     * 初始化
      */
-    private boolean continueOnError = true;
-    /**
-     * 分隔符 默认 ;
-     */
-    private String separator = ";";
+    @NestedConfigurationProperty
+    private DatasourceInitProperty init = new DatasourceInitProperty();
     /**
      * Druid参数配置
      */

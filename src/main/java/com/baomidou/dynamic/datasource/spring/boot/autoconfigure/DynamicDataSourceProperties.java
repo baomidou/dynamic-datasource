@@ -73,6 +73,10 @@ public class DynamicDataSourceProperties {
      */
     private SeataMode seataMode = SeataMode.AT;
     /**
+     * 全局默认publicKey
+     */
+    private String publicKey = CryptoUtils.DEFAULT_PUBLIC_KEY_STRING;
+    /**
      * 每一个数据源
      */
     private Map<String, DataSourceProperty> datasource = new LinkedHashMap<>();
@@ -100,11 +104,6 @@ public class DynamicDataSourceProperties {
      */
     @NestedConfigurationProperty
     private Dbcp2Config dbcp2 = new Dbcp2Config();
-
-    /**
-     * 全局默认publicKey
-     */
-    private String publicKey = CryptoUtils.DEFAULT_PUBLIC_KEY_STRING;
 
     /**
      * aop with default ds annotation

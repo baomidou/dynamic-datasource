@@ -18,6 +18,7 @@ package com.baomidou.dynamic.datasource.creator;
 import com.baomidou.dynamic.datasource.ds.ItemDataSource;
 import com.baomidou.dynamic.datasource.enums.SeataMode;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DatasourceInitProperty;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
 import com.baomidou.dynamic.datasource.support.ScriptRunner;
 import com.p6spy.engine.spy.P6DataSource;
@@ -57,10 +58,11 @@ public abstract class AbstractDataSourceCreator {
     }
 
     private void runScrip(DataSource dataSource, DataSourceProperty dataSourceProperty) {
-        String schema = dataSourceProperty.getSchema();
-        String data = dataSourceProperty.getData();
+        DatasourceInitProperty initProperty = dataSourceProperty.getInit();
+        String schema = initProperty.getSchema();
+        String data = initProperty.getData();
         if (StringUtils.hasText(schema) || StringUtils.hasText(data)) {
-            ScriptRunner scriptRunner = new ScriptRunner(dataSourceProperty.isContinueOnError(), dataSourceProperty.getSeparator());
+            ScriptRunner scriptRunner = new ScriptRunner(initProperty.isContinueOnError(), initProperty.getSeparator());
             if (StringUtils.hasText(schema)) {
                 scriptRunner.runScript(dataSource, schema);
             }
