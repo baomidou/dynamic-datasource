@@ -18,6 +18,8 @@ package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 import cn.beecp.BeeDataSource;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.baomidou.dynamic.datasource.creator.*;
+import com.baomidou.dynamic.datasource.event.DataSourceInitEvent;
+import com.baomidou.dynamic.datasource.event.EncDataSourceInitEvent;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,6 +59,12 @@ public class DynamicDataSourceCreatorAutoConfiguration {
         DefaultDataSourceCreator defaultDataSourceCreator = new DefaultDataSourceCreator();
         defaultDataSourceCreator.setCreators(dataSourceCreators);
         return defaultDataSourceCreator;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public DataSourceInitEvent dataSourceInitEvent() {
+        return new EncDataSourceInitEvent();
     }
 
     @Bean

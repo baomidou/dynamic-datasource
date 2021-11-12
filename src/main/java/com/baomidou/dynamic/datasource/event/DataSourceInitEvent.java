@@ -13,34 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
+package com.baomidou.dynamic.datasource.event;
 
-import lombok.Data;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 
-/**
- * 动态数据源初始化脚本配置
- *
- * @author TaoYu
- * @since 3.5.0
- */
-@Data
-public class DatasourceInitProperty {
+import javax.sql.DataSource;
 
-    /**
-     * 自动运行的建表脚本
-     */
-    private String schema;
-    /**
-     * 自动运行的数据脚本
-     */
-    private String data;
+public interface DataSourceInitEvent {
 
-    /**
-     * 错误是否继续 默认 true
-     */
-    private boolean continueOnError = true;
-    /**
-     * 分隔符 默认 ;
-     */
-    private String separator = ";";
+    void beforeCreate(DataSourceProperty dataSourceProperty);
+
+    void afterCreate(DataSource dataSource);
 }
