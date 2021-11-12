@@ -17,7 +17,6 @@ package com.baomidou.dynamic.datasource.creator;
 
 import com.baomidou.dynamic.datasource.exception.ErrorCreateDataSourceException;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
@@ -39,7 +38,6 @@ public class BasicDataSourceCreator extends AbstractDataSourceCreator implements
     private static Method passwordMethod;
     private static Method driverClassNameMethod;
     private static Method buildMethod;
-
 
     static {
         //to support springboot 1.5 and 2.x
@@ -68,10 +66,6 @@ public class BasicDataSourceCreator extends AbstractDataSourceCreator implements
                 e.printStackTrace();
             }
         }
-    }
-
-    public BasicDataSourceCreator(DynamicDataSourceProperties dynamicDataSourceProperties) {
-        super(dynamicDataSourceProperties);
     }
 
     /**

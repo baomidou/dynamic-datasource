@@ -16,11 +16,11 @@
 package com.baomidou.dynamic.datasource.creator;
 
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.hikari.HikariCpConfig;
 import com.baomidou.dynamic.datasource.toolkit.ConfigMergeCreator;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
@@ -35,27 +35,16 @@ import static com.baomidou.dynamic.datasource.support.DdConstants.HIKARI_DATASOU
  * @author TaoYu
  * @since 2020/1/21
  */
-public class HikariDataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator {
+public class HikariDataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator, InitializingBean {
 
     private static final ConfigMergeCreator<HikariCpConfig, HikariConfig> MERGE_CREATOR = new ConfigMergeCreator<>("HikariCp", HikariCpConfig.class, HikariConfig.class);
-    private static Boolean hikariExists = false;
     private static Method configCopyMethod = null;
 
     static {
-        try {
-            Class.forName(HIKARI_DATASOURCE);
-            hikariExists = true;
-            fetchMethod();
-        } catch (ClassNotFoundException ignored) {
-        }
+        fetchMethod();
     }
 
-    private final HikariCpConfig gConfig;
-
-    public HikariDataSourceCreator(DynamicDataSourceProperties properties) {
-        super(properties);
-        this.gConfig = properties.getHikari();
-    }
+    private HikariCpConfig gConfig;
 
     /**
      * to support springboot 1.5 and 2.x
@@ -105,6 +94,11 @@ public class HikariDataSourceCreator extends AbstractDataSourceCreator implement
     @Override
     public boolean support(DataSourceProperty dataSourceProperty) {
         Class<? extends DataSource> type = dataSourceProperty.getType();
-        return (type == null && hikariExists) || (type != null && HIKARI_DATASOURCE.equals(type.getName()));
+        return type == null || HIKARI_DATASOURCE.equals(type.getName());
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        gConfig = dynamicDataSourceProperties.getHikari();
     }
 }

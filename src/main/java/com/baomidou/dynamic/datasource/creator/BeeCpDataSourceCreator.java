@@ -18,10 +18,10 @@ package com.baomidou.dynamic.datasource.creator;
 import cn.beecp.BeeDataSource;
 import cn.beecp.BeeDataSourceConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.beecp.BeeCpConfig;
 import com.baomidou.dynamic.datasource.toolkit.ConfigMergeCreator;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
@@ -37,29 +37,21 @@ import static com.baomidou.dynamic.datasource.support.DdConstants.BEECP_DATASOUR
  * @since 2020/5/14
  */
 @Slf4j
-public class BeeCpDataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator {
+public class BeeCpDataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator, InitializingBean {
 
     private static final ConfigMergeCreator<BeeCpConfig, BeeDataSourceConfig> MERGE_CREATOR = new ConfigMergeCreator<>("BeeCp", BeeCpConfig.class, BeeDataSourceConfig.class);
 
-    private static Boolean beeCpExists = false;
     private static Method copyToMethod = null;
 
     static {
         try {
-            Class.forName(BEECP_DATASOURCE);
-            beeCpExists = true;
             copyToMethod = BeeDataSourceConfig.class.getDeclaredMethod("copyTo", BeeDataSourceConfig.class);
             copyToMethod.setAccessible(true);
-        } catch (ClassNotFoundException | NoSuchMethodException ignored) {
+        } catch (NoSuchMethodException ignored) {
         }
     }
 
-    private final BeeCpConfig gConfig;
-
-    public BeeCpDataSourceCreator(DynamicDataSourceProperties dynamicDataSourceProperties) {
-        super(dynamicDataSourceProperties);
-        this.gConfig = dynamicDataSourceProperties.getBeecp();
-    }
+    private BeeCpConfig gConfig;
 
     @Override
     public DataSource doCreateDataSource(DataSourceProperty dataSourceProperty) {
@@ -87,6 +79,11 @@ public class BeeCpDataSourceCreator extends AbstractDataSourceCreator implements
     @Override
     public boolean support(DataSourceProperty dataSourceProperty) {
         Class<? extends DataSource> type = dataSourceProperty.getType();
-        return (type == null && beeCpExists) || (type != null && BEECP_DATASOURCE.equals(type.getName()));
+        return type == null || BEECP_DATASOURCE.equals(type.getName());
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        gConfig = dynamicDataSourceProperties.getBeecp();
     }
 }

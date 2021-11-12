@@ -23,10 +23,10 @@ import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallFilter;
 import com.baomidou.dynamic.datasource.exception.ErrorCreateDataSourceException;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidSlf4jConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidWallConfigUtil;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
@@ -45,27 +45,12 @@ import static com.baomidou.dynamic.datasource.support.DdConstants.DRUID_DATASOUR
  * @author TaoYu
  * @since 2020/1/21
  */
-public class DruidDataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator {
-
-    private static Boolean druidExists = false;
-
-    static {
-        try {
-            Class.forName(DRUID_DATASOURCE);
-            druidExists = true;
-        } catch (ClassNotFoundException ignored) {
-        }
-    }
-
-    private final DruidConfig gConfig;
+public class DruidDataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator, InitializingBean {
 
     @Autowired(required = false)
     private ApplicationContext applicationContext;
 
-    public DruidDataSourceCreator(DynamicDataSourceProperties dynamicDataSourceProperties) {
-        super(dynamicDataSourceProperties);
-        this.gConfig = dynamicDataSourceProperties.getDruid();
-    }
+    private DruidConfig gConfig;
 
     @Override
     public DataSource doCreateDataSource(DataSourceProperty dataSourceProperty) {
@@ -208,6 +193,11 @@ public class DruidDataSourceCreator extends AbstractDataSourceCreator implements
     @Override
     public boolean support(DataSourceProperty dataSourceProperty) {
         Class<? extends DataSource> type = dataSourceProperty.getType();
-        return (type == null && druidExists) || (type != null && DRUID_DATASOURCE.equals(type.getName()));
+        return type == null || DRUID_DATASOURCE.equals(type.getName());
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        gConfig = dynamicDataSourceProperties.getDruid();
     }
 }

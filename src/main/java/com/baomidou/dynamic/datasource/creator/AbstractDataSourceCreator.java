@@ -17,6 +17,7 @@ package com.baomidou.dynamic.datasource.creator;
 
 import com.baomidou.dynamic.datasource.ds.ItemDataSource;
 import com.baomidou.dynamic.datasource.enums.SeataMode;
+import com.baomidou.dynamic.datasource.event.DataSourceInitEvent;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DatasourceInitProperties;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
@@ -25,34 +26,36 @@ import com.p6spy.engine.spy.P6DataSource;
 import io.seata.rm.datasource.DataSourceProxy;
 import io.seata.rm.datasource.xa.DataSourceProxyXA;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 
 @Slf4j
-public abstract class AbstractDataSourceCreator {
+public abstract class AbstractDataSourceCreator implements DataSourceCreator {
 
-    protected final DynamicDataSourceProperties dynamicDataSourceProperties;
-
-    protected AbstractDataSourceCreator(DynamicDataSourceProperties dynamicDataSourceProperties) {
-        this.dynamicDataSourceProperties = dynamicDataSourceProperties;
-    }
+    @Autowired
+    protected DynamicDataSourceProperties dynamicDataSourceProperties;
+    @Autowired
+    protected DataSourceInitEvent dataSourceInitEvent;
 
     public abstract DataSource doCreateDataSource(DataSourceProperty dataSourceProperty);
 
+    @Override
     public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
         String publicKey = dataSourceProperty.getPublicKey();
         if (StringUtils.isEmpty(publicKey)) {
             publicKey = dynamicDataSourceProperties.getPublicKey();
             dataSourceProperty.setPublicKey(publicKey);
         }
-
         Boolean lazy = dataSourceProperty.getLazy();
         if (lazy == null) {
             lazy = dynamicDataSourceProperties.getLazy();
             dataSourceProperty.setLazy(lazy);
         }
+        dataSourceInitEvent.beforeCreate(dataSourceProperty);
         DataSource dataSource = doCreateDataSource(dataSourceProperty);
+        dataSourceInitEvent.afterCreate(dataSource);
         this.runScrip(dataSource, dataSourceProperty);
         return wrapDataSource(dataSource, dataSourceProperty);
     }

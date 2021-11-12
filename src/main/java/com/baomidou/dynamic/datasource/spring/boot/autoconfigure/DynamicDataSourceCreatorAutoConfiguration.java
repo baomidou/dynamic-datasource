@@ -69,16 +69,14 @@ public class DynamicDataSourceCreatorAutoConfiguration {
 
     @Bean
     @Order(DEFAULT_ORDER)
-    @ConditionalOnMissingBean
     public BasicDataSourceCreator basicDataSourceCreator() {
-        return new BasicDataSourceCreator(properties);
+        return new BasicDataSourceCreator();
     }
 
     @Bean
     @Order(JNDI_ORDER)
-    @ConditionalOnMissingBean
     public JndiDataSourceCreator jndiDataSourceCreator() {
-        return new JndiDataSourceCreator(properties);
+        return new JndiDataSourceCreator();
     }
 
     /**
@@ -86,12 +84,12 @@ public class DynamicDataSourceCreatorAutoConfiguration {
      */
     @ConditionalOnClass(DruidDataSource.class)
     @Configuration
-    public class DruidDataSourceCreatorConfiguration {
+    static class DruidDataSourceCreatorConfiguration {
+
         @Bean
         @Order(DRUID_ORDER)
-        @ConditionalOnMissingBean
         public DruidDataSourceCreator druidDataSourceCreator() {
-            return new DruidDataSourceCreator(properties);
+            return new DruidDataSourceCreator();
         }
 
     }
@@ -101,12 +99,11 @@ public class DynamicDataSourceCreatorAutoConfiguration {
      */
     @ConditionalOnClass(HikariDataSource.class)
     @Configuration
-    public class HikariDataSourceCreatorConfiguration {
+    static class HikariDataSourceCreatorConfiguration {
         @Bean
         @Order(HIKARI_ORDER)
-        @ConditionalOnMissingBean
         public HikariDataSourceCreator hikariDataSourceCreator() {
-            return new HikariDataSourceCreator(properties);
+            return new HikariDataSourceCreator();
         }
     }
 
@@ -115,13 +112,12 @@ public class DynamicDataSourceCreatorAutoConfiguration {
      */
     @ConditionalOnClass(BeeDataSource.class)
     @Configuration
-    public class BeeCpDataSourceCreatorConfiguration {
+    static class BeeCpDataSourceCreatorConfiguration {
 
         @Bean
         @Order(BEECP_ORDER)
-        @ConditionalOnMissingBean
         public BeeCpDataSourceCreator beeCpDataSourceCreator() {
-            return new BeeCpDataSourceCreator(properties);
+            return new BeeCpDataSourceCreator();
         }
     }
 
@@ -130,13 +126,12 @@ public class DynamicDataSourceCreatorAutoConfiguration {
      */
     @ConditionalOnClass(BasicDataSource.class)
     @Configuration
-    public class DBCP2DataSourceCreatorConfiguration {
+    static class DBCP2DataSourceCreatorConfiguration {
 
         @Bean
         @Order(DBCP2_ORDER)
-        @ConditionalOnMissingBean
         public Dbcp2DataSourceCreator dbcp2DataSourceCreator() {
-            return new Dbcp2DataSourceCreator(properties);
+            return new Dbcp2DataSourceCreator();
         }
     }
 
