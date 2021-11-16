@@ -21,12 +21,9 @@ import com.baomidou.dynamic.datasource.creator.*;
 import com.baomidou.dynamic.datasource.event.DataSourceInitEvent;
 import com.baomidou.dynamic.datasource.event.EncDataSourceInitEvent;
 import com.zaxxer.hikari.HikariDataSource;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -37,10 +34,7 @@ import java.util.List;
 /**
  * @author TaoYu
  */
-@Slf4j
 @Configuration
-@AllArgsConstructor
-@EnableConfigurationProperties(DynamicDataSourceProperties.class)
 public class DynamicDataSourceCreatorAutoConfiguration {
 
     public static final int JNDI_ORDER = 1000;
@@ -49,8 +43,6 @@ public class DynamicDataSourceCreatorAutoConfiguration {
     public static final int BEECP_ORDER = 4000;
     public static final int DBCP2_ORDER = 5000;
     public static final int DEFAULT_ORDER = 6000;
-
-    private final DynamicDataSourceProperties properties;
 
     @Primary
     @Bean
