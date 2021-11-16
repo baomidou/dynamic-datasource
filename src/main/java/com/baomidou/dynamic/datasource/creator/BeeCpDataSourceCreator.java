@@ -84,6 +84,6 @@ public class BeeCpDataSourceCreator extends AbstractDataSourceCreator implements
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        gConfig = dynamicDataSourceProperties.getBeecp();
+        gConfig = properties.getBeecp();
     }
 }

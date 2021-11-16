@@ -198,6 +198,6 @@ public class DruidDataSourceCreator extends AbstractDataSourceCreator implements
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        gConfig = dynamicDataSourceProperties.getDruid();
+        gConfig = properties.getDruid();
     }
 }

@@ -35,7 +35,7 @@ import javax.sql.DataSource;
 public abstract class AbstractDataSourceCreator implements DataSourceCreator {
 
     @Autowired
-    protected DynamicDataSourceProperties dynamicDataSourceProperties;
+    protected DynamicDataSourceProperties properties;
     @Autowired
     protected DataSourceInitEvent dataSourceInitEvent;
 
@@ -45,12 +45,12 @@ public abstract class AbstractDataSourceCreator implements DataSourceCreator {
     public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
         String publicKey = dataSourceProperty.getPublicKey();
         if (StringUtils.isEmpty(publicKey)) {
-            publicKey = dynamicDataSourceProperties.getPublicKey();
+            publicKey = properties.getPublicKey();
             dataSourceProperty.setPublicKey(publicKey);
         }
         Boolean lazy = dataSourceProperty.getLazy();
         if (lazy == null) {
-            lazy = dynamicDataSourceProperties.getLazy();
+            lazy = properties.getLazy();
             dataSourceProperty.setLazy(lazy);
         }
         dataSourceInitEvent.beforeCreate(dataSourceProperty);
@@ -79,19 +79,19 @@ public abstract class AbstractDataSourceCreator implements DataSourceCreator {
         String name = dataSourceProperty.getPoolName();
         DataSource targetDataSource = dataSource;
 
-        Boolean enabledP6spy = dynamicDataSourceProperties.getP6spy() && dataSourceProperty.getP6spy();
+        Boolean enabledP6spy = properties.getP6spy() && dataSourceProperty.getP6spy();
         if (enabledP6spy) {
             targetDataSource = new P6DataSource(dataSource);
             log.debug("dynamic-datasource [{}] wrap p6spy plugin", name);
         }
 
-        Boolean enabledSeata = dynamicDataSourceProperties.getSeata() && dataSourceProperty.getSeata();
-        SeataMode seataMode = dynamicDataSourceProperties.getSeataMode();
+        Boolean enabledSeata = properties.getSeata() && dataSourceProperty.getSeata();
+        SeataMode seataMode = properties.getSeataMode();
         if (enabledSeata) {
             if (SeataMode.XA == seataMode) {
-                targetDataSource = new DataSourceProxyXA(dataSource);
+                targetDataSource = new DataSourceProxyXA(targetDataSource);
             } else {
-                targetDataSource = new DataSourceProxy(dataSource);
+                targetDataSource = new DataSourceProxy(targetDataSource);
             }
             log.debug("dynamic-datasource [{}] wrap seata plugin transaction mode ", name);
         }

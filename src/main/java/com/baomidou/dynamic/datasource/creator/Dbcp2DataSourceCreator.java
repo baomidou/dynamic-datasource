@@ -64,6 +64,6 @@ public class Dbcp2DataSourceCreator extends AbstractDataSourceCreator implements
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        gConfig = dynamicDataSourceProperties.getDbcp2();
+        gConfig = properties.getDbcp2();
     }
 }

@@ -99,6 +99,6 @@ public class HikariDataSourceCreator extends AbstractDataSourceCreator implement
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        gConfig = dynamicDataSourceProperties.getHikari();
+        gConfig = properties.getHikari();
     }
 }
