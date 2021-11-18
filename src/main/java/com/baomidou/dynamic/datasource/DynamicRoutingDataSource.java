@@ -214,7 +214,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
         // 检查开启了配置但没有相关依赖
         checkEnv();
         // 添加并分组数据源
-        Map<String, DataSource> dataSources = new HashMap<>();
+        Map<String, DataSource> dataSources = new HashMap<>(16);
         for (DynamicDataSourceProvider provider : providers) {
             dataSources.putAll(provider.loadDataSources());
         }

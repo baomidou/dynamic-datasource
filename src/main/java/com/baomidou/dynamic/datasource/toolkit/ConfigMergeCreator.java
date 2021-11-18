@@ -27,6 +27,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Properties;
 
+/**
+ * 用于合并配置并转换成目标配置的工具类
+ *
+ * @param <C> 自己的配置类
+ * @param <T> 目标的配置类
+ * @author TaoYu
+ */
 @Slf4j
 @AllArgsConstructor
 public class ConfigMergeCreator<C, T> {
