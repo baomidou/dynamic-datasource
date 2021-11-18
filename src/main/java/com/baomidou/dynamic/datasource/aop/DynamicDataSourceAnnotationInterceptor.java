@@ -15,9 +15,10 @@
  */
 package com.baomidou.dynamic.datasource.aop;
 
-import com.baomidou.dynamic.datasource.processor.DsProcessor;
+import com.baomidou.dynamic.datasource.processor.DsProcessorHandler;
 import com.baomidou.dynamic.datasource.support.DataSourceClassResolver;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
+
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
@@ -25,6 +26,7 @@ import org.aopalliance.intercept.MethodInvocation;
  * Core Interceptor of Dynamic Datasource
  *
  * @author TaoYu
+ * @author nukiyoam
  * @since 1.2.0
  */
 public class DynamicDataSourceAnnotationInterceptor implements MethodInterceptor {
@@ -35,11 +37,12 @@ public class DynamicDataSourceAnnotationInterceptor implements MethodInterceptor
     private static final String DYNAMIC_PREFIX = "#";
 
     private final DataSourceClassResolver dataSourceClassResolver;
-    private final DsProcessor dsProcessor;
 
-    public DynamicDataSourceAnnotationInterceptor(Boolean allowedPublicOnly, DsProcessor dsProcessor) {
+    private final DsProcessorHandler dsProcessorHandler;
+
+    public DynamicDataSourceAnnotationInterceptor(Boolean allowedPublicOnly, DsProcessorHandler dsProcessorHandler) {
         dataSourceClassResolver = new DataSourceClassResolver(allowedPublicOnly);
-        this.dsProcessor = dsProcessor;
+        this.dsProcessorHandler = dsProcessorHandler;
     }
 
     @Override
@@ -55,6 +58,6 @@ public class DynamicDataSourceAnnotationInterceptor implements MethodInterceptor
 
     private String determineDatasourceKey(MethodInvocation invocation) {
         String key = dataSourceClassResolver.findDSKey(invocation.getMethod(), invocation.getThis());
-        return (!key.isEmpty() && key.startsWith(DYNAMIC_PREFIX)) ? dsProcessor.determineDatasource(invocation, key) : key;
+        return (!key.isEmpty() && key.startsWith(DYNAMIC_PREFIX)) ? dsProcessorHandler.determineDatasource(invocation, key) : key;
     }
 }

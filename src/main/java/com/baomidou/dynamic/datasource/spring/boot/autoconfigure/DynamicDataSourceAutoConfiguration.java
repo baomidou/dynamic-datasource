@@ -15,19 +15,23 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
+import java.util.List;
+
+import javax.sql.DataSource;
+
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationInterceptor;
 import com.baomidou.dynamic.datasource.aop.DynamicLocalTransactionAdvisor;
 import com.baomidou.dynamic.datasource.processor.DsHeaderProcessor;
-import com.baomidou.dynamic.datasource.processor.DsProcessor;
+import com.baomidou.dynamic.datasource.processor.DsProcessorHandler;
 import com.baomidou.dynamic.datasource.processor.DsSessionProcessor;
 import com.baomidou.dynamic.datasource.processor.DsSpelExpressionProcessor;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.provider.YmlDynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidDynamicDataSourceConfiguration;
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.aop.Advisor;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
@@ -47,13 +51,13 @@ import org.springframework.context.annotation.Role;
 import org.springframework.context.expression.BeanFactoryResolver;
 import org.springframework.util.CollectionUtils;
 
-import javax.sql.DataSource;
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 动态数据源核心自动配置类
  *
  * @author TaoYu Kanyuxia
+ * @author nukiyoam
  * @see DynamicDataSourceProvider
  * @see DynamicDataSourceStrategy
  * @see DynamicRoutingDataSource
@@ -62,18 +66,19 @@ import java.util.List;
 @Slf4j
 @Configuration
 @EnableConfigurationProperties(DynamicDataSourceProperties.class)
-@AutoConfigureBefore(value = DataSourceAutoConfiguration.class, name = "com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure")
+@AutoConfigureBefore(value = DataSourceAutoConfiguration.class,
+    name = "com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure")
 @Import(value = {DruidDynamicDataSourceConfiguration.class, DynamicDataSourceCreatorAutoConfiguration.class})
-@ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "enabled", havingValue = "true",
+    matchIfMissing = true)
 public class DynamicDataSourceAutoConfiguration implements InitializingBean {
 
     private final DynamicDataSourceProperties properties;
 
     private final List<DynamicDataSourcePropertiesCustomizer> dataSourcePropertiesCustomizers;
 
-    public DynamicDataSourceAutoConfiguration(
-            DynamicDataSourceProperties properties,
-            ObjectProvider<List<DynamicDataSourcePropertiesCustomizer>> dataSourcePropertiesCustomizers) {
+    public DynamicDataSourceAutoConfiguration(DynamicDataSourceProperties properties,
+        ObjectProvider<List<DynamicDataSourcePropertiesCustomizer>> dataSourcePropertiesCustomizers) {
         this.properties = properties;
         this.dataSourcePropertiesCustomizers = dataSourcePropertiesCustomizers.getIfAvailable();
     }
@@ -97,10 +102,12 @@ public class DynamicDataSourceAutoConfiguration implements InitializingBean {
 
     @Role(value = BeanDefinition.ROLE_INFRASTRUCTURE)
     @Bean
-    @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX + ".aop", name = "enabled", havingValue = "true", matchIfMissing = true)
-    public Advisor dynamicDatasourceAnnotationAdvisor(DsProcessor dsProcessor) {
+    @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX + ".aop", name = "enabled", havingValue = "true",
+        matchIfMissing = true)
+    public Advisor dynamicDatasourceAnnotationAdvisor(DsProcessorHandler dsProcessorHandler) {
         DynamicDatasourceAopProperties aopProperties = properties.getAop();
-        DynamicDataSourceAnnotationInterceptor interceptor = new DynamicDataSourceAnnotationInterceptor(aopProperties.getAllowedPublicOnly(), dsProcessor);
+        DynamicDataSourceAnnotationInterceptor interceptor =
+            new DynamicDataSourceAnnotationInterceptor(aopProperties.getAllowedPublicOnly(), dsProcessorHandler);
         DynamicDataSourceAnnotationAdvisor advisor = new DynamicDataSourceAnnotationAdvisor(interceptor);
         advisor.setOrder(aopProperties.getOrder());
         return advisor;
@@ -108,7 +115,8 @@ public class DynamicDataSourceAutoConfiguration implements InitializingBean {
 
     @Role(value = BeanDefinition.ROLE_INFRASTRUCTURE)
     @Bean
-    @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "seata", havingValue = "false", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "seata", havingValue = "false",
+        matchIfMissing = true)
     public Advisor dynamicTransactionAdvisor() {
         AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
         pointcut.setExpression("@annotation(com.baomidou.dynamic.datasource.annotation.DSTransactional)");
@@ -117,14 +125,15 @@ public class DynamicDataSourceAutoConfiguration implements InitializingBean {
 
     @Bean
     @ConditionalOnMissingBean
-    public DsProcessor dsProcessor(BeanFactory beanFactory) {
+    public DsProcessorHandler dsProcessor(BeanFactory beanFactory) {
+        DsProcessorHandler processorHandler = new DsProcessorHandler();
         DsHeaderProcessor headerProcessor = new DsHeaderProcessor();
         DsSessionProcessor sessionProcessor = new DsSessionProcessor();
         DsSpelExpressionProcessor spelExpressionProcessor = new DsSpelExpressionProcessor();
         spelExpressionProcessor.setBeanResolver(new BeanFactoryResolver(beanFactory));
-        headerProcessor.setNextProcessor(sessionProcessor);
-        sessionProcessor.setNextProcessor(spelExpressionProcessor);
-        return headerProcessor;
+
+        processorHandler.addProcessor(headerProcessor, sessionProcessor, spelExpressionProcessor);
+        return processorHandler;
     }
 
     @Override

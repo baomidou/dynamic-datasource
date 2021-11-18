@@ -15,17 +15,20 @@
  */
 package com.baomidou.dynamic.datasource.provider;
 
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.support.JdbcUtils;
-import org.springframework.util.StringUtils;
-
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
+
+import javax.sql.DataSource;
+
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
+
+import org.springframework.jdbc.support.JdbcUtils;
+import org.springframework.util.StringUtils;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * JDBC数据源提供者(抽象)
@@ -34,7 +37,7 @@ import java.util.Map;
  * @since 2.1.2
  */
 @Slf4j
-public abstract class AbstractJdbcDataSourceProvider extends AbstractDataSourceProvider implements DynamicDataSourceProvider {
+public abstract class AbstractJdbcDataSourceProvider extends AbstractDataSourceProvider {
 
     /**
      * JDBC driver

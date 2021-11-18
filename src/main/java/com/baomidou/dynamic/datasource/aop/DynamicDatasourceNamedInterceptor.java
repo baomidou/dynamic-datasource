@@ -16,26 +16,30 @@
 package com.baomidou.dynamic.datasource.aop;
 
 
-import com.baomidou.dynamic.datasource.processor.DsProcessor;
-import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
-import lombok.extern.slf4j.Slf4j;
-import org.aopalliance.intercept.MethodInterceptor;
-import org.aopalliance.intercept.MethodInvocation;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.PatternMatchUtils;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import com.baomidou.dynamic.datasource.processor.DsProcessorHandler;
+import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
+
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
+import org.springframework.util.ClassUtils;
+import org.springframework.util.PatternMatchUtils;
+
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Named Interceptor of Dynamic Datasource
  *
  * @author TaoYu
+ * @author nukiyoam
  * @since 3.4.0
  */
 @Slf4j
@@ -43,10 +47,11 @@ public class DynamicDatasourceNamedInterceptor implements MethodInterceptor {
 
     private static final String DYNAMIC_PREFIX = "#";
     private final Map<String, String> nameMap = new HashMap<>();
-    private final DsProcessor dsProcessor;
 
-    public DynamicDatasourceNamedInterceptor(DsProcessor dsProcessor) {
-        this.dsProcessor = dsProcessor;
+    private final DsProcessorHandler dsProcessorHandler;
+
+    public DynamicDatasourceNamedInterceptor(DsProcessorHandler dsProcessorHandler) {
+        this.dsProcessorHandler = dsProcessorHandler;
     }
 
     @Nullable
@@ -111,7 +116,7 @@ public class DynamicDatasourceNamedInterceptor implements MethodInterceptor {
 
     private String determineDatasourceKey(MethodInvocation invocation) {
         String key = findDsKey(invocation);
-        return (key != null && key.startsWith(DYNAMIC_PREFIX)) ? dsProcessor.determineDatasource(invocation, key) : key;
+        return (key != null && key.startsWith(DYNAMIC_PREFIX)) ? dsProcessorHandler.determineDatasource(invocation, key) : key;
     }
 
     private String findDsKey(MethodInvocation invocation) {

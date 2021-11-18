@@ -15,6 +15,8 @@
  */
 package com.baomidou.dynamic.datasource.processor;
 
+import java.lang.reflect.Method;
+
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.context.expression.MethodBasedEvaluationContext;
 import org.springframework.core.DefaultParameterNameDiscoverer;
@@ -25,13 +27,16 @@ import org.springframework.expression.ParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
-import java.lang.reflect.Method;
-
 /**
  * @author TaoYu
  * @since 2.5.0
  */
 public class DsSpelExpressionProcessor extends DsProcessor {
+
+    /**
+     * spel 开头
+     */
+    private static final String SPEL_PREFIX = "#spel";
 
     /**
      * 参数发现器
@@ -64,11 +69,12 @@ public class DsSpelExpressionProcessor extends DsProcessor {
             return null;
         }
     };
+
     private BeanResolver beanResolver;
 
     @Override
     public boolean matches(String key) {
-        return true;
+        return key.startsWith(SPEL_PREFIX);
     }
 
     @Override
@@ -77,7 +83,7 @@ public class DsSpelExpressionProcessor extends DsProcessor {
         Object[] arguments = invocation.getArguments();
         StandardEvaluationContext context = new MethodBasedEvaluationContext(null, method, arguments, NAME_DISCOVERER);
         context.setBeanResolver(beanResolver);
-        final Object value = PARSER.parseExpression(key, parserContext).getValue(context);
+        final Object value = PARSER.parseExpression(key.substring(6), parserContext).getValue(context);
         return value == null ? null : value.toString();
     }
 
