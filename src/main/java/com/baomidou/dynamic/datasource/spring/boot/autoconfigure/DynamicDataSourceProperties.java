@@ -15,6 +15,9 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import com.baomidou.dynamic.datasource.enums.SeataMode;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.beecp.BeeCpConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.dbcp2.Dbcp2Config;
@@ -23,15 +26,13 @@ import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.hikari.HikariCp
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
 import com.baomidou.dynamic.datasource.strategy.LoadBalanceDynamicDataSourceStrategy;
 import com.baomidou.dynamic.datasource.toolkit.CryptoUtils;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * DynamicDataSourceProperties
@@ -40,7 +41,6 @@ import java.util.Map;
  * @see DataSourceProperties
  * @since 1.0.0
  */
-@Slf4j
 @Getter
 @Setter
 @ConfigurationProperties(prefix = DynamicDataSourceProperties.PREFIX)

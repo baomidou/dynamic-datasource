@@ -51,8 +51,6 @@ import org.springframework.context.annotation.Role;
 import org.springframework.context.expression.BeanFactoryResolver;
 import org.springframework.util.CollectionUtils;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * 动态数据源核心自动配置类
  *
@@ -63,7 +61,6 @@ import lombok.extern.slf4j.Slf4j;
  * @see DynamicRoutingDataSource
  * @since 1.0.0
  */
-@Slf4j
 @Configuration
 @EnableConfigurationProperties(DynamicDataSourceProperties.class)
 @AutoConfigureBefore(value = DataSourceAutoConfiguration.class,

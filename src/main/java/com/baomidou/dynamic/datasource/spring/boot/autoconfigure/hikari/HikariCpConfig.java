@@ -15,10 +15,9 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure.hikari;
 
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.Properties;
+
+import lombok.Data;
 
 /**
  * HikariCp参数配置
@@ -27,7 +26,6 @@ import java.util.Properties;
  * @since 2.4.1
  */
 @Data
-@Slf4j
 public class HikariCpConfig {
 
     private String catalog;

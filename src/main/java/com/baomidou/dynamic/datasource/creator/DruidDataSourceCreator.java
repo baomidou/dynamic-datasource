@@ -15,6 +15,15 @@
  */
 package com.baomidou.dynamic.datasource.creator;
 
+import static com.baomidou.dynamic.datasource.support.DdConstants.DRUID_DATASOURCE;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
+import javax.sql.DataSource;
+
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.logging.Slf4jLogFilter;
 import com.alibaba.druid.filter.stat.StatFilter;
@@ -26,18 +35,11 @@ import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourcePrope
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidSlf4jConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidWallConfigUtil;
+
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
-
-import javax.sql.DataSource;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
-import static com.baomidou.dynamic.datasource.support.DdConstants.DRUID_DATASOURCE;
 
 /**
  * Druid数据源创建器
@@ -45,7 +47,7 @@ import static com.baomidou.dynamic.datasource.support.DdConstants.DRUID_DATASOUR
  * @author TaoYu
  * @since 2020/1/21
  */
-public class DruidDataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator, InitializingBean {
+public class DruidDataSourceCreator extends AbstractDataSourceCreator implements InitializingBean {
 
     @Autowired(required = false)
     private ApplicationContext applicationContext;

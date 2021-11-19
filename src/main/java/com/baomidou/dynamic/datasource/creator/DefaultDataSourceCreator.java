@@ -15,12 +15,13 @@
  */
 package com.baomidou.dynamic.datasource.creator;
 
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
 
 import javax.sql.DataSource;
-import java.util.List;
+
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
+
+import lombok.Setter;
 
 /**
  * 数据源创建器
@@ -28,7 +29,6 @@ import java.util.List;
  * @author TaoYu
  * @since 2.3.0
  */
-@Slf4j
 @Setter
 public class DefaultDataSourceCreator {
 

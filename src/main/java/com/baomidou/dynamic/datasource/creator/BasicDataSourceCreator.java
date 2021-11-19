@@ -15,12 +15,14 @@
  */
 package com.baomidou.dynamic.datasource.creator;
 
-import com.baomidou.dynamic.datasource.exception.ErrorCreateDataSourceException;
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
-import lombok.extern.slf4j.Slf4j;
+import java.lang.reflect.Method;
 
 import javax.sql.DataSource;
-import java.lang.reflect.Method;
+
+import com.baomidou.dynamic.datasource.exception.ErrorCreateDataSourceException;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 基础数据源创建器
@@ -29,7 +31,7 @@ import java.lang.reflect.Method;
  * @since 2020/1/21
  */
 @Slf4j
-public class BasicDataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator {
+public class BasicDataSourceCreator extends AbstractDataSourceCreator {
 
     private static Method createMethod;
     private static Method typeMethod;

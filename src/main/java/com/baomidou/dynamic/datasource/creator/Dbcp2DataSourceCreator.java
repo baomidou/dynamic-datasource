@@ -15,17 +15,19 @@
  */
 package com.baomidou.dynamic.datasource.creator;
 
+import static com.baomidou.dynamic.datasource.support.DdConstants.DBCP2_DATASOURCE;
+
+import javax.sql.DataSource;
+
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.dbcp2.Dbcp2Config;
 import com.baomidou.dynamic.datasource.toolkit.ConfigMergeCreator;
-import lombok.SneakyThrows;
+
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.StringUtils;
 
-import javax.sql.DataSource;
-
-import static com.baomidou.dynamic.datasource.support.DdConstants.DBCP2_DATASOURCE;
+import lombok.SneakyThrows;
 
 /**
  * DBCP数据源创建器
@@ -33,7 +35,7 @@ import static com.baomidou.dynamic.datasource.support.DdConstants.DBCP2_DATASOUR
  * @author TaoYu
  * @since 2021/5/18
  */
-public class Dbcp2DataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator, InitializingBean {
+public class Dbcp2DataSourceCreator extends AbstractDataSourceCreator implements InitializingBean {
 
     private static final ConfigMergeCreator<Dbcp2Config, BasicDataSource> MERGE_CREATOR = new ConfigMergeCreator<>("Dbcp2", Dbcp2Config.class, BasicDataSource.class);
 

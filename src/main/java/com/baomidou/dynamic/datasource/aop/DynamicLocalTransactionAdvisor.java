@@ -15,19 +15,18 @@
  */
 package com.baomidou.dynamic.datasource.aop;
 
+import java.util.UUID;
+
 import com.baomidou.dynamic.datasource.tx.ConnectionFactory;
 import com.baomidou.dynamic.datasource.tx.TransactionContext;
-import lombok.extern.slf4j.Slf4j;
+
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.util.StringUtils;
 
-import java.util.UUID;
-
 /**
  * @author funkye
  */
-@Slf4j
 public class DynamicLocalTransactionAdvisor implements MethodInterceptor {
 
     @Override

@@ -15,10 +15,11 @@
  */
 package com.baomidou.dynamic.datasource.creator;
 
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
-import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
-
 import javax.sql.DataSource;
+
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
+
+import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 
 /**
  * JNDI数据源创建器
@@ -26,7 +27,7 @@ import javax.sql.DataSource;
  * @author TaoYu
  * @since 2020/1/27
  */
-public class JndiDataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator {
+public class JndiDataSourceCreator extends AbstractDataSourceCreator {
 
     private static final JndiDataSourceLookup LOOKUP = new JndiDataSourceLookup();
 

@@ -15,19 +15,21 @@
  */
 package com.baomidou.dynamic.datasource.creator;
 
+import static com.baomidou.dynamic.datasource.support.DdConstants.HIKARI_DATASOURCE;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import javax.sql.DataSource;
+
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.hikari.HikariCpConfig;
 import com.baomidou.dynamic.datasource.toolkit.ConfigMergeCreator;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.StringUtils;
-
-import javax.sql.DataSource;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-import static com.baomidou.dynamic.datasource.support.DdConstants.HIKARI_DATASOURCE;
 
 /**
  * Hikari数据源创建器
@@ -35,7 +37,7 @@ import static com.baomidou.dynamic.datasource.support.DdConstants.HIKARI_DATASOU
  * @author TaoYu
  * @since 2020/1/21
  */
-public class HikariDataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator, InitializingBean {
+public class HikariDataSourceCreator extends AbstractDataSourceCreator implements InitializingBean {
 
     private static final ConfigMergeCreator<HikariCpConfig, HikariConfig> MERGE_CREATOR = new ConfigMergeCreator<>("HikariCp", HikariCpConfig.class, HikariConfig.class);
     private static Method configCopyMethod = null;

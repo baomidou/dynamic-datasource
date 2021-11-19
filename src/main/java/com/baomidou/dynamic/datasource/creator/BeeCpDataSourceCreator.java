@@ -15,20 +15,22 @@
  */
 package com.baomidou.dynamic.datasource.creator;
 
-import cn.beecp.BeeDataSource;
-import cn.beecp.BeeDataSourceConfig;
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.beecp.BeeCpConfig;
-import com.baomidou.dynamic.datasource.toolkit.ConfigMergeCreator;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.util.StringUtils;
+import static com.baomidou.dynamic.datasource.support.DdConstants.BEECP_DATASOURCE;
 
-import javax.sql.DataSource;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import static com.baomidou.dynamic.datasource.support.DdConstants.BEECP_DATASOURCE;
+import javax.sql.DataSource;
+
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.beecp.BeeCpConfig;
+import com.baomidou.dynamic.datasource.toolkit.ConfigMergeCreator;
+
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.util.StringUtils;
+
+import cn.beecp.BeeDataSource;
+import cn.beecp.BeeDataSourceConfig;
 
 /**
  * BeeCp数据源创建器
@@ -36,8 +38,7 @@ import static com.baomidou.dynamic.datasource.support.DdConstants.BEECP_DATASOUR
  * @author TaoYu
  * @since 2020/5/14
  */
-@Slf4j
-public class BeeCpDataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator, InitializingBean {
+public class BeeCpDataSourceCreator extends AbstractDataSourceCreator implements InitializingBean {
 
     private static final ConfigMergeCreator<BeeCpConfig, BeeDataSourceConfig> MERGE_CREATOR = new ConfigMergeCreator<>("BeeCp", BeeCpConfig.class, BeeDataSourceConfig.class);
 

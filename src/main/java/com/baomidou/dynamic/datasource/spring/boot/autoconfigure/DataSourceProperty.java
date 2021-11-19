@@ -15,22 +15,22 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
+import javax.sql.DataSource;
+
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.beecp.BeeCpConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.dbcp2.Dbcp2Config;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.hikari.HikariCpConfig;
-import lombok.Data;
-import lombok.experimental.Accessors;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
-import javax.sql.DataSource;
+import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * @author TaoYu
  * @since 1.2.0
  */
-@Slf4j
 @Data
 @Accessors(chain = true)
 public class DataSourceProperty {

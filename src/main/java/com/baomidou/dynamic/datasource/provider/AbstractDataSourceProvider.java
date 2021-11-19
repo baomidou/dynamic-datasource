@@ -15,17 +15,17 @@
  */
 package com.baomidou.dynamic.datasource.provider;
 
-import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.sql.DataSource;
 
-@Slf4j
+import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+
 public abstract class AbstractDataSourceProvider implements DynamicDataSourceProvider {
 
     @Autowired

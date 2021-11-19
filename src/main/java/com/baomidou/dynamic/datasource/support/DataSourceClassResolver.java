@@ -15,8 +15,16 @@
  */
 package com.baomidou.dynamic.datasource.support;
 
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Proxy;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.baomidou.dynamic.datasource.annotation.DS;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.core.BridgeMethodResolver;
 import org.springframework.core.MethodClassKey;
@@ -24,17 +32,12 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.util.ClassUtils;
 
-import java.lang.reflect.*;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
  * 数据源解析器
  *
  * @author TaoYu
  * @since 2.3.0
  */
-@Slf4j
 public class DataSourceClassResolver {
 
     private static boolean mpEnabled = false;
