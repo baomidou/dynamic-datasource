@@ -18,12 +18,12 @@ package com.baomidou.dynamic.datasource.processor;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.baomidou.dynamic.datasource.exception.CannotFindDataSourceException;
 import com.baomidou.dynamic.datasource.exception.CannotFoundDsProcessorException;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -44,7 +44,7 @@ public class DsProcessorHandler {
     /**
      * 统一管理所有的processor
      */
-    @Autowired
+    @Autowired(required = false)
     private List<DsProcessor> processors = new ArrayList<>();
 
     /**
@@ -99,18 +99,13 @@ public class DsProcessorHandler {
                 log.info("mathed processor [{}] for key [{}]", dsProcessor.getClass(), key);
                 matchedProcessor = true;
                 datasource = dsProcessor.doDetermineDatasource(invocation, key);
-                if (datasource != null) {
+                if (StringUtils.hasText(datasource)) {
                     break;
-                } else {
-                    return dsProcessor.doDetermineDatasource(invocation, key);
                 }
             }
         }
         if (!matchedProcessor) {
             throw new CannotFoundDsProcessorException("cant not found any ds processor for key: " + key);
-        }
-        if (datasource == null || datasource.length() == 0) {
-            throw new CannotFindDataSourceException("the datasource is null or empty for key: " + key);
         }
         return datasource;
     }

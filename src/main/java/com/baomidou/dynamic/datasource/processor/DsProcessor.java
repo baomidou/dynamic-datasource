@@ -18,8 +18,29 @@ package com.baomidou.dynamic.datasource.processor;
 import org.aopalliance.intercept.MethodInvocation;
 
 /**
+ * 需要拓展processor，可在配置类中配置
+ * 
+ * <p>
+ * 
+ * <pre>
+ * 
+ * public class FooDsProcessor extends DsProcessor {} 
+ * 
+ * 
+ * @Configuration
+ * public class FooConfig {
+ * 
+ *     @Bean
+ *     public DsProcessor fooDsProcessor() {
+ *         return new FooDsProcessor();
+ *     }
+ *      
+ * }
+ * </pre>
+ * 
  * @author TaoYu
  * @author nukiyoam
+ * @see DsProcessorHandler
  * @since 2.5.0
  */
 public abstract class DsProcessor {
