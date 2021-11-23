@@ -15,9 +15,9 @@
  */
 package com.baomidou.dynamic.datasource.aop;
 
-import com.baomidou.dynamic.datasource.annotation.DS;
 import lombok.NonNull;
 import org.aopalliance.aop.Advice;
+import org.aopalliance.intercept.MethodInterceptor;
 import org.springframework.aop.ClassFilter;
 import org.springframework.aop.MethodMatcher;
 import org.springframework.aop.Pointcut;
@@ -46,8 +46,12 @@ public class DynamicDataSourceAnnotationAdvisor extends AbstractPointcutAdvisor 
 
     private final Pointcut pointcut;
 
-    public DynamicDataSourceAnnotationAdvisor(@NonNull DynamicDataSourceAnnotationInterceptor dynamicDataSourceAnnotationInterceptor) {
-        this.advice = dynamicDataSourceAnnotationInterceptor;
+    private final Class<? extends Annotation> annotation;
+
+    public DynamicDataSourceAnnotationAdvisor(@NonNull MethodInterceptor advice,
+                                              @NonNull Class<? extends Annotation> annotation) {
+        this.advice = advice;
+        this.annotation = annotation;
         this.pointcut = buildPointcut();
     }
 
@@ -69,8 +73,8 @@ public class DynamicDataSourceAnnotationAdvisor extends AbstractPointcutAdvisor 
     }
 
     private Pointcut buildPointcut() {
-        Pointcut cpc = new AnnotationMatchingPointcut(DS.class, true);
-        Pointcut mpc = new AnnotationMethodPoint(DS.class);
+        Pointcut cpc = new AnnotationMatchingPointcut(annotation, true);
+        Pointcut mpc = new AnnotationMethodPoint(annotation);
         return new ComposablePointcut(cpc).union(mpc);
     }
 
