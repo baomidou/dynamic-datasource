@@ -151,12 +151,12 @@ public class DruidConfig {
 
         Boolean testWhileIdle = this.testWhileIdle == null ? g.getTestWhileIdle() : this.testWhileIdle;
         if (testWhileIdle != null && !testWhileIdle.equals(DEFAULT_WHILE_IDLE)) {
-            properties.setProperty(TEST_WHILE_IDLE, "false");
+            properties.setProperty(TEST_WHILE_IDLE, Boolean.FALSE.toString());
         }
 
         Boolean testOnBorrow = this.testOnBorrow == null ? g.getTestOnBorrow() : this.testOnBorrow;
         if (testOnBorrow != null && !testOnBorrow.equals(DEFAULT_TEST_ON_BORROW)) {
-            properties.setProperty(TEST_ON_BORROW, "true");
+            properties.setProperty(TEST_ON_BORROW, Boolean.TRUE.toString());
         }
 
         String validationQuery = this.validationQuery == null ? g.getValidationQuery() : this.validationQuery;
@@ -166,32 +166,32 @@ public class DruidConfig {
 
         Boolean useGlobalDataSourceStat = this.useGlobalDataSourceStat == null ? g.getUseGlobalDataSourceStat() : this.useGlobalDataSourceStat;
         if (useGlobalDataSourceStat != null && useGlobalDataSourceStat.equals(Boolean.TRUE)) {
-            properties.setProperty(USE_GLOBAL_DATA_SOURCE_STAT, "true");
+            properties.setProperty(USE_GLOBAL_DATA_SOURCE_STAT, Boolean.TRUE.toString());
         }
 
         Boolean asyncInit = this.asyncInit == null ? g.getAsyncInit() : this.asyncInit;
         if (asyncInit != null && asyncInit.equals(Boolean.TRUE)) {
-            properties.setProperty(ASYNC_INIT, "true");
+            properties.setProperty(ASYNC_INIT, Boolean.TRUE.toString());
         }
 
         //filters单独处理，默认了stat,wall
         String filters = this.filters == null ? g.getFilters() : this.filters;
         if (filters == null) {
-            filters = "stat";
+            filters = STAT_STR;
         }
-        if (publicKey != null && publicKey.length() > 0 && !filters.contains("config")) {
-            filters += ",config";
+        if (publicKey != null && publicKey.length() > 0 && !filters.contains(CONFIG_STR)) {
+            filters += "," + CONFIG_STR;
         }
         properties.setProperty(FILTERS, filters);
 
         Boolean clearFiltersEnable = this.clearFiltersEnable == null ? g.getClearFiltersEnable() : this.clearFiltersEnable;
         if (clearFiltersEnable != null && clearFiltersEnable.equals(Boolean.FALSE)) {
-            properties.setProperty(CLEAR_FILTERS_ENABLE, "false");
+            properties.setProperty(CLEAR_FILTERS_ENABLE, Boolean.FALSE.toString());
         }
 
         Boolean resetStatEnable = this.resetStatEnable == null ? g.getResetStatEnable() : this.resetStatEnable;
         if (resetStatEnable != null && resetStatEnable.equals(Boolean.FALSE)) {
-            properties.setProperty(RESET_STAT_ENABLE, "false");
+            properties.setProperty(RESET_STAT_ENABLE, Boolean.FALSE.toString());
         }
 
         Integer notFullTimeoutRetryCount =
@@ -207,7 +207,7 @@ public class DruidConfig {
 
         Boolean failFast = this.failFast == null ? g.getFailFast() : this.failFast;
         if (failFast != null && failFast.equals(Boolean.TRUE)) {
-            properties.setProperty(FAIL_FAST, "true");
+            properties.setProperty(FAIL_FAST, Boolean.TRUE.toString());
         }
 
         Long phyTimeoutMillis = this.phyTimeoutMillis == null ? g.getPhyTimeoutMillis() : this.phyTimeoutMillis;
@@ -217,22 +217,22 @@ public class DruidConfig {
 
         Boolean keepAlive = this.keepAlive == null ? g.getKeepAlive() : this.keepAlive;
         if (keepAlive != null && keepAlive.equals(Boolean.TRUE)) {
-            properties.setProperty(KEEP_ALIVE, "true");
+            properties.setProperty(KEEP_ALIVE, Boolean.TRUE.toString());
         }
 
         Boolean poolPreparedStatements = this.poolPreparedStatements == null ? g.getPoolPreparedStatements() : this.poolPreparedStatements;
         if (poolPreparedStatements != null && poolPreparedStatements.equals(Boolean.TRUE)) {
-            properties.setProperty(POOL_PREPARED_STATEMENTS, "true");
+            properties.setProperty(POOL_PREPARED_STATEMENTS, Boolean.TRUE.toString());
         }
 
         Boolean initVariants = this.initVariants == null ? g.getInitVariants() : this.initVariants;
         if (initVariants != null && initVariants.equals(Boolean.TRUE)) {
-            properties.setProperty(INIT_VARIANTS, "true");
+            properties.setProperty(INIT_VARIANTS, Boolean.TRUE.toString());
         }
 
         Boolean initGlobalVariants = this.initGlobalVariants == null ? g.getInitGlobalVariants() : this.initGlobalVariants;
         if (initGlobalVariants != null && initGlobalVariants.equals(Boolean.TRUE)) {
-            properties.setProperty(INIT_GLOBAL_VARIANTS, "true");
+            properties.setProperty(INIT_GLOBAL_VARIANTS, Boolean.TRUE.toString());
         }
 
         Boolean useUnfairLock = this.useUnfairLock == null ? g.getUseUnfairLock() : this.useUnfairLock;
@@ -243,7 +243,7 @@ public class DruidConfig {
         Boolean killWhenSocketReadTimeout =
                 this.killWhenSocketReadTimeout == null ? g.getKillWhenSocketReadTimeout() : this.killWhenSocketReadTimeout;
         if (killWhenSocketReadTimeout != null && killWhenSocketReadTimeout.equals(Boolean.TRUE)) {
-            properties.setProperty(KILL_WHEN_SOCKET_READ_TIMEOUT, "true");
+            properties.setProperty(KILL_WHEN_SOCKET_READ_TIMEOUT, Boolean.TRUE.toString());
         }
 
         Properties connectProperties = connectionProperties == null ? g.getConnectionProperties() : connectionProperties;
@@ -252,7 +252,7 @@ public class DruidConfig {
             if (connectProperties == null) {
                 connectProperties = new Properties();
             }
-            connectProperties.setProperty("config.decrypt", "true");
+            connectProperties.setProperty("config.decrypt", Boolean.TRUE.toString());
             connectProperties.setProperty("config.decrypt.key", publicKey);
         }
         this.connectionProperties = connectProperties;
@@ -277,7 +277,7 @@ public class DruidConfig {
 
         Boolean logSlowSql = stat.getLogSlowSql() == null ? g.stat.getLogSlowSql() : stat.getLogSlowSql();
         if (logSlowSql != null && logSlowSql) {
-            properties.setProperty(STAT_LOG_SLOW_SQL, "true");
+            properties.setProperty(STAT_LOG_SLOW_SQL, Boolean.TRUE.toString());
         }
         Long slowSqlMillis = stat.getSlowSqlMillis() == null ? g.stat.getSlowSqlMillis() : stat.getSlowSqlMillis();
         if (slowSqlMillis != null) {
@@ -290,7 +290,7 @@ public class DruidConfig {
 
         Boolean mergeSql = stat.getMergeSql() == null ? g.stat.getMergeSql() : stat.getMergeSql();
         if (mergeSql != null && mergeSql) {
-            properties.setProperty(STAT_MERGE_SQL, "true");
+            properties.setProperty(STAT_MERGE_SQL, Boolean.TRUE.toString());
         }
         return properties;
     }

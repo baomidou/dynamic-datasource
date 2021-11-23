@@ -61,4 +61,7 @@ public interface DruidConsts {
     String STAT_SLOW_SQL_MILLIS = "druid.stat.slowSqlMillis";
     String STAT_SLOW_SQL_LOG_LEVEL = "druid.stat.slowSqlLogLevel";
     String STAT_MERGE_SQL = "druid.stat.mergeSql";
+
+    String CONFIG_STR = "config";
+    String STAT_STR = "stat";
 }
