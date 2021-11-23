@@ -28,7 +28,7 @@ import java.util.UUID;
  * @author funkye
  */
 @Slf4j
-public class DynamicLocalTransactionAdvisor implements MethodInterceptor {
+public class DynamicLocalTransactionInterceptor implements MethodInterceptor {
 
     @Override
     public Object invoke(MethodInvocation methodInvocation) throws Throwable {

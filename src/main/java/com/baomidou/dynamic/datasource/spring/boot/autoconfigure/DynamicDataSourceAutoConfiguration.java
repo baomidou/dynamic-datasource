@@ -16,9 +16,11 @@
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
+import com.baomidou.dynamic.datasource.annotation.DS;
+import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationInterceptor;
-import com.baomidou.dynamic.datasource.aop.DynamicLocalTransactionAdvisor;
+import com.baomidou.dynamic.datasource.aop.DynamicLocalTransactionInterceptor;
 import com.baomidou.dynamic.datasource.processor.DsHeaderProcessor;
 import com.baomidou.dynamic.datasource.processor.DsProcessor;
 import com.baomidou.dynamic.datasource.processor.DsSessionProcessor;
@@ -101,7 +103,7 @@ public class DynamicDataSourceAutoConfiguration implements InitializingBean {
     public Advisor dynamicDatasourceAnnotationAdvisor(DsProcessor dsProcessor) {
         DynamicDatasourceAopProperties aopProperties = properties.getAop();
         DynamicDataSourceAnnotationInterceptor interceptor = new DynamicDataSourceAnnotationInterceptor(aopProperties.getAllowedPublicOnly(), dsProcessor);
-        DynamicDataSourceAnnotationAdvisor advisor = new DynamicDataSourceAnnotationAdvisor(interceptor);
+        DynamicDataSourceAnnotationAdvisor advisor = new DynamicDataSourceAnnotationAdvisor(interceptor,DS.class);
         advisor.setOrder(aopProperties.getOrder());
         return advisor;
     }
@@ -110,9 +112,11 @@ public class DynamicDataSourceAutoConfiguration implements InitializingBean {
     @Bean
     @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "seata", havingValue = "false", matchIfMissing = true)
     public Advisor dynamicTransactionAdvisor() {
-        AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
-        pointcut.setExpression("@annotation(com.baomidou.dynamic.datasource.annotation.DSTransactional)");
-        return new DefaultPointcutAdvisor(pointcut, new DynamicLocalTransactionAdvisor());
+        DynamicDatasourceAopProperties aopProperties = properties.getAop();
+        DynamicLocalTransactionInterceptor interceptor=new DynamicLocalTransactionInterceptor();
+        DynamicDataSourceAnnotationAdvisor advisor = new DynamicDataSourceAnnotationAdvisor(interceptor, DSTransactional.class);
+        advisor.setOrder(aopProperties.getOrder());
+        return advisor;
     }
 
     @Bean
