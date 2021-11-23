@@ -15,7 +15,7 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid;
 
-import com.alibaba.druid.wall.WallConfig;
+import com.alibaba.druid.filter.stat.StatFilter;
 import com.baomidou.dynamic.datasource.toolkit.DsConfigUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,43 +23,46 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
- * 防火墙配置工具类
+ * Druid监控配置工具类
  *
  * @author Taoyu
  * @since 3.5.0
  */
 @Slf4j
-public final class DruidWallConfigUtil {
+public final class DruidStatConfigUtil {
 
-    private static final Map<String, Method> METHODS = DsConfigUtil.getSetterMethods(WallConfig.class);
+    private static final Map<String, Method> METHODS = DsConfigUtil.getSetterMethods(StatFilter.class);
+
+    static {
+        try {
+            METHODS.put("dbType", StatFilter.class.getDeclaredMethod("setDbType", String.class));
+        } catch (Exception ignore) {
+        }
+    }
 
     /**
      * 根据当前的配置和全局的配置生成druid防火墙配置
      *
      * @param c 当前配置
      * @param g 全局配置
-     * @return 防火墙配置
+     * @return StatFilter
      */
-    public static WallConfig toWallConfig(Map<String, Object> c, Map<String, Object> g) {
-        WallConfig wallConfig = new WallConfig();
+    public static StatFilter toStatFilter(Map<String, Object> c, Map<String, Object> g) {
+        StatFilter filter = new StatFilter();
         Map<String, Object> map = DsConfigUtil.mergeConfig(c, g);
-        Object dir = map.get("dir");
-        if (dir != null) {
-            wallConfig.loadConfig(String.valueOf(dir));
-        }
         for (Map.Entry<String, Object> item : map.entrySet()) {
             String key = DsConfigUtil.lineToUpper(item.getKey());
             Method method = METHODS.get(key);
             if (method != null) {
                 try {
-                    method.invoke(wallConfig, item.getValue());
+                    method.invoke(filter, item.getValue());
                 } catch (Exception e) {
-                    log.warn("druid wall set param {} error", key, e);
+                    log.warn("druid stat set param {} error", key, e);
                 }
             } else {
-                log.warn("druid wall does not have param {}", key);
+                log.warn("druid stat does not have param {}", key);
             }
         }
-        return wallConfig;
+        return filter;
     }
 }

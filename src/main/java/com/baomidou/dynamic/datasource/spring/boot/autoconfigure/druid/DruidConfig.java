@@ -16,14 +16,9 @@
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 import static com.alibaba.druid.pool.DruidAbstractDataSource.*;
 import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConsts.*;
@@ -35,8 +30,6 @@ import static com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.Dr
  * @since 1.2.0
  */
 @Data
-@Accessors(chain = true)
-@NoArgsConstructor
 @Slf4j
 public class DruidConfig {
 
@@ -86,14 +79,12 @@ public class DruidConfig {
     private Integer transactionQueryTimeout;
     private String publicKey;
 
-    @NestedConfigurationProperty
-    private DruidWallConfig wall = new DruidWallConfig();
-
-    @NestedConfigurationProperty
-    private DruidStatConfig stat = new DruidStatConfig();
-
-    @NestedConfigurationProperty
-    private DruidSlf4jConfig slf4j = new DruidSlf4jConfig();
+    private Map<String, Object> wall = new HashMap<>();
+    private Map<String, Object> slf4j = new HashMap<>();
+    private Map<String, Object> log4j = new HashMap<>();
+    private Map<String, Object> log4j2 = new HashMap<>();
+    private Map<String, Object> commonsLog = new HashMap<>();
+    private Map<String, Object> stat = new HashMap<>();
 
     private List<String> proxyFilters = new ArrayList<>();
 
@@ -174,7 +165,7 @@ public class DruidConfig {
             properties.setProperty(ASYNC_INIT, Boolean.TRUE.toString());
         }
 
-        //filters单独处理，默认了stat,wall
+        //filters单独处理，默认了stat
         String filters = this.filters == null ? g.getFilters() : this.filters;
         if (filters == null) {
             filters = STAT_STR;
@@ -267,30 +258,6 @@ public class DruidConfig {
         String initConnectionSqls = this.initConnectionSqls == null ? g.getInitConnectionSqls() : this.initConnectionSqls;
         if (initConnectionSqls != null && initConnectionSqls.length() > 0) {
             properties.setProperty(INIT_CONNECTION_SQLS, initConnectionSqls);
-        }
-
-        //stat配置参数
-        Integer statSqlMaxSize = this.statSqlMaxSize == null ? g.getStatSqlMaxSize() : this.statSqlMaxSize;
-        if (statSqlMaxSize != null) {
-            properties.setProperty(STAT_SQL_MAX_SIZE, String.valueOf(statSqlMaxSize));
-        }
-
-        Boolean logSlowSql = stat.getLogSlowSql() == null ? g.stat.getLogSlowSql() : stat.getLogSlowSql();
-        if (logSlowSql != null && logSlowSql) {
-            properties.setProperty(STAT_LOG_SLOW_SQL, Boolean.TRUE.toString());
-        }
-        Long slowSqlMillis = stat.getSlowSqlMillis() == null ? g.stat.getSlowSqlMillis() : stat.getSlowSqlMillis();
-        if (slowSqlMillis != null) {
-            properties.setProperty(STAT_SLOW_SQL_MILLIS, slowSqlMillis.toString());
-        }
-        String slowSqlLogLevel = stat.getSlowSqlLogLevel() == null ? g.stat.getSlowSqlLogLevel() : stat.getSlowSqlLogLevel();
-        if (slowSqlLogLevel != null && slowSqlLogLevel.length() > 0) {
-            properties.setProperty(STAT_SLOW_SQL_LOG_LEVEL, slowSqlLogLevel);
-        }
-
-        Boolean mergeSql = stat.getMergeSql() == null ? g.stat.getMergeSql() : stat.getMergeSql();
-        if (mergeSql != null && mergeSql) {
-            properties.setProperty(STAT_MERGE_SQL, Boolean.TRUE.toString());
         }
         return properties;
     }
