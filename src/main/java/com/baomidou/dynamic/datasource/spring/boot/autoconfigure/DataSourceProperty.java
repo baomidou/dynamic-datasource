@@ -19,16 +19,12 @@ import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.beecp.BeeCpConf
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.dbcp2.Dbcp2Config;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.hikari.HikariCpConfig;
-import com.baomidou.dynamic.datasource.toolkit.CryptoUtils;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
-import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author TaoYu
@@ -38,11 +34,6 @@ import java.util.regex.Pattern;
 @Data
 @Accessors(chain = true)
 public class DataSourceProperty {
-
-    /**
-     * 加密正则
-     */
-    private static final Pattern ENC_PATTERN = Pattern.compile("^ENC\\((.*)\\)$");
 
     /**
      * 连接池名称(只是一个名称标识)</br> 默认是配置文件上的名称
@@ -73,14 +64,6 @@ public class DataSourceProperty {
      */
     private String jndiName;
     /**
-     * 自动运行的建表脚本
-     */
-    private String schema;
-    /**
-     * 自动运行的数据脚本
-     */
-    private String data;
-    /**
      * 是否启用seata
      */
     private Boolean seata = true;
@@ -93,13 +76,10 @@ public class DataSourceProperty {
      */
     private Boolean lazy;
     /**
-     * 错误是否继续 默认 true
+     * 初始化
      */
-    private boolean continueOnError = true;
-    /**
-     * 分隔符 默认 ;
-     */
-    private String separator = ";";
+    @NestedConfigurationProperty
+    private DatasourceInitProperties init = new DatasourceInitProperties();
     /**
      * Druid参数配置
      */
@@ -125,33 +105,4 @@ public class DataSourceProperty {
      * 解密公匙(如果未设置默认使用全局的)
      */
     private String publicKey;
-
-    public String getUrl() {
-        return decrypt(url);
-    }
-
-    public String getUsername() {
-        return decrypt(username);
-    }
-
-    public String getPassword() {
-        return decrypt(password);
-    }
-
-    /**
-     * 字符串解密
-     */
-    private String decrypt(String cipherText) {
-        if (StringUtils.hasText(cipherText)) {
-            Matcher matcher = ENC_PATTERN.matcher(cipherText);
-            if (matcher.find()) {
-                try {
-                    return CryptoUtils.decrypt(publicKey, matcher.group(1));
-                } catch (Exception e) {
-                    log.error("DynamicDataSourceProperties.decrypt error ", e);
-                }
-            }
-        }
-        return cipherText;
-    }
 }

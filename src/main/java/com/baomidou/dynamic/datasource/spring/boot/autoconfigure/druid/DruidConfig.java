@@ -252,8 +252,6 @@ public class DruidConfig {
             if (connectProperties == null) {
                 connectProperties = new Properties();
             }
-            log.info("dynamic-datasource detect druid publicKey,It is highly recommended that you use the built-in encryption method \n " +
-                    "https://dynamic-datasource.com/guide/advance/Encode.html");
             connectProperties.setProperty("config.decrypt", "true");
             connectProperties.setProperty("config.decrypt.key", publicKey);
         }
@@ -284,6 +282,10 @@ public class DruidConfig {
         Long slowSqlMillis = stat.getSlowSqlMillis() == null ? g.stat.getSlowSqlMillis() : stat.getSlowSqlMillis();
         if (slowSqlMillis != null) {
             properties.setProperty(STAT_SLOW_SQL_MILLIS, slowSqlMillis.toString());
+        }
+        String slowSqlLogLevel = stat.getSlowSqlLogLevel() == null ? g.stat.getSlowSqlLogLevel() : stat.getSlowSqlLogLevel();
+        if (slowSqlLogLevel != null && slowSqlLogLevel.length() > 0) {
+            properties.setProperty(STAT_SLOW_SQL_LOG_LEVEL, slowSqlLogLevel);
         }
 
         Boolean mergeSql = stat.getMergeSql() == null ? g.stat.getMergeSql() : stat.getMergeSql();

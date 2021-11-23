@@ -26,7 +26,7 @@ import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourcePrope
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidSlf4jConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidWallConfigUtil;
-import lombok.Data;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
@@ -45,30 +45,15 @@ import static com.baomidou.dynamic.datasource.support.DdConstants.DRUID_DATASOUR
  * @author TaoYu
  * @since 2020/1/21
  */
-@Data
-public class DruidDataSourceCreator implements DataSourceCreator {
-
-    private static Boolean druidExists = false;
-
-    static {
-        try {
-            Class.forName(DRUID_DATASOURCE);
-            druidExists = true;
-        } catch (ClassNotFoundException ignored) {
-        }
-    }
-
-    private DruidConfig gConfig;
+public class DruidDataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator, InitializingBean {
 
     @Autowired(required = false)
     private ApplicationContext applicationContext;
 
-    public DruidDataSourceCreator(DruidConfig gConfig) {
-        this.gConfig = gConfig;
-    }
+    private DruidConfig gConfig;
 
     @Override
-    public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
+    public DataSource doCreateDataSource(DataSourceProperty dataSourceProperty) {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUsername(dataSourceProperty.getUsername());
         dataSource.setPassword(dataSourceProperty.getPassword());
@@ -90,7 +75,7 @@ public class DruidDataSourceCreator implements DataSourceCreator {
         //设置druid内置properties不支持的的参数
         this.setParam(dataSource, config);
 
-        if (!dataSourceProperty.getLazy()) {
+        if (Boolean.FALSE.equals(dataSourceProperty.getLazy())) {
             try {
                 dataSource.init();
             } catch (SQLException e) {
@@ -208,6 +193,11 @@ public class DruidDataSourceCreator implements DataSourceCreator {
     @Override
     public boolean support(DataSourceProperty dataSourceProperty) {
         Class<? extends DataSource> type = dataSourceProperty.getType();
-        return (type == null && druidExists) || (type != null && DRUID_DATASOURCE.equals(type.getName()));
+        return type == null || DRUID_DATASOURCE.equals(type.getName());
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        gConfig = properties.getDruid();
     }
 }

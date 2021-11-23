@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid;
+package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
 import lombok.Data;
+import org.springframework.core.Ordered;
 
-/**
- * Druid监控配置
- *
- * @author TaoYu
- */
 @Data
-public class DruidStatConfig {
+public class DynamicDatasourceAopProperties {
 
-    private Long slowSqlMillis;
-
-    private Boolean logSlowSql;
-
-    private Boolean mergeSql;
-
-    private String slowSqlLogLevel;
+    /**
+     * enabled default DS annotation default true
+     */
+    private Boolean enabled = true;
+    /**
+     * aop order
+     */
+    private Integer order = Ordered.HIGHEST_PRECEDENCE;
+    /**
+     * aop allowedPublicOnly
+     */
+    private Boolean allowedPublicOnly = true;
 }

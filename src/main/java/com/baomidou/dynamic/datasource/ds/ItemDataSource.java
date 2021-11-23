@@ -21,6 +21,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.datasource.AbstractDataSource;
+import org.springframework.util.ReflectionUtils;
 
 import javax.sql.DataSource;
 import java.io.Closeable;
@@ -81,9 +82,11 @@ public class ItemDataSource extends AbstractDataSource implements Closeable {
     public void close() {
         Class<? extends DataSource> clazz = realDataSource.getClass();
         try {
-            Method closeMethod = clazz.getDeclaredMethod("close");
-            closeMethod.invoke(realDataSource);
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            Method closeMethod = ReflectionUtils.findMethod(clazz, "close");
+            if (closeMethod != null) {
+                closeMethod.invoke(realDataSource);
+            }
+        } catch (IllegalAccessException | InvocationTargetException e) {
             log.warn("dynamic-datasource close the datasource named [{}] failed,", name, e);
         }
     }

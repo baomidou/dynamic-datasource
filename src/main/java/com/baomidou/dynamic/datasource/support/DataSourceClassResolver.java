@@ -131,9 +131,16 @@ public class DataSourceClassResolver {
             return dsAttr;
         }
         // 从当前方法声明的类查找
-        dsAttr = findDataSourceAttribute(specificMethod.getDeclaringClass());
+        dsAttr = findDataSourceAttribute(userClass);
         if (dsAttr != null && ClassUtils.isUserLevelMethod(method)) {
             return dsAttr;
+        }
+        //since 3.4.1 从接口查找，只取第一个找到的
+        for (Class<?> interfaceClazz : ClassUtils.getAllInterfacesForClassAsSet(userClass)) {
+            dsAttr = findDataSourceAttribute(interfaceClazz);
+            if (dsAttr != null) {
+                return dsAttr;
+            }
         }
         // 如果存在桥接方法
         if (specificMethod != method) {

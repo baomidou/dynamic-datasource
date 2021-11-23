@@ -13,23 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid;
+package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
 import lombok.Data;
 
 /**
- * Druid监控配置
+ * 动态数据源初始化脚本配置
  *
  * @author TaoYu
+ * @since 3.5.0
  */
 @Data
-public class DruidStatConfig {
+public class DatasourceInitProperties {
 
-    private Long slowSqlMillis;
+    /**
+     * 自动运行的建表脚本
+     */
+    private String schema;
+    /**
+     * 自动运行的数据脚本
+     */
+    private String data;
 
-    private Boolean logSlowSql;
-
-    private Boolean mergeSql;
-
-    private String slowSqlLogLevel;
+    /**
+     * 错误是否继续 默认 true
+     */
+    private boolean continueOnError = true;
+    /**
+     * 分隔符 默认 ;
+     */
+    private String separator = ";";
 }

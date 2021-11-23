@@ -33,7 +33,7 @@ public class BeeCpConfig {
     private Boolean defaultReadOnly;
     private Boolean defaultAutoCommit;
     private Integer defaultTransactionIsolationCode;
-    private String defaultTransactionIsolation;
+    private String defaultTransactionIsolationName;
 
     private Boolean fairMode;
     private Integer initialSize;

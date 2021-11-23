@@ -26,7 +26,7 @@ import javax.sql.DataSource;
  * @author TaoYu
  * @since 2020/1/27
  */
-public class JndiDataSourceCreator implements DataSourceCreator {
+public class JndiDataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator {
 
     private static final JndiDataSourceLookup LOOKUP = new JndiDataSourceLookup();
 
@@ -41,8 +41,8 @@ public class JndiDataSourceCreator implements DataSourceCreator {
      * @return 数据源
      */
     @Override
-    public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
-        return LOOKUP.getDataSource(dataSourceProperty.getJndiName());
+    public DataSource doCreateDataSource(DataSourceProperty dataSourceProperty) {
+        return createDataSource(dataSourceProperty.getJndiName());
     }
 
     @Override

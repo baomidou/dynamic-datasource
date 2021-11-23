@@ -13,23 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid;
+package com.baomidou.dynamic.datasource.event;
 
-import lombok.Data;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 
-/**
- * Druid监控配置
- *
- * @author TaoYu
- */
-@Data
-public class DruidStatConfig {
+import javax.sql.DataSource;
 
-    private Long slowSqlMillis;
+public interface DataSourceInitEvent {
 
-    private Boolean logSlowSql;
+    void beforeCreate(DataSourceProperty dataSourceProperty);
 
-    private Boolean mergeSql;
-
-    private String slowSqlLogLevel;
+    void afterCreate(DataSource dataSource);
 }

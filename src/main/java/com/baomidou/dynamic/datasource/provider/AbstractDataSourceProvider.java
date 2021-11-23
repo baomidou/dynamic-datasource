@@ -35,13 +35,14 @@ public abstract class AbstractDataSourceProvider implements DynamicDataSourcePro
             Map<String, DataSourceProperty> dataSourcePropertiesMap) {
         Map<String, DataSource> dataSourceMap = new HashMap<>(dataSourcePropertiesMap.size() * 2);
         for (Map.Entry<String, DataSourceProperty> item : dataSourcePropertiesMap.entrySet()) {
+            String dsName = item.getKey();
             DataSourceProperty dataSourceProperty = item.getValue();
             String poolName = dataSourceProperty.getPoolName();
             if (poolName == null || "".equals(poolName)) {
-                poolName = item.getKey();
+                poolName = dsName;
             }
             dataSourceProperty.setPoolName(poolName);
-            dataSourceMap.put(poolName, defaultDataSourceCreator.createDataSource(dataSourceProperty));
+            dataSourceMap.put(dsName, defaultDataSourceCreator.createDataSource(dataSourceProperty));
         }
         return dataSourceMap;
     }

@@ -29,7 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
-import org.springframework.core.Ordered;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -48,8 +47,7 @@ import java.util.Map;
 public class DynamicDataSourceProperties {
 
     public static final String PREFIX = "spring.datasource.dynamic";
-    public static final String HEALTH = PREFIX + ".health";
-    public static final String DEFAULT_VALID_QUERY = "SELECT 1";
+
     /**
      * 必须设置默认的库,默认master
      */
@@ -75,13 +73,9 @@ public class DynamicDataSourceProperties {
      */
     private SeataMode seataMode = SeataMode.AT;
     /**
-     * 是否使用 spring actuator 监控检查，默认不检查
+     * 全局默认publicKey
      */
-    private boolean health = false;
-    /**
-     * 监控检查SQL
-     */
-    private String healthValidQuery = DEFAULT_VALID_QUERY;
+    private String publicKey = CryptoUtils.DEFAULT_PUBLIC_KEY_STRING;
     /**
      * 每一个数据源
      */
@@ -90,10 +84,6 @@ public class DynamicDataSourceProperties {
      * 多数据源选择算法clazz，默认负载均衡算法
      */
     private Class<? extends DynamicDataSourceStrategy> strategy = LoadBalanceDynamicDataSourceStrategy.class;
-    /**
-     * aop切面顺序，默认优先级最高
-     */
-    private Integer order = Ordered.HIGHEST_PRECEDENCE;
     /**
      * Druid全局参数配置
      */
@@ -116,11 +106,8 @@ public class DynamicDataSourceProperties {
     private Dbcp2Config dbcp2 = new Dbcp2Config();
 
     /**
-     * 全局默认publicKey
+     * aop with default ds annotation
      */
-    private String publicKey = CryptoUtils.DEFAULT_PUBLIC_KEY_STRING;
-    /**
-     * aop 切面是否只允许切 public 方法
-     */
-    private boolean allowedPublicOnly = true;
+    @NestedConfigurationProperty
+    private DynamicDatasourceAopProperties aop = new DynamicDatasourceAopProperties();
 }
