@@ -17,7 +17,6 @@ package com.baomidou.dynamic.datasource.aop;
 
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.dynamic.datasource.tx.*;
-import io.seata.tm.api.transaction.TransactionInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
