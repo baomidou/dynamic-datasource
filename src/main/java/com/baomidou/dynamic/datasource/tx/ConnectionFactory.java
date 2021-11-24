@@ -15,6 +15,8 @@
  */
 package com.baomidou.dynamic.datasource.tx;
 
+import org.springframework.util.CollectionUtils;
+
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,38 +26,54 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ConnectionFactory {
 
-    private static final ThreadLocal<Map<String, ConnectionProxy>> CONNECTION_HOLDER =
-            new ThreadLocal<Map<String, ConnectionProxy>>() {
+    private static final ThreadLocal<Map<String, Map<String, ConnectionProxy>>> CONNECTION_HOLDER =
+            new ThreadLocal<Map<String, Map<String, ConnectionProxy>>>() {
                 @Override
-                protected Map<String, ConnectionProxy> initialValue() {
+                protected Map<String, Map<String, ConnectionProxy>> initialValue() {
                     return new ConcurrentHashMap<>();
                 }
             };
 
-    public static void putConnection(String ds, ConnectionProxy connection) {
-        Map<String, ConnectionProxy> concurrentHashMap = CONNECTION_HOLDER.get();
-        if (!concurrentHashMap.containsKey(ds)) {
+    public static void putConnection(String xid, String ds, ConnectionProxy connection) {
+        Map<String, Map<String, ConnectionProxy>> concurrentHashMap = CONNECTION_HOLDER.get();
+        Map<String, ConnectionProxy> connectionProxyMap = concurrentHashMap.get(xid);
+        if (connectionProxyMap == null) {
+            connectionProxyMap = new ConcurrentHashMap<>();
+            concurrentHashMap.put(xid, connectionProxyMap);
+        }
+        if (!connectionProxyMap.containsKey(ds)) {
             try {
                 connection.setAutoCommit(false);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            concurrentHashMap.put(ds, connection);
+            connectionProxyMap.put(ds, connection);
         }
     }
 
-    public static ConnectionProxy getConnection(String ds) {
-        return CONNECTION_HOLDER.get().get(ds);
+    public static ConnectionProxy getConnection(String xid, String ds) {
+        Map<String, Map<String, ConnectionProxy>> concurrentHashMap = CONNECTION_HOLDER.get();
+        Map<String, ConnectionProxy> connectionProxyMap = concurrentHashMap.get(xid);
+        if (CollectionUtils.isEmpty(connectionProxyMap)) {
+            return null;
+        }
+        return connectionProxyMap.get(ds);
     }
 
-    public static void notify(Boolean state) {
+    public static void notify(String xid, Boolean state) {
+        Map<String, Map<String, ConnectionProxy>> concurrentHashMap = CONNECTION_HOLDER.get();
         try {
-            Map<String, ConnectionProxy> concurrentHashMap = CONNECTION_HOLDER.get();
-            for (ConnectionProxy connectionProxy : concurrentHashMap.values()) {
-                connectionProxy.notify(state);
+            if (CollectionUtils.isEmpty(concurrentHashMap)) {
+                return;
+            }
+            Map<String, ConnectionProxy> connectionProxyMap = concurrentHashMap.get(xid);
+            for (ConnectionProxy connectionProxy : connectionProxyMap.values()) {
+                if (connectionProxy != null) {
+                    connectionProxy.notify(state);
+                }
             }
         } finally {
-            CONNECTION_HOLDER.remove();
+            concurrentHashMap.remove(xid);
         }
     }
 
