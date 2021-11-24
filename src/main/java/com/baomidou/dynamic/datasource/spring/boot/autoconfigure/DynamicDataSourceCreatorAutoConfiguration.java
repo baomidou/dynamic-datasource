@@ -118,7 +118,7 @@ public class DynamicDataSourceCreatorAutoConfiguration {
      */
     @ConditionalOnClass(BasicDataSource.class)
     @Configuration
-    static class DBCP2DataSourceCreatorConfiguration {
+    static class Dbcp2DataSourceCreatorConfiguration {
 
         @Bean
         @Order(DBCP2_ORDER)

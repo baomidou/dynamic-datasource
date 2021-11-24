@@ -16,15 +16,18 @@
 package com.baomidou.dynamic.datasource.creator;
 
 import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.filter.logging.CommonsLogFilter;
+import com.alibaba.druid.filter.logging.Log4j2Filter;
+import com.alibaba.druid.filter.logging.Log4jFilter;
 import com.alibaba.druid.filter.logging.Slf4jLogFilter;
-import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallFilter;
 import com.baomidou.dynamic.datasource.exception.ErrorCreateDataSourceException;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig;
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidSlf4jConfig;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidLogConfigUtil;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidStatConfigUtil;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidWallConfigUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +69,7 @@ public class DruidDataSourceCreator extends AbstractDataSourceCreator implements
         DruidConfig config = dataSourceProperty.getDruid();
         Properties properties = config.toProperties(gConfig);
 
-        List<Filter> proxyFilters = this.initFilters(dataSourceProperty, properties);
+        List<Filter> proxyFilters = this.initFilters(dataSourceProperty, properties.getProperty("druid.filters"));
         dataSource.setProxyFilters(proxyFilters);
 
         dataSource.configFromPropety(properties);
@@ -85,14 +88,11 @@ public class DruidDataSourceCreator extends AbstractDataSourceCreator implements
         return dataSource;
     }
 
-    private List<Filter> initFilters(DataSourceProperty dataSourceProperty, Properties properties) {
+    private List<Filter> initFilters(DataSourceProperty dataSourceProperty, String filters) {
         List<Filter> proxyFilters = new ArrayList<>(2);
-        String filters = properties.getProperty("druid.filters");
         if (!StringUtils.isEmpty(filters)) {
             if (filters.contains("stat")) {
-                StatFilter statFilter = new StatFilter();
-                statFilter.configFromProperties(properties);
-                proxyFilters.add(statFilter);
+                proxyFilters.add(DruidStatConfigUtil.toStatFilter(dataSourceProperty.getDruid().getStat(), gConfig.getStat()));
             }
             if (filters.contains("wall")) {
                 WallConfig wallConfig = DruidWallConfigUtil.toWallConfig(dataSourceProperty.getDruid().getWall(), gConfig.getWall());
@@ -100,13 +100,17 @@ public class DruidDataSourceCreator extends AbstractDataSourceCreator implements
                 wallFilter.setConfig(wallConfig);
                 proxyFilters.add(wallFilter);
             }
+            if (filters.contains("commons-log")) {
+                proxyFilters.add(DruidLogConfigUtil.initFilter(CommonsLogFilter.class, dataSourceProperty.getDruid().getSlf4j(), gConfig.getCommonsLog()));
+            }
             if (filters.contains("slf4j")) {
-                Slf4jLogFilter slf4jLogFilter = new Slf4jLogFilter();
-                // 由于properties上面被用了，LogFilter不能使用configFromProperties方法，这里只能一个个set了。
-                DruidSlf4jConfig slf4jConfig = gConfig.getSlf4j();
-                slf4jLogFilter.setStatementLogEnabled(slf4jConfig.getEnable());
-                slf4jLogFilter.setStatementExecutableSqlLogEnable(slf4jConfig.getStatementExecutableSqlLogEnable());
-                proxyFilters.add(slf4jLogFilter);
+                proxyFilters.add(DruidLogConfigUtil.initFilter(Slf4jLogFilter.class, dataSourceProperty.getDruid().getSlf4j(), gConfig.getSlf4j()));
+            }
+            if (filters.contains("log4j")) {
+                proxyFilters.add(DruidLogConfigUtil.initFilter(Log4jFilter.class, dataSourceProperty.getDruid().getSlf4j(), gConfig.getLog4j()));
+            }
+            if (filters.contains("log4j2")) {
+                proxyFilters.add(DruidLogConfigUtil.initFilter(Log4j2Filter.class, dataSourceProperty.getDruid().getSlf4j(), gConfig.getLog4j2()));
             }
         }
         if (this.applicationContext != null) {

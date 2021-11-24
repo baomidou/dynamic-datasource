@@ -20,6 +20,7 @@ import com.baomidou.dynamic.datasource.tx.ConnectionFactory;
 import com.baomidou.dynamic.datasource.tx.ConnectionProxy;
 import com.baomidou.dynamic.datasource.tx.TransactionContext;
 import org.springframework.jdbc.datasource.AbstractDataSource;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
@@ -34,10 +35,20 @@ import java.sql.SQLException;
  */
 public abstract class AbstractRoutingDataSource extends AbstractDataSource {
 
+    /**
+     * 抽象获取连接池
+     *
+     * @return 连接池
+     */
     protected abstract DataSource determineDataSource();
 
     @Override
     public Connection getConnection() throws SQLException {
+        boolean actualTransactionActive = TransactionSynchronizationManager.isActualTransactionActive();
+        if (actualTransactionActive) {
+
+        }
+
         String xid = TransactionContext.getXID();
         if (StringUtils.isEmpty(xid)) {
             return determineDataSource().getConnection();

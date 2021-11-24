@@ -28,7 +28,7 @@ public class ConnectionFactory {
             new ThreadLocal<Map<String, ConnectionProxy>>() {
                 @Override
                 protected Map<String, ConnectionProxy> initialValue() {
-                    return new ConcurrentHashMap<>();
+                    return new ConcurrentHashMap<>(8);
                 }
             };
 

@@ -18,6 +18,11 @@ package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 import lombok.Data;
 import org.springframework.core.Ordered;
 
+/**
+ * 多数据源aop相关配置
+ *
+ * @author TaoYu
+ */
 @Data
 public class DynamicDatasourceAopProperties {
 
