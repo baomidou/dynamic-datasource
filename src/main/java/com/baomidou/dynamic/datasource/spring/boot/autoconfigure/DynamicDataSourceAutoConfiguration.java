@@ -21,6 +21,8 @@ import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationInterceptor;
 import com.baomidou.dynamic.datasource.aop.DynamicLocalTransactionInterceptor;
+import com.baomidou.dynamic.datasource.event.DataSourceInitEvent;
+import com.baomidou.dynamic.datasource.event.EncDataSourceInitEvent;
 import com.baomidou.dynamic.datasource.processor.DsHeaderProcessor;
 import com.baomidou.dynamic.datasource.processor.DsProcessor;
 import com.baomidou.dynamic.datasource.processor.DsSessionProcessor;
@@ -110,11 +112,14 @@ public class DynamicDataSourceAutoConfiguration implements InitializingBean {
     @Bean
     @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "seata", havingValue = "false", matchIfMissing = true)
     public Advisor dynamicTransactionAdvisor() {
-        DynamicDatasourceAopProperties aopProperties = properties.getAop();
         DynamicLocalTransactionInterceptor interceptor = new DynamicLocalTransactionInterceptor();
-        DynamicDataSourceAnnotationAdvisor advisor = new DynamicDataSourceAnnotationAdvisor(interceptor, DSTransactional.class);
-        advisor.setOrder(aopProperties.getOrder());
-        return advisor;
+        return new DynamicDataSourceAnnotationAdvisor(interceptor, DSTransactional.class);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public DataSourceInitEvent dataSourceInitEvent() {
+        return new EncDataSourceInitEvent();
     }
 
     @Bean

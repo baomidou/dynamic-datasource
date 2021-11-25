@@ -18,8 +18,6 @@ package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 import cn.beecp.BeeDataSource;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.baomidou.dynamic.datasource.creator.*;
-import com.baomidou.dynamic.datasource.event.DataSourceInitEvent;
-import com.baomidou.dynamic.datasource.event.EncDataSourceInitEvent;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -54,12 +52,6 @@ public class DynamicDataSourceCreatorAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean
-    public DataSourceInitEvent dataSourceInitEvent() {
-        return new EncDataSourceInitEvent();
-    }
-
-    @Bean
     @Order(DEFAULT_ORDER)
     public BasicDataSourceCreator basicDataSourceCreator() {
         return new BasicDataSourceCreator();
@@ -83,7 +75,6 @@ public class DynamicDataSourceCreatorAutoConfiguration {
         public DruidDataSourceCreator druidDataSourceCreator() {
             return new DruidDataSourceCreator();
         }
-
     }
 
     /**
