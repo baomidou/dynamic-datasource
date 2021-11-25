@@ -138,8 +138,6 @@ public class Base64 {
                 result.append('=');
             }
         }
-        // assert inCursor == a.length;
-        // assert result.length() == resultLen;
         return result.toString();
     }
 
@@ -202,8 +200,6 @@ public class Base64 {
                 result[outCursor++] = (byte) ((ch1 << 4) | (ch2 >> 2));
             }
         }
-        // assert inCursor == s.length()-missingBytesInLastGroup;
-        // assert outCursor == result.length;
         return result;
     }
 
