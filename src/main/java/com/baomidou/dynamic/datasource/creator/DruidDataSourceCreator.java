@@ -101,16 +101,16 @@ public class DruidDataSourceCreator extends AbstractDataSourceCreator implements
                 proxyFilters.add(wallFilter);
             }
             if (filters.contains("commons-log")) {
-                proxyFilters.add(DruidLogConfigUtil.initFilter(CommonsLogFilter.class, dataSourceProperty.getDruid().getSlf4j(), gConfig.getCommonsLog()));
+                proxyFilters.add(DruidLogConfigUtil.initFilter(CommonsLogFilter.class, dataSourceProperty.getDruid().getCommonsLog(), gConfig.getCommonsLog()));
             }
             if (filters.contains("slf4j")) {
                 proxyFilters.add(DruidLogConfigUtil.initFilter(Slf4jLogFilter.class, dataSourceProperty.getDruid().getSlf4j(), gConfig.getSlf4j()));
             }
             if (filters.contains("log4j")) {
-                proxyFilters.add(DruidLogConfigUtil.initFilter(Log4jFilter.class, dataSourceProperty.getDruid().getSlf4j(), gConfig.getLog4j()));
+                proxyFilters.add(DruidLogConfigUtil.initFilter(Log4jFilter.class, dataSourceProperty.getDruid().getLog4j(), gConfig.getLog4j()));
             }
             if (filters.contains("log4j2")) {
-                proxyFilters.add(DruidLogConfigUtil.initFilter(Log4j2Filter.class, dataSourceProperty.getDruid().getSlf4j(), gConfig.getLog4j2()));
+                proxyFilters.add(DruidLogConfigUtil.initFilter(Log4j2Filter.class, dataSourceProperty.getDruid().getLog4j2(), gConfig.getLog4j2()));
             }
         }
         if (this.applicationContext != null) {
