@@ -58,7 +58,6 @@ public abstract class AbstractJdbcDataSourceProvider extends AbstractDataSourceP
         this(null, url, username, password);
     }
 
-
     public AbstractJdbcDataSourceProvider(String driverClassName, String url, String username, String password) {
         this.driverClassName = driverClassName;
         this.url = url;

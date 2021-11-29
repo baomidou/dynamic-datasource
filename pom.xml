@@ -12,7 +12,7 @@
 
     <groupId>com.baomidou</groupId>
     <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
-    <version>3.4.1</version>
+    <version>3.5.0</version>
     <packaging>jar</packaging>
 
     <name>dynamic-datasource-spring-boot-starter</name>
@@ -22,13 +22,13 @@
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
         </license>
     </licenses>
 
     <organization>
         <name>baomidou</name>
-        <url>https://gitee.com/baomidou</url>
+        <url>https://github.com/baomidou</url>
     </organization>
 
     <developers>
@@ -51,14 +51,14 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.7</java.version>
 
-        <mybatis.plus.version>3.4.2</mybatis.plus.version>
+        <mybatis.plus.version>3.4.3.4</mybatis.plus.version>
         <hikariCp.version>2.4.13</hikariCp.version>
-        <druid.version>1.2.6</druid.version>
-        <beeCp.version>3.2.3</beeCp.version>
+        <druid.version>1.2.8</druid.version>
+        <beeCp.version>3.2.9</beeCp.version>
         <dbcp2.version>2.8.0</dbcp2.version>
         <p6spy.version>3.9.1</p6spy.version>
         <seata.version>1.4.2</seata.version>
-        <lombok.version>1.18.20</lombok.version>
+        <lombok.version>1.18.22</lombok.version>
     </properties>
 
     <dependencies>

@@ -1,11 +1,10 @@
 package com.baomidou.dynamic.datasource.tx;
 
+import com.baomidou.dynamic.datasource.exception.TransactionException;
 import com.baomidou.mybatisplus.core.toolkit.ArrayUtils;
-import io.seata.core.exception.TransactionException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import java.util.Objects;
-import java.util.UUID;
 
 @Slf4j
 public class TransactionalTemplate {

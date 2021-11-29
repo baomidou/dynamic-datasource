@@ -24,7 +24,9 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
-
+/**
+ * @author TaoYu
+ */
 @Slf4j
 public abstract class AbstractDataSourceProvider implements DynamicDataSourceProvider {
 

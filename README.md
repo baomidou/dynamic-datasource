@@ -18,7 +18,7 @@
         <img src="https://img.shields.io/maven-central/v/com.baomidou/dynamic-datasource-spring-boot-starter.svg" >
     </a>
     <a href="https://www.apache.org/licenses/LICENSE-2.0.html" target="_blank">
-        <img src="http://img.shields.io/:license-apache-brightgreen.svg" >
+        <img src="https://img.shields.io/:license-apache-brightgreen.svg" >
     </a>
     <a>
         <img src="https://img.shields.io/badge/JDK-1.7+-green.svg" >
@@ -48,7 +48,7 @@ dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成�
 # 特性
 
 - 支持 **数据源分组** ，适用于多种场景 纯粹多库 读写分离 一主多从 混合模式。
-- 支持数据库敏感配置信息 **加密**  ENC()。
+- 支持数据库敏感配置信息 **加密(可自定义)**  ENC()。
 - 支持每个数据库独立初始化表结构schema和数据库database。
 - 支持无数据源启动，支持懒加载数据源（需要的时候再创建连接）。
 - 支持 **自定义注解** ，需继承DS(3.2.0+)。
