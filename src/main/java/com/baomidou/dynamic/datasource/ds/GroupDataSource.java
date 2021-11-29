@@ -60,7 +60,7 @@ public class GroupDataSource {
     }
 
     public String determineDsKey() {
-        return dynamicDataSourceStrategy.determineDSKey(new ArrayList<>(dataSourceMap.keySet()));
+        return dynamicDataSourceStrategy.determineKey(new ArrayList<>(dataSourceMap.keySet()));
     }
 
     public DataSource determineDataSource() {

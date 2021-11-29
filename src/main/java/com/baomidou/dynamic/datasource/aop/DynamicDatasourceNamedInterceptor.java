@@ -128,8 +128,9 @@ public class DynamicDatasourceNamedInterceptor implements MethodInterceptor {
             // Look for most specific name match.
             String bestNameMatch = null;
             for (String mappedName : this.nameMap.keySet()) {
-                if (isMatch(methodName, mappedName) &&
-                        (bestNameMatch == null || bestNameMatch.length() <= mappedName.length())) {
+                boolean match1 = isMatch(methodName, mappedName);
+                boolean match2 = bestNameMatch == null || bestNameMatch.length() <= mappedName.length();
+                if (match1 && match2) {
                     dsKey = this.nameMap.get(mappedName);
                     bestNameMatch = mappedName;
                 }

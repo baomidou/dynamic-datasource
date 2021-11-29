@@ -88,7 +88,7 @@ public class DataSourceClassResolver {
      * @param targetObject 目标对象
      * @return ds
      */
-    public String findDSKey(Method method, Object targetObject) {
+    public String findKey(Method method, Object targetObject) {
         if (method.getDeclaringClass() == Object.class) {
             return "";
         }
@@ -119,14 +119,19 @@ public class DataSourceClassResolver {
         if (allowedPublicOnly && !Modifier.isPublic(method.getModifiers())) {
             return null;
         }
+        //1. 从当前方法接口中获取
+        String dsAttr = findDataSourceAttribute(method);
+        if (dsAttr != null) {
+            return dsAttr;
+        }
         Class<?> targetClass = targetObject.getClass();
         Class<?> userClass = ClassUtils.getUserClass(targetClass);
         // JDK代理时,  获取实现类的方法声明.  method: 接口的方法, specificMethod: 实现类方法
         Method specificMethod = ClassUtils.getMostSpecificMethod(method, userClass);
 
         specificMethod = BridgeMethodResolver.findBridgedMethod(specificMethod);
-        // 从当前方法查找
-        String dsAttr = findDataSourceAttribute(specificMethod);
+        //2. 从桥接方法查找
+        dsAttr = findDataSourceAttribute(specificMethod);
         if (dsAttr != null) {
             return dsAttr;
         }

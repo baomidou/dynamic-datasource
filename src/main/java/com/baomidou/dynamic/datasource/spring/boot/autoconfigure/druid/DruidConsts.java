@@ -56,9 +56,6 @@ public interface DruidConsts {
     String MAX_POOL_PREPARED_STATEMENT_PER_CONNECTION_SIZE = "druid.maxPoolPreparedStatementPerConnectionSize";
     String INIT_CONNECTION_SQLS = "druid.initConnectionSqls";
 
-    String STAT_SQL_MAX_SIZE = "druid.stat.sql.MaxSize";
-    String STAT_LOG_SLOW_SQL = "druid.stat.logSlowSql";
-    String STAT_SLOW_SQL_MILLIS = "druid.stat.slowSqlMillis";
-    String STAT_SLOW_SQL_LOG_LEVEL = "druid.stat.slowSqlLogLevel";
-    String STAT_MERGE_SQL = "druid.stat.mergeSql";
+    String CONFIG_STR = "config";
+    String STAT_STR = "stat";
 }

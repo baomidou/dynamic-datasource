@@ -31,6 +31,13 @@ import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 
+/**
+ * 抽象连接池创建器
+ * <p>
+ * 这里主要处理一些公共逻辑，如脚本和事件等
+ *
+ * @author TaoYu
+ */
 @Slf4j
 public abstract class AbstractDataSourceCreator implements DataSourceCreator {
 
@@ -39,6 +46,12 @@ public abstract class AbstractDataSourceCreator implements DataSourceCreator {
     @Autowired
     protected DataSourceInitEvent dataSourceInitEvent;
 
+    /**
+     * 子类去实际创建连接池
+     *
+     * @param dataSourceProperty 数据源信息
+     * @return 实际连接池
+     */
     public abstract DataSource doCreateDataSource(DataSourceProperty dataSourceProperty);
 
     @Override

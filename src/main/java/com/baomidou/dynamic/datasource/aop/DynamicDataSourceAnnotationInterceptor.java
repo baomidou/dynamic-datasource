@@ -54,7 +54,7 @@ public class DynamicDataSourceAnnotationInterceptor implements MethodInterceptor
     }
 
     private String determineDatasourceKey(MethodInvocation invocation) {
-        String key = dataSourceClassResolver.findDSKey(invocation.getMethod(), invocation.getThis());
-        return (!key.isEmpty() && key.startsWith(DYNAMIC_PREFIX)) ? dsProcessor.determineDatasource(invocation, key) : key;
+        String key = dataSourceClassResolver.findKey(invocation.getMethod(), invocation.getThis());
+        return key.startsWith(DYNAMIC_PREFIX) ? dsProcessor.determineDatasource(invocation, key) : key;
     }
 }

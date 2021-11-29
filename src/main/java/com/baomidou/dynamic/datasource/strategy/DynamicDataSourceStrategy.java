@@ -33,5 +33,5 @@ public interface DynamicDataSourceStrategy {
      * @param dsNames given dataSources
      * @return final dataSource
      */
-    String determineDSKey(List<String> dsNames);
+    String determineKey(List<String> dsNames);
 }

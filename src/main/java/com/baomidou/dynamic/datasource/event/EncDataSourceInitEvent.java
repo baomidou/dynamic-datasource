@@ -24,6 +24,11 @@ import javax.sql.DataSource;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * 多数据源默认解密事件
+ *
+ * @author TaoYu
+ */
 @Slf4j
 public class EncDataSourceInitEvent implements DataSourceInitEvent {
 

@@ -1,13 +1,11 @@
 package com.baomidou.dynamic.datasource.tx;
 
+import com.baomidou.dynamic.datasource.exception.TransactionException;
 import com.baomidou.mybatisplus.core.toolkit.ArrayUtils;
-import io.seata.core.exception.TransactionException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
-import java.util.Arrays;
 import java.util.Objects;
-import java.util.UUID;
 
 @Slf4j
 public class TransactionalTemplate {
@@ -59,29 +57,31 @@ public class TransactionalTemplate {
                 default:
                     throw new TransactionException("Not Supported Propagation:" + propagation);
             }
-            return doTransaction(transactionalExecutor);
+            return doExecute(transactionalExecutor);
         } finally {
             resume(suspendedResourcesHolder);
         }
     }
 
-    private Object doTransaction(TransactionalExecutor transactionalExecutor) throws Throwable {
+    private Object doExecute(TransactionalExecutor transactionalExecutor) throws Throwable {
         TransactionalInfo transactionInfo = transactionalExecutor.getTransactionInfo();
         if (!StringUtils.isEmpty(TransactionContext.getXID())) {
             return transactionalExecutor.execute();
         }
         boolean state = true;
         Object o;
-        String xid = UUID.randomUUID().toString();
-        TransactionContext.bind(xid);
+        String xid = LocalTxUtil.startTransaction();
         try {
             o = transactionalExecutor.execute();
-        } catch (Throwable e) {
+        } catch (Exception e) {
             state = !isRollback(e, transactionInfo);
             throw e;
         } finally {
-            ConnectionFactory.notify(xid, state);
-            TransactionContext.remove();
+            if (state) {
+                LocalTxUtil.commit(xid);
+            } else {
+                LocalTxUtil.rollback(xid);
+            }
         }
         return o;
     }
