@@ -29,6 +29,7 @@ import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConf
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidLogConfigUtil;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidStatConfigUtil;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidWallConfigUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -48,6 +49,7 @@ import static com.baomidou.dynamic.datasource.support.DdConstants.DRUID_DATASOUR
  * @author TaoYu
  * @since 2020/1/21
  */
+@Slf4j
 public class DruidDataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator, InitializingBean {
 
     @Autowired(required = false)
@@ -91,26 +93,33 @@ public class DruidDataSourceCreator extends AbstractDataSourceCreator implements
     private List<Filter> initFilters(DataSourceProperty dataSourceProperty, String filters) {
         List<Filter> proxyFilters = new ArrayList<>(2);
         if (!StringUtils.isEmpty(filters)) {
-            if (filters.contains("stat")) {
-                proxyFilters.add(DruidStatConfigUtil.toStatFilter(dataSourceProperty.getDruid().getStat(), gConfig.getStat()));
-            }
-            if (filters.contains("wall")) {
-                WallConfig wallConfig = DruidWallConfigUtil.toWallConfig(dataSourceProperty.getDruid().getWall(), gConfig.getWall());
-                WallFilter wallFilter = new WallFilter();
-                wallFilter.setConfig(wallConfig);
-                proxyFilters.add(wallFilter);
-            }
-            if (filters.contains("commons-log")) {
-                proxyFilters.add(DruidLogConfigUtil.initFilter(CommonsLogFilter.class, dataSourceProperty.getDruid().getCommonsLog(), gConfig.getCommonsLog()));
-            }
-            if (filters.contains("slf4j")) {
-                proxyFilters.add(DruidLogConfigUtil.initFilter(Slf4jLogFilter.class, dataSourceProperty.getDruid().getSlf4j(), gConfig.getSlf4j()));
-            }
-            if (filters.contains("log4j")) {
-                proxyFilters.add(DruidLogConfigUtil.initFilter(Log4jFilter.class, dataSourceProperty.getDruid().getLog4j(), gConfig.getLog4j()));
-            }
-            if (filters.contains("log4j2")) {
-                proxyFilters.add(DruidLogConfigUtil.initFilter(Log4j2Filter.class, dataSourceProperty.getDruid().getLog4j2(), gConfig.getLog4j2()));
+            String[] filterItems = filters.split(",");
+            for (String filter : filterItems) {
+                switch (filter) {
+                    case "stat":
+                        proxyFilters.add(DruidStatConfigUtil.toStatFilter(dataSourceProperty.getDruid().getStat(), gConfig.getStat()));
+                        break;
+                    case "wall":
+                        WallConfig wallConfig = DruidWallConfigUtil.toWallConfig(dataSourceProperty.getDruid().getWall(), gConfig.getWall());
+                        WallFilter wallFilter = new WallFilter();
+                        wallFilter.setConfig(wallConfig);
+                        proxyFilters.add(wallFilter);
+                        break;
+                    case "slf4j":
+                        proxyFilters.add(DruidLogConfigUtil.initFilter(Slf4jLogFilter.class, dataSourceProperty.getDruid().getSlf4j(), gConfig.getSlf4j()));
+                        break;
+                    case "commons-log":
+                        proxyFilters.add(DruidLogConfigUtil.initFilter(CommonsLogFilter.class, dataSourceProperty.getDruid().getCommonsLog(), gConfig.getCommonsLog()));
+                        break;
+                    case "log4j":
+                        proxyFilters.add(DruidLogConfigUtil.initFilter(Log4jFilter.class, dataSourceProperty.getDruid().getLog4j(), gConfig.getLog4j()));
+                        break;
+                    case "log4j2":
+                        proxyFilters.add(DruidLogConfigUtil.initFilter(Log4j2Filter.class, dataSourceProperty.getDruid().getLog4j2(), gConfig.getLog4j2()));
+                        break;
+                    default:
+                        log.warn("dynamic-datasource current not support [{}]", filter);
+                }
             }
         }
         if (this.applicationContext != null) {
