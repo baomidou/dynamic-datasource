@@ -20,6 +20,7 @@ import com.baomidou.dynamic.datasource.ds.GroupDataSource;
 import com.baomidou.dynamic.datasource.ds.ItemDataSource;
 import com.baomidou.dynamic.datasource.exception.CannotFindDataSourceException;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
+import com.baomidou.dynamic.datasource.provider.RuntimeDataSourceProvider;
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
 import com.baomidou.dynamic.datasource.strategy.LoadBalanceDynamicDataSourceStrategy;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
@@ -59,8 +60,13 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
      * 分组数据库
      */
     private final Map<String, GroupDataSource> groupDataSources = new ConcurrentHashMap<>();
+
     @Autowired
     private List<DynamicDataSourceProvider> providers;
+
+    @Autowired
+    private List<RuntimeDataSourceProvider> runtimeProviders;
+
     @Setter
     private Class<? extends DynamicDataSourceStrategy> strategy = LoadBalanceDynamicDataSourceStrategy.class;
     @Setter
@@ -87,6 +93,11 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
         GroupDataSource groupDataSource = groupDataSources.get(primary);
         if (groupDataSource != null) {
             return groupDataSource.determineDataSource();
+        }
+        //查找实时数据源
+        dataSource = getDataSourceFromRuntime(primary);
+        if (dataSource != null) {
+            return dataSource;
         }
         throw new CannotFindDataSourceException("dynamic-datasource can not find primary datasource");
     }
@@ -124,6 +135,11 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
         } else if (dataSourceMap.containsKey(ds)) {
             log.debug("dynamic-datasource switch to the datasource named [{}]", ds);
             return dataSourceMap.get(ds);
+        } else {
+            DataSource dataSource = getDataSourceFromRuntime(ds);
+            if (dataSource != null) {
+                return dataSource;
+            }
         }
         if (strict) {
             throw new CannotFindDataSourceException("dynamic-datasource could not find a datasource named" + ds);
@@ -282,6 +298,17 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
         } catch (Exception e) {
             log.warn("dynamic-datasource closed datasource named [{}] failed", ds, e);
         }
+    }
+
+    private DataSource getDataSourceFromRuntime(String key) {
+        DataSource dataSource;
+        for (RuntimeDataSourceProvider provider : runtimeProviders) {
+            dataSource = provider.getDataSource(key);
+            if (dataSource != null) {
+                return dataSource;
+            }
+        }
+        return null;
     }
 
 }

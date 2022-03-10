@@ -27,7 +27,9 @@ import com.baomidou.dynamic.datasource.processor.DsHeaderProcessor;
 import com.baomidou.dynamic.datasource.processor.DsProcessor;
 import com.baomidou.dynamic.datasource.processor.DsSessionProcessor;
 import com.baomidou.dynamic.datasource.processor.DsSpelExpressionProcessor;
+import com.baomidou.dynamic.datasource.provider.DefaultRuntimeDataSourceProvider;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
+import com.baomidou.dynamic.datasource.provider.RuntimeDataSourceProvider;
 import com.baomidou.dynamic.datasource.provider.YmlDynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidDynamicDataSourceConfiguration;
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
@@ -83,6 +85,11 @@ public class DynamicDataSourceAutoConfiguration implements InitializingBean {
     @Bean
     public DynamicDataSourceProvider ymlDynamicDataSourceProvider() {
         return new YmlDynamicDataSourceProvider(properties.getDatasource());
+    }
+
+    @Bean
+    public RuntimeDataSourceProvider defaultRuntimeDataSourceProvider() {
+        return new DefaultRuntimeDataSourceProvider();
     }
 
     @Bean
