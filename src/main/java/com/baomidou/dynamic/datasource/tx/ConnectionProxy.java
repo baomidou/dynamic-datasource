@@ -37,16 +37,22 @@ public class ConnectionProxy implements Connection {
         this.ds = ds;
     }
 
-    public void notify(Boolean commit) {
+    public void notify(Boolean commit) throws SQLException {
         try {
             if (commit) {
                 connection.commit();
             } else {
                 connection.rollback();
             }
-            connection.close();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             log.error(e.getLocalizedMessage(), e);
+            throw e;
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e2) {
+                log.error("db connection close failed", e2);
+            }
         }
     }
 
