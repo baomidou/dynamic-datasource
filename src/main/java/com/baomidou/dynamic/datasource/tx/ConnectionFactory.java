@@ -48,14 +48,22 @@ public class ConnectionFactory {
         return CONNECTION_HOLDER.get().get(ds);
     }
 
-    public static void notify(Boolean state) {
+    public static void notify(Boolean state) throws Exception {
+        Exception exception = null;
         try {
             Map<String, ConnectionProxy> concurrentHashMap = CONNECTION_HOLDER.get();
             for (ConnectionProxy connectionProxy : concurrentHashMap.values()) {
-                connectionProxy.notify(state);
+                try {
+                    connectionProxy.notify(state);
+                } catch (SQLException e) {
+                    exception = e;
+                }
             }
         } finally {
             CONNECTION_HOLDER.remove();
+            if (exception != null) {
+                throw exception;
+            }
         }
     }
 

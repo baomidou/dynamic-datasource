@@ -45,18 +45,24 @@ public final class LocalTxUtil {
     /**
      * 手动提交事务
      */
-    public static void commit() {
-        ConnectionFactory.notify(true);
-        log.debug("dynamic-datasource commit local tx [{}]", TransactionContext.getXID());
-        TransactionContext.remove();
+    public static void commit() throws Exception {
+        try {
+            ConnectionFactory.notify(true);
+        } finally {
+            log.debug("dynamic-datasource commit local tx [{}]", TransactionContext.getXID());
+            TransactionContext.remove();
+        }
     }
 
     /**
      * 手动回滚事务
      */
-    public static void rollback() {
-        ConnectionFactory.notify(false);
-        log.debug("dynamic-datasource rollback local tx [{}]", TransactionContext.getXID());
-        TransactionContext.remove();
+    public static void rollback() throws Exception {
+        try {
+            ConnectionFactory.notify(false);
+        } finally {
+            log.debug("dynamic-datasource rollback local tx [{}]", TransactionContext.getXID());
+            TransactionContext.remove();
+        }
     }
 }
