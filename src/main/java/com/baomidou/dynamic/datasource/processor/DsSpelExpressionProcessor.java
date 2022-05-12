@@ -15,6 +15,8 @@
  */
 package com.baomidou.dynamic.datasource.processor;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.context.expression.MethodBasedEvaluationContext;
 import org.springframework.core.DefaultParameterNameDiscoverer;
@@ -75,7 +77,8 @@ public class DsSpelExpressionProcessor extends DsProcessor {
     public String doDetermineDatasource(MethodInvocation invocation, String key) {
         Method method = invocation.getMethod();
         Object[] arguments = invocation.getArguments();
-        StandardEvaluationContext context = new MethodBasedEvaluationContext(null, method, arguments, NAME_DISCOVERER);
+        ExpressionRootObject rootObject = new ExpressionRootObject(method, arguments, invocation.getThis());
+        StandardEvaluationContext context = new MethodBasedEvaluationContext(rootObject, method, arguments, NAME_DISCOVERER);
         context.setBeanResolver(beanResolver);
         final Object value = PARSER.parseExpression(key, parserContext).getValue(context);
         return value == null ? null : value.toString();
@@ -87,5 +90,15 @@ public class DsSpelExpressionProcessor extends DsProcessor {
 
     public void setBeanResolver(BeanResolver beanResolver) {
         this.beanResolver = beanResolver;
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public static class ExpressionRootObject {
+        private final Method method;
+
+        private final Object[] args;
+
+        private final Object target;
     }
 }
