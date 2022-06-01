@@ -20,13 +20,27 @@ import com.baomidou.dynamic.datasource.tx.TransactionContext;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.springframework.transaction.interceptor.TransactionAttribute;
+import org.springframework.transaction.interceptor.TransactionAttributeSource;
 import org.springframework.util.StringUtils;
+
+import java.lang.reflect.Method;
 
 /**
  * @author funkye
  */
 @Slf4j
 public class DynamicLocalTransactionInterceptor implements MethodInterceptor {
+
+    private final TransactionAttributeSource transactionAttributeSource;
+
+    public DynamicLocalTransactionInterceptor() {
+        this(null);
+    }
+
+    public DynamicLocalTransactionInterceptor(TransactionAttributeSource transactionAttributeSource) {
+        this.transactionAttributeSource = transactionAttributeSource;
+    }
 
     @Override
     public Object invoke(MethodInvocation methodInvocation) throws Throwable {
@@ -39,7 +53,8 @@ public class DynamicLocalTransactionInterceptor implements MethodInterceptor {
         try {
             o = methodInvocation.proceed();
         } catch (Exception e) {
-            state = false;
+            // 检查该异常是否可以回滚
+            state = rollbackOn(methodInvocation, e);
             throw e;
         } finally {
             if (state) {
@@ -49,5 +64,22 @@ public class DynamicLocalTransactionInterceptor implements MethodInterceptor {
             }
         }
         return o;
+    }
+
+    private boolean rollbackOn(MethodInvocation methodInvocation, Exception e) {
+        if (transactionAttributeSource == null) {
+            return false;
+        }
+        Method method = methodInvocation.getMethod();
+        Object invocationThis = methodInvocation.getThis();
+        Class<?> proxyClass = invocationThis != null ? invocationThis.getClass() : method.getDeclaringClass();
+        TransactionAttribute transactionAttribute = transactionAttributeSource.getTransactionAttribute(method, proxyClass);
+
+        if (transactionAttribute == null) {
+            return false;
+        }
+
+        boolean rollback = transactionAttribute.rollbackOn(e);
+        return !rollback;
     }
 }
