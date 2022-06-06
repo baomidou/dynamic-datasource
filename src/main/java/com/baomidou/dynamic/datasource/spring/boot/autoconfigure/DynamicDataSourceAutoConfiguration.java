@@ -47,6 +47,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Role;
 import org.springframework.context.expression.BeanFactoryResolver;
+import org.springframework.transaction.interceptor.TransactionAttributeSource;
 import org.springframework.util.CollectionUtils;
 
 import javax.sql.DataSource;
@@ -111,8 +112,8 @@ public class DynamicDataSourceAutoConfiguration implements InitializingBean {
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     @Bean
     @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "seata", havingValue = "false", matchIfMissing = true)
-    public Advisor dynamicTransactionAdvisor() {
-        DynamicLocalTransactionInterceptor interceptor = new DynamicLocalTransactionInterceptor();
+    public Advisor dynamicTransactionAdvisor(TransactionAttributeSource transactionAttributeSource) {
+        DynamicLocalTransactionInterceptor interceptor = new DynamicLocalTransactionInterceptor(transactionAttributeSource);
         return new DynamicDataSourceAnnotationAdvisor(interceptor, DSTransactional.class);
     }
 
