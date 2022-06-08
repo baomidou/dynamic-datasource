@@ -24,8 +24,9 @@ import java.lang.annotation.*;
  * @author TaoYu Kanyuxia
  * @since 1.0.0
  */
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target({ElementType.PACKAGE, ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
+@Inherited
 @Documented
 public @interface DS {
 

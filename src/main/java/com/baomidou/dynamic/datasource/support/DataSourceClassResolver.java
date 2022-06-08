@@ -231,6 +231,11 @@ public class DataSourceClassResolver {
         AnnotationAttributes attributes = AnnotatedElementUtils.getMergedAnnotationAttributes(ae, DS.class);
         if (attributes != null) {
             return attributes.getString("value");
+        } else if (ae instanceof Class<?>) {
+            DS ds = ((Class<?>) ae).getPackage().getAnnotation(DS.class);
+            if (ds != null) {
+                return ds.value();
+            }
         }
         return null;
     }

@@ -25,7 +25,6 @@ import org.springframework.aop.support.AbstractPointcutAdvisor;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.aop.support.ComposablePointcut;
 import org.springframework.aop.support.StaticMethodMatcher;
-import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -73,7 +72,7 @@ public class DynamicDataSourceAnnotationAdvisor extends AbstractPointcutAdvisor 
     }
 
     private Pointcut buildPointcut() {
-        Pointcut cpc = new AnnotationMatchingPointcut(annotation, true);
+        Pointcut cpc = new PackageInfoAnnotationMatchingPointcut(annotation, true);
         Pointcut mpc = new AnnotationMethodPoint(annotation);
         return new ComposablePointcut(cpc).union(mpc);
     }
