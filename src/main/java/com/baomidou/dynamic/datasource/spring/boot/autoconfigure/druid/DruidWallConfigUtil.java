@@ -52,7 +52,7 @@ public final class DruidWallConfigUtil {
             Method method = METHODS.get(key);
             if (method != null) {
                 try {
-                    method.invoke(wallConfig, item.getValue());
+                    method.invoke(wallConfig, DsConfigUtil.convertValue(method,item.getValue()));
                 } catch (Exception e) {
                     log.warn("druid wall set param {} error", key, e);
                 }

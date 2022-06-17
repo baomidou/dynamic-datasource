@@ -49,7 +49,7 @@ public final class DruidLogConfigUtil {
                 Method method = METHODS.get(key);
                 if (method != null) {
                     try {
-                        method.invoke(filter, item.getValue());
+                        method.invoke(filter, DsConfigUtil.convertValue(method,item.getValue()));
                     } catch (Exception e) {
                         log.warn("druid {} set param {} error", clazz.getName(), key, e);
                     }
