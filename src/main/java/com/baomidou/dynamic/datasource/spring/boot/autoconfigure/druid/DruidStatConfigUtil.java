@@ -55,7 +55,7 @@ public final class DruidStatConfigUtil {
             Method method = METHODS.get(key);
             if (method != null) {
                 try {
-                    method.invoke(filter, item.getValue());
+                    method.invoke(filter, DsConfigUtil.convertValue(method,item.getValue()));
                 } catch (Exception e) {
                     log.warn("druid stat set param {} error", key, e);
                 }
