@@ -15,12 +15,16 @@
  */
 package com.baomidou.dynamic.datasource.aop;
 
+import com.baomidou.dynamic.datasource.support.DsTransactionSynchronization;
+import com.baomidou.dynamic.datasource.support.DsTransactionSynchronizationManager;
 import com.baomidou.dynamic.datasource.tx.LocalTxUtil;
 import com.baomidou.dynamic.datasource.tx.TransactionContext;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.util.StringUtils;
+
+import java.util.List;
 
 /**
  * @author funkye
@@ -35,18 +39,33 @@ public class DynamicLocalTransactionInterceptor implements MethodInterceptor {
         }
         boolean state = true;
         Object o;
-        LocalTxUtil.startTransaction();
         try {
-            o = methodInvocation.proceed();
-        } catch (Exception e) {
-            state = false;
-            throw e;
-        } finally {
-            if (state) {
-                LocalTxUtil.commit();
-            } else {
-                LocalTxUtil.rollback();
+            DsTransactionSynchronizationManager.initSynchronization();
+            LocalTxUtil.startTransaction();
+            try {
+                o = methodInvocation.proceed();
+                //在事务提交之前添加业务逻辑
+                List<DsTransactionSynchronization> synchronizations = DsTransactionSynchronizationManager.getSynchronizations();
+                for (DsTransactionSynchronization synchronization : synchronizations) {
+                    synchronization.beforeCompletion();
+                }
+            } catch (Exception e) {
+                state = false;
+                throw e;
+            } finally {
+                if (state) {
+                    LocalTxUtil.commit();
+                } else {
+                    LocalTxUtil.rollback();
+                }
             }
+            //在事务提交完成后添加业务逻辑
+            List<DsTransactionSynchronization> synchronizations = DsTransactionSynchronizationManager.getSynchronizations();
+            for (DsTransactionSynchronization synchronization : synchronizations) {
+                synchronization.afterCompletion(state);
+            }
+        }finally {
+            DsTransactionSynchronizationManager.clear();
         }
         return o;
     }
