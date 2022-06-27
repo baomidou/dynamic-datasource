@@ -47,6 +47,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Role;
 import org.springframework.context.expression.BeanFactoryResolver;
+import org.springframework.core.annotation.Order;
 import org.springframework.util.CollectionUtils;
 
 import javax.sql.DataSource;
@@ -81,6 +82,7 @@ public class DynamicDataSourceAutoConfiguration implements InitializingBean {
     }
 
     @Bean
+    @Order(0)
     public DynamicDataSourceProvider ymlDynamicDataSourceProvider() {
         return new YmlDynamicDataSourceProvider(properties.getDatasource());
     }
