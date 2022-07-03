@@ -232,9 +232,12 @@ public class DataSourceClassResolver {
         if (attributes != null) {
             return attributes.getString("value");
         } else if (ae instanceof Class<?>) {
-            DS ds = ((Class<?>) ae).getPackage().getAnnotation(DS.class);
-            if (ds != null) {
-                return ds.value();
+            Package aPackage = ((Class<?>) ae).getPackage();
+            if (aPackage != null) {
+                DS ds = aPackage.getAnnotation(DS.class);
+                if (ds != null) {
+                    return ds.value();
+                }
             }
         }
         return null;

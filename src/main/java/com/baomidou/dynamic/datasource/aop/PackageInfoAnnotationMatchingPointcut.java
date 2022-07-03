@@ -102,11 +102,11 @@ public class PackageInfoAnnotationMatchingPointcut implements Pointcut {
         public boolean matches(Class<?> clazz) {
             boolean matches = super.matches(clazz);
             if (!matches) {
-                matches = clazz.getPackage().isAnnotationPresent(annotationType);
+                matches = clazz.getPackage() != null && clazz.getPackage().isAnnotationPresent(annotationType);
                 if (!matches) {
                     Set<Class<?>> interfacesForClassAsSet = ClassUtils.getAllInterfacesForClassAsSet(ClassUtils.getUserClass(clazz));
                     for (Class<?> aClass : interfacesForClassAsSet) {
-                        matches = aClass.getPackage().isAnnotationPresent(annotationType);
+                        matches = aClass.getPackage() != null && aClass.getPackage().isAnnotationPresent(annotationType);
                         if (matches) {
                             return true;
                         }
