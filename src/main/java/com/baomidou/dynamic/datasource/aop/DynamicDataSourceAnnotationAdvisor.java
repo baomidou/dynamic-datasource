@@ -34,6 +34,7 @@ import org.springframework.util.Assert;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.List;
 
 /**
  * @author TaoYu
@@ -47,10 +48,13 @@ public class DynamicDataSourceAnnotationAdvisor extends AbstractPointcutAdvisor 
 
     private final Class<? extends Annotation> annotation;
 
+    private final List<String> packages;
+
     public DynamicDataSourceAnnotationAdvisor(@NonNull MethodInterceptor advice,
-                                              @NonNull Class<? extends Annotation> annotation) {
+                                              @NonNull Class<? extends Annotation> annotation, List<String> packages) {
         this.advice = advice;
         this.annotation = annotation;
+        this.packages = packages;
         this.pointcut = buildPointcut();
     }
 
@@ -72,7 +76,7 @@ public class DynamicDataSourceAnnotationAdvisor extends AbstractPointcutAdvisor 
     }
 
     private Pointcut buildPointcut() {
-        Pointcut cpc = new PackageInfoAnnotationMatchingPointcut(annotation, true);
+        Pointcut cpc = new PackageInfoAnnotationMatchingPointcut(annotation, true, packages);
         Pointcut mpc = new AnnotationMethodPoint(annotation);
         return new ComposablePointcut(cpc).union(mpc);
     }

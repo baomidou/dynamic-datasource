@@ -21,9 +21,11 @@ import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.annotation.AnnotationClassFilter;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import java.lang.annotation.Annotation;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -43,9 +45,10 @@ public class PackageInfoAnnotationMatchingPointcut implements Pointcut {
      * Create a new PackageInfoAnnotationMatchingPointcut for the given annotation type.
      *
      * @param classAnnotationType the annotation type to look for at the class level
+     * @param packages
      */
-    public PackageInfoAnnotationMatchingPointcut(Class<? extends Annotation> classAnnotationType, boolean checkInherited) {
-        this.classFilter = new PackageAnnotationClassFilter(classAnnotationType, checkInherited);
+    public PackageInfoAnnotationMatchingPointcut(Class<? extends Annotation> classAnnotationType, boolean checkInherited, List<String> packages) {
+        this.classFilter = new PackageAnnotationClassFilter(classAnnotationType, checkInherited, packages);
         this.methodMatcher = MethodMatcher.TRUE;
     }
 
@@ -93,22 +96,36 @@ public class PackageInfoAnnotationMatchingPointcut implements Pointcut {
 
         private final Class<? extends Annotation> annotationType;
 
-        public PackageAnnotationClassFilter(Class<? extends Annotation> annotationType, boolean checkInherited) {
+        private final List<String> packages;
+
+        public PackageAnnotationClassFilter(Class<? extends Annotation> annotationType, boolean checkInherited, List<String> packages) {
             super(annotationType, checkInherited);
             this.annotationType = annotationType;
+            this.packages = packages;
         }
 
         @Override
         public boolean matches(Class<?> clazz) {
             boolean matches = super.matches(clazz);
             if (!matches) {
-                matches = clazz.getPackage() != null && clazz.getPackage().isAnnotationPresent(annotationType);
+                if (!CollectionUtils.isEmpty(packages)) {
+                    String clazzName = clazz.getName();
+                    for (String aPackage : packages) {
+                        if (clazzName.startsWith(aPackage)) {
+                            matches = true;
+                            break;
+                        }
+                    }
+                }
                 if (!matches) {
-                    Set<Class<?>> interfacesForClassAsSet = ClassUtils.getAllInterfacesForClassAsSet(ClassUtils.getUserClass(clazz));
-                    for (Class<?> aClass : interfacesForClassAsSet) {
-                        matches = aClass.getPackage() != null && aClass.getPackage().isAnnotationPresent(annotationType);
-                        if (matches) {
-                            return true;
+                    matches = clazz.getPackage() != null && clazz.getPackage().isAnnotationPresent(annotationType);
+                    if (!matches) {
+                        Set<Class<?>> interfacesForClassAsSet = ClassUtils.getAllInterfacesForClassAsSet(ClassUtils.getUserClass(clazz));
+                        for (Class<?> aClass : interfacesForClassAsSet) {
+                            matches = aClass.getPackage() != null && aClass.getPackage().isAnnotationPresent(annotationType);
+                            if (matches) {
+                                break;
+                            }
                         }
                     }
                 }

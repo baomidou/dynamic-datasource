@@ -103,7 +103,7 @@ public class DynamicDataSourceAutoConfiguration implements InitializingBean {
     public Advisor dynamicDatasourceAnnotationAdvisor(DsProcessor dsProcessor) {
         DynamicDatasourceAopProperties aopProperties = properties.getAop();
         DynamicDataSourceAnnotationInterceptor interceptor = new DynamicDataSourceAnnotationInterceptor(aopProperties.getAllowedPublicOnly(), dsProcessor);
-        DynamicDataSourceAnnotationAdvisor advisor = new DynamicDataSourceAnnotationAdvisor(interceptor, DS.class);
+        DynamicDataSourceAnnotationAdvisor advisor = new DynamicDataSourceAnnotationAdvisor(interceptor, DS.class, properties.getAop().getPackages());
         advisor.setOrder(aopProperties.getOrder());
         return advisor;
     }
@@ -113,7 +113,7 @@ public class DynamicDataSourceAutoConfiguration implements InitializingBean {
     @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "seata", havingValue = "false", matchIfMissing = true)
     public Advisor dynamicTransactionAdvisor() {
         DynamicLocalTransactionInterceptor interceptor = new DynamicLocalTransactionInterceptor();
-        return new DynamicDataSourceAnnotationAdvisor(interceptor, DSTransactional.class);
+        return new DynamicDataSourceAnnotationAdvisor(interceptor, DSTransactional.class, properties.getAop().getPackages());
     }
 
     @Bean
