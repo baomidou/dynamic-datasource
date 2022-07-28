@@ -36,6 +36,7 @@ import java.util.List;
 public class DynamicDataSourceCreatorAutoConfiguration {
 
     public static final int JNDI_ORDER = 1000;
+    public static final int XA_DRUID_ORDER = 1500;
     public static final int DRUID_ORDER = 2000;
     public static final int HIKARI_ORDER = 3000;
     public static final int BEECP_ORDER = 4000;
@@ -76,6 +77,26 @@ public class DynamicDataSourceCreatorAutoConfiguration {
             return new DruidDataSourceCreator();
         }
     }
+    
+    /**
+     * 存在DruidXA数据源时, 加入创建器
+     */
+    @ConditionalOnClass(DruidXADataSource.class)
+    @Configuration
+    static class DruidXADataSourceCreatorConfiguration {
+
+        @Bean
+        @Order(XA_DRUID_ORDER)
+        public DruidXADataSourceCreator druidXADataSourceCreator() {
+            return new DruidXADataSourceCreator();
+        }
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public TransactionFactory transactionFactory() {
+        return new ZhjwTransactionFactory();
+    }    
 
     /**
      * 存在Hikari数据源时, 加入创建器
