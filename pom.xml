@@ -59,6 +59,7 @@
         <p6spy.version>3.9.1</p6spy.version>
         <seata.version>1.4.2</seata.version>
         <lombok.version>1.18.22</lombok.version>
+        <atomikos.version>5.0.9</atomikos.version>
     </properties>
 
     <dependencies>
@@ -67,7 +68,7 @@
         <dependency>
             <groupId>com.atomikos</groupId>
             <artifactId>transactions-spring-boot-starter</artifactId>
-            <version>5.0.9</version>
+            <version>${atomikos.version}<version>
             <optional>true</optional>
         </dependency>     
              
