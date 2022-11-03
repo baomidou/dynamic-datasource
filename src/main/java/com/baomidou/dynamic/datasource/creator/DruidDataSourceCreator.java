@@ -201,6 +201,16 @@ public class DruidDataSourceCreator extends AbstractDataSourceCreator implements
         if (transactionQueryTimeout != null) {
             dataSource.setTransactionQueryTimeout(transactionQueryTimeout);
         }
+
+        Integer connectTimeout = config.getConnectTimeout() == null ? gConfig.getConnectTimeout() : config.getConnectTimeout();
+        if (connectTimeout != null) {
+            dataSource.setConnectTimeout(connectTimeout);
+        }
+
+        Integer socketTimeout = config.getSocketTimeout() == null ? gConfig.getSocketTimeout() : config.getSocketTimeout();
+        if (connectTimeout != null) {
+            dataSource.setSocketTimeout(socketTimeout);
+        }
     }
 
     @Override
