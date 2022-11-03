@@ -202,14 +202,25 @@ public class DruidDataSourceCreator extends AbstractDataSourceCreator implements
             dataSource.setTransactionQueryTimeout(transactionQueryTimeout);
         }
 
+        // since druid 1.2.12
         Integer connectTimeout = config.getConnectTimeout() == null ? gConfig.getConnectTimeout() : config.getConnectTimeout();
         if (connectTimeout != null) {
-            dataSource.setConnectTimeout(connectTimeout);
+            try {
+                DruidDataSource.class.getMethod("setConnectTimeout", int.class);
+                dataSource.setConnectTimeout(connectTimeout);
+            } catch (NoSuchMethodException e) {
+                log.warn("druid current not support connectTimeout,please update druid 1.2.12 +");
+            }
         }
 
         Integer socketTimeout = config.getSocketTimeout() == null ? gConfig.getSocketTimeout() : config.getSocketTimeout();
         if (connectTimeout != null) {
-            dataSource.setSocketTimeout(socketTimeout);
+            try {
+                DruidDataSource.class.getMethod("setSocketTimeout", int.class);
+                dataSource.setSocketTimeout(socketTimeout);
+            } catch (NoSuchMethodException e) {
+                log.warn("druid current not support setSocketTimeout,please update druid 1.2.12 +");
+            }
         }
     }
 
