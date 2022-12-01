@@ -12,7 +12,7 @@
 
     <groupId>com.baomidou</groupId>
     <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
-    <version>3.5.2</version>
+    <version>3.6.0.RC1</version>
     <packaging>jar</packaging>
 
     <name>dynamic-datasource-spring-boot-starter</name>
@@ -84,6 +84,12 @@
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>${mybatis.plus.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>5.0.0</version>
             <optional>true</optional>
         </dependency>
         <dependency>

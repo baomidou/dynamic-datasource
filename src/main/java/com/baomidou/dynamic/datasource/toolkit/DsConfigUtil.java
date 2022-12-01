@@ -86,31 +86,32 @@ public final class DsConfigUtil {
 
     /**
      * 将需要传入invoke方法的值转换成方法对应的类型
+     *
      * @param method 方法
-     * @param value 值
+     * @param value  值
      * @return
      */
     public static Object convertValue(Method method, Object value) {
         Class<?>[] parameterTypes = method.getParameterTypes();
-        if (parameterTypes.length == 1){
+        if (parameterTypes.length == 1) {
             Class<?> parameterType = parameterTypes[0];
             String propertyValue = String.valueOf(value);
-            if (parameterType == String.class){
+            if (parameterType == String.class) {
                 return propertyValue;
             }
-            if (parameterType == Integer.class || parameterType == int.class){
+            if (parameterType == Integer.class || parameterType == int.class) {
                 return Integer.valueOf(propertyValue).intValue();
             }
-            if (parameterType == Long.class || parameterType == long.class){
+            if (parameterType == Long.class || parameterType == long.class) {
                 return Long.valueOf(propertyValue).longValue();
             }
-            if (parameterType == Boolean.class || parameterType == boolean.class){
+            if (parameterType == Boolean.class || parameterType == boolean.class) {
                 return Boolean.valueOf(propertyValue).booleanValue();
             }
-            if (parameterType == Double.class || parameterType == double.class){
+            if (parameterType == Double.class || parameterType == double.class) {
                 return Double.valueOf(propertyValue).doubleValue();
             }
-            if (parameterType == Float.class || parameterType == float.class){
+            if (parameterType == Float.class || parameterType == float.class) {
                 return Float.valueOf(propertyValue).floatValue();
             }
         }
