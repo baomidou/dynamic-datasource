@@ -24,7 +24,7 @@
         <img src="https://img.shields.io/badge/JDK-1.7+-green.svg" >
     </a>
     <a>
-        <img src="https://img.shields.io/badge/springBoot-1.5.x__2.x.x-green.svg" >
+        <img src="https://img.shields.io/badge/springBoot-1.5.x__2.x.x__3.x.x-green.svg" >
     </a>
     <a href="https://www.jetbrains.com">
         <img src="https://img.shields.io/badge/IntelliJ%20IDEA-support-blue.svg" >
@@ -39,7 +39,7 @@
 
 dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成多数据源的启动器。
 
-其支持 **Jdk 1.7+, SpringBoot 1.4.x 1.5.x 2.x.x**。
+其支持 **Jdk 1.7+, SpringBoot 1.4.x 1.5.x 2.x.x 3.x.x**。
 
 ## 文档 | Documentation
 
