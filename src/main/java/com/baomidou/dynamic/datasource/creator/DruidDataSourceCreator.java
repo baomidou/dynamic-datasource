@@ -214,7 +214,7 @@ public class DruidDataSourceCreator extends AbstractDataSourceCreator implements
         }
 
         Integer socketTimeout = config.getSocketTimeout() == null ? gConfig.getSocketTimeout() : config.getSocketTimeout();
-        if (connectTimeout != null) {
+        if (socketTimeout != null) {
             try {
                 DruidDataSource.class.getMethod("setSocketTimeout", int.class);
                 dataSource.setSocketTimeout(socketTimeout);
