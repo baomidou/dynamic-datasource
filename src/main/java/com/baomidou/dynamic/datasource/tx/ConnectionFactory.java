@@ -60,7 +60,8 @@ public class ConnectionFactory {
         return connectionProxyMap.get(ds);
     }
 
-    public static void notify(String xid, Boolean state) {
+    public static void notify(String xid, Boolean state) throws Exception {
+        Exception exception = null;
         Map<String, Map<String, ConnectionProxy>> concurrentHashMap = CONNECTION_HOLDER.get();
         try {
             if (CollectionUtils.isEmpty(concurrentHashMap)) {
@@ -68,12 +69,20 @@ public class ConnectionFactory {
             }
             Map<String, ConnectionProxy> connectionProxyMap = concurrentHashMap.get(xid);
             for (ConnectionProxy connectionProxy : connectionProxyMap.values()) {
-                if (connectionProxy != null) {
-                    connectionProxy.notify(state);
+                try {
+                    if (connectionProxy != null) {
+                        connectionProxy.notify(state);
+                    }
+                } catch (SQLException e) {
+                    exception = e;
                 }
+
             }
         } finally {
             concurrentHashMap.remove(xid);
+            if (exception != null) {
+                throw exception;
+            }
         }
     }
 

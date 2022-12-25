@@ -26,6 +26,8 @@ import com.baomidou.dynamic.datasource.processor.DsHeaderProcessor;
 import com.baomidou.dynamic.datasource.processor.DsProcessor;
 import com.baomidou.dynamic.datasource.processor.DsSessionProcessor;
 import com.baomidou.dynamic.datasource.processor.DsSpelExpressionProcessor;
+import com.baomidou.dynamic.datasource.processor.jakarta.DsJakartaHeaderProcessor;
+import com.baomidou.dynamic.datasource.processor.jakarta.DsJakartaSessionProcessor;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.provider.YmlDynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidDynamicDataSourceConfiguration;
@@ -36,6 +38,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -46,6 +49,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Role;
 import org.springframework.context.expression.BeanFactoryResolver;
+import org.springframework.core.annotation.Order;
 import org.springframework.util.CollectionUtils;
 
 import javax.sql.DataSource;
@@ -80,6 +84,7 @@ public class DynamicDataSourceAutoConfiguration implements InitializingBean {
     }
 
     @Bean
+    @Order(0)
     public DynamicDataSourceProvider ymlDynamicDataSourceProvider() {
         return new YmlDynamicDataSourceProvider(properties.getDatasource());
     }
@@ -124,8 +129,16 @@ public class DynamicDataSourceAutoConfiguration implements InitializingBean {
     @Bean
     @ConditionalOnMissingBean
     public DsProcessor dsProcessor(BeanFactory beanFactory) {
-        DsHeaderProcessor headerProcessor = new DsHeaderProcessor();
-        DsSessionProcessor sessionProcessor = new DsSessionProcessor();
+        String version = SpringBootVersion.getVersion();
+        DsProcessor headerProcessor;
+        DsProcessor sessionProcessor;
+        if (version.startsWith("3")) {
+            headerProcessor = new DsJakartaHeaderProcessor();
+            sessionProcessor = new DsJakartaSessionProcessor();
+        } else {
+            headerProcessor = new DsHeaderProcessor();
+            sessionProcessor = new DsSessionProcessor();
+        }
         DsSpelExpressionProcessor spelExpressionProcessor = new DsSpelExpressionProcessor();
         spelExpressionProcessor.setBeanResolver(new BeanFactoryResolver(beanFactory));
         headerProcessor.setNextProcessor(sessionProcessor);

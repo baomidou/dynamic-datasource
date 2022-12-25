@@ -75,9 +75,11 @@ public class DruidConfig {
     private Boolean removeAbandoned;
     private Integer removeAbandonedTimeoutMillis;
     private Boolean logAbandoned;
-    private Integer queryTimeout;
+    private Integer queryTimeout;  // second
     private Integer transactionQueryTimeout;
     private String publicKey;
+    private Integer connectTimeout;  // millisecond
+    private Integer socketTimeout;   // millisecond
 
     private Map<String, Object> wall = new HashMap<>();
     private Map<String, Object> slf4j = new HashMap<>();

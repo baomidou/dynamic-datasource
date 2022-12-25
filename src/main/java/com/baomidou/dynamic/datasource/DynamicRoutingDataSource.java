@@ -73,10 +73,16 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
     private Boolean seata = false;
 
     @Override
+    protected String getPrimary() {
+        return primary;
+    }
+
+    @Override
     public DataSource determineDataSource() {
         String dsKey = DynamicDataSourceContextHolder.peek();
         return getDataSource(dsKey);
     }
+
 
     private DataSource determinePrimaryDataSource() {
         log.debug("dynamic-datasource switch to the primary datasource");

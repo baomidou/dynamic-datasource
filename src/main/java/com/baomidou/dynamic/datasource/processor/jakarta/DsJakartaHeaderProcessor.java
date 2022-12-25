@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.baomidou.dynamic.datasource.processor;
+package com.baomidou.dynamic.datasource.processor.jakarta;
 
+import com.baomidou.dynamic.datasource.processor.DsProcessor;
+import jakarta.servlet.http.HttpServletRequest;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * @author TaoYu
- * @since 2.5.0
+ * @since 3.6.0
  */
-public class DsHeaderProcessor extends DsProcessor {
+public class DsJakartaHeaderProcessor extends DsProcessor {
 
     /**
      * header prefix
@@ -39,7 +39,7 @@ public class DsHeaderProcessor extends DsProcessor {
 
     @Override
     public String doDetermineDatasource(MethodInvocation invocation, String key) {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        HttpServletRequest request = (HttpServletRequest) ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         return request.getHeader(key.substring(8));
     }
 }

@@ -41,6 +41,13 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource {
      */
     protected abstract DataSource determineDataSource();
 
+    /**
+     * 获取默认数据源名称
+     *
+     * @return 名称
+     */
+    protected abstract String getPrimary();
+
     @Override
     public Connection getConnection() throws SQLException {
         String xid = TransactionContext.getXID();
@@ -48,9 +55,9 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource {
             return determineDataSource().getConnection();
         } else {
             String ds = DynamicDataSourceContextHolder.peek();
-            ds = StringUtils.isEmpty(ds) ? "default" : ds;
-            ConnectionProxy connection = ConnectionFactory.getConnection(xid, ds);
-            return connection == null ? getConnectionProxy(xid,ds, determineDataSource().getConnection()) : connection;
+            ds = StringUtils.isEmpty(ds) ? getPrimary() : ds;
+            ConnectionProxy connection = ConnectionFactory.getConnection(ds);
+            return connection == null ? getConnectionProxy(ds, determineDataSource().getConnection()) : connection;
         }
     }
 
@@ -61,9 +68,9 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource {
             return determineDataSource().getConnection(username, password);
         } else {
             String ds = DynamicDataSourceContextHolder.peek();
-            ds = StringUtils.isEmpty(ds) ? "default" : ds;
-            ConnectionProxy connection = ConnectionFactory.getConnection(xid, ds);
-            return connection == null ? getConnectionProxy(xid, ds, determineDataSource().getConnection(username, password))
+            ds = StringUtils.isEmpty(ds) ? getPrimary() : ds;
+            ConnectionProxy connection = ConnectionFactory.getConnection(ds);
+            return connection == null ? getConnectionProxy(ds, determineDataSource().getConnection(username, password))
                     : connection;
         }
     }

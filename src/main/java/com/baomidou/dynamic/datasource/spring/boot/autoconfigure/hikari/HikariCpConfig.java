@@ -37,7 +37,9 @@ public class HikariCpConfig {
     private Long leakDetectionThreshold;
     private Long maxLifetime;
     private Integer maxPoolSize;
+    private Integer maximumPoolSize;
     private Integer minIdle;
+    private Integer minimumIdle;
 
     private Long initializationFailTimeout;
     private String connectionInitSql;
@@ -60,4 +62,12 @@ public class HikariCpConfig {
     private String exceptionOverrideClassName;
     private Long keepaliveTime;
     private Boolean sealed;
+
+    public void setMaximumPoolSize(Integer maximumPoolSize) {
+        this.maxPoolSize = maximumPoolSize;
+    }
+
+    public void setMinimumIdle(Integer minimumIdle) {
+        this.minIdle = minimumIdle;
+    }
 }
