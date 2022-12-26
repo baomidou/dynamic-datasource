@@ -15,6 +15,10 @@
  */
 package com.baomidou.dynamic.datasource.annotation;
 
+
+
+import com.baomidou.dynamic.datasource.tx.DsPropagation;
+
 import java.lang.annotation.*;
 
 /**
@@ -26,4 +30,9 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface DSTransactional {
+    Class<? extends Throwable>[] rollbackFor() default {Exception.class};
+
+    Class<? extends Throwable>[] noRollbackFor() default {};
+
+    DsPropagation propagation() default DsPropagation.REQUIRED;
 }

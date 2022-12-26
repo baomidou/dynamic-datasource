@@ -15,39 +15,41 @@
  */
 package com.baomidou.dynamic.datasource.aop;
 
-import com.baomidou.dynamic.datasource.tx.LocalTxUtil;
-import com.baomidou.dynamic.datasource.tx.TransactionContext;
+import com.baomidou.dynamic.datasource.annotation.DSTransactional;
+import com.baomidou.dynamic.datasource.tx.*;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.springframework.util.StringUtils;
+import java.lang.reflect.Method;
 
 /**
  * @author funkye
  */
 @Slf4j
 public class DynamicLocalTransactionInterceptor implements MethodInterceptor {
+    private final TransactionalTemplate transactionalTemplate = new TransactionalTemplate();
 
     @Override
-    public Object invoke(MethodInvocation methodInvocation) throws Throwable {
-        if (!StringUtils.isEmpty(TransactionContext.getXID())) {
-            return methodInvocation.proceed();
-        }
-        boolean state = true;
-        Object o;
-        LocalTxUtil.startTransaction();
-        try {
-            o = methodInvocation.proceed();
-        } catch (Exception e) {
-            state = false;
-            throw e;
-        } finally {
-            if (state) {
-                LocalTxUtil.commit();
-            } else {
-                LocalTxUtil.rollback();
+    public Object invoke(final MethodInvocation methodInvocation) throws Throwable {
+        Method method = methodInvocation.getMethod();
+        final DSTransactional dsTransactional = method.getAnnotation(DSTransactional.class);
+
+        TransactionalExecutor transactionalExecutor = new TransactionalExecutor() {
+            @Override
+            public Object execute() throws Throwable {
+                return methodInvocation.proceed();
             }
-        }
-        return o;
+
+            @Override
+            public TransactionalInfo getTransactionInfo() {
+                TransactionalInfo transactionInfo = new TransactionalInfo();
+                transactionInfo.setPropagation(dsTransactional.propagation());
+                transactionInfo.setNoRollbackFor(dsTransactional.noRollbackFor());
+                transactionInfo.setRollbackFor(dsTransactional.rollbackFor());
+                return transactionInfo;
+            }
+        };
+        return transactionalTemplate.execute(transactionalExecutor);
     }
+
 }

@@ -32,22 +32,24 @@ public final class LocalTxUtil {
     /**
      * 手动开启事务
      */
-    public static void startTransaction() {
-        if (!StringUtils.isEmpty(TransactionContext.getXID())) {
-            log.debug("dynamic-datasource exist local tx [{}]", TransactionContext.getXID());
+    public static String startTransaction() {
+        String xid = TransactionContext.getXID();
+        if (!StringUtils.isEmpty(xid)) {
+            log.debug("dynamic-datasource exist local tx [{}]", xid);
         } else {
-            String xid = UUID.randomUUID().toString();
+            xid = UUID.randomUUID().toString();
             TransactionContext.bind(xid);
             log.debug("dynamic-datasource start local tx [{}]", xid);
         }
+        return xid;
     }
 
     /**
      * 手动提交事务
      */
-    public static void commit() throws Exception {
+    public static void commit(String xid) throws Exception {
         try {
-            ConnectionFactory.notify(true);
+            ConnectionFactory.notify(xid, true);
         } finally {
             log.debug("dynamic-datasource commit local tx [{}]", TransactionContext.getXID());
             TransactionContext.remove();
@@ -57,9 +59,9 @@ public final class LocalTxUtil {
     /**
      * 手动回滚事务
      */
-    public static void rollback() throws Exception {
+    public static void rollback(String xid) throws Exception {
         try {
-            ConnectionFactory.notify(false);
+            ConnectionFactory.notify(xid, false);
         } finally {
             log.debug("dynamic-datasource rollback local tx [{}]", TransactionContext.getXID());
             TransactionContext.remove();

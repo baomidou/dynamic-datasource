@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
-
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
