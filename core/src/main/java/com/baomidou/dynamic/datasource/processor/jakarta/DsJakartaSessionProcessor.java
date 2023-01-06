@@ -16,30 +16,31 @@
 package com.baomidou.dynamic.datasource.processor.jakarta;
 
 import com.baomidou.dynamic.datasource.processor.DsProcessor;
-import jakarta.servlet.http.HttpServletRequest;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+
 
 /**
  * @author TaoYu
  * @since 3.6.0
  */
-public class DsJakartaHeaderProcessor extends DsProcessor {
+public class DsJakartaSessionProcessor extends DsProcessor {
 
     /**
-     * header prefix
+     * session开头
      */
-    private static final String HEADER_PREFIX = "#header";
+    private static final String SESSION_PREFIX = "#session";
 
     @Override
     public boolean matches(String key) {
-        return key.startsWith(HEADER_PREFIX);
+        return key.startsWith(SESSION_PREFIX);
     }
 
+    // TODO We need to fix the handling of Jakarta EE namespaces here.
     @Override
     public String doDetermineDatasource(MethodInvocation invocation, String key) {
-        HttpServletRequest request = (HttpServletRequest) ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        return request.getHeader(key.substring(8));
+        javax.servlet.http.HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        return request.getSession().getAttribute(key.substring(9)).toString();
     }
 }
