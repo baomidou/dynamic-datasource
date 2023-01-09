@@ -55,7 +55,7 @@
         <p6spy.version>3.9.1</p6spy.version>
         <seata.version>1.5.2</seata.version>
         <lombok.version>1.18.22</lombok.version>
-        <spring-boot-dependencies.version>1.5.3.RELEASE</spring-boot-dependencies.version>
+        <spring-boot-dependencies.version>2.5.12</spring-boot-dependencies.version>
         <jakarta-servlet.version>6.0.0</jakarta-servlet.version>
         <assertj.version>3.23.1</assertj.version>
         <h2.version>2.1.214</h2.version>
