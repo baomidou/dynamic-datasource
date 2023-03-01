@@ -23,38 +23,38 @@ package com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid;
  */
 public interface DruidConsts {
 
-    String INITIAL_SIZE = "druid.initialSize";
-    String MAX_ACTIVE = "druid.maxActive";
-    String MIN_IDLE = "druid.minIdle";
-    String MAX_WAIT = "druid.maxWait";
+    String INITIAL_SIZE = "initialSize";
+    String MAX_ACTIVE = "maxActive";
+    String MIN_IDLE = "minIdle";
+    String MAX_WAIT = "maxWait";
 
-    String TIME_BETWEEN_EVICTION_RUNS_MILLIS = "druid.timeBetweenEvictionRunsMillis";
-    String TIME_BETWEEN_LOG_STATS_MILLIS = "druid.timeBetweenLogStatsMillis";
-    String MIN_EVICTABLE_IDLE_TIME_MILLIS = "druid.minEvictableIdleTimeMillis";
-    String MAX_EVICTABLE_IDLE_TIME_MILLIS = "druid.maxEvictableIdleTimeMillis";
+    String TIME_BETWEEN_EVICTION_RUNS_MILLIS = "timeBetweenEvictionRunsMillis";
+    String TIME_BETWEEN_LOG_STATS_MILLIS = "timeBetweenLogStatsMillis";
+    String MIN_EVICTABLE_IDLE_TIME_MILLIS = "minEvictableIdleTimeMillis";
+    String MAX_EVICTABLE_IDLE_TIME_MILLIS = "maxEvictableIdleTimeMillis";
 
-    String TEST_WHILE_IDLE = "druid.testWhileIdle";
-    String TEST_ON_BORROW = "druid.testOnBorrow";
-    String VALIDATION_QUERY = "druid.validationQuery";
-    String USE_GLOBAL_DATA_SOURCE_STAT = "druid.useGlobalDataSourceStat";
-    String ASYNC_INIT = "druid.asyncInit";
+    String TEST_WHILE_IDLE = "testWhileIdle";
+    String TEST_ON_BORROW = "testOnBorrow";
+    String VALIDATION_QUERY = "validationQuery";
+    String USE_GLOBAL_DATA_SOURCE_STAT = "useGlobalDataSourceStat";
+    String ASYNC_INIT = "asyncInit";
 
-    String FILTERS = "druid.filters";
-    String CLEAR_FILTERS_ENABLE = "druid.clearFiltersEnable";
-    String RESET_STAT_ENABLE = "druid.resetStatEnable";
-    String NOT_FULL_TIMEOUT_RETRY_COUNT = "druid.notFullTimeoutRetryCount";
-    String MAX_WAIT_THREAD_COUNT = "druid.maxWaitThreadCount";
+    String FILTERS = "filters";
+    String CLEAR_FILTERS_ENABLE = "clearFiltersEnable";
+    String RESET_STAT_ENABLE = "resetStatEnable";
+    String NOT_FULL_TIMEOUT_RETRY_COUNT = "notFullTimeoutRetryCount";
+    String MAX_WAIT_THREAD_COUNT = "maxWaitThreadCount";
 
-    String FAIL_FAST = "druid.failFast";
-    String PHY_TIMEOUT_MILLIS = "druid.phyTimeoutMillis";
-    String KEEP_ALIVE = "druid.keepAlive";
-    String POOL_PREPARED_STATEMENTS = "druid.poolPreparedStatements";
-    String INIT_VARIANTS = "druid.initVariants";
-    String INIT_GLOBAL_VARIANTS = "druid.initGlobalVariants";
-    String USE_UNFAIR_LOCK = "druid.useUnfairLock";
-    String KILL_WHEN_SOCKET_READ_TIMEOUT = "druid.killWhenSocketReadTimeout";
-    String MAX_POOL_PREPARED_STATEMENT_PER_CONNECTION_SIZE = "druid.maxPoolPreparedStatementPerConnectionSize";
-    String INIT_CONNECTION_SQLS = "druid.initConnectionSqls";
+    String FAIL_FAST = "failFast";
+    String PHY_TIMEOUT_MILLIS = "phyTimeoutMillis";
+    String KEEP_ALIVE = "keepAlive";
+    String POOL_PREPARED_STATEMENTS = "poolPreparedStatements";
+    String INIT_VARIANTS = "initVariants";
+    String INIT_GLOBAL_VARIANTS = "initGlobalVariants";
+    String USE_UNFAIR_LOCK = "useUnfairLock";
+    String KILL_WHEN_SOCKET_READ_TIMEOUT = "killWhenSocketReadTimeout";
+    String MAX_POOL_PREPARED_STATEMENT_PER_CONNECTION_SIZE = "maxPoolPreparedStatementPerConnectionSize";
+    String INIT_CONNECTION_SQLS = "initConnectionSqls";
 
     String CONFIG_STR = "config";
     String STAT_STR = "stat";
