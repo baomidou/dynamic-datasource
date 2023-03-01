@@ -21,6 +21,7 @@ import com.alibaba.druid.filter.logging.Log4j2Filter;
 import com.alibaba.druid.filter.logging.Log4jFilter;
 import com.alibaba.druid.filter.logging.Slf4jLogFilter;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallFilter;
 import com.baomidou.dynamic.datasource.exception.ErrorCreateDataSourceException;
@@ -70,13 +71,11 @@ public class DruidDataSourceCreator extends AbstractDataSourceCreator implements
         }
         DruidConfig config = dataSourceProperty.getDruid();
         Properties properties = config.toProperties(gConfig);
-
-        List<Filter> proxyFilters = this.initFilters(dataSourceProperty, properties.getProperty("druid.filters"));
-        dataSource.setProxyFilters(proxyFilters);
-
-        dataSource.configFromPropety(properties);
-        //连接参数单独设置
-        dataSource.setConnectProperties(config.getConnectionProperties());
+        try {
+            DruidDataSourceFactory.config(dataSource, properties);
+        } catch (SQLException e) {
+            throw new ErrorCreateDataSourceException("druid create error", e);
+        }
         //设置druid内置properties不支持的的参数
         this.setParam(dataSource, config);
 
