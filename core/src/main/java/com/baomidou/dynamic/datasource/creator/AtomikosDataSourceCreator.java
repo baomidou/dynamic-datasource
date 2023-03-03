@@ -1,13 +1,16 @@
 package com.baomidou.dynamic.datasource.creator;
 
+import com.baomidou.dynamic.datasource.enums.XADataSourceEnum;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.atomikos.AtomikosConfig;
 import com.baomidou.dynamic.datasource.toolkit.ConfigMergeCreator;
-import com.mysql.cj.jdbc.MysqlXADataSource;
+import com.baomidou.mybatisplus.annotation.DbType;
+import com.baomidou.mybatisplus.extension.toolkit.JdbcUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.jta.atomikos.AtomikosDataSourceBean;
 
 import javax.sql.DataSource;
+import java.util.Properties;
 
 import static com.baomidou.dynamic.datasource.support.DdConstants.ATOMIKOS_DATASOURCE;
 
@@ -26,11 +29,14 @@ public class AtomikosDataSourceCreator extends AbstractDataSourceCreator impleme
         AtomikosConfig config = MERGE_CREATOR.create(atomikosConfig, dataSourceProperty.getAtomikos());
         AtomikosDataSourceBean xaDataSource = new AtomikosDataSourceBean();
 
-        MysqlXADataSource mysqlXADataSource = new MysqlXADataSource();
-        mysqlXADataSource.setUrl(dataSourceProperty.getUrl());
-        mysqlXADataSource.setUser(dataSourceProperty.getUsername());
-        mysqlXADataSource.setPassword(dataSourceProperty.getPassword());
-        xaDataSource.setXaDataSource(mysqlXADataSource);
+        DbType dbType = JdbcUtils.getDbType(dataSourceProperty.getUrl());
+        xaDataSource.setXaDataSourceClassName(XADataSourceEnum.getByDbType(dbType));
+
+        Properties xaProperties = new Properties();
+        xaProperties.setProperty("url", dataSourceProperty.getUrl());
+        xaProperties.setProperty("user", dataSourceProperty.getUsername());
+        xaProperties.setProperty("password", dataSourceProperty.getPassword());
+        xaDataSource.setXaProperties(xaProperties);
 
         xaDataSource.setUniqueResourceName(dataSourceProperty.getPoolName());
         xaDataSource.setMinPoolSize(config.getMinPoolSize());
@@ -48,7 +54,8 @@ public class AtomikosDataSourceCreator extends AbstractDataSourceCreator impleme
     @Override
     public boolean support(DataSourceProperty dataSourceProperty) {
         Class<? extends DataSource> type = dataSourceProperty.getType();
-        return type == null || ATOMIKOS_DATASOURCE.equals(type.getName());
+        DbType dbType = JdbcUtils.getDbType(dataSourceProperty.getUrl());
+        return (type == null || ATOMIKOS_DATASOURCE.equals(type.getName())) && XADataSourceEnum.contains(dbType);
     }
 
     @Override

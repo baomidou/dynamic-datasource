@@ -20,7 +20,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.atomikos.jdbc.AtomikosDataSourceBean;
 import com.baomidou.dynamic.datasource.creator.*;
 import com.baomidou.dynamic.datasource.tx.AtomikosTransactionFactory;
-import com.mysql.cj.jdbc.MysqlXADataSource;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.ibatis.transaction.TransactionFactory;
@@ -126,7 +125,7 @@ public class DynamicDataSourceCreatorAutoConfiguration {
     /**
      * 存在Atomikos数据源时, 加入创建器
      */
-    @ConditionalOnClass({MysqlXADataSource.class, AtomikosDataSourceBean.class})
+    @ConditionalOnClass({AtomikosDataSourceBean.class})
     @Configuration
     static class AtomikosDataSourceCreatorConfiguration {
 

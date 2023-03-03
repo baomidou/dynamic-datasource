@@ -55,11 +55,6 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>com.github.chris2018998</groupId>
             <artifactId>beecp</artifactId>
             <optional>true</optional>

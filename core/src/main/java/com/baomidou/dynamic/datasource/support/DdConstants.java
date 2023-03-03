@@ -51,5 +51,5 @@ public interface DdConstants {
     /**
      * Atomikos数据源
      */
-    String ATOMIKOS_DATASOURCE = "org.springframework.boot.jta.atomikos.AtomikosDataSourceBean";
+    String ATOMIKOS_DATASOURCE = "com.atomikos.jdbc.AtomikosDataSourceBean";
 }
