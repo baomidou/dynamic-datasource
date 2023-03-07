@@ -17,9 +17,12 @@ package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
 import cn.beecp.BeeDataSource;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.atomikos.jdbc.AtomikosDataSourceBean;
 import com.baomidou.dynamic.datasource.creator.*;
+import com.baomidou.dynamic.datasource.tx.AtomikosTransactionFactory;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.apache.ibatis.transaction.TransactionFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -40,7 +43,8 @@ public class DynamicDataSourceCreatorAutoConfiguration {
     public static final int HIKARI_ORDER = 3000;
     public static final int BEECP_ORDER = 4000;
     public static final int DBCP2_ORDER = 5000;
-    public static final int DEFAULT_ORDER = 6000;
+    public static final int ATOMIKOS_ORDER = 6000;
+    public static final int DEFAULT_ORDER = 7000;
 
     @Primary
     @Bean
@@ -115,6 +119,25 @@ public class DynamicDataSourceCreatorAutoConfiguration {
         @Order(DBCP2_ORDER)
         public Dbcp2DataSourceCreator dbcp2DataSourceCreator() {
             return new Dbcp2DataSourceCreator();
+        }
+    }
+
+    /**
+     * 存在Atomikos数据源时, 加入创建器
+     */
+    @ConditionalOnClass({AtomikosDataSourceBean.class})
+    @Configuration
+    static class AtomikosDataSourceCreatorConfiguration {
+
+        @Bean
+        @Order(ATOMIKOS_ORDER)
+        public AtomikosDataSourceCreator atomikosDataSourceCreator() {
+            return new AtomikosDataSourceCreator();
+        }
+
+        @Bean
+        public TransactionFactory atomikosTransactionFactory() {
+            return new AtomikosTransactionFactory();
         }
     }
 

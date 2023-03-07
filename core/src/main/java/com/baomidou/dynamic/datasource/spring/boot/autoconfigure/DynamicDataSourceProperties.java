@@ -16,6 +16,7 @@
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
 import com.baomidou.dynamic.datasource.enums.SeataMode;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.atomikos.AtomikosConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.beecp.BeeCpConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.dbcp2.Dbcp2Config;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig;
@@ -104,6 +105,11 @@ public class DynamicDataSourceProperties {
      */
     @NestedConfigurationProperty
     private Dbcp2Config dbcp2 = new Dbcp2Config();
+    /**
+     * atomikos全局参数配置
+     */
+    @NestedConfigurationProperty
+    private AtomikosConfig atomikos = new AtomikosConfig();
 
     /**
      * aop with default ds annotation

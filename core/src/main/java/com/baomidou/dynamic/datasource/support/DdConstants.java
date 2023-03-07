@@ -48,4 +48,8 @@ public interface DdConstants {
      * DBCP2数据源
      */
     String DBCP2_DATASOURCE = "org.apache.commons.dbcp2.BasicDataSource";
+    /**
+     * Atomikos数据源
+     */
+    String ATOMIKOS_DATASOURCE = "com.atomikos.jdbc.AtomikosDataSourceBean";
 }

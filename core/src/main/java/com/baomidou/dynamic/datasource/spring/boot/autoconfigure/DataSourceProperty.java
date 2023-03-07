@@ -15,6 +15,7 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.atomikos.AtomikosConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.beecp.BeeCpConfig;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.dbcp2.Dbcp2Config;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig;
@@ -100,6 +101,11 @@ public class DataSourceProperty {
      */
     @NestedConfigurationProperty
     private Dbcp2Config dbcp2 = new Dbcp2Config();
+    /**
+     * atomikos参数配置
+     */
+    @NestedConfigurationProperty
+    private AtomikosConfig atomikos = new AtomikosConfig();
 
     /**
      * 解密公匙(如果未设置默认使用全局的)
