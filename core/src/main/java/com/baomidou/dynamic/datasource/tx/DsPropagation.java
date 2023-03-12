@@ -14,5 +14,7 @@ public enum DsPropagation {
     //以非事务方式执行，如果当前存在事务，则抛出异常。
     NEVER,
     //支持当前事务，如果当前没有事务，就抛出异常。
-    MANDATORY
+    MANDATORY,
+    //如果当前存在事务，则在嵌套事务内执行，如果当前没有事务，就新建一个事务。
+    NESTED
 }

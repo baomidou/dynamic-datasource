@@ -18,6 +18,7 @@ package com.baomidou.dynamic.datasource.tx;
 import lombok.extern.slf4j.Slf4j;
 import java.sql.*;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
@@ -30,6 +31,8 @@ public class ConnectionProxy implements Connection {
     private Connection connection;
 
     private String ds;
+
+    private int savepointCounter = 0;
 
     public ConnectionProxy(Connection connection, String ds) {
         this.connection = connection;
@@ -329,6 +332,19 @@ public class ConnectionProxy implements Connection {
         return connection.isWrapperFor(iface);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {return true;}
+        if (!(o instanceof ConnectionProxy)) {return false;}
+        ConnectionProxy that = (ConnectionProxy) o;
+        return Objects.equals(connection, that.connection) && Objects.equals(ds, that.ds);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(connection, ds);
+    }
+
     public Connection getConnection() {
         return connection;
     }
@@ -343,5 +359,13 @@ public class ConnectionProxy implements Connection {
 
     public void setDs(String ds) {
         this.ds = ds;
+    }
+
+    public int getSavepointCounter() {
+        return savepointCounter;
+    }
+
+    public void setSavepointCounter(int savepointCounter) {
+        this.savepointCounter = savepointCounter;
     }
 }

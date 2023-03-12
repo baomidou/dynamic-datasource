@@ -48,11 +48,14 @@ public final class LocalTxUtil {
      * 手动提交事务
      */
     public static void commit(String xid) throws Exception {
+        boolean hasSavepoint = ConnectionFactory.hasSavepoint(xid);
         try {
             ConnectionFactory.notify(xid, true);
         } finally {
-            log.debug("dynamic-datasource commit local tx [{}]", TransactionContext.getXID());
-            TransactionContext.remove();
+            if (!hasSavepoint){
+                log.debug("dynamic-datasource commit local tx [{}]", TransactionContext.getXID());
+                TransactionContext.remove();
+            }
         }
     }
 
@@ -60,11 +63,14 @@ public final class LocalTxUtil {
      * 手动回滚事务
      */
     public static void rollback(String xid) throws Exception {
+        boolean hasSavepoint = ConnectionFactory.hasSavepoint(xid);
         try {
             ConnectionFactory.notify(xid, false);
         } finally {
-            log.debug("dynamic-datasource rollback local tx [{}]", TransactionContext.getXID());
-            TransactionContext.remove();
+            if (!hasSavepoint){
+                log.debug("dynamic-datasource commit local tx [{}]", TransactionContext.getXID());
+                TransactionContext.remove();
+            }
         }
     }
 }

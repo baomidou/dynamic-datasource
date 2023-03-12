@@ -54,6 +54,13 @@ public class TransactionalTemplate {
                     }
                     // Continue and execute with current transaction.
                     break;
+                case NESTED:
+                    // If transaction is existing,Open a save point for child transaction rollback.
+                    if (existingTransaction()) {
+                        ConnectionFactory.createSavepoint(TransactionContext.getXID());
+                    }
+                    // Continue and execute with current transaction.
+                    break;
                 default:
                     throw new TransactionException("Not Supported Propagation:" + propagation);
             }
@@ -65,7 +72,8 @@ public class TransactionalTemplate {
 
     private Object doExecute(TransactionalExecutor transactionalExecutor) throws Throwable {
         TransactionalInfo transactionInfo = transactionalExecutor.getTransactionInfo();
-        if (!StringUtils.isEmpty(TransactionContext.getXID())) {
+        DsPropagation propagation = transactionInfo.propagation;
+        if (!StringUtils.isEmpty(TransactionContext.getXID())&&!propagation.equals(DsPropagation.NESTED)) {
             return transactionalExecutor.execute();
         }
         boolean state = true;
