@@ -58,7 +58,7 @@ public class DsSpelExpressionProcessor extends DsProcessor {
 
         @Override
         public String getExpressionPrefix() {
-            return null;
+            return DynamicDataSourceAnnotationInterceptor.DYNAMIC_PREFIX;
         }
 
         @Override
