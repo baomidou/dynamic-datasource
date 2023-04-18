@@ -202,6 +202,12 @@ public class DruidDataSourceCreator extends AbstractDataSourceCreator implements
             dataSource.setTransactionQueryTimeout(transactionQueryTimeout);
         }
 
+        Long timeBetweenConnectErrorMillis =
+                config.getTimeBetweenConnectErrorMillis() == null ? gConfig.getTimeBetweenConnectErrorMillis() : config.getTimeBetweenConnectErrorMillis();
+        if (timeBetweenConnectErrorMillis != null) {
+            dataSource.setTimeBetweenConnectErrorMillis(timeBetweenConnectErrorMillis);
+        }
+
         // since druid 1.2.12
         Integer connectTimeout = config.getConnectTimeout() == null ? gConfig.getConnectTimeout() : config.getConnectTimeout();
         if (connectTimeout != null) {

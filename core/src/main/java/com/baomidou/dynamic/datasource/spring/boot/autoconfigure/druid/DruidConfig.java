@@ -80,6 +80,7 @@ public class DruidConfig {
     private String publicKey;
     private Integer connectTimeout;  // millisecond
     private Integer socketTimeout;   // millisecond
+    private Long timeBetweenConnectErrorMillis; // millisecond
 
     private Map<String, Object> wall = new HashMap<>();
     private Map<String, Object> slf4j = new HashMap<>();
