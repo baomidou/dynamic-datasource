@@ -11,7 +11,7 @@
     <inceptionYear>2018</inceptionYear>
 
     <modules>
-        <module>core</module>
+        <module>dynamic-datasource-spring</module>
         <module>test</module>
     </modules>
 

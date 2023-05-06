@@ -8,7 +8,7 @@
         <artifactId>dynamic-datasource-spring-boot-starter-parent</artifactId>
         <version>3.6.1</version>
     </parent>
-    <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+    <artifactId>dynamic-datasource-spring</artifactId>
 
     <dependencies>
         <dependency>

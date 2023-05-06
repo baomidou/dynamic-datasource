@@ -19,7 +19,7 @@
     <dependencies>
         <dependency>
             <groupId>com.baomidou</groupId>
-            <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+            <artifactId>dynamic-datasource-spring</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>

@@ -16,10 +16,13 @@
 package com.baomidou.dynamic.datasource.aop;
 
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
-import com.baomidou.dynamic.datasource.tx.*;
+import com.baomidou.dynamic.datasource.tx.TransactionalExecutor;
+import com.baomidou.dynamic.datasource.tx.TransactionalInfo;
+import com.baomidou.dynamic.datasource.tx.TransactionalTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+
 import java.lang.reflect.Method;
 
 /**
