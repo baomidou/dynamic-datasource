@@ -36,6 +36,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
+import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +58,20 @@ public class DruidDataSourceCreator extends AbstractDataSourceCreator implements
 
     private DruidConfig gConfig;
 
+    private static Method configMethod = null;
+
+    static {
+        try {
+            Class<DruidDataSource> aClass = DruidDataSource.class;
+            configMethod = aClass.getDeclaredMethod("configFromPropeties");
+            if (configMethod == null) {
+                configMethod = aClass.getDeclaredMethod("configFromPropety");
+            }
+        } catch (Exception ignore) {
+
+        }
+    }
+
     @Override
     public DataSource doCreateDataSource(DataSourceProperty dataSourceProperty) {
         DruidDataSource dataSource = new DruidDataSource();
@@ -73,8 +88,11 @@ public class DruidDataSourceCreator extends AbstractDataSourceCreator implements
 
         List<Filter> proxyFilters = this.initFilters(dataSourceProperty, properties.getProperty("druid.filters"));
         dataSource.setProxyFilters(proxyFilters);
+        try {
+            configMethod.invoke(dataSource, properties);
+        } catch (Exception ignore) {
 
-        dataSource.configFromPropety(properties);
+        }
         //连接参数单独设置
         dataSource.setConnectProperties(config.getConnectionProperties());
         //设置druid内置properties不支持的的参数

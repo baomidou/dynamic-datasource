@@ -49,7 +49,7 @@
 
         <mybatis.plus.version>3.5.2</mybatis.plus.version>
         <hikaricp.version>2.4.13</hikaricp.version>
-        <druid.version>1.2.14</druid.version>
+        <druid.version>1.2.17</druid.version>
         <atomikos.version>2.6.9</atomikos.version>
         <beeCp.version>3.2.9</beeCp.version>
         <commons-dbcp2.version>2.8.0</commons-dbcp2.version>
