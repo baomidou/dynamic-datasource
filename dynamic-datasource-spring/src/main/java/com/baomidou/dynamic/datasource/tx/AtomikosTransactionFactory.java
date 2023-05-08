@@ -37,7 +37,7 @@ public class AtomikosTransactionFactory extends SpringManagedTransactionFactory 
 
         // e.g:ConnectionHolder conHolder = (ConnectionHolder) TransactionSynchronizationManager.getResource(dataSource);
         if (dataSource instanceof DynamicRoutingDataSource) {
-            determineDataSource = ((DynamicRoutingDataSource)dataSource).determineDataSource();
+            determineDataSource = ((DynamicRoutingDataSource) dataSource).determineDataSource();
         }
         return new SpringManagedTransaction(determineDataSource);
     }

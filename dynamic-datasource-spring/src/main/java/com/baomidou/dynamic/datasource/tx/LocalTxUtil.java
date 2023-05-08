@@ -52,7 +52,7 @@ public final class LocalTxUtil {
         try {
             ConnectionFactory.notify(xid, true);
         } finally {
-            if (!hasSavepoint){
+            if (!hasSavepoint) {
                 log.debug("dynamic-datasource commit local tx [{}]", TransactionContext.getXID());
                 TransactionContext.remove();
             }
@@ -67,7 +67,7 @@ public final class LocalTxUtil {
         try {
             ConnectionFactory.notify(xid, false);
         } finally {
-            if (!hasSavepoint){
+            if (!hasSavepoint) {
                 log.debug("dynamic-datasource commit local tx [{}]", TransactionContext.getXID());
                 TransactionContext.remove();
             }

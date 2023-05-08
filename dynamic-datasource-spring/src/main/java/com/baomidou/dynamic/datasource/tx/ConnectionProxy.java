@@ -335,8 +335,12 @@ public class ConnectionProxy implements Connection {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {return true;}
-        if (!(o instanceof ConnectionProxy)) {return false;}
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ConnectionProxy)) {
+            return false;
+        }
         ConnectionProxy that = (ConnectionProxy) o;
         return Objects.equals(connection, that.connection) && Objects.equals(ds, that.ds);
     }

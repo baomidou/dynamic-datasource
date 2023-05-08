@@ -15,8 +15,6 @@
  */
 package com.baomidou.dynamic.datasource.annotation;
 
-
-
 import com.baomidou.dynamic.datasource.tx.DsPropagation;
 
 import java.lang.annotation.*;

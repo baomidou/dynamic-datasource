@@ -88,7 +88,7 @@ public class TransactionalTemplate {
     private Object doExecute(TransactionalExecutor transactionalExecutor) throws Throwable {
         TransactionalInfo transactionInfo = transactionalExecutor.getTransactionInfo();
         DsPropagation propagation = transactionInfo.propagation;
-        if (!StringUtils.isEmpty(TransactionContext.getXID())&&!propagation.equals(DsPropagation.NESTED)) {
+        if (!StringUtils.isEmpty(TransactionContext.getXID()) && !propagation.equals(DsPropagation.NESTED)) {
             return transactionalExecutor.execute();
         }
         boolean state = true;

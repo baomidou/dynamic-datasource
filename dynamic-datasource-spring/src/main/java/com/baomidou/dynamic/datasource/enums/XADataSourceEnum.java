@@ -26,7 +26,7 @@ import lombok.Getter;
  */
 @Getter
 public enum XADataSourceEnum {
-    ORACLE(DbType.ORACLE,"oracle.jdbc.xa.client.OracleXADataSource"),
+    ORACLE(DbType.ORACLE, "oracle.jdbc.xa.client.OracleXADataSource"),
     MYSQL(DbType.MYSQL, "com.mysql.cj.jdbc.MysqlXADataSource"),
     POSTGRE_SQL(DbType.POSTGRE_SQL, "org.postgresql.xa.PGXADataSource"),
     H2(DbType.H2, "org.h2.jdbcx.JdbcDataSource"),
@@ -40,7 +40,7 @@ public enum XADataSourceEnum {
         this.xaDataSourceClassName = xaDataSourceClassName;
     }
 
-    public static boolean contains(DbType dbType){
+    public static boolean contains(DbType dbType) {
         for (XADataSourceEnum item : values()) {
             if (item.getDbType() == dbType) {
                 return true;
@@ -49,7 +49,7 @@ public enum XADataSourceEnum {
         return false;
     }
 
-    public static String getByDbType(DbType dbType){
+    public static String getByDbType(DbType dbType) {
         for (XADataSourceEnum item : values()) {
             if (item.getDbType() == dbType) {
                 return item.getXaDataSourceClassName();

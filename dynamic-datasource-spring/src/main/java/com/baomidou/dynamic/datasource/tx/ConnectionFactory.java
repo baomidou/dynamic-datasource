@@ -173,7 +173,7 @@ public class ConnectionFactory {
                 }
 
             }
-            savePointMap.put(xid,savePointHolders);
+            savePointMap.put(xid, savePointHolders);
         } catch (SQLException ex) {
             throw new CannotCreateTransactionException("Could not create JDBC savepoint", ex);
         }
