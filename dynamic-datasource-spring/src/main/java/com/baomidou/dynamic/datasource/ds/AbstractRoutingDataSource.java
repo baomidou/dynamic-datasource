@@ -19,7 +19,6 @@ import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import com.baomidou.dynamic.datasource.tx.ConnectionFactory;
 import com.baomidou.dynamic.datasource.tx.ConnectionProxy;
 import com.baomidou.dynamic.datasource.tx.TransactionContext;
-import org.springframework.jdbc.datasource.AbstractDataSource;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;

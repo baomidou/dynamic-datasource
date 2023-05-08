@@ -15,12 +15,12 @@
  */
 package com.baomidou.dynamic.datasource.creator;
 
+import com.baomidou.dynamic.datasource.common.DataSourceProperty;
+import com.baomidou.dynamic.datasource.common.DatasourceInitProperties;
+import com.baomidou.dynamic.datasource.common.DynamicDataSourceProperties;
 import com.baomidou.dynamic.datasource.ds.ItemDataSource;
 import com.baomidou.dynamic.datasource.enums.SeataMode;
 import com.baomidou.dynamic.datasource.event.DataSourceInitEvent;
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DatasourceInitProperties;
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
 import com.baomidou.dynamic.datasource.support.ScriptRunner;
 import com.p6spy.engine.spy.P6DataSource;
 import io.seata.rm.datasource.DataSourceProxy;

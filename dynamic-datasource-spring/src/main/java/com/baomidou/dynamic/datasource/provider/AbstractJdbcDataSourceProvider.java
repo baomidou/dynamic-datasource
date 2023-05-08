@@ -15,9 +15,8 @@
  */
 package com.baomidou.dynamic.datasource.provider;
 
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
+import com.baomidou.dynamic.datasource.common.DataSourceProperty;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
@@ -65,6 +64,18 @@ public abstract class AbstractJdbcDataSourceProvider extends AbstractDataSourceP
         this.password = password;
     }
 
+    private static void closeResource(AutoCloseable con) {
+        if (con != null) {
+            try {
+                con.close();
+            } catch (SQLException ex) {
+                log.debug("Could not close ", ex);
+            } catch (Throwable ex) {
+                log.debug("Unexpected exception on closing", ex);
+            }
+        }
+    }
+
     @Override
     public Map<String, DataSource> loadDataSources() {
         Connection conn = null;
@@ -84,8 +95,8 @@ public abstract class AbstractJdbcDataSourceProvider extends AbstractDataSourceP
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            JdbcUtils.closeConnection(conn);
-            JdbcUtils.closeStatement(stmt);
+            closeResource(conn);
+            closeResource(stmt);
         }
         return null;
     }

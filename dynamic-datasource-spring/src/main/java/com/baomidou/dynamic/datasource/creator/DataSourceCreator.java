@@ -15,7 +15,7 @@
  */
 package com.baomidou.dynamic.datasource.creator;
 
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
+import com.baomidou.dynamic.datasource.common.DataSourceProperty;
 
 import javax.sql.DataSource;
 

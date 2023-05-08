@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.baomidou</groupId>
     <artifactId>dynamic-datasource-spring-boot-starter-parent</artifactId>
-    <version>3.6.1</version>
+    <version>4.0.0</version>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     <description>dynamic datasource</description>
@@ -12,7 +12,8 @@
 
     <modules>
         <module>dynamic-datasource-spring</module>
-        <module>test</module>
+        <module>dynamic-datasource-spring-boot-starter</module>
+        <module>dynamic-datasource-spring-boot3-starter-parent</module>
     </modules>
 
     <licenses>
@@ -47,34 +48,38 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.7</java.version>
 
-        <mybatis.plus.version>3.5.2</mybatis.plus.version>
+        <mybatis.plus.version>3.5.3.1</mybatis.plus.version>
         <hikaricp.version>2.4.13</hikaricp.version>
         <druid.version>1.2.17</druid.version>
-        <atomikos.version>2.6.9</atomikos.version>
         <beeCp.version>3.2.9</beeCp.version>
         <commons-dbcp2.version>2.8.0</commons-dbcp2.version>
         <p6spy.version>3.9.1</p6spy.version>
-        <seata.version>1.5.2</seata.version>
+        <seata.version>1.4.2</seata.version>
         <lombok.version>1.18.22</lombok.version>
         <spring-boot-dependencies.version>1.5.3.RELEASE</spring-boot-dependencies.version>
         <jakarta-servlet.version>6.0.0</jakarta-servlet.version>
         <assertj.version>3.23.1</assertj.version>
         <h2.version>2.1.214</h2.version>
 
-        <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
-        <maven-resources-plugin.version>3.2.0</maven-resources-plugin.version>
-        <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
-        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-        <maven-javadoc-plugin.version>3.3.0</maven-javadoc-plugin.version>
+        <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
+        <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
+        <maven-surefire-plugin.version>3.0.0</maven-surefire-plugin.version>
+        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+        <maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
 
-        <license-maven-plugin.version>4.1</license-maven-plugin.version>
-        <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
-        <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
+        <license-maven-plugin.version>4.2</license-maven-plugin.version>
+        <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
+        <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>dynamic-datasource-spring</artifactId>
+                <version>4.0.0</version>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-jdbc</artifactId>
@@ -87,13 +92,13 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-actuator</artifactId>
+                <artifactId>spring-boot-starter-web</artifactId>
                 <version>${spring-boot-dependencies.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-web</artifactId>
-                <version>${spring-boot-dependencies.version}</version>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus</artifactId>
+                <version>${mybatis.plus.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.baomidou</groupId>
@@ -112,18 +117,29 @@
             </dependency>
             <dependency>
                 <groupId>com.alibaba</groupId>
+                <artifactId>druid</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
                 <artifactId>druid-spring-boot-starter</artifactId>
                 <version>${druid.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-jta-atomikos</artifactId>
-                <version>${atomikos.version}</version>
+                <version>${spring-boot-dependencies.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.chris2018998</groupId>
                 <artifactId>beecp</artifactId>
                 <version>${beeCp.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -142,7 +158,7 @@
             </dependency>
             <dependency>
                 <groupId>io.seata</groupId>
-                <artifactId>seata-all</artifactId>
+                <artifactId>seata-rm-datasource</artifactId>
                 <version>${seata.version}</version>
                 <exclusions>
                     <exclusion>
@@ -157,11 +173,6 @@
                 <version>${lombok.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-test</artifactId>
-                <version>${spring-boot-dependencies.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
                 <version>${assertj.version}</version>
@@ -173,6 +184,15 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
@@ -205,7 +225,7 @@
                 <artifactId>license-maven-plugin</artifactId>
                 <version>${license-maven-plugin.version}</version>
                 <configuration>
-                    <header>${project.basedir}/license.txt</header>
+                    <header>license.txt</header>
                     <includes>
                         <include>src/main/java/**</include>
                     </includes>
