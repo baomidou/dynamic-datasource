@@ -32,6 +32,7 @@ public interface DruidConsts {
     String TIME_BETWEEN_LOG_STATS_MILLIS = "druid.timeBetweenLogStatsMillis";
     String MIN_EVICTABLE_IDLE_TIME_MILLIS = "druid.minEvictableIdleTimeMillis";
     String MAX_EVICTABLE_IDLE_TIME_MILLIS = "druid.maxEvictableIdleTimeMillis";
+    String KEEPALIVE_BETWEEN_TIME_MILLIS = "druid.keepAliveBetweenTimeMillis";
 
     String TEST_WHILE_IDLE = "druid.testWhileIdle";
     String TEST_ON_BORROW = "druid.testOnBorrow";
@@ -47,6 +48,7 @@ public interface DruidConsts {
 
     String FAIL_FAST = "druid.failFast";
     String PHY_TIMEOUT_MILLIS = "druid.phyTimeoutMillis";
+    String PHY_MAX_USE_COUNT = "druid.phyMaxUseCount";
     String KEEP_ALIVE = "druid.keepAlive";
     String POOL_PREPARED_STATEMENTS = "druid.poolPreparedStatements";
     String INIT_VARIANTS = "druid.initVariants";

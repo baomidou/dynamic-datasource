@@ -37,6 +37,7 @@ public class DruidConfig {
     private Integer maxWait;
     private Long timeBetweenEvictionRunsMillis;
     private Long timeBetweenLogStatsMillis;
+    private Long keepAliveBetweenTimeMillis;
     private Integer statSqlMaxSize;
     private Long minEvictableIdleTimeMillis;
     private Long maxEvictableIdleTimeMillis;
@@ -58,6 +59,8 @@ public class DruidConfig {
     private Integer maxWaitThreadCount;
     private Boolean failFast;
     private Long phyTimeoutMillis;
+    private Long phyMaxUseCount;
+
     private Boolean keepAlive;
     private Boolean poolPreparedStatements;
     private Boolean initVariants;
@@ -73,12 +76,12 @@ public class DruidConfig {
     private Boolean removeAbandoned;
     private Integer removeAbandonedTimeoutMillis;
     private Boolean logAbandoned;
-    private Integer queryTimeout;  // second
+    private Integer queryTimeout;
     private Integer transactionQueryTimeout;
     private String publicKey;
-    private Integer connectTimeout;  // millisecond
-    private Integer socketTimeout;   // millisecond
-    private Long timeBetweenConnectErrorMillis; // millisecond
+    private Integer connectTimeout;
+    private Integer socketTimeout;
+    private Long timeBetweenConnectErrorMillis;
 
     private Map<String, Object> wall = new HashMap<>();
     private Map<String, Object> slf4j = new HashMap<>();
@@ -127,6 +130,12 @@ public class DruidConfig {
                 this.timeBetweenLogStatsMillis == null ? g.getTimeBetweenLogStatsMillis() : this.timeBetweenLogStatsMillis;
         if (timeBetweenLogStatsMillis != null && timeBetweenLogStatsMillis > 0) {
             properties.setProperty(DruidConsts.TIME_BETWEEN_LOG_STATS_MILLIS, String.valueOf(timeBetweenLogStatsMillis));
+        }
+
+        Long keepAliveBetweenTimeMillis =
+                this.keepAliveBetweenTimeMillis == null ? g.getKeepAliveBetweenTimeMillis() : this.keepAliveBetweenTimeMillis;
+        if (keepAliveBetweenTimeMillis != null && !keepAliveBetweenTimeMillis.equals(DruidAbstractDataSource.DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS * 2)) {
+            properties.setProperty(DruidConsts.KEEPALIVE_BETWEEN_TIME_MILLIS, String.valueOf(keepAliveBetweenTimeMillis));
         }
 
         Long minEvictableIdleTimeMillis =
@@ -205,6 +214,11 @@ public class DruidConfig {
         Long phyTimeoutMillis = this.phyTimeoutMillis == null ? g.getPhyTimeoutMillis() : this.phyTimeoutMillis;
         if (phyTimeoutMillis != null && !phyTimeoutMillis.equals(DruidAbstractDataSource.DEFAULT_PHY_TIMEOUT_MILLIS)) {
             properties.setProperty(DruidConsts.PHY_TIMEOUT_MILLIS, String.valueOf(phyTimeoutMillis));
+        }
+
+        Long phyMaxUseCount = this.phyMaxUseCount == null ? g.getPhyMaxUseCount() : this.phyMaxUseCount;
+        if (phyMaxUseCount != null && !phyMaxUseCount.equals(-1)) {
+            properties.setProperty(DruidConsts.PHY_MAX_USE_COUNT, String.valueOf(phyMaxUseCount));
         }
 
         Boolean keepAlive = this.keepAlive == null ? g.getKeepAlive() : this.keepAlive;
