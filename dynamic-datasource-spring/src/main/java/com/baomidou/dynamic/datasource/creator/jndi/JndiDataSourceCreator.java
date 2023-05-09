@@ -16,7 +16,6 @@
 package com.baomidou.dynamic.datasource.creator.jndi;
 
 import com.baomidou.dynamic.datasource.common.DataSourceProperty;
-import com.baomidou.dynamic.datasource.creator.AbstractDataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 

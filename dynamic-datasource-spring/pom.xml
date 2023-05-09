@@ -5,15 +5,16 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.baomidou</groupId>
-        <artifactId>dynamic-datasource-spring-boot-starter-parent</artifactId>
+        <artifactId>dynamic-datasource</artifactId>
         <version>4.0.0</version>
     </parent>
     <artifactId>dynamic-datasource-spring</artifactId>
 
     <dependencies>
+        <!--datasource-->
         <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus</artifactId>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -22,18 +23,24 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>com.github.chris2018998</groupId>
             <artifactId>beecp</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>com.atomikos</groupId>
+            <artifactId>transactions-jdbc</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <!--third-->
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-dbcp2</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -46,21 +53,30 @@
             <artifactId>seata-rm-datasource</artifactId>
             <optional>true</optional>
         </dependency>
+        <!--spring-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
-            <version>4.3.8.RELEASE</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot</artifactId>
-            <version>${spring-boot-dependencies.version}</version>
-            <optional>true</optional>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jta-atomikos</artifactId>
-            <optional>true</optional>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
         </dependency>
     </dependencies>
 

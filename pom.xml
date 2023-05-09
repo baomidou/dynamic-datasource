@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.baomidou</groupId>
-    <artifactId>dynamic-datasource-spring-boot-starter-parent</artifactId>
+    <artifactId>dynamic-datasource</artifactId>
     <version>4.0.0</version>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
@@ -12,6 +12,7 @@
 
     <modules>
         <module>dynamic-datasource-spring</module>
+        <module>dynamic-datasource-spring-boot-common</module>
         <module>dynamic-datasource-spring-boot-starter</module>
         <module>dynamic-datasource-spring-boot3-starter</module>
     </modules>
@@ -75,6 +76,11 @@
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>dynamic-datasource-spring</artifactId>
+                <version>4.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>dynamic-datasource-spring-boot-common</artifactId>
                 <version>4.0.0</version>
             </dependency>
             <dependency>

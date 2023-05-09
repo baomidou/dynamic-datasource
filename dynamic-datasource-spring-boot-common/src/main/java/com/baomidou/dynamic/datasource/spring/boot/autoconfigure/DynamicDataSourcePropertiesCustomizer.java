@@ -15,8 +15,6 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
-import com.baomidou.dynamic.datasource.common.DynamicDataSourceProperties;
-
 /**
  * @author hzh727172424
  * @since 3.4.0

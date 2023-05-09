@@ -16,7 +16,6 @@
 package com.baomidou.dynamic.datasource.creator.hikaricp;
 
 import com.baomidou.dynamic.datasource.common.DataSourceProperty;
-import com.baomidou.dynamic.datasource.creator.AbstractDataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
 import com.baomidou.dynamic.datasource.toolkit.ConfigMergeCreator;
 import com.zaxxer.hikari.HikariConfig;

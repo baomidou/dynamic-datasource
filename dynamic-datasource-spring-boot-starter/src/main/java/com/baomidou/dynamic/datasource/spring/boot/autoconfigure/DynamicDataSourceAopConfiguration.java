@@ -21,8 +21,6 @@ import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationInterceptor;
 import com.baomidou.dynamic.datasource.aop.DynamicLocalTransactionInterceptor;
-import com.baomidou.dynamic.datasource.common.DynamicDataSourceProperties;
-import com.baomidou.dynamic.datasource.common.DynamicDatasourceAopProperties;
 import com.baomidou.dynamic.datasource.processor.DsHeaderProcessor;
 import com.baomidou.dynamic.datasource.processor.DsProcessor;
 import com.baomidou.dynamic.datasource.processor.DsSessionProcessor;

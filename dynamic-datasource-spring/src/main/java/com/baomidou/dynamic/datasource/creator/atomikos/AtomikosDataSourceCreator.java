@@ -15,15 +15,14 @@
  */
 package com.baomidou.dynamic.datasource.creator.atomikos;
 
+import com.atomikos.jdbc.AtomikosDataSourceBean;
 import com.baomidou.dynamic.datasource.common.DataSourceProperty;
-import com.baomidou.dynamic.datasource.creator.AbstractDataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
 import com.baomidou.dynamic.datasource.enums.XADataSourceEnum;
 import com.baomidou.dynamic.datasource.toolkit.ConfigMergeCreator;
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.toolkit.JdbcUtils;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.boot.jta.atomikos.AtomikosDataSourceBean;
 
 import javax.sql.DataSource;
 import java.util.Properties;

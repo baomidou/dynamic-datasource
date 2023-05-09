@@ -18,7 +18,6 @@ package com.baomidou.dynamic.datasource.creator.beecp;
 import cn.beecp.BeeDataSource;
 import cn.beecp.BeeDataSourceConfig;
 import com.baomidou.dynamic.datasource.common.DataSourceProperty;
-import com.baomidou.dynamic.datasource.creator.AbstractDataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
 import com.baomidou.dynamic.datasource.toolkit.ConfigMergeCreator;
 import lombok.extern.slf4j.Slf4j;

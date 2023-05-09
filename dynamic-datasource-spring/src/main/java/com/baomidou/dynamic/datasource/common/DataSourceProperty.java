@@ -21,9 +21,7 @@ import com.baomidou.dynamic.datasource.creator.dbcp.Dbcp2Config;
 import com.baomidou.dynamic.datasource.creator.druid.DruidConfig;
 import com.baomidou.dynamic.datasource.creator.hikaricp.HikariCpConfig;
 import lombok.Data;
-import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 import javax.sql.DataSource;
 
@@ -33,7 +31,6 @@ import javax.sql.DataSource;
  */
 @Slf4j
 @Data
-@Accessors(chain = true)
 public class DataSourceProperty {
 
     /**
@@ -79,32 +76,26 @@ public class DataSourceProperty {
     /**
      * 初始化
      */
-    @NestedConfigurationProperty
     private DatasourceInitProperties init = new DatasourceInitProperties();
     /**
      * Druid参数配置
      */
-    @NestedConfigurationProperty
     private DruidConfig druid = new DruidConfig();
     /**
      * HikariCp参数配置
      */
-    @NestedConfigurationProperty
     private HikariCpConfig hikari = new HikariCpConfig();
     /**
      * BeeCp参数配置
      */
-    @NestedConfigurationProperty
     private BeeCpConfig beecp = new BeeCpConfig();
     /**
      * DBCP2参数配置
      */
-    @NestedConfigurationProperty
     private Dbcp2Config dbcp2 = new Dbcp2Config();
     /**
      * atomikos参数配置
      */
-    @NestedConfigurationProperty
     private AtomikosConfig atomikos = new AtomikosConfig();
 
     /**

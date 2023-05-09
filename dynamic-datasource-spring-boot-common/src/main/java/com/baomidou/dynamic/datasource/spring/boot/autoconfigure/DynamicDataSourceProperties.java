@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.baomidou.dynamic.datasource.common;
+package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
+import com.baomidou.dynamic.datasource.common.DataSourceProperty;
 import com.baomidou.dynamic.datasource.creator.atomikos.AtomikosConfig;
 import com.baomidou.dynamic.datasource.creator.beecp.BeeCpConfig;
 import com.baomidou.dynamic.datasource.creator.dbcp.Dbcp2Config;
@@ -27,9 +28,7 @@ import com.baomidou.dynamic.datasource.toolkit.CryptoUtils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -38,7 +37,6 @@ import java.util.Map;
  * DynamicDataSourceProperties
  *
  * @author TaoYu Kanyuxia
- * @see DataSourceProperties
  * @since 1.0.0
  */
 @Slf4j
@@ -88,32 +86,26 @@ public class DynamicDataSourceProperties {
     /**
      * Druid全局参数配置
      */
-    @NestedConfigurationProperty
     private DruidConfig druid = new DruidConfig();
     /**
      * HikariCp全局参数配置
      */
-    @NestedConfigurationProperty
     private HikariCpConfig hikari = new HikariCpConfig();
     /**
      * BeeCp全局参数配置
      */
-    @NestedConfigurationProperty
     private BeeCpConfig beecp = new BeeCpConfig();
     /**
      * DBCP2全局参数配置
      */
-    @NestedConfigurationProperty
     private Dbcp2Config dbcp2 = new Dbcp2Config();
     /**
      * atomikos全局参数配置
      */
-    @NestedConfigurationProperty
     private AtomikosConfig atomikos = new AtomikosConfig();
 
     /**
      * aop with default ds annotation
      */
-    @NestedConfigurationProperty
     private DynamicDatasourceAopProperties aop = new DynamicDatasourceAopProperties();
 }

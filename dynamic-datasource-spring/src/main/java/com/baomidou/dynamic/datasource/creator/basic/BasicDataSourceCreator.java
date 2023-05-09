@@ -16,7 +16,6 @@
 package com.baomidou.dynamic.datasource.creator.basic;
 
 import com.baomidou.dynamic.datasource.common.DataSourceProperty;
-import com.baomidou.dynamic.datasource.creator.AbstractDataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
 import com.baomidou.dynamic.datasource.exception.ErrorCreateDataSourceException;
 import lombok.extern.slf4j.Slf4j;

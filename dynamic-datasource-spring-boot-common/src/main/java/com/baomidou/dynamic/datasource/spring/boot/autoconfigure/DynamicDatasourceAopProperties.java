@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.baomidou.dynamic.datasource.common;
+package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
 import lombok.Data;
 import org.springframework.core.Ordered;

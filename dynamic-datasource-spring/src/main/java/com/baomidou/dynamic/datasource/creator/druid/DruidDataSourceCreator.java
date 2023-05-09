@@ -24,11 +24,9 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallFilter;
 import com.baomidou.dynamic.datasource.common.DataSourceProperty;
-import com.baomidou.dynamic.datasource.creator.AbstractDataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
 import com.baomidou.dynamic.datasource.exception.ErrorCreateDataSourceException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
@@ -49,7 +47,7 @@ import static com.baomidou.dynamic.datasource.support.DdConstants.DRUID_DATASOUR
  * @since 2020/1/21
  */
 @Slf4j
-public class DruidDataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator, InitializingBean {
+public class DruidDataSourceCreator implements DataSourceCreator {
 
     private static Method configMethod = null;
 
@@ -70,7 +68,7 @@ public class DruidDataSourceCreator extends AbstractDataSourceCreator implements
     private DruidConfig gConfig;
 
     @Override
-    public DataSource doCreateDataSource(DataSourceProperty dataSourceProperty) {
+    public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUsername(dataSourceProperty.getUsername());
         dataSource.setPassword(dataSourceProperty.getPassword());
@@ -251,8 +249,4 @@ public class DruidDataSourceCreator extends AbstractDataSourceCreator implements
         return type == null || DRUID_DATASOURCE.equals(type.getName());
     }
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        gConfig = properties.getDruid();
-    }
 }

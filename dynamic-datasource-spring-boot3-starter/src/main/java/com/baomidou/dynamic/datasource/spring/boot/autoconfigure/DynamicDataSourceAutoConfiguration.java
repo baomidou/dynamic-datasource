@@ -16,13 +16,6 @@
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
-import com.baomidou.dynamic.datasource.common.DynamicDataSourceProperties;
-import com.baomidou.dynamic.datasource.common.DynamicDataSourcePropertiesCustomizer;
-import com.baomidou.dynamic.datasource.event.DataSourceInitEvent;
-import com.baomidou.dynamic.datasource.event.EncDataSourceInitEvent;
-import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
-import com.baomidou.dynamic.datasource.provider.YmlDynamicDataSourceProvider;
-import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.ObjectProvider;
@@ -34,7 +27,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.annotation.Order;
 import org.springframework.util.CollectionUtils;
 
 import javax.sql.DataSource;
@@ -44,16 +36,13 @@ import java.util.List;
  * 动态数据源核心自动配置类
  *
  * @author TaoYu Kanyuxia
- * @see DynamicDataSourceProvider
- * @see DynamicDataSourceStrategy
- * @see DynamicRoutingDataSource
  * @since 1.0.0
  */
 @Slf4j
 @Configuration
 @EnableConfigurationProperties(DynamicDataSourceProperties.class)
 @AutoConfigureBefore(value = DataSourceAutoConfiguration.class, name = "com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure")
-@Import(value = {DynamicDataSourceCreatorAutoConfiguration.class, DynamicDataSourceAopConfiguration.class})
+@Import(value = {DynamicDataSourceCreatorAutoConfiguration.class, DynamicDataSourceAopConfiguration.class, DynamicDataSourceAssistConfiguration.class})
 @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class DynamicDataSourceAutoConfiguration implements InitializingBean {
 
@@ -69,12 +58,6 @@ public class DynamicDataSourceAutoConfiguration implements InitializingBean {
     }
 
     @Bean
-    @Order(0)
-    public DynamicDataSourceProvider ymlDynamicDataSourceProvider() {
-        return new YmlDynamicDataSourceProvider(properties.getDatasource());
-    }
-
-    @Bean
     @ConditionalOnMissingBean
     public DataSource dataSource() {
         DynamicRoutingDataSource dataSource = new DynamicRoutingDataSource();
@@ -85,13 +68,6 @@ public class DynamicDataSourceAutoConfiguration implements InitializingBean {
         dataSource.setSeata(properties.getSeata());
         return dataSource;
     }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public DataSourceInitEvent dataSourceInitEvent() {
-        return new EncDataSourceInitEvent();
-    }
-
 
     @Override
     public void afterPropertiesSet() {
