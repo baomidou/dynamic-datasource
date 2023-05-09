@@ -10,7 +10,7 @@
     </parent>
 
     <groupId>com.kll.deploy</groupId>
-    <artifactId>dynamic-datasource-spring-boot3-starter-parent</artifactId>
+    <artifactId>dynamic-datasource-spring-boot3-starter</artifactId>
 
     <properties>
         <spring-boot-dependencies.version>3.0.0</spring-boot-dependencies.version>

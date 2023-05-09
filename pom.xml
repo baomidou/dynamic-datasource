@@ -13,7 +13,7 @@
     <modules>
         <module>dynamic-datasource-spring</module>
         <module>dynamic-datasource-spring-boot-starter</module>
-        <module>dynamic-datasource-spring-boot3-starter-parent</module>
+        <module>dynamic-datasource-spring-boot3-starter</module>
     </modules>
 
     <licenses>
@@ -48,6 +48,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.7</java.version>
 
+        <spring-boot-dependencies.version>1.5.3.RELEASE</spring-boot-dependencies.version>
         <mybatis.plus.version>3.5.3.1</mybatis.plus.version>
         <hikaricp.version>2.4.13</hikaricp.version>
         <druid.version>1.2.17</druid.version>
@@ -55,11 +56,7 @@
         <commons-dbcp2.version>2.8.0</commons-dbcp2.version>
         <p6spy.version>3.9.1</p6spy.version>
         <seata.version>1.4.2</seata.version>
-        <lombok.version>1.18.22</lombok.version>
-        <spring-boot-dependencies.version>1.5.3.RELEASE</spring-boot-dependencies.version>
-        <jakarta-servlet.version>6.0.0</jakarta-servlet.version>
-        <assertj.version>3.23.1</assertj.version>
-        <h2.version>2.1.214</h2.version>
+        <lombok.version>1.18.26</lombok.version>
 
         <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
@@ -82,13 +79,10 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-jdbc</artifactId>
+                <artifactId>spring-boot-dependencies</artifactId>
                 <version>${spring-boot-dependencies.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-aop</artifactId>
-                <version>${spring-boot-dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -101,16 +95,6 @@
                 <version>${mybatis.plus.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-boot-starter</artifactId>
-                <version>${mybatis.plus.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>jakarta.servlet</groupId>
-                <artifactId>jakarta.servlet-api</artifactId>
-                <version>${jakarta-servlet.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.zaxxer</groupId>
                 <artifactId>HikariCP-java7</artifactId>
                 <version>${hikaricp.version}</version>
@@ -118,11 +102,6 @@
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid</artifactId>
-                <version>${druid.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>druid-spring-boot-starter</artifactId>
                 <version>${druid.version}</version>
             </dependency>
             <dependency>
@@ -171,16 +150,6 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.assertj</groupId>
-                <artifactId>assertj-core</artifactId>
-                <version>${assertj.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.h2database</groupId>
-                <artifactId>h2</artifactId>
-                <version>${h2.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

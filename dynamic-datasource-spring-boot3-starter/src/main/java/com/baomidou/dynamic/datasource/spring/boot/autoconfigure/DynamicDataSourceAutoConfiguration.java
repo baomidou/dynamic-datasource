@@ -17,6 +17,7 @@ package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.common.DynamicDataSourceProperties;
+import com.baomidou.dynamic.datasource.common.DynamicDataSourcePropertiesCustomizer;
 import com.baomidou.dynamic.datasource.event.DataSourceInitEvent;
 import com.baomidou.dynamic.datasource.event.EncDataSourceInitEvent;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
