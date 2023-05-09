@@ -15,17 +15,15 @@
  */
 package com.baomidou.dynamic.datasource.creator.dbcp;
 
-import com.baomidou.dynamic.datasource.common.DataSourceProperty;
 import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
+import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
+import com.baomidou.dynamic.datasource.enums.DdConstants;
 import com.baomidou.dynamic.datasource.toolkit.ConfigMergeCreator;
+import com.baomidou.dynamic.datasource.toolkit.DsStrUtils;
 import lombok.SneakyThrows;
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
-
-import static com.baomidou.dynamic.datasource.support.DdConstants.DBCP2_DATASOURCE;
 
 /**
  * DBCP数据源创建器
@@ -33,7 +31,7 @@ import static com.baomidou.dynamic.datasource.support.DdConstants.DBCP2_DATASOUR
  * @author TaoYu
  * @since 2021/5/18
  */
-public class Dbcp2DataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator, InitializingBean {
+public class Dbcp2DataSourceCreator implements DataSourceCreator {
 
     private static final ConfigMergeCreator<Dbcp2Config, BasicDataSource> MERGE_CREATOR = new ConfigMergeCreator<>("Dbcp2", Dbcp2Config.class, BasicDataSource.class);
 
@@ -41,13 +39,13 @@ public class Dbcp2DataSourceCreator extends AbstractDataSourceCreator implements
 
     @Override
     @SneakyThrows
-    public DataSource doCreateDataSource(DataSourceProperty dataSourceProperty) {
+    public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
         BasicDataSource dataSource = MERGE_CREATOR.create(gConfig, dataSourceProperty.getDbcp2());
         dataSource.setUsername(dataSourceProperty.getUsername());
         dataSource.setPassword(dataSourceProperty.getPassword());
         dataSource.setUrl(dataSourceProperty.getUrl());
         String driverClassName = dataSourceProperty.getDriverClassName();
-        if (!StringUtils.isEmpty(driverClassName)) {
+        if (DsStrUtils.hasText(driverClassName)) {
             dataSource.setDriverClassName(driverClassName);
         }
         if (Boolean.FALSE.equals(dataSourceProperty.getLazy())) {
@@ -59,11 +57,6 @@ public class Dbcp2DataSourceCreator extends AbstractDataSourceCreator implements
     @Override
     public boolean support(DataSourceProperty dataSourceProperty) {
         Class<? extends DataSource> type = dataSourceProperty.getType();
-        return type == null || DBCP2_DATASOURCE.equals(type.getName());
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        gConfig = properties.getDbcp2();
+        return type == null || DdConstants.DBCP2_DATASOURCE.equals(type.getName());
     }
 }

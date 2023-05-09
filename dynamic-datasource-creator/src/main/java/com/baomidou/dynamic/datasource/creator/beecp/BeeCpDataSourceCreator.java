@@ -17,18 +17,17 @@ package com.baomidou.dynamic.datasource.creator.beecp;
 
 import cn.beecp.BeeDataSource;
 import cn.beecp.BeeDataSourceConfig;
-import com.baomidou.dynamic.datasource.common.DataSourceProperty;
 import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
+import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
+import com.baomidou.dynamic.datasource.enums.DdConstants;
 import com.baomidou.dynamic.datasource.toolkit.ConfigMergeCreator;
+import com.baomidou.dynamic.datasource.toolkit.DsStrUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import static com.baomidou.dynamic.datasource.support.DdConstants.BEECP_DATASOURCE;
 
 /**
  * BeeCp数据源创建器
@@ -37,7 +36,7 @@ import static com.baomidou.dynamic.datasource.support.DdConstants.BEECP_DATASOUR
  * @since 2020/5/14
  */
 @Slf4j
-public class BeeCpDataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator, InitializingBean {
+public class BeeCpDataSourceCreator implements DataSourceCreator {
 
     private static final ConfigMergeCreator<BeeCpConfig, BeeDataSourceConfig> MERGE_CREATOR = new ConfigMergeCreator<>("BeeCp", BeeCpConfig.class, BeeDataSourceConfig.class);
 
@@ -53,16 +52,15 @@ public class BeeCpDataSourceCreator extends AbstractDataSourceCreator implements
 
     private BeeCpConfig gConfig;
 
-
     @Override
-    public DataSource doCreateDataSource(DataSourceProperty dataSourceProperty) {
+    public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
         BeeDataSourceConfig config = MERGE_CREATOR.create(gConfig, dataSourceProperty.getBeecp());
         config.setUsername(dataSourceProperty.getUsername());
         config.setPassword(dataSourceProperty.getPassword());
         config.setJdbcUrl(dataSourceProperty.getUrl());
         config.setPoolName(dataSourceProperty.getPoolName());
         String driverClassName = dataSourceProperty.getDriverClassName();
-        if (!StringUtils.isEmpty(driverClassName)) {
+        if (DsStrUtils.hasText(driverClassName)) {
             config.setDriverClassName(driverClassName);
         }
         if (Boolean.FALSE.equals(dataSourceProperty.getLazy())) {
@@ -80,11 +78,6 @@ public class BeeCpDataSourceCreator extends AbstractDataSourceCreator implements
     @Override
     public boolean support(DataSourceProperty dataSourceProperty) {
         Class<? extends DataSource> type = dataSourceProperty.getType();
-        return type == null || BEECP_DATASOURCE.equals(type.getName());
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        gConfig = properties.getBeecp();
+        return type == null || DdConstants.BEECP_DATASOURCE.equals(type.getName());
     }
 }

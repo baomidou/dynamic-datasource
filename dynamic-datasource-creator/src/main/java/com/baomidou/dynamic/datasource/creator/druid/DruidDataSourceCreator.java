@@ -23,13 +23,12 @@ import com.alibaba.druid.filter.logging.Slf4jLogFilter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallFilter;
-import com.baomidou.dynamic.datasource.common.DataSourceProperty;
 import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
+import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
+import com.baomidou.dynamic.datasource.enums.DdConstants;
 import com.baomidou.dynamic.datasource.exception.ErrorCreateDataSourceException;
+import com.baomidou.dynamic.datasource.toolkit.DsStrUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Method;
@@ -38,7 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import static com.baomidou.dynamic.datasource.support.DdConstants.DRUID_DATASOURCE;
 
 /**
  * Druid数据源创建器
@@ -63,8 +61,8 @@ public class DruidDataSourceCreator implements DataSourceCreator {
         }
     }
 
-    @Autowired(required = false)
-    private ApplicationContext applicationContext;
+    //    @Autowired(required = false)
+//    private ApplicationContext applicationContext;
     private DruidConfig gConfig;
 
     @Override
@@ -75,7 +73,7 @@ public class DruidDataSourceCreator implements DataSourceCreator {
         dataSource.setUrl(dataSourceProperty.getUrl());
         dataSource.setName(dataSourceProperty.getPoolName());
         String driverClassName = dataSourceProperty.getDriverClassName();
-        if (!StringUtils.isEmpty(driverClassName)) {
+        if (DsStrUtils.hasText(driverClassName)) {
             dataSource.setDriverClassName(driverClassName);
         }
         DruidConfig config = dataSourceProperty.getDruid();
@@ -105,7 +103,7 @@ public class DruidDataSourceCreator implements DataSourceCreator {
 
     private List<Filter> initFilters(DataSourceProperty dataSourceProperty, String filters) {
         List<Filter> proxyFilters = new ArrayList<>(2);
-        if (!StringUtils.isEmpty(filters)) {
+        if (DsStrUtils.hasText(filters)) {
             String[] filterItems = filters.split(",");
             for (String filter : filterItems) {
                 switch (filter) {
@@ -135,11 +133,11 @@ public class DruidDataSourceCreator implements DataSourceCreator {
                 }
             }
         }
-        if (this.applicationContext != null) {
-            for (String filterId : gConfig.getProxyFilters()) {
-                proxyFilters.add(this.applicationContext.getBean(filterId, Filter.class));
-            }
-        }
+//        if (this.applicationContext != null) {
+//            for (String filterId : gConfig.getProxyFilters()) {
+//                proxyFilters.add(this.applicationContext.getBean(filterId, Filter.class));
+//            }
+//        }
         return proxyFilters;
     }
 
@@ -246,7 +244,6 @@ public class DruidDataSourceCreator implements DataSourceCreator {
     @Override
     public boolean support(DataSourceProperty dataSourceProperty) {
         Class<? extends DataSource> type = dataSourceProperty.getType();
-        return type == null || DRUID_DATASOURCE.equals(type.getName());
+        return type == null || DdConstants.DRUID_DATASOURCE.equals(type.getName());
     }
-
 }

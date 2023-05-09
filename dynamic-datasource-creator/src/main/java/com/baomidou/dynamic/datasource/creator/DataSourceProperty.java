@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.baomidou.dynamic.datasource.common;
+package com.baomidou.dynamic.datasource.creator;
 
 import com.baomidou.dynamic.datasource.creator.atomikos.AtomikosConfig;
 import com.baomidou.dynamic.datasource.creator.beecp.BeeCpConfig;

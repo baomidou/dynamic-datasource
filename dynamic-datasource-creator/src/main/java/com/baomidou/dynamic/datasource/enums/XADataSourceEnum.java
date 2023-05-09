@@ -15,7 +15,6 @@
  */
 package com.baomidou.dynamic.datasource.enums;
 
-import com.baomidou.mybatisplus.annotation.DbType;
 import lombok.Getter;
 
 /**
@@ -26,35 +25,23 @@ import lombok.Getter;
  */
 @Getter
 public enum XADataSourceEnum {
-    ORACLE(DbType.ORACLE, "oracle.jdbc.xa.client.OracleXADataSource"),
-    MYSQL(DbType.MYSQL, "com.mysql.cj.jdbc.MysqlXADataSource"),
-    POSTGRE_SQL(DbType.POSTGRE_SQL, "org.postgresql.xa.PGXADataSource"),
-    H2(DbType.H2, "org.h2.jdbcx.JdbcDataSource"),
-    ;
+    MYSQL("com.mysql.cj.jdbc.MysqlXADataSource"),
+    ORACLE("oracle.jdbc.xa.client.OracleXADataSource"),
+    POSTGRE_SQL("org.postgresql.xa.PGXADataSource"),
+    H2("org.h2.jdbcx.JdbcDataSource");
 
-    private final DbType dbType;
-    private final String xaDataSourceClassName;
+    private final String xaDriverClassName;
 
-    XADataSourceEnum(DbType dbType, String xaDataSourceClassName) {
-        this.dbType = dbType;
-        this.xaDataSourceClassName = xaDataSourceClassName;
+    XADataSourceEnum(String xaDriverClassName) {
+        this.xaDriverClassName = xaDriverClassName;
     }
 
-    public static boolean contains(DbType dbType) {
+    public static boolean contains(String xaDataSourceClassName) {
         for (XADataSourceEnum item : values()) {
-            if (item.getDbType() == dbType) {
+            if (item.getXaDriverClassName().equals(xaDataSourceClassName)) {
                 return true;
             }
         }
         return false;
-    }
-
-    public static String getByDbType(DbType dbType) {
-        for (XADataSourceEnum item : values()) {
-            if (item.getDbType() == dbType) {
-                return item.getXaDataSourceClassName();
-            }
-        }
-        return null;
     }
 }

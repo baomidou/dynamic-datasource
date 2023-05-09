@@ -15,8 +15,8 @@
  */
 package com.baomidou.dynamic.datasource.creator.basic;
 
-import com.baomidou.dynamic.datasource.common.DataSourceProperty;
 import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
+import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
 import com.baomidou.dynamic.datasource.exception.ErrorCreateDataSourceException;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,7 +30,7 @@ import java.lang.reflect.Method;
  * @since 2020/1/21
  */
 @Slf4j
-public class BasicDataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator {
+public class BasicDataSourceCreator implements DataSourceCreator {
 
     private static Method createMethod;
     private static Method typeMethod;
@@ -76,7 +76,7 @@ public class BasicDataSourceCreator extends AbstractDataSourceCreator implements
      * @return 数据源
      */
     @Override
-    public DataSource doCreateDataSource(DataSourceProperty dataSourceProperty) {
+    public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
         try {
             Object o1 = createMethod.invoke(null);
             Object o2 = typeMethod.invoke(o1, dataSourceProperty.getType());

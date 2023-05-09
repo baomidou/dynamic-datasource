@@ -9,22 +9,21 @@
         <version>4.0.0</version>
     </parent>
 
-    <artifactId>dynamic-datasource-spring-boot-common</artifactId>
+    <artifactId>dynamic-datasource-creator</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>com.baomidou</groupId>
-            <artifactId>dynamic-datasource-spring</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP-java7</artifactId>
-            <optional>true</optional>
+            <artifactId>dynamic-datasource-creator</artifactId>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP-java7</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -37,18 +36,9 @@
             <artifactId>commons-dbcp2</artifactId>
             <optional>true</optional>
         </dependency>
-
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-aop</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
+            <groupId>com.atomikos</groupId>
+            <artifactId>transactions-jdbc</artifactId>
             <optional>true</optional>
         </dependency>
     </dependencies>

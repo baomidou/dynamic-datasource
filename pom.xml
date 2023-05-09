@@ -11,6 +11,7 @@
     <inceptionYear>2018</inceptionYear>
 
     <modules>
+        <module>dynamic-datasource-creator</module>
         <module>dynamic-datasource-spring</module>
         <module>dynamic-datasource-spring-boot-common</module>
         <module>dynamic-datasource-spring-boot-starter</module>
@@ -73,6 +74,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>dynamic-datasource-creator</artifactId>
+                <version>4.0.0</version>
+            </dependency>
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>dynamic-datasource-spring</artifactId>

@@ -15,7 +15,7 @@
  */
 package com.baomidou.dynamic.datasource.provider;
 
-import com.baomidou.dynamic.datasource.common.DataSourceProperty;
+import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
 import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

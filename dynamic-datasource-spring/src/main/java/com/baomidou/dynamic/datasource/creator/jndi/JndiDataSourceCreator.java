@@ -15,8 +15,8 @@
  */
 package com.baomidou.dynamic.datasource.creator.jndi;
 
-import com.baomidou.dynamic.datasource.common.DataSourceProperty;
 import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
+import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 
 import javax.sql.DataSource;
@@ -27,7 +27,7 @@ import javax.sql.DataSource;
  * @author TaoYu
  * @since 2020/1/27
  */
-public class JndiDataSourceCreator extends AbstractDataSourceCreator implements DataSourceCreator {
+public class JndiDataSourceCreator implements DataSourceCreator {
 
     private static final JndiDataSourceLookup LOOKUP = new JndiDataSourceLookup();
 
@@ -42,7 +42,7 @@ public class JndiDataSourceCreator extends AbstractDataSourceCreator implements 
      * @return 数据源
      */
     @Override
-    public DataSource doCreateDataSource(DataSourceProperty dataSourceProperty) {
+    public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
         return createDataSource(dataSourceProperty.getJndiName());
     }
 

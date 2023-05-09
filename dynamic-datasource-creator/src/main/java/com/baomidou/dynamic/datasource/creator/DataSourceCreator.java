@@ -13,32 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.baomidou.dynamic.datasource.provider;
+package com.baomidou.dynamic.datasource.creator;
 
-import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
-import java.util.Map;
 
 /**
- * YML数据源提供者
+ * 默认按照以下顺序创建数据源:
+ * <pre>
+ * 	JNDI(1000) &gt; DRUID(2000) &gt; HIKARI(3000) &gt; BASIC(5000)
+ * </pre>
  *
- * @author TaoYu Kanyuxia
- * @since 1.0.0
+ * @author ls9527
  */
-@Slf4j
-@AllArgsConstructor
-public class YmlDynamicDataSourceProvider extends AbstractDataSourceProvider {
+public interface DataSourceCreator {
 
     /**
-     * 所有数据源
+     * 通过属性创建数据源
+     *
+     * @param dataSourceProperty 数据源属性
+     * @return 被创建的数据源
      */
-    private final Map<String, DataSourceProperty> dataSourcePropertiesMap;
+    DataSource createDataSource(DataSourceProperty dataSourceProperty);
 
-    @Override
-    public Map<String, DataSource> loadDataSources() {
-        return createDataSourceMap(dataSourcePropertiesMap);
-    }
+    /**
+     * 当前创建器是否支持根据此属性创建
+     *
+     * @param dataSourceProperty 数据源属性
+     * @return 是否支持
+     */
+    boolean support(DataSourceProperty dataSourceProperty);
 }

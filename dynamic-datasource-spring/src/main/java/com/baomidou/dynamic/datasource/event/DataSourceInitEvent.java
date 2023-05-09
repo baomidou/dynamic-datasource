@@ -15,7 +15,8 @@
  */
 package com.baomidou.dynamic.datasource.event;
 
-import com.baomidou.dynamic.datasource.common.DataSourceProperty;
+
+import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
 
 import javax.sql.DataSource;
 

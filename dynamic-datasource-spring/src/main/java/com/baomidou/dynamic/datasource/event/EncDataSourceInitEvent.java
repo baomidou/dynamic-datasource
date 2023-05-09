@@ -15,7 +15,7 @@
  */
 package com.baomidou.dynamic.datasource.event;
 
-import com.baomidou.dynamic.datasource.common.DataSourceProperty;
+import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
 import com.baomidou.dynamic.datasource.toolkit.CryptoUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;

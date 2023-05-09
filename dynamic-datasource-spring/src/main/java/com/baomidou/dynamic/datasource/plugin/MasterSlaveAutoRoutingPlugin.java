@@ -15,7 +15,7 @@
  */
 package com.baomidou.dynamic.datasource.plugin;
 
-import com.baomidou.dynamic.datasource.support.DdConstants;
+import com.baomidou.dynamic.datasource.enums.DdConstants;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.cache.CacheKey;

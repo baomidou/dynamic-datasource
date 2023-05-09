@@ -15,7 +15,7 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
-import com.baomidou.dynamic.datasource.common.DataSourceProperty;
+import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
 import com.baomidou.dynamic.datasource.creator.atomikos.AtomikosConfig;
 import com.baomidou.dynamic.datasource.creator.beecp.BeeCpConfig;
 import com.baomidou.dynamic.datasource.creator.dbcp.Dbcp2Config;

@@ -15,9 +15,6 @@
  */
 package com.baomidou.dynamic.datasource.creator;
 
-import com.baomidou.dynamic.datasource.common.DataSourceGlobalProperty;
-import com.baomidou.dynamic.datasource.common.DataSourceProperty;
-import com.baomidou.dynamic.datasource.common.DatasourceInitProperties;
 import com.baomidou.dynamic.datasource.ds.ItemDataSource;
 import com.baomidou.dynamic.datasource.enums.SeataMode;
 import com.baomidou.dynamic.datasource.event.DataSourceInitEvent;

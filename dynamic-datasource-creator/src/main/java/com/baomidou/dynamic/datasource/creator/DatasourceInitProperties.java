@@ -15,33 +15,32 @@
  */
 package com.baomidou.dynamic.datasource.creator;
 
-import com.baomidou.dynamic.datasource.common.DataSourceProperty;
-
-import javax.sql.DataSource;
+import lombok.Data;
 
 /**
- * 默认按照以下顺序创建数据源:
- * <pre>
- * 	JNDI(1000) &gt; DRUID(2000) &gt; HIKARI(3000) &gt; BASIC(5000)
- * </pre>
+ * 动态数据源初始化脚本配置
  *
- * @author ls9527
+ * @author TaoYu
+ * @since 3.5.0
  */
-public interface DataSourceCreator {
+@Data
+public class DatasourceInitProperties {
 
     /**
-     * 通过属性创建数据源
-     *
-     * @param dataSourceProperty 数据源属性
-     * @return 被创建的数据源
+     * 自动运行的建表脚本
      */
-    DataSource createDataSource(DataSourceProperty dataSourceProperty);
+    private String schema;
+    /**
+     * 自动运行的数据脚本
+     */
+    private String data;
 
     /**
-     * 当前创建器是否支持根据此属性创建
-     *
-     * @param dataSourceProperty 数据源属性
-     * @return 是否支持
+     * 错误是否继续 默认 true
      */
-    boolean support(DataSourceProperty dataSourceProperty);
+    private boolean continueOnError = true;
+    /**
+     * 分隔符 默认 ;
+     */
+    private String separator = ";";
 }
