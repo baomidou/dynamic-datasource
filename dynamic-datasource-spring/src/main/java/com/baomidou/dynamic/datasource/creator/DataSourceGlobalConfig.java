@@ -30,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 @Setter
-public class DataSourceGlobalProperty {
+public class DataSourceGlobalConfig {
 
     /**
      * 是否懒加载数据源

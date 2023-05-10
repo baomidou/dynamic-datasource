@@ -69,13 +69,13 @@ public class DruidDataSourceCreator implements DataSourceCreator {
     private static void fetchMethod() {
         Class<DruidDataSource> aClass = DruidDataSource.class;
         try {
-            configMethod = aClass.getMethod("configFromPropeties", DruidDataSource.class);
+            configMethod = aClass.getMethod("configFromPropeties", Properties.class);
             return;
         } catch (NoSuchMethodException ignored) {
         }
 
         try {
-            configMethod = aClass.getMethod("configFromPropety", DruidDataSource.class);
+            configMethod = aClass.getMethod("configFromPropety", Properties.class);
             return;
         } catch (NoSuchMethodException ignored) {
         }

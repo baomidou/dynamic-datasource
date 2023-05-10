@@ -41,7 +41,7 @@ public class DefaultDataSourceCreator {
 
     private List<DataSourceCreator> creators;
 
-    private DataSourceGlobalProperty properties;
+    private DataSourceGlobalConfig config;
     private DataSourceInitEvent dataSourceInitEvent;
 
     public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
@@ -57,19 +57,28 @@ public class DefaultDataSourceCreator {
         }
         String publicKey = dataSourceProperty.getPublicKey();
         if (StringUtils.isEmpty(publicKey)) {
-            publicKey = properties.getPublicKey();
-            dataSourceProperty.setPublicKey(publicKey);
+            if (config != null) {
+                publicKey = config.getPublicKey();
+                dataSourceProperty.setPublicKey(publicKey);
+            }
         }
         Boolean lazy = dataSourceProperty.getLazy();
         if (lazy == null) {
-            lazy = properties.getLazy();
-            dataSourceProperty.setLazy(lazy);
+            if (config != null) {
+                lazy = config.getLazy();
+                dataSourceProperty.setLazy(lazy);
+            }
         }
-        dataSourceInitEvent.beforeCreate(dataSourceProperty);
+        if (dataSourceInitEvent != null) {
+            dataSourceInitEvent.beforeCreate(dataSourceProperty);
+        }
         DataSource dataSource = dataSourceCreator.createDataSource(dataSourceProperty);
-        dataSourceInitEvent.afterCreate(dataSource);
+        if (dataSourceInitEvent != null) {
+            dataSourceInitEvent.afterCreate(dataSource);
+        }
         this.runScrip(dataSource, dataSourceProperty);
-        return wrapDataSource(dataSource, dataSourceProperty);
+        return dataSource;
+//        return wrapDataSource(dataSource, dataSourceProperty);
     }
 
     private void runScrip(DataSource dataSource, DataSourceProperty dataSourceProperty) {
@@ -91,14 +100,14 @@ public class DefaultDataSourceCreator {
         String name = dataSourceProperty.getPoolName();
         DataSource targetDataSource = dataSource;
 
-        Boolean enabledP6spy = properties.getP6spy() && dataSourceProperty.getP6spy();
+        Boolean enabledP6spy = config.getP6spy() && dataSourceProperty.getP6spy();
         if (enabledP6spy) {
             targetDataSource = new P6DataSource(dataSource);
             log.debug("dynamic-datasource [{}] wrap p6spy plugin", name);
         }
 
-        Boolean enabledSeata = properties.getSeata() && dataSourceProperty.getSeata();
-        SeataMode seataMode = properties.getSeataMode();
+        Boolean enabledSeata = config.getSeata() && dataSourceProperty.getSeata();
+        SeataMode seataMode = config.getSeataMode();
         if (enabledSeata) {
             if (SeataMode.XA == seataMode) {
                 targetDataSource = new DataSourceProxyXA(targetDataSource);
