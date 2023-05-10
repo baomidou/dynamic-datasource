@@ -12,6 +12,7 @@
     <artifactId>dynamic-datasource-spring-boot3-starter</artifactId>
 
     <properties>
+        <java.version>11</java.version>
         <spring-boot-dependencies.version>3.0.0</spring-boot-dependencies.version>
     </properties>
 
