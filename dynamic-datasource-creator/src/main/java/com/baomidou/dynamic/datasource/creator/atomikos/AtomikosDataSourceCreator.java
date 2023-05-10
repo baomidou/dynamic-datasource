@@ -21,6 +21,8 @@ import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
 import com.baomidou.dynamic.datasource.enums.DdConstants;
 import com.baomidou.dynamic.datasource.enums.XADataSourceEnum;
 import com.baomidou.dynamic.datasource.toolkit.ConfigMergeCreator;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import javax.sql.DataSource;
 import java.util.Properties;
@@ -32,6 +34,8 @@ import java.util.Properties;
  * @author <a href="mailto:312290710@qq.com">jiazhifeng</a>
  * @date 2023/03/02 10:20
  */
+@NoArgsConstructor
+@AllArgsConstructor
 public class AtomikosDataSourceCreator implements DataSourceCreator {
     private static final ConfigMergeCreator<AtomikosConfig, AtomikosConfig> MERGE_CREATOR = new ConfigMergeCreator<>("AtomikosConfig", AtomikosConfig.class, AtomikosConfig.class);
     private AtomikosConfig atomikosConfig;

@@ -22,7 +22,8 @@ import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
 import com.baomidou.dynamic.datasource.enums.DdConstants;
 import com.baomidou.dynamic.datasource.toolkit.ConfigMergeCreator;
 import com.baomidou.dynamic.datasource.toolkit.DsStrUtils;
-import lombok.extern.slf4j.Slf4j;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import javax.sql.DataSource;
 import java.lang.reflect.InvocationTargetException;
@@ -35,7 +36,8 @@ import java.lang.reflect.Method;
  * @author TaoYu
  * @since 2020/5/14
  */
-@Slf4j
+@NoArgsConstructor
+@AllArgsConstructor
 public class BeeCpDataSourceCreator implements DataSourceCreator {
 
     private static final ConfigMergeCreator<BeeCpConfig, BeeDataSourceConfig> MERGE_CREATOR = new ConfigMergeCreator<>("BeeCp", BeeCpConfig.class, BeeDataSourceConfig.class);

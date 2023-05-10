@@ -46,6 +46,9 @@ public class ConfigMergeCreator<C, T> {
 
     @SneakyThrows
     public T create(C global, C item) {
+        if (configClazz.equals(targetClazz) && global == null) {
+            return (T) item;
+        }
         T result = targetClazz.newInstance();
         BeanInfo beanInfo = Introspector.getBeanInfo(configClazz, Object.class);
         PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();

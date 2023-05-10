@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 /**
  * 动态数据源配置相关工具类
  *
- * @author Taoyu
+ * @author TaoYu
  * @since 3.5.0
  */
 public final class DsConfigUtil {
@@ -70,13 +70,33 @@ public final class DsConfigUtil {
      * @param clazz 类
      * @return setter方法
      */
+    public static Map<String, Method> getGetterMethods(Class<?> clazz) {
+        Map<String, Method> methodMap = new HashMap<>();
+        try {
+            for (PropertyDescriptor pd : Introspector.getBeanInfo(clazz).getPropertyDescriptors()) {
+                Method method = pd.getReadMethod();
+                if (method != null) {
+                    methodMap.put(pd.getName(), method);
+                }
+            }
+        } catch (Exception ignore) {
+        }
+        return methodMap;
+    }
+
+    /**
+     * 通过clazz获取对应的setter方法
+     *
+     * @param clazz 类
+     * @return setter方法
+     */
     public static Map<String, Method> getSetterMethods(Class<?> clazz) {
         Map<String, Method> methodMap = new HashMap<>();
         try {
             for (PropertyDescriptor pd : Introspector.getBeanInfo(clazz).getPropertyDescriptors()) {
-                Method writeMethod = pd.getWriteMethod();
-                if (writeMethod != null) {
-                    methodMap.put(pd.getName(), writeMethod);
+                Method method = pd.getWriteMethod();
+                if (method != null) {
+                    methodMap.put(pd.getName(), method);
                 }
             }
         } catch (Exception ignore) {

@@ -28,6 +28,8 @@ import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
 import com.baomidou.dynamic.datasource.enums.DdConstants;
 import com.baomidou.dynamic.datasource.exception.ErrorCreateDataSourceException;
 import com.baomidou.dynamic.datasource.toolkit.DsStrUtils;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
@@ -45,25 +47,40 @@ import java.util.Properties;
  * @since 2020/1/21
  */
 @Slf4j
+@NoArgsConstructor
+@AllArgsConstructor
 public class DruidDataSourceCreator implements DataSourceCreator {
 
     private static Method configMethod = null;
 
     static {
-        try {
-            Class<DruidDataSource> aClass = DruidDataSource.class;
-            configMethod = aClass.getDeclaredMethod("configFromPropeties");
-            if (configMethod == null) {
-                configMethod = aClass.getDeclaredMethod("configFromPropety");
-            }
-        } catch (Exception ignore) {
-
-        }
+        fetchMethod();
     }
 
     //    @Autowired(required = false)
 //    private ApplicationContext applicationContext;
     private DruidConfig gConfig;
+
+    /**
+     * Druid since 1.2.17 use 'configFromPropeties' to copy config
+     * Druid < 1.2.17 use 'configFromPropety' to copy config
+     */
+    @SuppressWarnings("JavaReflectionMemberAccess")
+    private static void fetchMethod() {
+        Class<DruidDataSource> aClass = DruidDataSource.class;
+        try {
+            configMethod = aClass.getMethod("configFromPropeties", DruidDataSource.class);
+            return;
+        } catch (NoSuchMethodException ignored) {
+        }
+
+        try {
+            configMethod = aClass.getMethod("configFromPropety", DruidDataSource.class);
+            return;
+        } catch (NoSuchMethodException ignored) {
+        }
+        throw new RuntimeException("Druid does not has 'configFromPropeties' or 'configFromPropety' method!");
+    }
 
     @Override
     public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
@@ -77,7 +94,7 @@ public class DruidDataSourceCreator implements DataSourceCreator {
             dataSource.setDriverClassName(driverClassName);
         }
         DruidConfig config = dataSourceProperty.getDruid();
-        Properties properties = config.toProperties(gConfig);
+        Properties properties = DruidConfigUtil.mergeConfig(gConfig, config);
 
         List<Filter> proxyFilters = this.initFilters(dataSourceProperty, properties.getProperty("druid.filters"));
         dataSource.setProxyFilters(proxyFilters);

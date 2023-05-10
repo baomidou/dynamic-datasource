@@ -45,7 +45,6 @@ dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成�
 
 详细文档 https://www.kancloud.cn/tracy5546/dynamic-datasource/2264611
 
-
 # 特性
 
 - 支持 **数据源分组** ，适用于多种场景 纯粹多库 读写分离 一主多从 混合模式。
@@ -83,6 +82,7 @@ dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成�
   <version>${version}</version>
 </dependency>
 ```
+
 2. 配置数据源。
 
 ```yaml
@@ -128,9 +128,9 @@ spring:                               spring:                               spri
 
 **@DS** 可以注解在方法上或类上，**同时存在就近原则 方法上注解 优先于 类上注解**。
 
-|     注解      |                   结果                   |
-| :-----------: | :--------------------------------------: |
-|    没有@DS    |                默认数据源                |
+|      注解       |           结果            |
+|:-------------:|:-----------------------:|
+|     没有@DS     |          默认数据源          |
 | @DS("dsName") | dsName可以为组名也可以为具体某个库的名称 |
 
 ```java

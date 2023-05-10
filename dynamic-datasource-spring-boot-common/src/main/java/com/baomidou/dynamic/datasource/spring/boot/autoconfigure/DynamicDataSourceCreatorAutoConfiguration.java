@@ -17,21 +17,26 @@ package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
 import cn.beecp.BeeDataSource;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.atomikos.jdbc.AtomikosDataSourceBean;
 import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
+import com.baomidou.dynamic.datasource.creator.atomikos.AtomikosDataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.basic.BasicDataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.beecp.BeeCpDataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.dbcp.Dbcp2DataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.druid.DruidDataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.hikaricp.HikariDataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.jndi.JndiDataSourceCreator;
+import com.baomidou.dynamic.datasource.tx.AtomikosTransactionFactory;
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.apache.ibatis.transaction.TransactionFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.Order;
 
 import java.util.List;
@@ -40,6 +45,8 @@ import java.util.List;
  * @author TaoYu
  */
 @Configuration
+@RequiredArgsConstructor
+@EnableConfigurationProperties(DynamicDataSourceProperties.class)
 public class DynamicDataSourceCreatorAutoConfiguration {
 
     public static final int JNDI_ORDER = 1000;
@@ -49,14 +56,14 @@ public class DynamicDataSourceCreatorAutoConfiguration {
     public static final int DBCP2_ORDER = 5000;
     public static final int ATOMIKOS_ORDER = 6000;
     public static final int DEFAULT_ORDER = 7000;
+    private final DynamicDataSourceProperties properties;
 
-    @Primary
     @Bean
     @ConditionalOnMissingBean
     public DefaultDataSourceCreator dataSourceCreator(List<DataSourceCreator> dataSourceCreators) {
-        DefaultDataSourceCreator defaultDataSourceCreator = new DefaultDataSourceCreator();
-        defaultDataSourceCreator.setCreators(dataSourceCreators);
-        return defaultDataSourceCreator;
+        DefaultDataSourceCreator creator = new DefaultDataSourceCreator();
+        creator.setCreators(dataSourceCreators);
+        return creator;
     }
 
     @Bean
@@ -74,76 +81,58 @@ public class DynamicDataSourceCreatorAutoConfiguration {
     /**
      * 存在Druid数据源时, 加入创建器
      */
-    @ConditionalOnClass(DruidDataSource.class)
-    @Configuration
-    static class DruidDataSourceCreatorConfiguration {
 
-        @Bean
-        @Order(DRUID_ORDER)
-        public DruidDataSourceCreator druidDataSourceCreator() {
-            return new DruidDataSourceCreator();
-        }
+    @Bean
+    @Order(DRUID_ORDER)
+    @ConditionalOnClass(DruidDataSource.class)
+    public DruidDataSourceCreator druidDataSourceCreator() {
+        return new DruidDataSourceCreator(properties.getDruid());
     }
 
     /**
      * 存在Hikari数据源时, 加入创建器
      */
+    @Bean
+    @Order(HIKARI_ORDER)
     @ConditionalOnClass(HikariDataSource.class)
-    @Configuration
-    static class HikariDataSourceCreatorConfiguration {
-        @Bean
-        @Order(HIKARI_ORDER)
-        public HikariDataSourceCreator hikariDataSourceCreator() {
-            return new HikariDataSourceCreator();
-        }
+    public HikariDataSourceCreator hikariDataSourceCreator() {
+        return new HikariDataSourceCreator(properties.getHikari());
     }
 
     /**
      * 存在BeeCp数据源时, 加入创建器
      */
+    @Bean
+    @Order(BEECP_ORDER)
     @ConditionalOnClass(BeeDataSource.class)
-    @Configuration
-    static class BeeCpDataSourceCreatorConfiguration {
-
-        @Bean
-        @Order(BEECP_ORDER)
-        public BeeCpDataSourceCreator beeCpDataSourceCreator() {
-            return new BeeCpDataSourceCreator();
-        }
+    public BeeCpDataSourceCreator beeCpDataSourceCreator() {
+        return new BeeCpDataSourceCreator(properties.getBeecp());
     }
 
     /**
      * 存在Dbcp2数据源时, 加入创建器
      */
+    @Bean
+    @Order(DBCP2_ORDER)
     @ConditionalOnClass(BasicDataSource.class)
-    @Configuration
-    static class Dbcp2DataSourceCreatorConfiguration {
-
-        @Bean
-        @Order(DBCP2_ORDER)
-        public Dbcp2DataSourceCreator dbcp2DataSourceCreator() {
-            return new Dbcp2DataSourceCreator();
-        }
+    public Dbcp2DataSourceCreator dbcp2DataSourceCreator() {
+        return new Dbcp2DataSourceCreator(properties.getDbcp2());
     }
 
-//    /**
-//     * 存在Atomikos数据源时, 加入创建器
-//     */
-//    @ConditionalOnClass({AtomikosDataSourceBean.class})
-//    @Configuration
-//    static class AtomikosDataSourceCreatorConfiguration {
-//
-//        @Bean
-//        @Order(ATOMIKOS_ORDER)
-//        public AtomikosDataSourceCreator atomikosDataSourceCreator() {
-//            return new AtomikosDataSourceCreator();
-//        }
-//
-//        @Bean
-//        @ConditionalOnClass(TransactionFactory)
-//        public TransactionFactory atomikosTransactionFactory() {
-//            return new AtomikosTransactionFactory();
-//        }
-//    }
+    /**
+     * 存在Atomikos数据源时, 加入创建器
+     */
+    @Bean
+    @Order(ATOMIKOS_ORDER)
+    @ConditionalOnClass({AtomikosDataSourceBean.class})
+    public AtomikosDataSourceCreator atomikosDataSourceCreator() {
+        return new AtomikosDataSourceCreator(properties.getAtomikos());
+    }
+
+    @Bean
+    @ConditionalOnClass({AtomikosDataSourceBean.class, TransactionFactory.class})
+    public TransactionFactory atomikosTransactionFactory() {
+        return new AtomikosTransactionFactory();
+    }
 
 }

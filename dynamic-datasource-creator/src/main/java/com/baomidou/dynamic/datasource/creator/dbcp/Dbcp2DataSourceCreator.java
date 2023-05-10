@@ -20,6 +20,8 @@ import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
 import com.baomidou.dynamic.datasource.enums.DdConstants;
 import com.baomidou.dynamic.datasource.toolkit.ConfigMergeCreator;
 import com.baomidou.dynamic.datasource.toolkit.DsStrUtils;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.dbcp2.BasicDataSource;
 
@@ -31,6 +33,8 @@ import javax.sql.DataSource;
  * @author TaoYu
  * @since 2021/5/18
  */
+@NoArgsConstructor
+@AllArgsConstructor
 public class Dbcp2DataSourceCreator implements DataSourceCreator {
 
     private static final ConfigMergeCreator<Dbcp2Config, BasicDataSource> MERGE_CREATOR = new ConfigMergeCreator<>("Dbcp2", Dbcp2Config.class, BasicDataSource.class);

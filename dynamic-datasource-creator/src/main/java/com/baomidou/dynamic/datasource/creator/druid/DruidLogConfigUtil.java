@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * Druid日志配置工具类
  *
- * @author Taoyu
+ * @author TaoYu
  * @since 3.5.0
  */
 @Slf4j

@@ -22,6 +22,8 @@ import com.baomidou.dynamic.datasource.toolkit.ConfigMergeCreator;
 import com.baomidou.dynamic.datasource.toolkit.DsStrUtils;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import javax.sql.DataSource;
 import java.lang.reflect.InvocationTargetException;
@@ -33,6 +35,8 @@ import java.lang.reflect.Method;
  * @author TaoYu
  * @since 2020/1/21
  */
+@NoArgsConstructor
+@AllArgsConstructor
 public class HikariDataSourceCreator implements DataSourceCreator {
 
     private static final ConfigMergeCreator<HikariCpConfig, HikariConfig> MERGE_CREATOR = new ConfigMergeCreator<>("HikariCp", HikariCpConfig.class, HikariConfig.class);
@@ -51,14 +55,15 @@ public class HikariDataSourceCreator implements DataSourceCreator {
      */
     @SuppressWarnings("JavaReflectionMemberAccess")
     private static void fetchMethod() {
+        Class<HikariConfig> hikariConfigClass = HikariConfig.class;
         try {
-            configCopyMethod = HikariConfig.class.getMethod("copyState", HikariConfig.class);
+            configCopyMethod = hikariConfigClass.getMethod("copyState", hikariConfigClass);
             return;
         } catch (NoSuchMethodException ignored) {
         }
 
         try {
-            configCopyMethod = HikariConfig.class.getMethod("copyStateTo", HikariConfig.class);
+            configCopyMethod = hikariConfigClass.getMethod("copyStateTo", hikariConfigClass);
             return;
         } catch (NoSuchMethodException ignored) {
         }
