@@ -68,7 +68,7 @@ public final class LocalTxUtil {
             ConnectionFactory.notify(xid, false);
         } finally {
             if (!hasSavepoint) {
-                log.debug("dynamic-datasource commit local tx [{}]", TransactionContext.getXID());
+                log.debug("dynamic-datasource rollback local tx [{}]", TransactionContext.getXID());
                 TransactionContext.remove();
             }
         }
