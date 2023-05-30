@@ -16,7 +16,7 @@
 package com.baomidou.dynamic.datasource.provider;
 
 import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
-import lombok.AllArgsConstructor;
+import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
@@ -29,13 +29,18 @@ import java.util.Map;
  * @since 1.0.0
  */
 @Slf4j
-@AllArgsConstructor
 public class YmlDynamicDataSourceProvider extends AbstractDataSourceProvider {
 
     /**
      * 所有数据源
      */
     private final Map<String, DataSourceProperty> dataSourcePropertiesMap;
+
+    public YmlDynamicDataSourceProvider(DefaultDataSourceCreator defaultDataSourceCreator, Map<String, DataSourceProperty> dataSourcePropertiesMap) {
+        super(defaultDataSourceCreator);
+        this.dataSourcePropertiesMap = dataSourcePropertiesMap;
+    }
+
 
     @Override
     public Map<String, DataSource> loadDataSources() {

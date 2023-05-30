@@ -18,8 +18,6 @@ package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 import cn.beecp.BeeDataSource;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.atomikos.jdbc.AtomikosDataSourceBean;
-import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
-import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.atomikos.AtomikosDataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.basic.BasicDataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.beecp.BeeCpDataSourceCreator;
@@ -33,13 +31,10 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-
-import java.util.List;
 
 /**
  * @author TaoYu
@@ -57,14 +52,6 @@ public class DynamicDataSourceCreatorAutoConfiguration {
     public static final int ATOMIKOS_ORDER = 6000;
     public static final int DEFAULT_ORDER = 7000;
     private final DynamicDataSourceProperties properties;
-
-    @Bean
-    @ConditionalOnMissingBean
-    public DefaultDataSourceCreator dataSourceCreator(List<DataSourceCreator> dataSourceCreators) {
-        DefaultDataSourceCreator creator = new DefaultDataSourceCreator();
-        creator.setCreators(dataSourceCreators);
-        return creator;
-    }
 
     @Bean
     @Order(DEFAULT_ORDER)

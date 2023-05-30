@@ -19,6 +19,7 @@ import com.baomidou.dynamic.datasource.ds.ItemDataSource;
 import com.baomidou.dynamic.datasource.enums.SeataMode;
 import com.baomidou.dynamic.datasource.event.DataSourceInitEvent;
 import com.baomidou.dynamic.datasource.support.ScriptRunner;
+import com.baomidou.dynamic.datasource.toolkit.CryptoUtils;
 import com.p6spy.engine.spy.P6DataSource;
 import io.seata.rm.datasource.DataSourceProxy;
 import io.seata.rm.datasource.xa.DataSourceProxyXA;
@@ -41,7 +42,28 @@ public class DefaultDataSourceCreator {
 
     private List<DataSourceCreator> creators;
 
-    private DataSourceGlobalConfig config;
+    /**
+     * 是否懒加载数据源
+     */
+    private Boolean lazy = false;
+    /**
+     * /**
+     * 是否使用p6spy输出，默认不输出
+     */
+    private Boolean p6spy = false;
+    /**
+     * 是否使用开启seata，默认不开启
+     */
+    private Boolean seata = false;
+    /**
+     * seata使用模式，默认AT
+     */
+    private SeataMode seataMode = SeataMode.AT;
+    /**
+     * 全局默认publicKey
+     */
+    private String publicKey = CryptoUtils.DEFAULT_PUBLIC_KEY_STRING;
+
     private DataSourceInitEvent dataSourceInitEvent;
 
     public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
@@ -55,19 +77,13 @@ public class DefaultDataSourceCreator {
         if (dataSourceCreator == null) {
             throw new IllegalStateException("creator must not be null,please check the DataSourceCreator");
         }
-        String publicKey = dataSourceProperty.getPublicKey();
-        if (StringUtils.isEmpty(publicKey)) {
-            if (config != null) {
-                publicKey = config.getPublicKey();
-                dataSourceProperty.setPublicKey(publicKey);
-            }
+        String propertyPublicKey = dataSourceProperty.getPublicKey();
+        if (StringUtils.isEmpty(propertyPublicKey)) {
+            dataSourceProperty.setPublicKey(publicKey);
         }
-        Boolean lazy = dataSourceProperty.getLazy();
-        if (lazy == null) {
-            if (config != null) {
-                lazy = config.getLazy();
-                dataSourceProperty.setLazy(lazy);
-            }
+        Boolean propertyLazy = dataSourceProperty.getLazy();
+        if (propertyLazy == null) {
+            dataSourceProperty.setLazy(lazy);
         }
         if (dataSourceInitEvent != null) {
             dataSourceInitEvent.beforeCreate(dataSourceProperty);
@@ -77,8 +93,7 @@ public class DefaultDataSourceCreator {
             dataSourceInitEvent.afterCreate(dataSource);
         }
         this.runScrip(dataSource, dataSourceProperty);
-        return dataSource;
-//        return wrapDataSource(dataSource, dataSourceProperty);
+        return wrapDataSource(dataSource, dataSourceProperty);
     }
 
     private void runScrip(DataSource dataSource, DataSourceProperty dataSourceProperty) {
@@ -100,14 +115,13 @@ public class DefaultDataSourceCreator {
         String name = dataSourceProperty.getPoolName();
         DataSource targetDataSource = dataSource;
 
-        Boolean enabledP6spy = config.getP6spy() && dataSourceProperty.getP6spy();
+        Boolean enabledP6spy = p6spy && dataSourceProperty.getP6spy();
         if (enabledP6spy) {
             targetDataSource = new P6DataSource(dataSource);
             log.debug("dynamic-datasource [{}] wrap p6spy plugin", name);
         }
 
-        Boolean enabledSeata = config.getSeata() && dataSourceProperty.getSeata();
-        SeataMode seataMode = config.getSeataMode();
+        Boolean enabledSeata = seata && dataSourceProperty.getSeata();
         if (enabledSeata) {
             if (SeataMode.XA == seataMode) {
                 targetDataSource = new DataSourceProxyXA(targetDataSource);
