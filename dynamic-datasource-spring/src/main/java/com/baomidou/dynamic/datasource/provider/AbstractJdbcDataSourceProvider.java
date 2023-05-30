@@ -16,6 +16,7 @@
 package com.baomidou.dynamic.datasource.provider;
 
 import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
+import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
@@ -52,12 +53,12 @@ public abstract class AbstractJdbcDataSourceProvider extends AbstractDataSourceP
      */
     private final String password;
 
-
-    public AbstractJdbcDataSourceProvider(String url, String username, String password) {
-        this(null, url, username, password);
+    public AbstractJdbcDataSourceProvider(DefaultDataSourceCreator defaultDataSourceCreator, String url, String username, String password) {
+        this(defaultDataSourceCreator, null, url, username, password);
     }
 
-    public AbstractJdbcDataSourceProvider(String driverClassName, String url, String username, String password) {
+    public AbstractJdbcDataSourceProvider(DefaultDataSourceCreator defaultDataSourceCreator, String driverClassName, String url, String username, String password) {
+        super(defaultDataSourceCreator);
         this.driverClassName = driverClassName;
         this.url = url;
         this.username = username;
