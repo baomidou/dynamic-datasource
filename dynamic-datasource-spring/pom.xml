@@ -31,6 +31,11 @@
             <artifactId>seata-rm-datasource</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>com.github.yitter</groupId>
+            <artifactId>yitter-idgenerator</artifactId>
+            <optional>true</optional>
+        </dependency>
         <!--spring-->
         <dependency>
             <groupId>org.springframework</groupId>

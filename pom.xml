@@ -59,7 +59,7 @@
         <p6spy.version>3.9.1</p6spy.version>
         <seata.version>1.4.2</seata.version>
         <lombok.version>1.18.26</lombok.version>
-
+        <idgenerator.version>1.0.6</idgenerator.version>
         <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
         <maven-surefire-plugin.version>3.0.0</maven-surefire-plugin.version>
@@ -162,6 +162,11 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.yitter</groupId>
+                <artifactId>yitter-idgenerator</artifactId>
+                <version>${idgenerator.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

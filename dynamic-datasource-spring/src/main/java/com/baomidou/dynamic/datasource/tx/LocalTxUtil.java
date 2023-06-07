@@ -15,10 +15,10 @@
  */
 package com.baomidou.dynamic.datasource.tx;
 
+import com.github.yitter.idgen.YitIdHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
-import java.util.UUID;
 
 /**
  * 本地事务工具类
@@ -37,7 +37,7 @@ public final class LocalTxUtil {
         if (!StringUtils.isEmpty(xid)) {
             log.debug("dynamic-datasource exist local tx [{}]", xid);
         } else {
-            xid = UUID.randomUUID().toString();
+            xid = String.valueOf(YitIdHelper.nextId());
             TransactionContext.bind(xid);
             log.debug("dynamic-datasource start local tx [{}]", xid);
         }
