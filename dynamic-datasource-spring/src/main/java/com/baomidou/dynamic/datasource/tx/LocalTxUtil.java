@@ -17,8 +17,9 @@ package com.baomidou.dynamic.datasource.tx;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
-
+import java.security.SecureRandom;
 import java.util.UUID;
+
 
 /**
  * 本地事务工具类
@@ -28,6 +29,35 @@ import java.util.UUID;
  */
 @Slf4j
 public final class LocalTxUtil {
+    private static final ThreadLocal<SecureRandom> SECURE_RANDOM_HOLDER = new ThreadLocal<SecureRandom>() {
+        @Override
+        protected SecureRandom initialValue() {
+            return new SecureRandom();
+        }
+    };
+
+    public static UUID randomUUID(){
+        SecureRandom ng = SECURE_RANDOM_HOLDER.get();
+        byte[] randomBytes = new byte[16];
+        ng.nextBytes(randomBytes);
+        // clear version
+        randomBytes[6]  &= 0x0f;
+        // set to version 4
+        randomBytes[6]  |= 0x40;
+        // clear variant
+        randomBytes[8]  &= 0x3f;
+        // set to IETF variant
+        randomBytes[8]  |= 0x80;
+        long msb = 0;
+        long lsb = 0;
+        for (int i=0; i<8; i++) {
+            msb = (msb << 8) | (randomBytes[i] & 0xff);
+        }
+        for (int i=8; i<16; i++) {
+            lsb = (lsb << 8) | (randomBytes[i] & 0xff);
+        }
+        return new UUID(msb, lsb);
+    }
 
     /**
      * 手动开启事务
@@ -37,7 +67,7 @@ public final class LocalTxUtil {
         if (!StringUtils.isEmpty(xid)) {
             log.debug("dynamic-datasource exist local tx [{}]", xid);
         } else {
-            xid = UUID.randomUUID().toString();
+            xid = randomUUID().toString();
             TransactionContext.bind(xid);
             log.debug("dynamic-datasource start local tx [{}]", xid);
         }
