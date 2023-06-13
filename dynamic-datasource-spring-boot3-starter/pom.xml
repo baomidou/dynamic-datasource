@@ -6,14 +6,18 @@
     <parent>
         <groupId>com.baomidou</groupId>
         <artifactId>dynamic-datasource</artifactId>
-        <version>4.0.0</version>
+        <version>4.0.0.B1</version>
     </parent>
 
     <artifactId>dynamic-datasource-spring-boot3-starter</artifactId>
+    <url>
+        https://github.com/baomidou/dynamic-datasource-spring-boot-starter/tree/master/dynamic-datasource-spring-boot3-starter
+    </url>
+
 
     <properties>
         <java.version>11</java.version>
-        <spring-boot-dependencies.version>3.0.0</spring-boot-dependencies.version>
+        <spring-boot-dependencies.version>3.1.0</spring-boot-dependencies.version>
     </properties>
 
     <dependencies>

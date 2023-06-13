@@ -6,10 +6,11 @@
     <parent>
         <groupId>com.baomidou</groupId>
         <artifactId>dynamic-datasource</artifactId>
-        <version>4.0.0</version>
+        <version>4.0.0.B1</version>
     </parent>
 
     <artifactId>dynamic-datasource-creator</artifactId>
+    <url>https://github.com/baomidou/dynamic-datasource-spring-boot-starter/tree/master/dynamic-datasource-creator</url>
 
     <dependencies>
         <dependency>

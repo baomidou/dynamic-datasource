@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.baomidou</groupId>
     <artifactId>dynamic-datasource</artifactId>
-    <version>4.0.0</version>
+    <version>4.0.0.B1</version>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     <description>dynamic datasource</description>
@@ -53,19 +53,19 @@
         <spring-boot-dependencies.version>1.5.3.RELEASE</spring-boot-dependencies.version>
         <mybatis.plus.version>3.5.3.1</mybatis.plus.version>
         <hikaricp.version>2.4.13</hikaricp.version>
-        <druid.version>1.2.17</druid.version>
-        <beeCp.version>3.2.9</beeCp.version>
-        <commons-dbcp2.version>2.8.0</commons-dbcp2.version>
+        <druid.version>1.2.18</druid.version>
+        <beeCp.version>3.4.1</beeCp.version>
+        <commons-dbcp2.version>2.9.0</commons-dbcp2.version>
         <p6spy.version>3.9.1</p6spy.version>
         <seata.version>1.4.2</seata.version>
-        <lombok.version>1.18.26</lombok.version>
+        <lombok.version>1.18.28</lombok.version>
 
         <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
-        <maven-surefire-plugin.version>3.0.0</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.1.0</maven-surefire-plugin.version>
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
         <maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
-        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+        <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
 
         <license-maven-plugin.version>4.2</license-maven-plugin.version>
         <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
@@ -77,17 +77,17 @@
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>dynamic-datasource-creator</artifactId>
-                <version>4.0.0</version>
+                <version>4.0.0.B1</version>
             </dependency>
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>dynamic-datasource-spring</artifactId>
-                <version>4.0.0</version>
+                <version>4.0.0.B1</version>
             </dependency>
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>dynamic-datasource-spring-boot-common</artifactId>
-                <version>4.0.0</version>
+                <version>4.0.0.B1</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -219,6 +219,26 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>3.8.5</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -241,6 +261,9 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <version>${maven-javadoc-plugin.version}</version>
+                        <configuration>
+                            <failOnError>false</failOnError>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
