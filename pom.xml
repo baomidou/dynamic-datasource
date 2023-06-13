@@ -4,10 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.baomidou</groupId>
     <artifactId>dynamic-datasource</artifactId>
-    <version>4.0.0.B1</version>
+    <version>4.0.0-B1</version>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     <description>dynamic datasource</description>
+    <url>https://github.com/baomidou/dynamic-datasource-spring-boot-starter</url>
     <inceptionYear>2018</inceptionYear>
 
     <modules>
@@ -77,17 +78,17 @@
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>dynamic-datasource-creator</artifactId>
-                <version>4.0.0.B1</version>
+                <version>4.0.0-B1</version>
             </dependency>
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>dynamic-datasource-spring</artifactId>
-                <version>4.0.0.B1</version>
+                <version>4.0.0-B1</version>
             </dependency>
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>dynamic-datasource-spring-boot-common</artifactId>
-                <version>4.0.0.B1</version>
+                <version>4.0.0-B1</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>

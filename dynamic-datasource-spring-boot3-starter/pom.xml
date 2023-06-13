@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.baomidou</groupId>
         <artifactId>dynamic-datasource</artifactId>
-        <version>4.0.0.B1</version>
+        <version>4.0.0-B1</version>
     </parent>
 
     <artifactId>dynamic-datasource-spring-boot3-starter</artifactId>
