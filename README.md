@@ -43,7 +43,7 @@ dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成�
 
 ## 文档 | Documentation
 
-[//]: # (详细文档 https://www.kancloud.cn/tracy5546/dynamic-datasource/2264611)
+详细文档 https://www.kancloud.cn/tracy5546/dynamic-datasource/2264611
 
 # 特性
 
