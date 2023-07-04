@@ -15,9 +15,6 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
-import cn.beecp.BeeDataSource;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.atomikos.jdbc.AtomikosDataSourceBean;
 import com.baomidou.dynamic.datasource.creator.atomikos.AtomikosDataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.basic.BasicDataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.beecp.BeeCpDataSourceCreator;
@@ -26,9 +23,7 @@ import com.baomidou.dynamic.datasource.creator.druid.DruidDataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.hikaricp.HikariDataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.jndi.JndiDataSourceCreator;
 import com.baomidou.dynamic.datasource.tx.AtomikosTransactionFactory;
-import com.zaxxer.hikari.HikariDataSource;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -68,10 +63,9 @@ public class DynamicDataSourceCreatorAutoConfiguration {
     /**
      * 存在Druid数据源时, 加入创建器
      */
-
     @Bean
     @Order(DRUID_ORDER)
-    @ConditionalOnClass(DruidDataSource.class)
+    @ConditionalOnClass(name = "com.alibaba.druid.pool.DruidDataSource")
     public DruidDataSourceCreator druidDataSourceCreator() {
         return new DruidDataSourceCreator(properties.getDruid());
     }
@@ -81,7 +75,7 @@ public class DynamicDataSourceCreatorAutoConfiguration {
      */
     @Bean
     @Order(HIKARI_ORDER)
-    @ConditionalOnClass(HikariDataSource.class)
+    @ConditionalOnClass(name = "com.zaxxer.hikari.HikariDataSource")
     public HikariDataSourceCreator hikariDataSourceCreator() {
         return new HikariDataSourceCreator(properties.getHikari());
     }
@@ -91,7 +85,7 @@ public class DynamicDataSourceCreatorAutoConfiguration {
      */
     @Bean
     @Order(BEECP_ORDER)
-    @ConditionalOnClass(BeeDataSource.class)
+    @ConditionalOnClass(name = "cn.beecp.BeeDataSource")
     public BeeCpDataSourceCreator beeCpDataSourceCreator() {
         return new BeeCpDataSourceCreator(properties.getBeecp());
     }
@@ -101,7 +95,7 @@ public class DynamicDataSourceCreatorAutoConfiguration {
      */
     @Bean
     @Order(DBCP2_ORDER)
-    @ConditionalOnClass(BasicDataSource.class)
+    @ConditionalOnClass(name = "org.apache.commons.dbcp2.BasicDataSource")
     public Dbcp2DataSourceCreator dbcp2DataSourceCreator() {
         return new Dbcp2DataSourceCreator(properties.getDbcp2());
     }
@@ -111,13 +105,13 @@ public class DynamicDataSourceCreatorAutoConfiguration {
      */
     @Bean
     @Order(ATOMIKOS_ORDER)
-    @ConditionalOnClass({AtomikosDataSourceBean.class})
+    @ConditionalOnClass(name = "com.atomikos.jdbc.AtomikosDataSourceBean")
     public AtomikosDataSourceCreator atomikosDataSourceCreator() {
         return new AtomikosDataSourceCreator(properties.getAtomikos());
     }
 
     @Bean
-    @ConditionalOnClass({AtomikosDataSourceBean.class, TransactionFactory.class})
+    @ConditionalOnClass(name = {"com.atomikos.jdbc.AtomikosDataSourceBean", "org.apache.ibatis.transaction.TransactionFactory"})
     public TransactionFactory atomikosTransactionFactory() {
         return new AtomikosTransactionFactory();
     }
