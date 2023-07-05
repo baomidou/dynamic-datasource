@@ -35,8 +35,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 
 /**
- * The type Dynamic data source creator auto configuration.
- *
  * @author TaoYu
  */
 @Configuration
