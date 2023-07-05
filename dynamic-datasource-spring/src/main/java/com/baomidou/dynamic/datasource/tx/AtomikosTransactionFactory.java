@@ -29,7 +29,7 @@ import javax.sql.DataSource;
  * @author <a href="mailto:312290710@qq.com">jiazhifeng</a>
  * @date 2023/03/02 10:20
  */
-public class AtomikosTransactionFactory extends SpringManagedTransactionFactory {
+public class AtomikosTransactionFactory extends SpringManagedTransactionFactory implements TransactionFactoryAdapter{
 
     @Override
     public Transaction newTransaction(DataSource dataSource, TransactionIsolationLevel level, boolean autoCommit) {
