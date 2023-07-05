@@ -26,7 +26,6 @@ import com.baomidou.dynamic.datasource.creator.druid.DruidDataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.hikaricp.HikariDataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.jndi.JndiDataSourceCreator;
 import com.baomidou.dynamic.datasource.tx.AtomikosTransactionFactory;
-import com.baomidou.dynamic.datasource.tx.TransactionFactoryAdapter;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.ibatis.transaction.TransactionFactory;
@@ -114,6 +113,7 @@ public class DynamicDataSourceCreatorAutoConfiguration {
         public Dbcp2DataSourceCreator dbcp2DataSourceCreator(DynamicDataSourceProperties properties) {
             return new Dbcp2DataSourceCreator(properties.getDbcp2());
         }
+
     }
 
     /**
@@ -129,9 +129,12 @@ public class DynamicDataSourceCreatorAutoConfiguration {
             return new AtomikosDataSourceCreator(properties.getAtomikos());
         }
 
+    }
+
+    @ConditionalOnClass({AtomikosDataSourceBean.class,TransactionFactory.class})
+    static class AtomikosTransactionFactoryConfiguration{
         @Bean
-        @ConditionalOnClass(TransactionFactory.class)
-        public TransactionFactoryAdapter atomikosTransactionFactory() {
+        public TransactionFactory atomikosTransactionFactory() {
             return new AtomikosTransactionFactory();
         }
     }
