@@ -119,7 +119,7 @@ public class DynamicDataSourceCreatorAutoConfiguration {
     /**
      * 存在Atomikos数据源时, 加入创建器
      */
-    @ConditionalOnClass(AtomikosDataSourceBean.class)
+    @ConditionalOnClass({AtomikosDataSourceBean.class,TransactionFactory.class})
     @Configuration
     static class AtomikosDataSourceCreatorConfiguration {
 
@@ -129,17 +129,10 @@ public class DynamicDataSourceCreatorAutoConfiguration {
             return new AtomikosDataSourceCreator(properties.getAtomikos());
         }
 
-    }
-
-    /**
-     * 存在Atomikos数据源、mybatis时,加入事务工厂
-     */
-    @ConditionalOnClass({AtomikosDataSourceBean.class,TransactionFactory.class})
-    static class AtomikosTransactionFactoryConfiguration{
         @Bean
         public TransactionFactory atomikosTransactionFactory() {
             return new AtomikosTransactionFactory();
         }
-    }
 
+    }
 }
