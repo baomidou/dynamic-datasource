@@ -35,6 +35,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 
 /**
+ * The type Dynamic data source creator auto configuration.
+ *
  * @author TaoYu
  */
 @Configuration
@@ -131,6 +133,9 @@ public class DynamicDataSourceCreatorAutoConfiguration {
 
     }
 
+    /**
+     * 存在Atomikos数据源、mybatis时,加入事务工厂
+     */
     @ConditionalOnClass({AtomikosDataSourceBean.class,TransactionFactory.class})
     static class AtomikosTransactionFactoryConfiguration{
         @Bean
