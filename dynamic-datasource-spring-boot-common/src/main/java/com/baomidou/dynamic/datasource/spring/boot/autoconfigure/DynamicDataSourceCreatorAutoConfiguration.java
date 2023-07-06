@@ -113,12 +113,13 @@ public class DynamicDataSourceCreatorAutoConfiguration {
         public Dbcp2DataSourceCreator dbcp2DataSourceCreator(DynamicDataSourceProperties properties) {
             return new Dbcp2DataSourceCreator(properties.getDbcp2());
         }
+
     }
 
     /**
      * 存在Atomikos数据源时, 加入创建器
      */
-    @ConditionalOnClass(AtomikosDataSourceBean.class)
+    @ConditionalOnClass({AtomikosDataSourceBean.class,TransactionFactory.class})
     @Configuration
     static class AtomikosDataSourceCreatorConfiguration {
 
@@ -129,10 +130,9 @@ public class DynamicDataSourceCreatorAutoConfiguration {
         }
 
         @Bean
-        @ConditionalOnClass(TransactionFactory.class)
         public TransactionFactory atomikosTransactionFactory() {
             return new AtomikosTransactionFactory();
         }
-    }
 
+    }
 }
