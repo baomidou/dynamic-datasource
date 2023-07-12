@@ -104,7 +104,8 @@ public class DruidDataSourceCreator implements DataSourceCreator {
 
         }
         //连接参数单独设置
-        dataSource.setConnectProperties(config.getConnectionProperties());
+        Properties connectionProperties = this.initConnectionProperties(dataSourceProperty);
+        dataSource.setConnectProperties(connectionProperties);
         //设置druid内置properties不支持的的参数
         this.setParam(dataSource, config);
 
@@ -116,6 +117,17 @@ public class DruidDataSourceCreator implements DataSourceCreator {
             }
         }
         return dataSource;
+    }
+
+    private Properties initConnectionProperties(DataSourceProperty dataSourceProperty) {
+        Properties connectProperties = null;
+        String publicKey = dataSourceProperty.getDruid().getPublicKey();
+        if (publicKey != null && publicKey.length() > 0) {
+            connectProperties = new Properties();
+            connectProperties.setProperty("config.decrypt", Boolean.TRUE.toString());
+            connectProperties.setProperty("config.decrypt.key", publicKey);
+        }
+        return connectProperties;
     }
 
     private List<Filter> initFilters(DataSourceProperty dataSourceProperty, String filters) {
