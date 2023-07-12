@@ -21,8 +21,10 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * Druid配置工具类
@@ -48,6 +50,10 @@ public final class DruidConfigUtil {
         for (Map.Entry<String, Method> entry : METHODS.entrySet()) {
             String key = entry.getKey();
             Method readMethod = entry.getValue();
+            Class<?> returnType = readMethod.getReturnType();
+            if (List.class.isAssignableFrom(returnType) || Set.class.isAssignableFrom(returnType) || Map.class.isAssignableFrom(returnType) || Properties.class.isAssignableFrom(returnType)) {
+                continue;
+            }
             Object cValue = readMethod.invoke(c);
             if (cValue != null) {
                 properties.setProperty("druid." + key, String.valueOf(cValue));
