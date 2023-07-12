@@ -16,6 +16,7 @@
 package com.baomidou.dynamic.datasource.creator.druid;
 
 import com.baomidou.dynamic.datasource.toolkit.DsConfigUtil;
+import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,7 +43,7 @@ public final class DruidConfigUtil {
      * @return Druid配置
      */
     @SneakyThrows
-    public static Properties mergeConfig(DruidConfig g, DruidConfig c) {
+    public static Properties mergeConfig(DruidConfig g, @NonNull DruidConfig c) {
         Properties properties = new Properties();
         for (Map.Entry<String, Method> entry : METHODS.entrySet()) {
             String key = entry.getKey();
@@ -61,26 +62,56 @@ public final class DruidConfigUtil {
         }
 
         //filters单独处理，默认了stat
-//        String filters = this.filters == null ? g.getFilters() : this.filters;
-//        if (filters == null) {
-//            filters = DruidConsts.STAT_STR;
-//        }
-//        if (publicKey != null && publicKey.length() > 0 && !filters.contains(DruidConsts.CONFIG_STR)) {
-//            filters += "," + DruidConsts.CONFIG_STR;
-//        }
-//        properties.setProperty(DruidConsts.FILTERS, filters);
-//
-//        Properties connectProperties = connectionProperties == null ? g.getConnectionProperties() : connectionProperties;
-//
-//        if (publicKey != null && publicKey.length() > 0) {
-//            if (connectProperties == null) {
-//                connectProperties = new Properties();
-//            }
-//            connectProperties.setProperty("config.decrypt", Boolean.TRUE.toString());
-//            connectProperties.setProperty("config.decrypt.key", publicKey);
-//        }
-//        this.connectionProperties = connectProperties;
+        String filters = getValue(g, c, "filter");
+        if (filters == null) {
+            filters = DruidConsts.STAT_STR;
+        }
+        String publicKey = getValue(g, c, "publicKey");
+        boolean configFilterExist = publicKey != null && publicKey.length() > 0;
+        if (publicKey != null && publicKey.length() > 0 && !filters.contains(DruidConsts.CONFIG_STR)) {
+            filters += "," + DruidConsts.CONFIG_STR;
+        }
+        properties.setProperty(DruidConsts.FILTERS, filters);
 
+        Properties connectProperties = new Properties();
+        Properties cConnectionProperties = c.getConnectionProperties();
+        if (g != null) {
+            Properties gConnectionProperties = g.getConnectionProperties();
+            if (gConnectionProperties != null) {
+                connectProperties.putAll(gConnectionProperties);
+            }
+        }
+        if (cConnectionProperties != null) {
+            connectProperties.putAll(cConnectionProperties);
+        }
+        if (configFilterExist) {
+            connectProperties.setProperty("config.decrypt", Boolean.TRUE.toString());
+            connectProperties.setProperty("config.decrypt.key", publicKey);
+        }
+        c.setConnectionProperties(connectProperties);
         return properties;
+    }
+
+    public static String getValue(DruidConfig g, @NonNull DruidConfig c, String field) {
+        Method method = METHODS.get(field);
+        if (method == null) {
+            return null;
+        }
+        try {
+            Object value = method.invoke(c);
+            if (value != null) {
+                return String.valueOf(value);
+            }
+            if (g != null) {
+                value = method.invoke(g);
+                if (value != null) {
+                    return String.valueOf(value);
+                }
+            }
+        } catch (Exception e) {
+            // do nothing
+        }
+        return null;
+
     }
 }

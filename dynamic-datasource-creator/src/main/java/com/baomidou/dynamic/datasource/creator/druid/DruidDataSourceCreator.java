@@ -65,7 +65,6 @@ public class DruidDataSourceCreator implements DataSourceCreator {
      * Druid since 1.2.17 use 'configFromPropeties' to copy config
      * Druid < 1.2.17 use 'configFromPropety' to copy config
      */
-    @SuppressWarnings("JavaReflectionMemberAccess")
     private static void fetchMethod() {
         Class<DruidDataSource> aClass = DruidDataSource.class;
         try {
