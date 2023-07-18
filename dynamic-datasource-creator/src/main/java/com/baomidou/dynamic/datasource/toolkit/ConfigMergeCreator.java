@@ -45,6 +45,7 @@ public class ConfigMergeCreator<C, T> {
     private final Class<T> targetClazz;
 
     @SneakyThrows
+    @SuppressWarnings("unchecked")
     public T create(C global, C item) {
         if (configClazz.equals(targetClazz) && global == null) {
             return (T) item;

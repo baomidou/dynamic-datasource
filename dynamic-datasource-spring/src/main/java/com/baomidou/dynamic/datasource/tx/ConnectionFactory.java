@@ -221,7 +221,15 @@ public class ConnectionFactory {
     public static boolean hasSavepoint(String xid) {
         Map<String, List<SavePointHolder>> savePointMap = SAVEPOINT_CONNECTION_HOLDER.get();
         List<SavePointHolder> savePointHolders = savePointMap.get(xid);
-        return !CollectionUtils.isEmpty(savePointHolders) && savePointHolders.stream().anyMatch(savePointHolder -> !CollectionUtils.isEmpty(savePointHolder.getSavePoints()));
+        if (savePointHolders == null || savePointHolders.isEmpty()) {
+            return false;
+        }
+        for (SavePointHolder savePointHolder : savePointHolders) {
+            if (!CollectionUtils.isEmpty(savePointHolder.getSavePoints())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
