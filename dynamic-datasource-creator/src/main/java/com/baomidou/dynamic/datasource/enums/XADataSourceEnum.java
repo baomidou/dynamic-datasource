@@ -21,21 +21,46 @@ import lombok.Getter;
  * 目前支持的XA数据源
  *
  * @author <a href="mailto:312290710@qq.com">jiazhifeng</a>
- * @date 2023/03/02 23:05
  */
 @Getter
 public enum XADataSourceEnum {
+    /**
+     * mysql
+     */
     MYSQL("com.mysql.cj.jdbc.MysqlXADataSource"),
+    /**
+     * oracle
+     */
     ORACLE("oracle.jdbc.xa.client.OracleXADataSource"),
+    /**
+     * postgresql
+     */
     POSTGRE_SQL("org.postgresql.xa.PGXADataSource"),
+    /**
+     * h2
+     */
     H2("org.h2.jdbcx.JdbcDataSource");
 
+    /**
+     * xa数据源类名
+     */
     private final String xaDriverClassName;
 
+    /**
+     * 构造方法
+     *
+     * @param xaDriverClassName
+     */
     XADataSourceEnum(String xaDriverClassName) {
         this.xaDriverClassName = xaDriverClassName;
     }
 
+    /**
+     * 是否包含
+     *
+     * @param xaDataSourceClassName xa数据源类名
+     * @return boolean 包含
+     */
     public static boolean contains(String xaDataSourceClassName) {
         for (XADataSourceEnum item : values()) {
             if (item.getXaDriverClassName().equals(xaDataSourceClassName)) {

@@ -66,6 +66,12 @@ public class DefaultDataSourceCreator {
 
     private DataSourceInitEvent dataSourceInitEvent;
 
+    /**
+     * 创建数据源
+     *
+     * @param dataSourceProperty 数据源参数
+     * @return 数据源
+     */
     public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
         DataSourceCreator dataSourceCreator = null;
         for (DataSourceCreator creator : this.creators) {
@@ -96,6 +102,12 @@ public class DefaultDataSourceCreator {
         return wrapDataSource(dataSource, dataSourceProperty);
     }
 
+    /**
+     * 执行初始化脚本
+     *
+     * @param dataSource         数据源
+     * @param dataSourceProperty 数据源参数
+     */
     private void runScrip(DataSource dataSource, DataSourceProperty dataSourceProperty) {
         DatasourceInitProperties initProperty = dataSourceProperty.getInit();
         String schema = initProperty.getSchema();
@@ -111,6 +123,13 @@ public class DefaultDataSourceCreator {
         }
     }
 
+    /**
+     * 包装数据源
+     *
+     * @param dataSource         数据源
+     * @param dataSourceProperty 数据源参数
+     * @return
+     */
     private DataSource wrapDataSource(DataSource dataSource, DataSourceProperty dataSourceProperty) {
         String name = dataSourceProperty.getPoolName();
         DataSource targetDataSource = dataSource;

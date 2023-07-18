@@ -53,10 +53,27 @@ public abstract class AbstractJdbcDataSourceProvider extends AbstractDataSourceP
      */
     private final String password;
 
+    /**
+     * 通过默认数据源创建器创建数据源
+     *
+     * @param defaultDataSourceCreator 默认数据源创建器
+     * @param url                      数据源url
+     * @param username                 用户名
+     * @param password                 密码
+     */
     public AbstractJdbcDataSourceProvider(DefaultDataSourceCreator defaultDataSourceCreator, String url, String username, String password) {
         this(defaultDataSourceCreator, null, url, username, password);
     }
 
+    /**
+     * 通过默认数据源创建器创建数据源
+     *
+     * @param defaultDataSourceCreator 默认数据源创建器
+     * @param driverClassName          驱动类名
+     * @param url                      数据源url
+     * @param username                 用户名
+     * @param password                 密码
+     */
     public AbstractJdbcDataSourceProvider(DefaultDataSourceCreator defaultDataSourceCreator, String driverClassName, String url, String username, String password) {
         super(defaultDataSourceCreator);
         this.driverClassName = driverClassName;
@@ -65,6 +82,11 @@ public abstract class AbstractJdbcDataSourceProvider extends AbstractDataSourceP
         this.password = password;
     }
 
+    /**
+     * 关闭资源
+     *
+     * @param con 资源
+     */
     private static void closeResource(AutoCloseable con) {
         if (con != null) {
             try {

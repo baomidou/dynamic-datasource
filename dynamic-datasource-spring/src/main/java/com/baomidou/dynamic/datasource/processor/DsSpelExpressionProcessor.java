@@ -30,6 +30,8 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 import java.lang.reflect.Method;
 
 /**
+ * SpEL表达式处理器
+ *
  * @author TaoYu
  * @since 2.5.0
  */
@@ -84,10 +86,20 @@ public class DsSpelExpressionProcessor extends DsProcessor {
         return value == null ? null : value.toString();
     }
 
+    /**
+     * 设置解析上下文
+     *
+     * @param parserContext 解析上下文
+     */
     public void setParserContext(ParserContext parserContext) {
         this.parserContext = parserContext;
     }
 
+    /**
+     * 设置bean解析器
+     *
+     * @param beanResolver bean解析器
+     */
     public void setBeanResolver(BeanResolver beanResolver) {
         this.beanResolver = beanResolver;
     }

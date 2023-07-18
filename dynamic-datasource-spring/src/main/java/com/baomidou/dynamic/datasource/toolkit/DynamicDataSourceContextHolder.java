@@ -63,6 +63,7 @@ public final class DynamicDataSourceContextHolder {
      * </p>
      *
      * @param ds 数据源名称
+     * @return 数据源名称
      */
     public static String push(String ds) {
         String dataSourceStr = StringUtils.isEmpty(ds) ? "" : ds;

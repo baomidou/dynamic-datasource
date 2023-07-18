@@ -62,9 +62,10 @@ public class DynamicDataSourceAssistConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public DefaultDataSourceCreator dataSourceCreator(List<DataSourceCreator> dataSourceCreators) {
+    public DefaultDataSourceCreator dataSourceCreator(List<DataSourceCreator> dataSourceCreators, DataSourceInitEvent dataSourceInitEvent) {
         DefaultDataSourceCreator creator = new DefaultDataSourceCreator();
         creator.setCreators(dataSourceCreators);
+        creator.setDataSourceInitEvent(dataSourceInitEvent);
         creator.setPublicKey(properties.getPublicKey());
         creator.setLazy(properties.getLazy());
         creator.setP6spy(properties.getP6spy());

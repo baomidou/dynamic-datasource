@@ -32,7 +32,6 @@ import java.util.Properties;
  * Atomikos数据源配置
  *
  * @author <a href="mailto:312290710@qq.com">jiazhifeng</a>
- * @date 2023/03/02 10:20
  */
 @NoArgsConstructor
 @AllArgsConstructor

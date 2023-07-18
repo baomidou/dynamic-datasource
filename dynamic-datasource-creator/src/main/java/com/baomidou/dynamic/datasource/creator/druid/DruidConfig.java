@@ -15,8 +15,8 @@
  */
 package com.baomidou.dynamic.datasource.creator.druid;
 
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.*;
 
@@ -26,8 +26,8 @@ import java.util.*;
  * @author TaoYu
  * @since 1.2.0
  */
-@Data
-@Slf4j
+@Getter
+@Setter
 public class DruidConfig {
 
     private Integer initialSize;

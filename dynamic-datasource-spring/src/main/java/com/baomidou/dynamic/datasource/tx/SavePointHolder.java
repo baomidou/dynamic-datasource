@@ -23,18 +23,39 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * Savepoint Holder
+ *
  * @author zp
  */
 public class SavePointHolder {
+    /**
+     * savepoint name prefix
+     */
     private static final String SAVEPOINT_NAME_PREFIX = "DYNAMIC_";
+    /**
+     * connection proxy
+     */
     private ConnectionProxy connectionProxy;
+    /**
+     * savepoints
+     */
     private LinkedList<Savepoint> savepoints;
 
+    /**
+     * constructor
+     *
+     * @param connectionProxy connection proxy
+     */
     public SavePointHolder(ConnectionProxy connectionProxy) {
         this.connectionProxy = connectionProxy;
         this.savepoints = new LinkedList<>();
     }
 
+    /**
+     * conversion savepoint holder
+     *
+     * @throws SQLException SQLException
+     */
     public void conversionSavePointHolder() throws SQLException {
         if (connectionProxy == null) {
             throw new SQLTransientConnectionException();
@@ -45,6 +66,12 @@ public class SavePointHolder {
         savepoints.addLast(savepoint);
     }
 
+    /**
+     * release savepoint
+     *
+     * @return savepoint index
+     * @throws SQLException SQLException
+     */
     public int releaseSavepoint() throws SQLException {
         Savepoint savepoint = savepoints.pollLast();
         if (savepoint != null) {
@@ -55,6 +82,12 @@ public class SavePointHolder {
         return -1;
     }
 
+    /**
+     * rollback savepoint
+     *
+     * @return savepoint index
+     * @throws SQLException SQLException
+     */
     public int rollbackSavePoint() throws SQLException {
         Savepoint savepoint = savepoints.pollLast();
         if (savepoint != null) {
@@ -65,10 +98,20 @@ public class SavePointHolder {
         return -1;
     }
 
+    /**
+     * get connection proxy
+     *
+     * @return
+     */
     public ConnectionProxy getConnectionProxy() {
         return this.connectionProxy;
     }
 
+    /**
+     * get savepoints
+     *
+     * @return
+     */
     public List<Savepoint> getSavePoints() {
         return this.savepoints;
     }

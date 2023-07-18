@@ -15,7 +15,8 @@
  */
 package com.baomidou.dynamic.datasource.creator.dbcp;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 import java.util.Set;
@@ -25,7 +26,8 @@ import java.util.Set;
  *
  * @author TaoYu
  */
-@Data
+@Getter
+@Setter
 public class Dbcp2Config {
 
     private Boolean defaultAutoCommit;

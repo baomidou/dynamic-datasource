@@ -37,17 +37,33 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 /**
+ * DynamicDataSource Annotation Pointcut
+ *
  * @author TaoYu
  * @since 1.2.0
  */
 public class DynamicDataSourceAnnotationAdvisor extends AbstractPointcutAdvisor implements BeanFactoryAware {
 
+    /**
+     * the advice
+     */
     private final Advice advice;
-
+    /**
+     * the pointcut
+     */
     private final Pointcut pointcut;
 
+    /**
+     * the annotation
+     */
     private final Class<? extends Annotation> annotation;
 
+    /**
+     * 构造方法
+     *
+     * @param advice     切面
+     * @param annotation 注解
+     */
     public DynamicDataSourceAnnotationAdvisor(@NonNull MethodInterceptor advice,
                                               @NonNull Class<? extends Annotation> annotation) {
         this.advice = advice;

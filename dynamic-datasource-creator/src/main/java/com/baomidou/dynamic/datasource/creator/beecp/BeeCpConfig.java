@@ -15,7 +15,8 @@
  */
 package com.baomidou.dynamic.datasource.creator.beecp;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Properties;
 
@@ -25,7 +26,8 @@ import java.util.Properties;
  * @author TaoYu
  * @since 3.3.4
  */
-@Data
+@Getter
+@Setter
 public class BeeCpConfig {
 
     private String defaultCatalog;

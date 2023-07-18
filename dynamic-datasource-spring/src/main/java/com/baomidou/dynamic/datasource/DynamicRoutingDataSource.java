@@ -222,7 +222,10 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
         // 添加并分组数据源
         Map<String, DataSource> dataSources = new HashMap<>(16);
         for (DynamicDataSourceProvider provider : providers) {
-            dataSources.putAll(provider.loadDataSources());
+            Map<String, DataSource> dsMap = provider.loadDataSources();
+            if (dsMap != null) {
+                dataSources.putAll(dsMap);
+            }
         }
         for (Map.Entry<String, DataSource> dsItem : dataSources.entrySet()) {
             addDataSource(dsItem.getKey(), dsItem.getValue());

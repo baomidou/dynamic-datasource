@@ -36,6 +36,12 @@ public class YmlDynamicDataSourceProvider extends AbstractDataSourceProvider {
      */
     private final Map<String, DataSourceProperty> dataSourcePropertiesMap;
 
+    /**
+     * 构造函数
+     *
+     * @param defaultDataSourceCreator 默认数据源创建器
+     * @param dataSourcePropertiesMap  数据源参数
+     */
     public YmlDynamicDataSourceProvider(DefaultDataSourceCreator defaultDataSourceCreator, Map<String, DataSourceProperty> dataSourcePropertiesMap) {
         super(defaultDataSourceCreator);
         this.dataSourcePropertiesMap = dataSourcePropertiesMap;
