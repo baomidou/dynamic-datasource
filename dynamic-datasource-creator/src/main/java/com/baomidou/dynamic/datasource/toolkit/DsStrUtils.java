@@ -15,16 +15,39 @@
  */
 package com.baomidou.dynamic.datasource.toolkit;
 
+/**
+ * 常见字符串工具类
+ *
+ * @author TaoYu
+ */
 public abstract class DsStrUtils {
 
+    /**
+     * 判断字符串是否为空
+     *
+     * @param str 字符串
+     * @return true: null or "" or "   "  false: "a"
+     */
     public static boolean hasLength(CharSequence str) {
         return (str != null && str.length() > 0);
     }
 
+    /**
+     * 判断字符串是否为空
+     *
+     * @param str 字符串
+     * @return true: null or "" or "   "  false: "a"
+     */
     public static boolean hasLength(String str) {
         return hasLength((CharSequence) str);
     }
 
+    /**
+     * 判断字符串是否有内容
+     *
+     * @param str 字符串
+     * @return true: null or "" or "   "  false: "a"
+     */
     public static boolean hasText(CharSequence str) {
         if (!hasLength(str)) {
             return false;

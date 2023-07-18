@@ -45,6 +45,11 @@ public class DynamicDatasourceNamedInterceptor implements MethodInterceptor {
     private final Map<String, String> nameMap = new HashMap<>();
     private final DsProcessor dsProcessor;
 
+    /**
+     * init
+     *
+     * @param dsProcessor dsProcessor
+     */
     public DynamicDatasourceNamedInterceptor(DsProcessor dsProcessor) {
         this.dsProcessor = dsProcessor;
     }

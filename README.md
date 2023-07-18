@@ -76,20 +76,24 @@ dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成�
 1. 引入dynamic-datasource-spring-boot-starter。
 
 spring-boot 1.5.x 2.x.x
+
 ```xml
+
 <dependency>
-  <groupId>com.baomidou</groupId>
-  <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
-  <version>${version}</version>
+    <groupId>com.baomidou</groupId>
+    <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+    <version>${version}</version>
 </dependency>
 ```
 
 spring-boot3及以上
+
 ```xml
+
 <dependency>
-  <groupId>com.baomidou</groupId>
-  <artifactId>dynamic-datasource-spring-boot3-starter</artifactId>
-  <version>${version}</version>
+    <groupId>com.baomidou</groupId>
+    <artifactId>dynamic-datasource-spring-boot3-starter</artifactId>
+    <version>${version}</version>
 </dependency>
 ```
 
@@ -117,21 +121,39 @@ spring:
           username: ENC(xxxxx)
           password: ENC(xxxxx)
           driver-class-name: com.mysql.jdbc.Driver
-       #......省略
-       #以上会配置一个默认库master，一个组slave下有两个子库slave_1,slave_2
+        #......省略
+        #以上会配置一个默认库master，一个组slave下有两个子库slave_1,slave_2
 ```
 
 ```yaml
 # 多主多从                      纯粹多库（记得设置primary）                   混合配置
-spring:                               spring:                               spring:
-  datasource:                           datasource:                           datasource:
-    dynamic:                              dynamic:                              dynamic:
-      datasource:                           datasource:                           datasource:
-        master_1:                             mysql:                                master:
-        master_2:                             oracle:                               slave_1:
-        slave_1:                              sqlserver:                            slave_2:
-        slave_2:                              postgresql:                           oracle_1:
-        slave_3:                              h2:                                   oracle_2:
+spring:
+  spring:
+    spring:
+    datasource:
+      datasource:
+        datasource:
+        dynamic:
+          dynamic:
+            dynamic:
+            datasource:
+              datasource:
+                datasource:
+                master_1:
+                  mysql:
+                    master:
+                master_2:
+                  oracle:
+                    slave_1:
+                slave_1:
+                  sqlserver:
+                    slave_2:
+                slave_2:
+                  postgresql:
+                    oracle_1:
+                slave_3:
+                  h2:
+                    oracle_2:
 ```
 
 3. 使用  **@DS**  切换数据源。
@@ -144,21 +166,22 @@ spring:                               spring:                               spri
 | @DS("dsName") | dsName可以为组名也可以为具体某个库的名称 |
 
 ```java
+
 @Service
 @DS("slave")
 public class UserServiceImpl implements UserService {
 
-  @Autowired
-  private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
-  public List selectAll() {
-    return  jdbcTemplate.queryForList("select * from user");
-  }
-  
-  @Override
-  @DS("slave_1")
-  public List selectByCondition() {
-    return  jdbcTemplate.queryForList("select * from user where age >10");
-  }
+    public List selectAll() {
+        return jdbcTemplate.queryForList("select * from user");
+    }
+
+    @Override
+    @DS("slave_1")
+    public List selectByCondition() {
+        return jdbcTemplate.queryForList("select * from user where age >10");
+    }
 }
 ```

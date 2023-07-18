@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.baomidou</groupId>
     <artifactId>dynamic-datasource</artifactId>
-    <version>4.1.1</version>
+    <version>4.1.2</version>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     <description>dynamic datasource</description>
@@ -78,17 +78,17 @@
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>dynamic-datasource-creator</artifactId>
-                <version>4.1.1</version>
+                <version>4.1.2</version>
             </dependency>
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>dynamic-datasource-spring</artifactId>
-                <version>4.1.1</version>
+                <version>4.1.2</version>
             </dependency>
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>dynamic-datasource-spring-boot-common</artifactId>
-                <version>4.1.1</version>
+                <version>4.1.2</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -211,6 +211,11 @@
                     <includes>
                         <include>src/main/java/**</include>
                     </includes>
+                    <excludes>
+                        <exclude>src/main/java/com/**/**/Base64.java</exclude>
+                        <exclude>src/main/java/com/**/**/CryptoUtils.java</exclude>
+                        <exclude>src/main/java/com/**/**/DruidDynamicDataSourceConfiguration.java</exclude>
+                    </excludes>
                 </configuration>
                 <executions>
                     <execution>

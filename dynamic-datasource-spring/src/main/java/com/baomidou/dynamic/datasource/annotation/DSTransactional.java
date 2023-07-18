@@ -28,9 +28,25 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface DSTransactional {
+
+    /**
+     * 回滚异常
+     *
+     * @return Class[]
+     */
     Class<? extends Throwable>[] rollbackFor() default {Exception.class};
 
+    /**
+     * 不回滚异常
+     *
+     * @return Class[]
+     */
     Class<? extends Throwable>[] noRollbackFor() default {};
 
+    /**
+     * 事务传播行为
+     *
+     * @return DsPropagation
+     */
     DsPropagation propagation() default DsPropagation.REQUIRED;
 }

@@ -15,15 +15,16 @@
  */
 package com.baomidou.dynamic.datasource.creator.atomikos;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Atomikos 配置
  *
  * @author <a href="mailto:312290710@qq.com">jiazhifeng</a>
- * @date 2023/03/02 10:20
  */
-@Data
+@Getter
+@Setter
 public class AtomikosConfig {
     /**
      * 设置最小池大小。连接的数量不会低于该值。池将在初始化期间打开此数量的连接。可选，默认为 1

@@ -23,10 +23,21 @@ package com.baomidou.dynamic.datasource.exception;
  */
 public class CannotFindDataSourceException extends RuntimeException {
 
+    /**
+     * 构造方法
+     *
+     * @param message 异常信息
+     */
     public CannotFindDataSourceException(String message) {
         super(message);
     }
 
+    /**
+     * 构造方法
+     *
+     * @param message 异常信息
+     * @param cause   异常
+     */
     public CannotFindDataSourceException(String message, Throwable cause) {
         super(message, cause);
     }

@@ -42,7 +42,7 @@ public final class DruidWallConfigUtil {
      */
     public static WallConfig toWallConfig(Map<String, Object> c, Map<String, Object> g) {
         WallConfig wallConfig = new WallConfig();
-        Map<String, Object> map = DsConfigUtil.mergeConfig(c, g);
+        Map<String, Object> map = DsConfigUtil.mergeMap(c, g);
         Object dir = map.get("dir");
         if (dir != null) {
             wallConfig.loadConfig(String.valueOf(dir));

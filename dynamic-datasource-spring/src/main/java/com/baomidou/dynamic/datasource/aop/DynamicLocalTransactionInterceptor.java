@@ -26,6 +26,8 @@ import org.aopalliance.intercept.MethodInvocation;
 import java.lang.reflect.Method;
 
 /**
+ * Dynamic DataSource Transaction Interceptor
+ *
  * @author funkye
  */
 @Slf4j

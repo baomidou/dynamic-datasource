@@ -49,7 +49,7 @@ public class ConfigMergeCreator<C, T> {
         if (configClazz.equals(targetClazz) && global == null) {
             return (T) item;
         }
-        T result = targetClazz.newInstance();
+        T result = targetClazz.getDeclaredConstructor().newInstance();
         BeanInfo beanInfo = Introspector.getBeanInfo(configClazz, Object.class);
         PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
         for (PropertyDescriptor pd : propertyDescriptors) {
@@ -108,7 +108,7 @@ public class ConfigMergeCreator<C, T> {
             } catch (ReflectiveOperationException e1) {
                 log.warn("dynamic-datasource set {} [{}] failed,please check your config or update {}  to the latest version", configName, name, configName);
             } finally {
-                if (field != null && field.isAccessible()) {
+                if (field != null) {
                     field.setAccessible(false);
                 }
             }

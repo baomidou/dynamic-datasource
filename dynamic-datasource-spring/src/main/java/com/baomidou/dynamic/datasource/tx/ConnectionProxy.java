@@ -15,6 +15,8 @@
  */
 package com.baomidou.dynamic.datasource.tx;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.*;
@@ -27,6 +29,8 @@ import java.util.concurrent.Executor;
  * @author funkye
  */
 @Slf4j
+@Getter
+@Setter
 public class ConnectionProxy implements Connection {
 
     private Connection connection;
@@ -35,11 +39,23 @@ public class ConnectionProxy implements Connection {
 
     private int savepointCounter = 0;
 
+    /**
+     * init
+     *
+     * @param connection 数据源链接
+     * @param ds         数据源名称
+     */
     public ConnectionProxy(Connection connection, String ds) {
         this.connection = connection;
         this.ds = ds;
     }
 
+    /**
+     * 通知事务管理器提交或回滚
+     *
+     * @param commit 是否提交
+     * @throws SQLException SQLException
+     */
     public void notify(Boolean commit) throws SQLException {
         try {
             if (commit) {
@@ -348,29 +364,5 @@ public class ConnectionProxy implements Connection {
     @Override
     public int hashCode() {
         return Objects.hash(connection, ds);
-    }
-
-    public Connection getConnection() {
-        return connection;
-    }
-
-    public void setConnection(Connection connection) {
-        this.connection = connection;
-    }
-
-    public String getDs() {
-        return ds;
-    }
-
-    public void setDs(String ds) {
-        this.ds = ds;
-    }
-
-    public int getSavepointCounter() {
-        return savepointCounter;
-    }
-
-    public void setSavepointCounter(int savepointCounter) {
-        this.savepointCounter = savepointCounter;
     }
 }

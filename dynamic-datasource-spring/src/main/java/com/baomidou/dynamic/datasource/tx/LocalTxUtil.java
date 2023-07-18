@@ -21,7 +21,6 @@ import org.springframework.util.StringUtils;
 import java.security.SecureRandom;
 import java.util.UUID;
 
-
 /**
  * 本地事务工具类
  *
@@ -30,6 +29,10 @@ import java.util.UUID;
  */
 @Slf4j
 public final class LocalTxUtil {
+
+    /**
+     * SecureRandom instance used to generate UUIDs.
+     */
     private static final ThreadLocal<SecureRandom> SECURE_RANDOM_HOLDER = new ThreadLocal<SecureRandom>() {
         @Override
         protected SecureRandom initialValue() {
@@ -37,6 +40,11 @@ public final class LocalTxUtil {
         }
     };
 
+    /**
+     * 随机生成UUID
+     *
+     * @return UUID
+     */
     public static UUID randomUUID() {
         SecureRandom ng = SECURE_RANDOM_HOLDER.get();
         byte[] randomBytes = new byte[16];
@@ -62,6 +70,8 @@ public final class LocalTxUtil {
 
     /**
      * 手动开启事务
+     *
+     * @return 事务ID
      */
     public static String startTransaction() {
         String xid = TransactionContext.getXID();
@@ -77,6 +87,8 @@ public final class LocalTxUtil {
 
     /**
      * 手动提交事务
+     *
+     * @param xid 事务ID
      */
     public static void commit(String xid) throws Exception {
         boolean hasSavepoint = ConnectionFactory.hasSavepoint(xid);
@@ -92,6 +104,8 @@ public final class LocalTxUtil {
 
     /**
      * 手动回滚事务
+     *
+     * @param xid 事务ID
      */
     public static void rollback(String xid) throws Exception {
         boolean hasSavepoint = ConnectionFactory.hasSavepoint(xid);

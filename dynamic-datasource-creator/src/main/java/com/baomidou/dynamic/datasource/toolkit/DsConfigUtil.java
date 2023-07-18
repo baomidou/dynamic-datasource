@@ -56,12 +56,25 @@ public final class DsConfigUtil {
      * @param g 全局配置
      * @return 合并配置
      */
-    public static Map<String, Object> mergeConfig(Map<String, Object> c, Map<String, Object> g) {
+    public static Map<String, Object> mergeMap(Map<String, Object> c, Map<String, Object> g) {
         int size = 1 + (int) ((c.size() + g.size()) / 0.75);
         Map<String, Object> map = new HashMap<>(size);
         map.putAll(g);
         map.putAll(c);
         return map;
+    }
+
+    public static Map<String, PropertyDescriptor> getPropertyDescriptorMap(Class<?> clazz) {
+        Map<String, PropertyDescriptor> methodMap = new HashMap<>();
+        try {
+            for (PropertyDescriptor pd : Introspector.getBeanInfo(clazz).getPropertyDescriptors()) {
+                if (!"class".equals(pd.getName())) {
+                    methodMap.put(pd.getName(), pd);
+                }
+            }
+        } catch (Exception ignore) {
+        }
+        return methodMap;
     }
 
     /**
@@ -109,7 +122,7 @@ public final class DsConfigUtil {
      *
      * @param method 方法
      * @param value  值
-     * @return
+     * @return 对应值
      */
     public static Object convertValue(Method method, Object value) {
         Class<?>[] parameterTypes = method.getParameterTypes();
@@ -120,19 +133,19 @@ public final class DsConfigUtil {
                 return propertyValue;
             }
             if (parameterType == Integer.class || parameterType == int.class) {
-                return Integer.valueOf(propertyValue).intValue();
+                return Integer.valueOf(propertyValue);
             }
             if (parameterType == Long.class || parameterType == long.class) {
-                return Long.valueOf(propertyValue).longValue();
+                return Long.valueOf(propertyValue);
             }
             if (parameterType == Boolean.class || parameterType == boolean.class) {
-                return Boolean.valueOf(propertyValue).booleanValue();
+                return Boolean.valueOf(propertyValue);
             }
             if (parameterType == Double.class || parameterType == double.class) {
-                return Double.valueOf(propertyValue).doubleValue();
+                return Double.valueOf(propertyValue);
             }
             if (parameterType == Float.class || parameterType == float.class) {
-                return Float.valueOf(propertyValue).floatValue();
+                return Float.valueOf(propertyValue);
             }
         }
         return value;

@@ -15,11 +15,27 @@
  */
 package com.baomidou.dynamic.datasource.exception;
 
+/**
+ * 事务异常
+ *
+ * @author Hzh
+ */
 public class TransactionException extends RuntimeException {
+    /**
+     * 构造
+     *
+     * @param message 消息
+     */
     public TransactionException(String message) {
         super(message);
     }
 
+    /**
+     * 构造
+     *
+     * @param message 消息
+     * @param cause   异常
+     */
     public TransactionException(String message, Throwable cause) {
         super(message, cause);
     }

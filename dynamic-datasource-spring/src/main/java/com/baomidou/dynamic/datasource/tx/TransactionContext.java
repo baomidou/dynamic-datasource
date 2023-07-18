@@ -27,7 +27,7 @@ public class TransactionContext {
     /**
      * Gets xid.
      *
-     * @return the xid
+     * @return 事务ID
      */
     public static String getXID() {
         String xid = CONTEXT_HOLDER.get();
@@ -40,6 +40,7 @@ public class TransactionContext {
     /**
      * Unbind string.
      *
+     * @param xid 事务ID
      * @return the string
      */
     public static String unbind(String xid) {
@@ -48,8 +49,9 @@ public class TransactionContext {
     }
 
     /**
-     * bind string.
+     * bind xid.
      *
+     * @param xid 事务ID
      * @return the string
      */
     public static String bind(String xid) {

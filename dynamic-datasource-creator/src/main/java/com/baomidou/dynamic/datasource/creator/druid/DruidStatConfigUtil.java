@@ -49,7 +49,7 @@ public final class DruidStatConfigUtil {
      */
     public static StatFilter toStatFilter(Map<String, Object> c, Map<String, Object> g) {
         StatFilter filter = new StatFilter();
-        Map<String, Object> map = DsConfigUtil.mergeConfig(c, g);
+        Map<String, Object> map = DsConfigUtil.mergeMap(c, g);
         for (Map.Entry<String, Object> item : map.entrySet()) {
             String key = DsConfigUtil.lineToUpper(item.getKey());
             Method method = METHODS.get(key);

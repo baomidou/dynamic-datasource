@@ -22,9 +22,21 @@ import org.springframework.util.StringUtils;
 
 import java.util.Objects;
 
+/**
+ * 事务模板
+ *
+ * @author Hzh
+ */
 @Slf4j
 public class TransactionalTemplate {
 
+    /**
+     * Execute with transaction.
+     *
+     * @param transactionalExecutor TransactionalExecutor
+     * @return Object
+     * @throws Throwable Throwable
+     */
     public Object execute(TransactionalExecutor transactionalExecutor) throws Throwable {
         TransactionalInfo transactionInfo = transactionalExecutor.getTransactionInfo();
         DsPropagation propagation = transactionInfo.propagation;
@@ -85,6 +97,13 @@ public class TransactionalTemplate {
         }
     }
 
+    /**
+     * 判断是否存在事务
+     *
+     * @param transactionalExecutor TransactionalExecutor
+     * @return 是否存在事务
+     * @throws Throwable Throwable
+     */
     private Object doExecute(TransactionalExecutor transactionalExecutor) throws Throwable {
         TransactionalInfo transactionInfo = transactionalExecutor.getTransactionInfo();
         DsPropagation propagation = transactionInfo.propagation;
@@ -109,6 +128,13 @@ public class TransactionalTemplate {
         return o;
     }
 
+    /**
+     * 判断是否回滚
+     *
+     * @param e               异常
+     * @param transactionInfo 事务信息
+     * @return 是否回滚
+     */
     private boolean isRollback(Throwable e, TransactionalInfo transactionInfo) {
         boolean isRollback = true;
         Class<? extends Throwable>[] rollbacks = transactionInfo.rollbackFor;
@@ -132,6 +158,13 @@ public class TransactionalTemplate {
         return false;
     }
 
+    /**
+     * 获取深度
+     *
+     * @param exceptionClass 异常类
+     * @param rollback       回滚类
+     * @return 深度
+     */
     private int getDepth(Class<?> exceptionClass, Class<? extends Throwable> rollback) {
         if (rollback == Throwable.class || rollback == Exception.class) {
             return 0;
@@ -153,6 +186,11 @@ public class TransactionalTemplate {
         }
     }
 
+    /**
+     * 挂起资源
+     *
+     * @return 挂起资源
+     */
     public SuspendedResourcesHolder suspend() {
         String xid = TransactionContext.getXID();
         if (xid != null) {
@@ -166,6 +204,11 @@ public class TransactionalTemplate {
         }
     }
 
+    /**
+     * 判断是否存在事务
+     *
+     * @return 是否存在事务
+     */
     public boolean existingTransaction() {
         return !StringUtils.isEmpty(TransactionContext.getXID());
     }

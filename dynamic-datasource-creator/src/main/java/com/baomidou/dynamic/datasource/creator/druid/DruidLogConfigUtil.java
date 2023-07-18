@@ -36,14 +36,15 @@ public final class DruidLogConfigUtil {
     /**
      * 根据当前的配置和全局的配置生成druid的日志filter
      *
-     * @param c 当前配置
-     * @param g 全局配置
+     * @param clazz 日志类
+     * @param c     当前配置
+     * @param g     全局配置
      * @return 日志filter
      */
     public static LogFilter initFilter(Class<? extends LogFilter> clazz, Map<String, Object> c, Map<String, Object> g) {
         try {
-            LogFilter filter = clazz.newInstance();
-            Map<String, Object> params = DsConfigUtil.mergeConfig(c, g);
+            LogFilter filter = clazz.getDeclaredConstructor().newInstance();
+            Map<String, Object> params = DsConfigUtil.mergeMap(c, g);
             for (Map.Entry<String, Object> item : params.entrySet()) {
                 String key = DsConfigUtil.lineToUpper(item.getKey());
                 Method method = METHODS.get(key);

@@ -20,11 +20,16 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
+/**
+ * Abstract base class for Spring's {@link javax.sql.DataSource}
+ */
 public abstract class AbstractDataSource implements DataSource {
 
 
     /**
      * Returns 0, indicating the default system timeout is to be used.
+     *
+     * @return 0
      */
     @Override
     public int getLoginTimeout() throws SQLException {
@@ -32,7 +37,8 @@ public abstract class AbstractDataSource implements DataSource {
     }
 
     /**
-     * Setting a login timeout is not supported.
+     * @param timeout ignored
+     *                <p>Throws {@link UnsupportedOperationException} when called.
      */
     @Override
     public void setLoginTimeout(int timeout) throws SQLException {
@@ -41,6 +47,9 @@ public abstract class AbstractDataSource implements DataSource {
 
     /**
      * LogWriter methods are not supported.
+     *
+     * @return not supported
+     * <p>Throws {@link UnsupportedOperationException} when called.
      */
     @Override
     public PrintWriter getLogWriter() {
@@ -49,6 +58,7 @@ public abstract class AbstractDataSource implements DataSource {
 
     /**
      * LogWriter methods are not supported.
+     * <p>Throws {@link UnsupportedOperationException} when called.
      */
     @Override
     public void setLogWriter(PrintWriter pw) throws SQLException {

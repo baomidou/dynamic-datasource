@@ -18,13 +18,23 @@ package com.baomidou.dynamic.datasource.processor;
 import org.aopalliance.intercept.MethodInvocation;
 
 /**
+ * 数据源处理器
+ *
  * @author TaoYu
  * @since 2.5.0
  */
 public abstract class DsProcessor {
 
+    /**
+     * 下一个执行器
+     */
     private DsProcessor nextProcessor;
 
+    /**
+     * 设置下一个执行器
+     *
+     * @param dsProcessor 执行器
+     */
     public void setNextProcessor(DsProcessor dsProcessor) {
         this.nextProcessor = dsProcessor;
     }

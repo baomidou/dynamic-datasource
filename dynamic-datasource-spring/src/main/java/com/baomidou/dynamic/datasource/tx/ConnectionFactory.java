@@ -31,7 +31,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author funkye zp
  */
 public class ConnectionFactory {
-
+    /**
+     * connection holder
+     */
     private static final ThreadLocal<Map<String, Map<String, ConnectionProxy>>> CONNECTION_HOLDER =
             new ThreadLocal<Map<String, Map<String, ConnectionProxy>>>() {
                 @Override
@@ -39,6 +41,9 @@ public class ConnectionFactory {
                     return new ConcurrentHashMap<>();
                 }
             };
+    /**
+     * savepoint connection holder
+     */
     private static final ThreadLocal<Map<String, List<SavePointHolder>>> SAVEPOINT_CONNECTION_HOLDER =
             new ThreadLocal<Map<String, List<SavePointHolder>>>() {
                 @Override
@@ -47,6 +52,13 @@ public class ConnectionFactory {
                 }
             };
 
+    /**
+     * put connection
+     *
+     * @param xid        xid
+     * @param ds         ds
+     * @param connection connection
+     */
     public static void putConnection(String xid, String ds, ConnectionProxy connection) {
         Map<String, Map<String, ConnectionProxy>> concurrentHashMap = CONNECTION_HOLDER.get();
         Map<String, ConnectionProxy> connectionProxyMap = concurrentHashMap.get(xid);
@@ -64,6 +76,13 @@ public class ConnectionFactory {
         }
     }
 
+    /**
+     * getConnection
+     *
+     * @param xid 事务ID
+     * @param ds  ds
+     * @return boolean
+     */
     public static ConnectionProxy getConnection(String xid, String ds) {
         Map<String, Map<String, ConnectionProxy>> concurrentHashMap = CONNECTION_HOLDER.get();
         Map<String, ConnectionProxy> connectionProxyMap = concurrentHashMap.get(xid);
@@ -73,6 +92,13 @@ public class ConnectionFactory {
         return connectionProxyMap.get(ds);
     }
 
+    /**
+     * Whether there is a savepoint
+     *
+     * @param xid   xid
+     * @param state state
+     * @throws Exception Exception
+     */
     public static void notify(String xid, Boolean state) throws Exception {
         Exception exception = null;
         Map<String, Map<String, ConnectionProxy>> concurrentHashMap = CONNECTION_HOLDER.get();
@@ -143,6 +169,12 @@ public class ConnectionFactory {
         }
     }
 
+    /**
+     * Whether there is a savepoint
+     *
+     * @param xid 事务ID
+     * @throws TransactionException TransactionException
+     */
     public static void createSavepoint(String xid) throws TransactionException {
         try {
             Map<String, List<SavePointHolder>> savePointMap = SAVEPOINT_CONNECTION_HOLDER.get();
@@ -180,6 +212,12 @@ public class ConnectionFactory {
 
     }
 
+    /**
+     * Determine whether there is a savepoint
+     *
+     * @param xid 事务ID
+     * @return true or false
+     */
     public static boolean hasSavepoint(String xid) {
         Map<String, List<SavePointHolder>> savePointMap = SAVEPOINT_CONNECTION_HOLDER.get();
         return !CollectionUtils.isEmpty(savePointMap.get(xid));

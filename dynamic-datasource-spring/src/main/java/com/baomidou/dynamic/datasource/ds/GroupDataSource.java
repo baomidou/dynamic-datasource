@@ -31,6 +31,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @Data
 public class GroupDataSource {
 
+    /**
+     * 组名
+     */
     private String groupName;
 
     private DynamicDataSourceStrategy dynamicDataSourceStrategy;
@@ -47,6 +50,7 @@ public class GroupDataSource {
      *
      * @param ds         the name of the datasource
      * @param dataSource datasource
+     * @return the previous value associated with ds, or null if there was no mapping for ds.
      */
     public DataSource addDatasource(String ds, DataSource dataSource) {
         return dataSourceMap.put(ds, dataSource);
@@ -59,14 +63,29 @@ public class GroupDataSource {
         return dataSourceMap.remove(ds);
     }
 
+    /**
+     * determineDsKey
+     *
+     * @return the name of the datasource
+     */
     public String determineDsKey() {
         return dynamicDataSourceStrategy.determineKey(new ArrayList<>(dataSourceMap.keySet()));
     }
 
+    /**
+     * determineDataSource
+     *
+     * @return the datasource
+     */
     public DataSource determineDataSource() {
         return dataSourceMap.get(determineDsKey());
     }
 
+    /**
+     * size of this group
+     *
+     * @return the size of this group
+     */
     public int size() {
         return dataSourceMap.size();
     }

@@ -23,10 +23,21 @@ package com.baomidou.dynamic.datasource.exception;
  */
 public class ErrorCreateDataSourceException extends RuntimeException {
 
+    /**
+     * Constructor for ErrorCreateDataSourceException.
+     *
+     * @param message message
+     */
     public ErrorCreateDataSourceException(String message) {
         super(message);
     }
 
+    /**
+     * Constructor for ErrorCreateDataSourceException.
+     *
+     * @param message message
+     * @param cause   cause
+     */
     public ErrorCreateDataSourceException(String message, Throwable cause) {
         super(message, cause);
     }

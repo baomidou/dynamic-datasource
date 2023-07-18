@@ -35,10 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 import javax.sql.DataSource;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
+import java.util.*;
 
 /**
  * Druid数据源创建器
@@ -51,10 +48,31 @@ import java.util.Properties;
 @AllArgsConstructor
 public class DruidDataSourceCreator implements DataSourceCreator {
 
+    private static final Set<String> PARAMS = new HashSet<>();
     private static Method configMethod = null;
 
     static {
         fetchMethod();
+    }
+
+    static {
+        PARAMS.add("defaultCatalog");
+        PARAMS.add("defaultAutoCommit");
+        PARAMS.add("defaultReadOnly");
+        PARAMS.add("defaultTransactionIsolation");
+        PARAMS.add("testOnReturn");
+        PARAMS.add("validationQueryTimeout");
+        PARAMS.add("sharePreparedStatements");
+        PARAMS.add("connectionErrorRetryAttempts");
+        PARAMS.add("breakAfterAcquireFailure");
+        PARAMS.add("removeAbandonedTimeoutMillis");
+        PARAMS.add("removeAbandoned");
+        PARAMS.add("logAbandoned");
+        PARAMS.add("queryTimeout");
+        PARAMS.add("transactionQueryTimeout");
+        PARAMS.add("timeBetweenConnectErrorMillis");
+        PARAMS.add("connectTimeout");
+        PARAMS.add("socketTimeout");
     }
 
     //    @Autowired(required = false)
@@ -105,7 +123,9 @@ public class DruidDataSourceCreator implements DataSourceCreator {
         //连接参数单独设置
         dataSource.setConnectProperties(config.getConnectionProperties());
         //设置druid内置properties不支持的的参数
-        this.setParam(dataSource, config);
+        for (String param : PARAMS) {
+            DruidConfigUtil.setValue(dataSource, param, gConfig, config);
+        }
 
         if (Boolean.FALSE.equals(dataSourceProperty.getLazy())) {
             try {
@@ -155,106 +175,6 @@ public class DruidDataSourceCreator implements DataSourceCreator {
 //            }
 //        }
         return proxyFilters;
-    }
-
-    private void setParam(DruidDataSource dataSource, DruidConfig config) {
-        String defaultCatalog = config.getDefaultCatalog() == null ? gConfig.getDefaultCatalog() : config.getDefaultCatalog();
-        if (defaultCatalog != null) {
-            dataSource.setDefaultCatalog(defaultCatalog);
-        }
-        Boolean defaultAutoCommit = config.getDefaultAutoCommit() == null ? gConfig.getDefaultAutoCommit() : config.getDefaultAutoCommit();
-        if (defaultAutoCommit != null && !defaultAutoCommit) {
-            dataSource.setDefaultAutoCommit(false);
-        }
-        Boolean defaultReadOnly = config.getDefaultReadOnly() == null ? gConfig.getDefaultReadOnly() : config.getDefaultReadOnly();
-        if (defaultReadOnly != null) {
-            dataSource.setDefaultReadOnly(defaultReadOnly);
-        }
-        Integer defaultTransactionIsolation = config.getDefaultTransactionIsolation() == null ? gConfig.getDefaultTransactionIsolation() : config.getDefaultTransactionIsolation();
-        if (defaultTransactionIsolation != null) {
-            dataSource.setDefaultTransactionIsolation(defaultTransactionIsolation);
-        }
-
-        Boolean testOnReturn = config.getTestOnReturn() == null ? gConfig.getTestOnReturn() : config.getTestOnReturn();
-        if (testOnReturn != null && testOnReturn) {
-            dataSource.setTestOnReturn(true);
-        }
-        Integer validationQueryTimeout =
-                config.getValidationQueryTimeout() == null ? gConfig.getValidationQueryTimeout() : config.getValidationQueryTimeout();
-        if (validationQueryTimeout != null && !validationQueryTimeout.equals(-1)) {
-            dataSource.setValidationQueryTimeout(validationQueryTimeout);
-        }
-
-        Boolean sharePreparedStatements =
-                config.getSharePreparedStatements() == null ? gConfig.getSharePreparedStatements() : config.getSharePreparedStatements();
-        if (sharePreparedStatements != null && sharePreparedStatements) {
-            dataSource.setSharePreparedStatements(true);
-        }
-        Integer connectionErrorRetryAttempts =
-                config.getConnectionErrorRetryAttempts() == null ? gConfig.getConnectionErrorRetryAttempts()
-                        : config.getConnectionErrorRetryAttempts();
-        if (connectionErrorRetryAttempts != null && !connectionErrorRetryAttempts.equals(1)) {
-            dataSource.setConnectionErrorRetryAttempts(connectionErrorRetryAttempts);
-        }
-        Boolean breakAfterAcquireFailure =
-                config.getBreakAfterAcquireFailure() == null ? gConfig.getBreakAfterAcquireFailure() : config.getBreakAfterAcquireFailure();
-        if (breakAfterAcquireFailure != null && breakAfterAcquireFailure) {
-            dataSource.setBreakAfterAcquireFailure(true);
-        }
-
-        Integer timeout = config.getRemoveAbandonedTimeoutMillis() == null ? gConfig.getRemoveAbandonedTimeoutMillis()
-                : config.getRemoveAbandonedTimeoutMillis();
-        if (timeout != null) {
-            dataSource.setRemoveAbandonedTimeoutMillis(timeout);
-        }
-
-        Boolean abandoned = config.getRemoveAbandoned() == null ? gConfig.getRemoveAbandoned() : config.getRemoveAbandoned();
-        if (abandoned != null) {
-            dataSource.setRemoveAbandoned(abandoned);
-        }
-
-        Boolean logAbandoned = config.getLogAbandoned() == null ? gConfig.getLogAbandoned() : config.getLogAbandoned();
-        if (logAbandoned != null) {
-            dataSource.setLogAbandoned(logAbandoned);
-        }
-
-        Integer queryTimeOut = config.getQueryTimeout() == null ? gConfig.getQueryTimeout() : config.getQueryTimeout();
-        if (queryTimeOut != null) {
-            dataSource.setQueryTimeout(queryTimeOut);
-        }
-
-        Integer transactionQueryTimeout =
-                config.getTransactionQueryTimeout() == null ? gConfig.getTransactionQueryTimeout() : config.getTransactionQueryTimeout();
-        if (transactionQueryTimeout != null) {
-            dataSource.setTransactionQueryTimeout(transactionQueryTimeout);
-        }
-
-        Long timeBetweenConnectErrorMillis =
-                config.getTimeBetweenConnectErrorMillis() == null ? gConfig.getTimeBetweenConnectErrorMillis() : config.getTimeBetweenConnectErrorMillis();
-        if (timeBetweenConnectErrorMillis != null) {
-            dataSource.setTimeBetweenConnectErrorMillis(timeBetweenConnectErrorMillis);
-        }
-
-        // since druid 1.2.12
-        Integer connectTimeout = config.getConnectTimeout() == null ? gConfig.getConnectTimeout() : config.getConnectTimeout();
-        if (connectTimeout != null) {
-            try {
-                DruidDataSource.class.getMethod("setConnectTimeout", int.class);
-                dataSource.setConnectTimeout(connectTimeout);
-            } catch (NoSuchMethodException e) {
-                log.warn("druid current not support connectTimeout,please update druid 1.2.12 +");
-            }
-        }
-
-        Integer socketTimeout = config.getSocketTimeout() == null ? gConfig.getSocketTimeout() : config.getSocketTimeout();
-        if (socketTimeout != null) {
-            try {
-                DruidDataSource.class.getMethod("setSocketTimeout", int.class);
-                dataSource.setSocketTimeout(socketTimeout);
-            } catch (NoSuchMethodException e) {
-                log.warn("druid current not support setSocketTimeout,please update druid 1.2.12 +");
-            }
-        }
     }
 
     @Override
