@@ -117,7 +117,7 @@ public class ConnectionFactory {
                         Iterator<SavePointHolder> iterator = savePointHolders.iterator();
                         while (iterator.hasNext()) {
                             SavePointHolder savePointHolder = iterator.next();
-                            if (savePointHolder.releaseSavepoint() <= 0) {
+                            if (savePointHolder.releaseSavepoint()) {
                                 iterator.remove();
                             }
                         }
@@ -128,7 +128,7 @@ public class ConnectionFactory {
                             SavePointHolder savePointHolder = iterator.next();
                             ConnectionProxy connectionProxy = savePointHolder.getConnectionProxy();
                             markedConnectionProxy.add(connectionProxy);
-                            if (savePointHolder.rollbackSavePoint() <= 0) {
+                            if (savePointHolder.rollbackSavePoint()) {
                                 iterator.remove();
                             }
                         }
@@ -221,15 +221,7 @@ public class ConnectionFactory {
     public static boolean hasSavepoint(String xid) {
         Map<String, List<SavePointHolder>> savePointMap = SAVEPOINT_CONNECTION_HOLDER.get();
         List<SavePointHolder> savePointHolders = savePointMap.get(xid);
-        if (savePointHolders == null || savePointHolders.isEmpty()) {
-            return false;
-        }
-        for (SavePointHolder savePointHolder : savePointHolders) {
-            if (!CollectionUtils.isEmpty(savePointHolder.getSavePoints())) {
-                return true;
-            }
-        }
-        return false;
+        return !CollectionUtils.isEmpty(savePointHolders);
     }
 
 }
