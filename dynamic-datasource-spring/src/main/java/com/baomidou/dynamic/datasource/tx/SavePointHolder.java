@@ -16,6 +16,8 @@
 package com.baomidou.dynamic.datasource.tx;
 
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.sql.SQLException;
 import java.sql.SQLTransientConnectionException;
 import java.sql.Savepoint;
@@ -27,6 +29,7 @@ import java.util.List;
  *
  * @author zp
  */
+@Slf4j
 public class SavePointHolder {
     /**
      * savepoint name prefix
@@ -72,14 +75,15 @@ public class SavePointHolder {
      * @return savepoint index
      * @throws SQLException SQLException
      */
-    public int releaseSavepoint() throws SQLException {
+    public boolean releaseSavepoint() throws SQLException {
         Savepoint savepoint = savepoints.pollLast();
         if (savepoint != null) {
             connectionProxy.releaseSavepoint(savepoint);
             String savepointName = savepoint.getSavepointName();
-            return Integer.parseInt(savepointName.substring(SAVEPOINT_NAME_PREFIX.length()));
+            log.info("dynamic-datasource releaseSavepoint [{}]",savepointName);
+            return savepoints.isEmpty();
         }
-        return -1;
+        return true;
     }
 
     /**
@@ -88,14 +92,15 @@ public class SavePointHolder {
      * @return savepoint index
      * @throws SQLException SQLException
      */
-    public int rollbackSavePoint() throws SQLException {
+    public boolean rollbackSavePoint() throws SQLException {
         Savepoint savepoint = savepoints.pollLast();
         if (savepoint != null) {
             connectionProxy.rollback(savepoint);
             String savepointName = savepoint.getSavepointName();
-            return Integer.parseInt(savepointName.substring(SAVEPOINT_NAME_PREFIX.length()));
+            log.info("dynamic-datasource rollbackSavePoint [{}]",savepointName);
+            return savepoints.isEmpty();
         }
-        return -1;
+        return true;
     }
 
     /**
