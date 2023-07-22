@@ -67,8 +67,7 @@ public class DsSpelExpressionProcessor extends DsProcessor {
         ExpressionRootObject rootObject = new ExpressionRootObject(method, arguments, invocation.getThis());
         StandardEvaluationContext context = new MethodBasedEvaluationContext(rootObject, method, arguments, NAME_DISCOVERER);
         context.setBeanResolver(beanResolver);
-        final Object value = PARSER.parseExpression(key, parserContext).getValue(context);
-        return value == null ? null : value.toString();
+        return PARSER.parseExpression(key, parserContext).getValue(context, String.class);
     }
 
     /**
