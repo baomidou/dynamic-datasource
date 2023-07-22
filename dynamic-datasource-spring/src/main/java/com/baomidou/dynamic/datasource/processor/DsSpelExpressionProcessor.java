@@ -50,24 +50,9 @@ public class DsSpelExpressionProcessor extends DsProcessor {
      * 对于默认不设置的情况下,从参数中取值的方式 #param1
      * 设置指定模板 ParserContext.TEMPLATE_EXPRESSION 后的取值方式: #{#param1}
      * issues: https://github.com/baomidou/dynamic-datasource-spring-boot-starter/issues/199
+     * issues: https://github.com/baomidou/dynamic-datasource-spring-boot-starter/issues/485
      */
-    private ParserContext parserContext = new ParserContext() {
-
-        @Override
-        public boolean isTemplate() {
-            return false;
-        }
-
-        @Override
-        public String getExpressionPrefix() {
-            return null;
-        }
-
-        @Override
-        public String getExpressionSuffix() {
-            return null;
-        }
-    };
+    private ParserContext parserContext = ParserContext.TEMPLATE_EXPRESSION;
     private BeanResolver beanResolver;
 
     @Override
