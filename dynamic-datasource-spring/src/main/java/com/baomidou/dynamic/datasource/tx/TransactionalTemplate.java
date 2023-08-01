@@ -16,7 +16,6 @@
 package com.baomidou.dynamic.datasource.tx;
 
 import com.baomidou.dynamic.datasource.exception.TransactionException;
-import com.baomidou.mybatisplus.core.toolkit.ArrayUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
@@ -139,7 +138,7 @@ public class TransactionalTemplate {
         boolean isRollback = true;
         Class<? extends Throwable>[] rollbacks = transactionInfo.rollbackFor;
         Class<? extends Throwable>[] noRollbackFor = transactionInfo.noRollbackFor;
-        if (ArrayUtils.isNotEmpty(noRollbackFor)) {
+        if (isNotEmpty(noRollbackFor)) {
             for (Class<? extends Throwable> noRollBack : noRollbackFor) {
                 int depth = getDepth(e.getClass(), noRollBack);
                 if (depth >= 0) {
@@ -147,7 +146,7 @@ public class TransactionalTemplate {
                 }
             }
         }
-        if (ArrayUtils.isNotEmpty(rollbacks)) {
+        if (isNotEmpty(rollbacks)) {
             for (Class<? extends Throwable> rollback : rollbacks) {
                 int depth = getDepth(e.getClass(), rollback);
                 if (depth >= 0) {
@@ -211,5 +210,26 @@ public class TransactionalTemplate {
      */
     public boolean existingTransaction() {
         return !StringUtils.isEmpty(TransactionContext.getXID());
+    }
+
+    /**
+     * 判断数据是否为空
+     *
+     * @param array 长度
+     * @return 数组对象为null或者长度为 0 时，返回 false
+     */
+    public  boolean isEmpty(Object[] array) {
+        return array == null || array.length == 0;
+    }
+
+    /**
+     * 判断数组是否不为空
+     *
+     * @param array 数组
+     * @return 数组对象内含有任意对象时返回 true
+     * @see ArrayUtils#isEmpty(Object[])
+     */
+    public  boolean isNotEmpty(Object[] array) {
+        return !isEmpty(array);
     }
 }
