@@ -132,7 +132,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
             return dataSourceMap.get(ds);
         }
         if (strict) {
-            throw new CannotFindDataSourceException("dynamic-datasource could not find a datasource named" + ds);
+            throw new CannotFindDataSourceException("dynamic-datasource could not find a datasource named " + ds);
         }
         return determinePrimaryDataSource();
     }
