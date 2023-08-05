@@ -81,7 +81,7 @@ public final class DruidConfigUtil {
         }
 
         //filters单独处理，默认了stat
-        String filters = getValue(g, c, "filter");
+        String filters = getValue(g, c, "filters");
         if (filters == null) {
             filters = STAT_STR;
         }
