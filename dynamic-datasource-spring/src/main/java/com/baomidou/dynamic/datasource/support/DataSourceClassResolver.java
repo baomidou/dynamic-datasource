@@ -40,8 +40,16 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class DataSourceClassResolver {
 
+    /**
+     * 默认事务属性
+     */
+    private static final TransactionalInfo NULL_TRANSACTION_ATTRIBUTE = new TransactionalInfo() {
+        @Override
+        public String toString() {
+            return "null";
+        }
+    };
     private static boolean mpEnabled = false;
-
     private static Field mapperInterfaceField;
 
     static {
@@ -64,7 +72,7 @@ public class DataSourceClassResolver {
                 mapperInterfaceField.setAccessible(true);
                 mpEnabled = true;
             } catch (NoSuchFieldException e) {
-                e.printStackTrace();
+                log.warn("Failed to init mybatis-plus support.");
             }
         }
     }
@@ -78,15 +86,6 @@ public class DataSourceClassResolver {
      */
     private final Map<Object, TransactionalInfo> dsTransactionalCache = new ConcurrentHashMap<>();
     private final boolean allowedPublicOnly;
-    /**
-     * 默认事务属性
-     */
-    private static final TransactionalInfo NULL_TRANSACTION_ATTRIBUTE = new TransactionalInfo() {
-        @Override
-        public String toString() {
-            return "null";
-        }
-    };
 
     /**
      * 加入扩展, 给外部一个修改aop条件的机会
