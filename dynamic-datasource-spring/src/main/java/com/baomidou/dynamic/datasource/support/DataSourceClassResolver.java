@@ -15,15 +15,18 @@
  */
 package com.baomidou.dynamic.datasource.support;
 
+import com.baomidou.dynamic.datasource.annotation.BasicAttribute;
 import com.baomidou.dynamic.datasource.annotation.DS;
+import com.baomidou.dynamic.datasource.annotation.DSTransactional;
+import com.baomidou.dynamic.datasource.tx.TransactionalInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.core.BridgeMethodResolver;
 import org.springframework.core.MethodClassKey;
 import org.springframework.core.annotation.AnnotatedElementUtils;
-import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.util.ClassUtils;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -70,7 +73,20 @@ public class DataSourceClassResolver {
      * 缓存方法对应的数据源
      */
     private final Map<Object, String> dsCache = new ConcurrentHashMap<>();
+    /**
+     * 缓存事务信息
+     */
+    private final Map<Object, TransactionalInfo> dsTransactionalCache = new ConcurrentHashMap<>();
     private final boolean allowedPublicOnly;
+    /**
+     * 默认事务属性
+     */
+    private static final TransactionalInfo NULL_TRANSACTION_ATTRIBUTE = new TransactionalInfo() {
+        @Override
+        public String toString() {
+            return "null";
+        }
+    };
 
     /**
      * 加入扩展, 给外部一个修改aop条件的机会
@@ -88,20 +104,47 @@ public class DataSourceClassResolver {
      * @param targetObject 目标对象
      * @return ds
      */
-    public String findKey(Method method, Object targetObject) {
+    public String findKey(Method method, Object targetObject, Class<? extends Annotation> annotation) {
         if (method.getDeclaringClass() == Object.class) {
             return "";
         }
         Object cacheKey = new MethodClassKey(method, targetObject.getClass());
         String ds = this.dsCache.get(cacheKey);
         if (ds == null) {
-            ds = computeDatasource(method, targetObject);
-            if (ds == null) {
+            BasicAttribute<String> dsOperation = computeDatasource(method, targetObject, annotation);
+            if (dsOperation == null) {
                 ds = "";
+            } else {
+                ds = dsOperation.getDataOperation();
             }
             this.dsCache.put(cacheKey, ds);
         }
         return ds;
+    }
+
+    /**
+     * 从缓存获取事务属性
+     *
+     * @param method       方法
+     * @param targetObject 目标对象
+     * @return TransactionalInfo
+     */
+    public TransactionalInfo findTransactionalInfo(Method method, Object targetObject, Class<? extends Annotation> annotation) {
+        if (method.getDeclaringClass() == Object.class) {
+            return NULL_TRANSACTION_ATTRIBUTE;
+        }
+        Object cacheKey = new MethodClassKey(method, targetObject.getClass());
+        TransactionalInfo dsTransactional = this.dsTransactionalCache.get(cacheKey);
+        if (dsTransactional == null) {
+            BasicAttribute<TransactionalInfo> dsTransactionalOperation = computeDatasource(method, targetObject, annotation);
+            if (dsTransactionalOperation == null) {
+                dsTransactional = NULL_TRANSACTION_ATTRIBUTE;
+            } else {
+                dsTransactional = dsTransactionalOperation.getDataOperation();
+            }
+            this.dsTransactionalCache.put(cacheKey, dsTransactional);
+        }
+        return dsTransactional;
     }
 
     /**
@@ -115,12 +158,12 @@ public class DataSourceClassResolver {
      * @param targetObject 目标对象
      * @return ds
      */
-    private String computeDatasource(Method method, Object targetObject) {
+    private <T> BasicAttribute<T> computeDatasource(Method method, Object targetObject, Class<? extends Annotation> annotation) {
         if (allowedPublicOnly && !Modifier.isPublic(method.getModifiers())) {
             return null;
         }
         //1. 从当前方法接口中获取
-        String dsAttr = findDataSourceAttribute(method);
+        BasicAttribute<T> dsAttr = findDataSourceAttribute(method, annotation);
         if (dsAttr != null) {
             return dsAttr;
         }
@@ -130,19 +173,19 @@ public class DataSourceClassResolver {
         Method specificMethod = ClassUtils.getMostSpecificMethod(method, userClass);
 
         specificMethod = BridgeMethodResolver.findBridgedMethod(specificMethod);
-        //2. 从桥接方法查找
-        dsAttr = findDataSourceAttribute(specificMethod);
+        //2. 从实现类的方法找
+        dsAttr = findDataSourceAttribute(specificMethod, annotation);
         if (dsAttr != null) {
             return dsAttr;
         }
         // 从当前方法声明的类查找
-        dsAttr = findDataSourceAttribute(userClass);
+        dsAttr = findDataSourceAttribute(userClass, annotation);
         if (dsAttr != null && ClassUtils.isUserLevelMethod(method)) {
             return dsAttr;
         }
         //since 3.4.1 从接口查找，只取第一个找到的
         for (Class<?> interfaceClazz : ClassUtils.getAllInterfacesForClassAsSet(userClass)) {
-            dsAttr = findDataSourceAttribute(interfaceClazz);
+            dsAttr = findDataSourceAttribute(interfaceClazz, annotation);
             if (dsAttr != null) {
                 return dsAttr;
             }
@@ -150,17 +193,17 @@ public class DataSourceClassResolver {
         // 如果存在桥接方法
         if (specificMethod != method) {
             // 从桥接方法查找
-            dsAttr = findDataSourceAttribute(method);
+            dsAttr = findDataSourceAttribute(method, annotation);
             if (dsAttr != null) {
                 return dsAttr;
             }
             // 从桥接方法声明的类查找
-            dsAttr = findDataSourceAttribute(method.getDeclaringClass());
+            dsAttr = findDataSourceAttribute(method.getDeclaringClass(), annotation);
             if (dsAttr != null && ClassUtils.isUserLevelMethod(method)) {
                 return dsAttr;
             }
         }
-        return getDefaultDataSourceAttr(targetObject);
+        return getDefaultDataSourceAttr(targetObject, annotation);
     }
 
     /**
@@ -169,13 +212,13 @@ public class DataSourceClassResolver {
      * @param targetObject 目标对象
      * @return ds
      */
-    private String getDefaultDataSourceAttr(Object targetObject) {
+    private <T> BasicAttribute<T> getDefaultDataSourceAttr(Object targetObject, Class<? extends Annotation> annotation) {
         Class<?> targetClass = targetObject.getClass();
         // 如果不是代理类, 从当前类开始, 不断的找父类的声明
         if (!Proxy.isProxyClass(targetClass)) {
             Class<?> currentClass = targetClass;
             while (currentClass != Object.class) {
-                String datasourceAttr = findDataSourceAttribute(currentClass);
+                BasicAttribute<T> datasourceAttr = findDataSourceAttribute(currentClass, annotation);
                 if (datasourceAttr != null) {
                     return datasourceAttr;
                 }
@@ -186,12 +229,12 @@ public class DataSourceClassResolver {
         if (mpEnabled) {
             final Class<?> clazz = getMapperInterfaceClass(targetObject);
             if (clazz != null) {
-                String datasourceAttr = findDataSourceAttribute(clazz);
+                BasicAttribute<T> datasourceAttr = findDataSourceAttribute(clazz, annotation);
                 if (datasourceAttr != null) {
                     return datasourceAttr;
                 }
                 // 尝试从其父接口获取
-                return findDataSourceAttribute(clazz.getSuperclass());
+                return findDataSourceAttribute(clazz.getSuperclass(), annotation);
             }
         }
         return null;
@@ -222,15 +265,27 @@ public class DataSourceClassResolver {
     }
 
     /**
-     * 通过 AnnotatedElement 查找标记的注解, 映射为  DatasourceHolder
+     * 通过 AnnotatedElement 查找标记的注解, 映射为BasicAttribute
      *
      * @param ae AnnotatedElement
      * @return 数据源映射持有者
      */
-    private String findDataSourceAttribute(AnnotatedElement ae) {
-        AnnotationAttributes attributes = AnnotatedElementUtils.getMergedAnnotationAttributes(ae, DS.class);
-        if (attributes != null) {
-            return attributes.getString("value");
+    private <T> BasicAttribute<T> findDataSourceAttribute(AnnotatedElement ae, Class<? extends Annotation> annotation) {
+        if (annotation.isAssignableFrom(DS.class)) {
+            //AnnotatedElementUtils.findMergedAnnotation()会委托给findMergedAnnotationAttributes()
+            DS ds = AnnotatedElementUtils.findMergedAnnotation(ae, DS.class);
+            if (ds != null) {
+                return (BasicAttribute<T>) new BasicAttribute<>(ds.value());
+            }
+        } else if (annotation.isAssignableFrom(DSTransactional.class)) {
+            DSTransactional dsTransactional = AnnotatedElementUtils.findMergedAnnotation(ae, DSTransactional.class);
+            if (dsTransactional != null) {
+                TransactionalInfo transactionalInfo = new TransactionalInfo();
+                transactionalInfo.setPropagation(dsTransactional.propagation());
+                transactionalInfo.setRollbackFor(dsTransactional.rollbackFor());
+                transactionalInfo.setNoRollbackFor(dsTransactional.noRollbackFor());
+                return (BasicAttribute<T>) new BasicAttribute(transactionalInfo);
+            }
         }
         return null;
     }

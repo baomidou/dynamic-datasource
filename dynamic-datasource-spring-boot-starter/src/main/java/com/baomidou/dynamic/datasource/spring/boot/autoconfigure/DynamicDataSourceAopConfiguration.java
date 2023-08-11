@@ -85,7 +85,8 @@ public class DynamicDataSourceAopConfiguration {
     @Bean
     @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "seata", havingValue = "false", matchIfMissing = true)
     public Advisor dynamicTransactionAdvisor() {
-        DynamicLocalTransactionInterceptor interceptor = new DynamicLocalTransactionInterceptor();
+        DynamicDatasourceAopProperties aopProperties = properties.getAop();
+        DynamicLocalTransactionInterceptor interceptor = new DynamicLocalTransactionInterceptor(aopProperties.getAllowedPublicOnly());
         return new DynamicDataSourceAnnotationAdvisor(interceptor, DSTransactional.class);
     }
 

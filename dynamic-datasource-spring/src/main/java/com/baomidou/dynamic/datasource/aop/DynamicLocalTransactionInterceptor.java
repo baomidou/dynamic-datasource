@@ -16,6 +16,7 @@
 package com.baomidou.dynamic.datasource.aop;
 
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
+import com.baomidou.dynamic.datasource.support.DataSourceClassResolver;
 import com.baomidou.dynamic.datasource.tx.TransactionalExecutor;
 import com.baomidou.dynamic.datasource.tx.TransactionalInfo;
 import com.baomidou.dynamic.datasource.tx.TransactionalTemplate;
@@ -32,12 +33,17 @@ import java.lang.reflect.Method;
  */
 @Slf4j
 public class DynamicLocalTransactionInterceptor implements MethodInterceptor {
-    private final TransactionalTemplate transactionalTemplate = new TransactionalTemplate();
+    private final TransactionalTemplate transactionalTemplate;
+    private final DataSourceClassResolver dataSourceClassResolver;
+
+    public DynamicLocalTransactionInterceptor(Boolean allowedPublicOnly) {
+        transactionalTemplate = new TransactionalTemplate();
+        dataSourceClassResolver = new DataSourceClassResolver(allowedPublicOnly);
+    }
 
     @Override
     public Object invoke(final MethodInvocation methodInvocation) throws Throwable {
-        Method method = methodInvocation.getMethod();
-        final DSTransactional dsTransactional = method.getAnnotation(DSTransactional.class);
+        final Method method = methodInvocation.getMethod();
 
         TransactionalExecutor transactionalExecutor = new TransactionalExecutor() {
             @Override
@@ -47,11 +53,7 @@ public class DynamicLocalTransactionInterceptor implements MethodInterceptor {
 
             @Override
             public TransactionalInfo getTransactionInfo() {
-                TransactionalInfo transactionInfo = new TransactionalInfo();
-                transactionInfo.setPropagation(dsTransactional.propagation());
-                transactionInfo.setNoRollbackFor(dsTransactional.noRollbackFor());
-                transactionInfo.setRollbackFor(dsTransactional.rollbackFor());
-                return transactionInfo;
+                return dataSourceClassResolver.findTransactionalInfo(method, methodInvocation.getThis(), DSTransactional.class);
             }
         };
         return transactionalTemplate.execute(transactionalExecutor);

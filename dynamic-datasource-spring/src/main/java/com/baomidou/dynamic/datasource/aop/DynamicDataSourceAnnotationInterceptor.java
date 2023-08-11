@@ -16,6 +16,7 @@
 package com.baomidou.dynamic.datasource.aop;
 
 import com.baomidou.dynamic.datasource.processor.DsProcessor;
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.dynamic.datasource.support.DataSourceClassResolver;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -66,7 +67,7 @@ public class DynamicDataSourceAnnotationInterceptor implements MethodInterceptor
      * @return dsKey
      */
     private String determineDatasourceKey(MethodInvocation invocation) {
-        String key = dataSourceClassResolver.findKey(invocation.getMethod(), invocation.getThis());
+        String key = dataSourceClassResolver.findKey(invocation.getMethod(), invocation.getThis(), DS.class);
         return key.startsWith(DYNAMIC_PREFIX) ? dsProcessor.determineDatasource(invocation, key) : key;
     }
 }
