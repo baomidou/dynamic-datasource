@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - '.github/workflows/ci.yml'
+      - '**/pom.xml'
+      - '**/src/main/**'
+      - '**/src/test/**'
+  pull_request:
+    branches: [ master ]
+    paths:
+      - '.github/workflows/ci.yml'
+      - '**/pom.xml'
+      - '**/src/main/**'
+      - '**/src/test/**'
+
+concurrency:
+  group: ${{ github.event_name }}-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  MAVEN_OPTS: -Dhttps.protocols=TLSv1.2 -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true
+
+jobs:
+  test-maximum-jdk-ci:
+    name: Test CI - JDK ${{ matrix.java-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+        java-version: [ '17' ]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java-version }}
+          cache: 'maven'
+      - name: Build test with Maven
+        run: |
+          ./mvnw -am -pl dynamic-datasource-spring-boot3-starter -T1C -B clean test
+  test-minimum-jdk-ci:
+    name: Test CI - JDK ${{ matrix.java-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+        java-version: [ '8' ]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java-version }}
+          cache: 'maven'
+      - name: Build test with Maven
+        run: |
+          ./mvnw -am -pl dynamic-datasource-creator -T1C -B clean package
+          ./mvnw -am -pl dynamic-datasource-spring -T1C -B clean package
+          ./mvnw -am -pl dynamic-datasource-spring-boot-common -T1C -B clean package
+          ./mvnw -am -pl dynamic-datasource-spring-boot-starter -T1C -B clean package
