@@ -22,7 +22,6 @@ import com.alibaba.druid.filter.logging.Log4jFilter;
 import com.alibaba.druid.filter.logging.Slf4jLogFilter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.wall.WallConfig;
-import com.alibaba.druid.wall.WallFilter;
 import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
 import com.baomidou.dynamic.datasource.enums.DdConstants;
@@ -148,9 +147,7 @@ public class DruidDataSourceCreator implements DataSourceCreator {
                         break;
                     case "wall":
                         WallConfig wallConfig = DruidWallConfigUtil.toWallConfig(dataSourceProperty.getDruid().getWall(), gConfig.getWall());
-                        WallFilter wallFilter = new WallFilter();
-                        wallFilter.setConfig(wallConfig);
-                        proxyFilters.add(wallFilter);
+                        proxyFilters.add(DruidWallFilterUtil.toWallFilter(wallConfig, dataSourceProperty.getDruid().getWall(), gConfig.getWall()));
                         break;
                     case "slf4j":
                         proxyFilters.add(DruidLogConfigUtil.initFilter(Slf4jLogFilter.class, dataSourceProperty.getDruid().getSlf4j(), gConfig.getSlf4j()));
