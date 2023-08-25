@@ -60,6 +60,7 @@
         <p6spy.version>3.9.1</p6spy.version>
         <seata.version>1.4.2</seata.version>
         <lombok.version>1.18.28</lombok.version>
+        <h2.version>2.2.220</h2.version>
 
         <maven-clean-plugin.version>3.3.1</maven-clean-plugin.version>
         <maven-install-plugin.version>3.1.1</maven-install-plugin.version>
@@ -164,6 +165,11 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${h2.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
