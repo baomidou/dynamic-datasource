@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class SchoolService {
-
     private final TeacherService teacherService;
     private final StudentService studentService;
 

@@ -32,7 +32,6 @@ import java.util.List;
 @Service
 @DS("student")
 public class StudentService {
-
     private final DataSource dataSource;
 
     public StudentService(DataSource dataSource) {
