@@ -17,22 +17,20 @@ package com.baomidou.dynamic.datasource.fixture.controller;
 
 import com.baomidou.dynamic.datasource.fixture.service.spel.User;
 import com.baomidou.dynamic.datasource.fixture.service.spel.UserService;
-import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RequestMapping("/users")
 @RestController
 public class UserController {
 
-    private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/session")
     public List<User> session(HttpServletRequest request) {

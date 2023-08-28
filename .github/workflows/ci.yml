@@ -42,7 +42,7 @@ jobs:
           cache: 'maven'
       - name: Build test with Maven
         run: |
-          ./mvnw -am -pl dynamic-datasource-spring-boot3-starter -T1C -B clean test
+          ./mvnw -T1C -B clean test
   test-minimum-jdk-ci:
     name: Test CI - JDK ${{ matrix.java-version }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
@@ -64,4 +64,4 @@ jobs:
           ./mvnw -am -pl dynamic-datasource-creator -T1C -B clean package
           ./mvnw -am -pl dynamic-datasource-spring -T1C -B clean package
           ./mvnw -am -pl dynamic-datasource-spring-boot-common -T1C -B clean package
-          ./mvnw -am -pl dynamic-datasource-spring-boot-starter -T1C -B clean package
+          ./mvnw -am -pl dynamic-datasource-spring-boot-starter -T1C -B clean test
