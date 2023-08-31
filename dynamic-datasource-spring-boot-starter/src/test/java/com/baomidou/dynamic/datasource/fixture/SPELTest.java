@@ -103,7 +103,7 @@ public class SPELTest {
         DataSourceProperty result = new DataSourceProperty();
         result.setPoolName(poolName);
         result.setDriverClassName("org.h2.Driver");
-        result.setUrl("jdbc:h2:mem:test;MODE=MySQL;DB_CLOSE_ON_EXIT=FALSE;INIT=RUNSCRIPT FROM 'classpath:db/spring-expression-language.sql'");
+        result.setUrl("jdbc:h2:mem:" + poolName + ";INIT=RUNSCRIPT FROM 'classpath:db/spring-expression-language.sql'");
         result.setUsername("sa");
         result.setPassword("");
         return result;
