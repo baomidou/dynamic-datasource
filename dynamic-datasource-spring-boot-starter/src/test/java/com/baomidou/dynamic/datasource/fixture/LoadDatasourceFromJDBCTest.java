@@ -64,7 +64,7 @@ class LoadDatasourceFromJDBCApplication {
 
     @Bean
     public DynamicDataSourceProvider dynamicDataSourceProvider(DefaultDataSourceCreator dataSourceCreator) {
-        return new AbstractJdbcDataSourceProvider(dataSourceCreator, "org.h2.Driver", "jdbc:h2:mem:test;MODE=MySQL", "sa", "") {
+        return new AbstractJdbcDataSourceProvider(dataSourceCreator, "org.h2.Driver", "jdbc:h2:mem:test", "sa", "") {
             @Override
             protected Map<String, DataSourceProperty> executeStmt(Statement statement) throws SQLException {
                 statement.execute("CREATE TABLE IF NOT EXISTS `DB`\n" +
@@ -75,7 +75,7 @@ class LoadDatasourceFromJDBCApplication {
                                   "    `url`   VARCHAR(30) NULL DEFAULT NULL,\n" +
                                   "    `driver`   VARCHAR(30) NULL DEFAULT NULL\n" +
                                   ")");
-                statement.executeUpdate("insert into DB values ('master','sa','','jdbc:h2:mem:test;MODE=MySQL','org.h2.Driver')");
+                statement.executeUpdate("insert into DB values ('master','sa','','jdbc:h2:~/test','org.h2.Driver')");
                 statement.executeUpdate("insert into DB values ('db1','sa','','jdbc:h2:mem:test2','org.h2.Driver')");
                 statement.executeUpdate("insert into DB values ('db2','sa','','jdbc:h2:mem:test3','org.h2.Driver')");
                 statement.executeUpdate("insert into DB values ('db3','sa','','jdbc:h2:mem:test4','org.h2.Driver')");

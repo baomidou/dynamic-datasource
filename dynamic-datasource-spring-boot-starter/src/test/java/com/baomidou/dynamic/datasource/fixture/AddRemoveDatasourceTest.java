@@ -53,7 +53,7 @@ public class AddRemoveDatasourceTest {
         dataSourceProperty.setUsername("sa");
         dataSourceProperty.setPassword("");
         dataSourceProperty.setType(SimpleDriverDataSource.class);
-        dataSourceProperty.setUrl("jdbc:h2:mem:test1;MODE=MySQL");
+        dataSourceProperty.setUrl("jdbc:h2:mem:test1");
         dataSourceProperty.setDriverClassName("org.h2.Driver");
         DynamicRoutingDataSource ds = (DynamicRoutingDataSource) dataSource;
         ds.addDataSource(dataSourceProperty.getPoolName(), dataSourceCreator.createDataSource(dataSourceProperty));

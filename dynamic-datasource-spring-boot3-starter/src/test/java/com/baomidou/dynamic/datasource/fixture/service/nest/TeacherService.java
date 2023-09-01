@@ -42,7 +42,7 @@ public class TeacherService {
     @Transactional
     public int addTeacherWithTx(String name, Integer age) {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("insert into teacher (name,age) values (?,?)")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("insert into teacher (`name`,age) values (?,?)")) {
             preparedStatement.setString(1, name);
             preparedStatement.setInt(2, age);
             return preparedStatement.executeUpdate();
@@ -54,7 +54,7 @@ public class TeacherService {
 
     public int addTeacherNoTx(String name, Integer age) {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("insert into teacher (name,age) values (?,?)")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("insert into teacher (`name`,age) values (?,?)")) {
             preparedStatement.setString(1, name);
             preparedStatement.setInt(2, age);
             return preparedStatement.executeUpdate();
