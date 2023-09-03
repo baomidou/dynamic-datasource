@@ -1,0 +1,6 @@
+{
+  "rules": [
+    {"excludeClasses": "**"},
+    {"includeClasses": "com.baomidou.dynamic.datasource.**"}
+  ]
+}
