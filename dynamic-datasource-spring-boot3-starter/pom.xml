@@ -14,7 +14,6 @@
         https://github.com/baomidou/dynamic-datasource-spring-boot-starter/tree/master/dynamic-datasource-spring-boot3-starter
     </url>
 
-
     <properties>
         <java.version>17</java.version>
         <spring-boot-dependencies.version>3.1.1</spring-boot-dependencies.version>
@@ -51,5 +50,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
 </project>
