@@ -378,9 +378,9 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>${maven-surefire-plugin.version}</version>
                         <configuration>
-                            <excludes>
-                                <exclude>com.baomidou.dynamic.datasource.fixture.v1.**</exclude>
-                            </excludes>
+                            <includes>
+                                <exclude>com.baomidou.dynamic.datasource.fixture.v3.**</exclude>
+                            </includes>
                             <argLine>--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED</argLine>
                         </configuration>
                     </plugin>
@@ -429,13 +429,6 @@
         </profile>
         <profile>
             <id>nativeTestInSpringBoot</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.junit.platform</groupId>
-                    <artifactId>junit-platform-launcher</artifactId>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
             <build>
                 <plugins>
                     <plugin>
