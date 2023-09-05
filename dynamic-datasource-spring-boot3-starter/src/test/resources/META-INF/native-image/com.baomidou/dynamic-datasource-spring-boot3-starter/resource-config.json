@@ -7,6 +7,10 @@
   }, {
     "pattern":"\\QMETA-INF/services/ch.qos.logback.classic.spi.Configurator\\E"
   }, {
+    "pattern":"\\QMETA-INF/services/io.undertow.servlet.ServletExtension\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/io.undertow.websockets.jsr.WebsocketClientSslProvider\\E"
+  }, {
     "pattern":"\\QMETA-INF/services/java.sql.Driver\\E"
   }, {
     "pattern":"\\QMETA-INF/services/org.apache.maven.surefire.spi.MasterProcessChannelProcessorFactory\\E"
@@ -16,6 +20,8 @@
     "pattern":"\\QMETA-INF/services/org.junit.platform.launcher.TestExecutionListener\\E"
   }, {
     "pattern":"\\QMETA-INF/services/org.slf4j.spi.SLF4JServiceProvider\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/org.xnio.XnioProvider\\E"
   }, {
     "pattern":"\\QMETA-INF/spring-autoconfigure-metadata.properties\\E"
   }, {
@@ -79,15 +85,11 @@
   }, {
     "pattern":"\\Qdb/add-remove-datasource.sql\\E"
   }, {
-    "pattern":"\\Qorg/apache/catalina/core/RestrictedFilters.properties\\E"
-  }, {
-    "pattern":"\\Qorg/apache/catalina/core/RestrictedListeners.properties\\E"
-  }, {
-    "pattern":"\\Qorg/apache/catalina/core/RestrictedServlets.properties\\E"
-  }, {
-    "pattern":"\\Qorg/apache/catalina/util/ServerInfo.properties\\E"
+    "pattern":"\\Qio/undertow/version.properties\\E"
   }, {
     "pattern":"\\Qorg/h2/util/data.zip\\E"
+  }, {
+    "pattern":"\\Qorg/jboss/threads/Version.properties\\E"
   }, {
     "pattern":"\\Qorg/json/JSONObject.class\\E"
   }, {
@@ -379,6 +381,8 @@
   }, {
     "pattern":"\\Qorg/springframework/boot/sql/init/dependency/DatabaseInitializationDependencyConfigurer.class\\E"
   }, {
+    "pattern":"\\Qorg/springframework/boot/web/server/mime-mappings.properties\\E"
+  }, {
     "pattern":"\\Qorg/springframework/context/ApplicationContextAware.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/context/ResourceLoaderAware.class\\E"
@@ -438,6 +442,10 @@
     "pattern":"\\Qorg/springframework/web/servlet/config/annotation/WebMvcConfigurationSupport.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/web/servlet/config/annotation/WebMvcConfigurer.class\\E"
+  }, {
+    "pattern":"\\Qorg/xnio/Version.properties\\E"
+  }, {
+    "pattern":"\\Qorg/xnio/nio/Version.properties\\E"
   }]},
   "bundles":[]
 }
