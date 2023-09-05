@@ -20,15 +20,13 @@ import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
 import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
 import com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
@@ -41,14 +39,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(classes = LoadDatasourceFromJDBCApplication.class, webEnvironment = RANDOM_PORT)
-@RunWith(SpringRunner.class)
 public class LoadDatasourceFromJDBCTest {
 
     @Autowired
     DataSource dataSource;
 
     @Test
-    public void testExistDataSource() {
+    void testExistDataSource() {
         DynamicRoutingDataSource ds = (DynamicRoutingDataSource) dataSource;
         assertThat(ds.getDataSources().keySet()).contains("master", "db1", "db2", "db3");
     }
@@ -68,13 +65,13 @@ class LoadDatasourceFromJDBCApplication {
             @Override
             protected Map<String, DataSourceProperty> executeStmt(Statement statement) throws SQLException {
                 statement.execute("CREATE TABLE IF NOT EXISTS `DB`\n" +
-                                  "(\n" +
-                                  "    `name`   VARCHAR(30) NULL DEFAULT NULL,\n" +
-                                  "    `username`   VARCHAR(30) NULL DEFAULT NULL,\n" +
-                                  "    `password`   VARCHAR(30) NULL DEFAULT NULL,\n" +
-                                  "    `url`   VARCHAR(30) NULL DEFAULT NULL,\n" +
-                                  "    `driver`   VARCHAR(30) NULL DEFAULT NULL\n" +
-                                  ")");
+                        "(\n" +
+                        "    `name`   VARCHAR(30) NULL DEFAULT NULL,\n" +
+                        "    `username`   VARCHAR(30) NULL DEFAULT NULL,\n" +
+                        "    `password`   VARCHAR(30) NULL DEFAULT NULL,\n" +
+                        "    `url`   VARCHAR(30) NULL DEFAULT NULL,\n" +
+                        "    `driver`   VARCHAR(30) NULL DEFAULT NULL\n" +
+                        ")");
                 statement.executeUpdate("insert into DB values ('master','sa','','jdbc:h2:~/test','org.h2.Driver')");
                 statement.executeUpdate("insert into DB values ('db1','sa','','jdbc:h2:mem:test2','org.h2.Driver')");
                 statement.executeUpdate("insert into DB values ('db2','sa','','jdbc:h2:mem:test3','org.h2.Driver')");

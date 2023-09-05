@@ -19,14 +19,12 @@ import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
 import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.hikaricp.HikariCpConfig;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.sql.DataSource;
 
@@ -34,7 +32,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(classes = AddRemoveDatasourceApplication.class, webEnvironment = RANDOM_PORT)
-@RunWith(SpringRunner.class)
 public class AddRemoveDatasourceTest {
 
     @Autowired
@@ -44,7 +41,7 @@ public class AddRemoveDatasourceTest {
     DefaultDataSourceCreator dataSourceCreator;
 
     @Test
-    public void testAddAndRemoveDataSource() {
+    void testAddAndRemoveDataSource() {
         HikariCpConfig hikariCpConfig = new HikariCpConfig();
         hikariCpConfig.setConnectionTestQuery("select 1");
         DataSourceProperty dataSourceProperty = new DataSourceProperty();

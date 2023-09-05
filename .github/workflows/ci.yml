@@ -45,7 +45,7 @@ jobs:
       - name: Build Spring Boot Starter 3 test with Maven
         run: |
           ./mvnw -T1C -B -PgenerateMetadata -DskipNativeTests clean test
-#          ./mvnw -am -pl dynamic-datasource-spring-boot3-starter -PnativeTestInSpringBoot clean test
+#          ./mvnw -am -pl dynamic-datasource-spring-boot3-starter -PnativeTestInSpringBoot T1C -B clean test
   test-maximum-jdk-ci:
     name: Test CI - JDK ${{ matrix.java-version }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}

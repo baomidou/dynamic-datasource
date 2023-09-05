@@ -61,8 +61,8 @@
         <seata.version>1.4.2</seata.version>
         <lombok.version>1.18.28</lombok.version>
         <h2.version>2.2.220</h2.version>
-        <atomikos.version>3.9.3</atomikos.version>
-        <junit-platform-launcher.version>1.9.3</junit-platform-launcher.version>
+        <atomikos.version>4.0.6</atomikos.version>
+        <junit-jupiter.version>5.10.0</junit-jupiter.version>
 
         <maven-clean-plugin.version>3.3.1</maven-clean-plugin.version>
         <maven-install-plugin.version>3.1.1</maven-install-plugin.version>
@@ -83,17 +83,17 @@
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>dynamic-datasource-creator</artifactId>
-                <version>4.2.0</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>dynamic-datasource-spring</artifactId>
-                <version>4.2.0</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>dynamic-datasource-spring-boot-common</artifactId>
-                <version>4.2.0</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -173,6 +173,13 @@
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
                 <version>${h2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit-jupiter.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -426,7 +433,6 @@
                 <dependency>
                     <groupId>org.junit.platform</groupId>
                     <artifactId>junit-platform-launcher</artifactId>
-                    <version>${junit-platform-launcher.version}</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
@@ -446,9 +452,6 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>${maven-surefire-plugin.version}</version>
                         <configuration>
-                            <includes>
-                                <include>com.baomidou.dynamic.datasource.fixture.v3.**</include>
-                            </includes>
                             <excludes>
                                 <exclude>com.baomidou.dynamic.datasource.fixture.v1.**</exclude>
                             </excludes>

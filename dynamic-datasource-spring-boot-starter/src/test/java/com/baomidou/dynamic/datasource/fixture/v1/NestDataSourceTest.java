@@ -22,13 +22,11 @@ import com.baomidou.dynamic.datasource.fixture.v1.service.nest.SchoolService;
 import com.baomidou.dynamic.datasource.fixture.v1.service.nest.Student;
 import com.baomidou.dynamic.datasource.fixture.v1.service.nest.StudentService;
 import com.baomidou.dynamic.datasource.fixture.v1.service.nest.TeacherService;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.sql.DataSource;
 import java.util.Arrays;
@@ -38,7 +36,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(classes = NestApplication.class, webEnvironment = RANDOM_PORT)
-@RunWith(SpringRunner.class)
 public class NestDataSourceTest {
 
     @Autowired
@@ -57,7 +54,7 @@ public class NestDataSourceTest {
     SchoolService schoolService;
 
     @Test
-    public void testNest() {
+    void testNest() {
         DataSourceProperty masterDataSourceProperty = createDataSourceProperty("master");
         DataSourceProperty teacherDataSourceProperty = createDataSourceProperty("teacher");
         DataSourceProperty studentDataSourceProperty = createDataSourceProperty("student");
