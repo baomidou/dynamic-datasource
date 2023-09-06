@@ -24,8 +24,9 @@ env:
   MAVEN_OPTS: -Dhttps.protocols=TLSv1.2 -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true
 
 jobs:
+  #  We only execute nativeTest on `dynamic-datasource-spring-boot3-starter`, since only Spring Boot OSS 3 support provides support for GraalVM Native Image
   test-graalvm-ce-ci:
-    name: NativeTest CI - GraalVM CE ${{ matrix.java-version }} on ${{ matrix.os }} (This CI failure is reasonable)
+    name: NativeTest CI - GraalVM CE ${{ matrix.java-version }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 90
     continue-on-error: true
@@ -43,16 +44,15 @@ jobs:
           cache: 'maven'
       - name: Build Spring Boot Starter 3 test with Maven
         run: |
-          ./mvnw -T1C -B -PgenerateMetadata -DskipNativeTests clean test
           ./mvnw -am -pl dynamic-datasource-spring-boot3-starter -PnativeTestInSpringBoot -T1C -B clean test
-  test-maximum-jdk-ci:
+  test-hotspot-jdk-ci:
     name: Test CI - JDK ${{ matrix.java-version }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     strategy:
       matrix:
         os: [ ubuntu-latest ]
-        java-version: [ '17' ]
+        java-version: [ '17', '20' ]
     steps:
       - uses: actions/checkout@v3
       - name: Setup java
@@ -82,7 +82,7 @@ jobs:
           cache: 'maven'
       - name: Build test with Maven
         run: |
-          ./mvnw -am -pl dynamic-datasource-creator -T1C -B clean package
-          ./mvnw -am -pl dynamic-datasource-spring -T1C -B clean package
-          ./mvnw -am -pl dynamic-datasource-spring-boot-common -T1C -B clean package
+          ./mvnw -am -pl dynamic-datasource-creator -T1C -B clean test
+          ./mvnw -am -pl dynamic-datasource-spring -T1C -B clean test
+          ./mvnw -am -pl dynamic-datasource-spring-boot-common -T1C -B clean test
           ./mvnw -am -pl dynamic-datasource-spring-boot-starter -T1C -B clean test

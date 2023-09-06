@@ -1,7 +1,10 @@
 {
   "rules": [
-    {"includeClasses": "**"}
+    {"includeClasses": "**"},
+    {"excludeClasses": "com.baomidou.mybatisplus.core.override.**"},
+    {"excludeClasses": "org.apache.ibatis.binding.**"}
   ],
   "regexRules": [
+    {"excludeClasses": ".*fixture*.*"}
   ]
 }

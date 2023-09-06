@@ -44,10 +44,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 /**
- * TODO It looks like SPEL is not available under the test with GraalVM Tracing Agent.
+ * SpEL is not available under the nativeTest due to
+ * <a href="https://github.com/spring-projects/spring-framework/issues/29548">Explore how to make
+ * StandardBeanExpressionResolver not reachable in AOT mode</a>
  */
-@SpringBootTest(classes = SPELApplication.class, webEnvironment = RANDOM_PORT)
 @DisabledInNativeImage
+@SpringBootTest(classes = SPELApplication.class, webEnvironment = RANDOM_PORT)
 public class SPELTest {
 
     MockMvc mockMvc;
