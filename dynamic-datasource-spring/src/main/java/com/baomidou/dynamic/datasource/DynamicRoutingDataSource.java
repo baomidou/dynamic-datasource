@@ -29,7 +29,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -48,6 +48,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 1.0.0
  */
 @Slf4j
+@Component
 public class DynamicRoutingDataSource extends AbstractRoutingDataSource implements InitializingBean, DisposableBean {
 
     private static final String UNDERLINE = "_";
@@ -59,8 +60,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
      * 分组数据库
      */
     private final Map<String, GroupDataSource> groupDataSources = new ConcurrentHashMap<>();
-    @Autowired
-    private List<DynamicDataSourceProvider> providers;
+    private final List<DynamicDataSourceProvider> providers;
     @Setter
     private Class<? extends DynamicDataSourceStrategy> strategy = LoadBalanceDynamicDataSourceStrategy.class;
     @Setter
@@ -71,6 +71,10 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
     private Boolean p6spy = false;
     @Setter
     private Boolean seata = false;
+
+    public DynamicRoutingDataSource(List<DynamicDataSourceProvider> providers) {
+        this.providers = providers;
+    }
 
     @Override
     protected String getPrimary() {
@@ -207,7 +211,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
     }
 
     @Override
-    public void destroy() throws Exception {
+    public void destroy() {
         log.info("dynamic-datasource start closing ....");
         for (Map.Entry<String, DataSource> item : dataSourceMap.entrySet()) {
             closeDataSource(item.getKey(), item.getValue());
@@ -216,7 +220,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         // 检查开启了配置但没有相关依赖
         checkEnv();
         // 添加并分组数据源

@@ -52,7 +52,7 @@ cd ./dynamic-datasource/
 ./mvnw -am -pl dynamic-datasource-spring-boot3-starter -PnativeTestInSpringBoot -T1C -B clean test
 ```
 
-贡献者在提交 PR 后，位于 Github Actions 的 CI 将进行此验证。相关 CI 的失败行为是现阶段是可接受的。
+贡献者在提交 PR 后，位于 Github Actions 的 CI 将进行此验证。
 
 请不要为 SPEL 功能编写可能的 nativeTest，参考 https://github.com/spring-projects/spring-framework/issues/29548 。如有需要，
 请使用 `org.graalvm.nativeimage.imagecode` 的 System Property 屏蔽相关测试在 GraalVM Native Image 下运行。

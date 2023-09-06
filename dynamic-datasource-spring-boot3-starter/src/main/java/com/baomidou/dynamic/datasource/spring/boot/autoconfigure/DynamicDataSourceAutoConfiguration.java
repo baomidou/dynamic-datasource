@@ -16,6 +16,7 @@
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
+import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.ObjectProvider;
@@ -64,8 +65,8 @@ public class DynamicDataSourceAutoConfiguration implements InitializingBean {
 
     @Bean
     @ConditionalOnMissingBean
-    public DataSource dataSource() {
-        DynamicRoutingDataSource dataSource = new DynamicRoutingDataSource();
+    public DataSource dataSource(List<DynamicDataSourceProvider> providers) {
+        DynamicRoutingDataSource dataSource = new DynamicRoutingDataSource(providers);
         dataSource.setPrimary(properties.getPrimary());
         dataSource.setStrict(properties.getStrict());
         dataSource.setStrategy(properties.getStrategy());
