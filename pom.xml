@@ -75,7 +75,7 @@
         <license-maven-plugin.version>4.2</license-maven-plugin.version>
         <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
-        <native-maven-plugin.version>0.9.25</native-maven-plugin.version>
+        <native-maven-plugin.version>0.9.26</native-maven-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -190,6 +190,11 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -384,21 +389,14 @@
                         <configuration>
                             <agent>
                                 <enabled>true</enabled>
-                                <defaultMode>Direct</defaultMode>
+                                <defaultMode>Conditional</defaultMode>
                                 <modes>
-                                    <!--TODO For the foreseeable future, the generated GraalVM Reachability Metadata will go directly to the Release product rather than staying under test packages -->
-                                    <direct>
-                                        config-output-dir=${project.basedir}/src/test/resources/META-INF/native-image/${project.groupId}/${project.artifactId}
-                                    </direct>
+                                    <conditional>
+                                        <userCodeFilterPath>${user.dir}/native-image/user-code-filter.json</userCodeFilterPath>
+                                        <extraFilterPath>${user.dir}/native-image/extra-filter.json</extraFilterPath>
+                                        <parallel>true</parallel>
+                                    </conditional>
                                 </modes>
-                                <options>
-                                    <callerFilterFiles>
-                                        <filterFile>${user.dir}/native-image/caller-filter.json</filterFile>
-                                    </callerFilterFiles>
-                                    <accessFilterFiles>
-                                        <filterFile>${user.dir}/native-image/access-filter.json</filterFile>
-                                    </accessFilterFiles>
-                                </options>
                             </agent>
                         </configuration>
                     </plugin>

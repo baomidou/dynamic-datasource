@@ -1,0 +1,9 @@
+{
+  "rules": [
+    {"includeClasses": "**"}
+  ],
+  "regexRules": [
+    {"excludeClasses": ".*fixture*.*"},
+    {"excludeClasses": ".*Test*.*"}
+  ]
+}

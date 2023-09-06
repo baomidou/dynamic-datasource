@@ -1,0 +1,7 @@
+{
+  "resources":{
+  "includes":[{
+      "pattern":"\\Qdb/add-remove-datasource.sql\\E"
+  }]},
+  "bundles":[]
+}

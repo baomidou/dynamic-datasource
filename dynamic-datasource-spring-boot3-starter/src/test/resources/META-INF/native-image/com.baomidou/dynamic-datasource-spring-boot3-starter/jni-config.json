@@ -1,2 +1,25 @@
 [
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider"},
+  "name":"[Lcom.sun.management.internal.DiagnosticCommandArgumentInfo;"
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider"},
+  "name":"[Lcom.sun.management.internal.DiagnosticCommandInfo;"
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider"},
+  "name":"com.sun.management.internal.DiagnosticCommandArgumentInfo",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String","java.lang.String","java.lang.String","java.lang.String","boolean","boolean","boolean","int"] }]
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider"},
+  "name":"com.sun.management.internal.DiagnosticCommandInfo",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String","java.lang.String","java.lang.String","java.lang.String","java.lang.String","java.lang.String","boolean","java.util.List"] }]
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider"},
+  "name":"java.util.Arrays",
+  "methods":[{"name":"asList","parameterTypes":["java.lang.Object[]"] }]
+}
 ]

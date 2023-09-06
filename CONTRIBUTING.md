@@ -50,7 +50,7 @@ cd ./dynamic-datasource/
 ./mvnw -am -pl dynamic-datasource-spring-boot3-starter -PnativeTestInSpringBoot -T1C -B clean test
 ```
 
-贡献者在提交 PR 后，位于 Github Actions 的 CI 将进行此验证。如果 nativeTest 执行失败，请跳转到[本文的 2.2一节](./CONTRIBUTING.md)。
+贡献者在提交 PR 后，位于 Github Actions 的 CI 将进行此验证。如果 nativeTest 执行失败，请跳转到[本文的 2.2 一节](./CONTRIBUTING.md)。
 
 当贡献者发现缺少与 `dynamic-datasource` 无关的第三方库的 GraalVM Reachability Metadata 时，应当在
 https://github.com/oracle/graalvm-reachability-metadata 打开新的 issue， 并提交包含依赖的第三方库缺失的 GraalVM Reachability 
@@ -59,19 +59,38 @@ Metadata 的 PR。
 ## 2.2 Generate or merge GraalVM Reachability Metadata for unit tests
 
 如果 nativeTest 执行失败， 应为单元测试生成初步的 GraalVM Reachability Metadata，并手动调整以修复 nativeTest。
-如有需要，请使用 `org.junit.jupiter.api.condition.DisabledInNativeImage` 注解屏蔽部分单元测试。
+如有需要，请使用 `org.junit.jupiter.api.condition.DisabledInNativeImage` 注解或 `org.graalvm.nativeimage.imagecode` 的 
+System Property 屏蔽部分单元测试在 GraalVM Native Image 下运行。
 
-请不要为 SpEL 功能编写可能的 nativeTest，参考 https://github.com/spring-projects/spring-framework/issues/29548 。如有需要，
-请使用 `org.graalvm.nativeimage.imagecode` 的 System Property 屏蔽相关测试在 GraalVM Native Image 下运行。
+请不要为 SpEL 功能编写可能的 nativeTest，参考尚未关闭的 https://github.com/spring-projects/spring-framework/issues/29548 。
 
 项目定义了 `generateMetadata` 的 Maven Profile 用于在普通 JVM 下携带 GraalVM Tracing Agent 执行单元测试，并在特定目录下生成或合并
 已有的 GraalVM Reachability Metadata 文件。可通过如下 bash 命令简单处理此流程。贡献者仍可能需要手动调整具体的 JSON 条目，并在适当的时候
 调整 Maven Profile 和 GraalVM Tracing Agent 的 Filter 链。
 
+以下命令仅为 `dynamic-datasource-spring-boot3-starter` 生成 Conditioanl 形态的 GraalVM Reachability Metadata 的一个举例。
+在 https://github.com/graalvm/native-build-tools/issues/500 关闭之前，你都需要手动调整 `native-image-configure` 的 `input-dir`
+为 `./mvnw -PgenerateMetadata -DskipNativeTests -e clean test` 真实的输出目录。
+
 ```bash
-./mvnw -T1C -B -PgenerateMetadata -DskipNativeTests clean test
-./mvnw -am -pl dynamic-datasource-spring-boot3-starter -PnativeTestInSpringBoot -T1C -B clean test
+git clone git@github.com:baomidou/dynamic-datasource.git
+
+cd ./dynamic-datasource/
+
+./mvnw -PgenerateMetadata -DskipNativeTests -e clean test
+
+mkdir -p "./dynamic-datasource-spring-boot3-starter/src/test/resources/META-INF/native-image/com.baomidou/dynamic-datasource-spring-boot3-starter/"
+
+native-image-configure generate-conditional\
+  --user-code-filter="./native-image/user-code-filter.json"\
+  --class-name-filter="./native-image/extra-filter.json"\
+  --input-dir="./dynamic-datasource-spring-boot3-starter/target/native/agent-output/test/session-45270-20230907T013541Z/"\
+  --output-dir="./dynamic-datasource-spring-boot3-starter/src/test/resources/META-INF/native-image/com.baomidou/dynamic-datasource-spring-boot3-starter/"
+
+./mvnw -am -pl dynamic-datasource-spring-boot3-starter -PnativeTestInSpringBoot -T1C -B -e clean test
 ```
+
+请手动删除无任何具体条目的 JSON 文件。
 
 # 3. PR
 
