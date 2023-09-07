@@ -72,6 +72,10 @@ System Property 屏蔽部分单元测试在 GraalVM Native Image 下运行。
 在 https://github.com/graalvm/native-build-tools/issues/500 关闭之前，你都需要手动调整 `native-image-configure` 的 `input-dir`
 为 `./mvnw -PgenerateMetadata -DskipNativeTests -e clean test` 真实的输出目录。
 
+对于测试类和测试文件独立使用的 GraalVM Reachability Metadata，贡献者应该放置到相关子模块对应的 
+`${project.basedir}/src/test/resources/META-INF/native-image/${project.artifactId}-test-metadata/` 文件夹下。`${}` 内为 
+POM 4.0 的常规系统变量，自行替换。
+
 ```bash
 git clone git@github.com:baomidou/dynamic-datasource.git
 
