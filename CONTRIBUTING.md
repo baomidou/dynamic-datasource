@@ -89,7 +89,7 @@ native-image-configure generate-conditional\
   --user-code-filter="./native-image/user-code-filter.json"\
   --class-name-filter="./native-image/extra-filter.json"\
   --input-dir="./dynamic-datasource-spring-boot3-starter/target/native/agent-output/test/session-45270-20230907T013541Z/"\
-  --output-dir="./dynamic-datasource-spring-boot3-starter/src/test/resources/META-INF/native-image/com.baomidou/dynamic-datasource-spring-boot3-starter/"
+  --output-dir="./dynamic-datasource-spring-boot3-starter/src/main/resources/META-INF/native-image/com.baomidou/dynamic-datasource-spring-boot3-starter/"
 
 ./mvnw -am -pl dynamic-datasource-spring-boot3-starter -PnativeTestInSpringBoot -T1C -B -e clean test
 ```
