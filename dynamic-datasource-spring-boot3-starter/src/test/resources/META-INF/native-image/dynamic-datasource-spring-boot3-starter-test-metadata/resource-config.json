@@ -1,0 +1,19 @@
+{
+  "resources":{
+  "includes":[{
+      "pattern":"\\Qdb/add-remove-datasource.sql\\E"
+  },{
+    "condition":{"typeReachable":"com.baomidou.dynamic.datasource.creator.druid.DruidDataSourceCreator"},
+    "pattern":"\\QMETA-INF/druid-driver.properties\\E"
+  }, {
+    "condition":{"typeReachable":"com.baomidou.dynamic.datasource.creator.druid.DruidDataSourceCreator"},
+    "pattern":"\\QMETA-INF/druid-filter.properties\\E"
+  }, {
+    "condition":{"typeReachable":"com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider"},
+    "pattern":"\\QMETA-INF/services/java.sql.Driver\\E"
+  }, {
+    "condition":{"typeReachable":"com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider"},
+    "pattern":"\\Qorg/h2/util/data.zip\\E"
+  }]},
+  "bundles":[]
+}

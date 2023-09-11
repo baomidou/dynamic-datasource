@@ -1,0 +1,27 @@
+{
+  "rules": [
+    {"includeClasses": "**"},
+    {"excludeClasses": "java.lang.management.**"},
+    {"excludeClasses": "jdk.management.**"},
+    {"excludeClasses": "com.sun.management.**"},
+    {"excludeClasses": "sun.management.**"},
+    {"excludeClasses": "javax.management.**"},
+    {"excludeClasses": "org.h2.**"},
+    {"excludeClasses": "oracle.ucp.**"},
+    {"excludeClasses": "org.apache.tomcat.jdbc.**"},
+    {"excludeClasses": "org.apache.commons.**"},
+    {"excludeClasses": "com.mchange.v2.**"},
+    {"excludeClasses": "com.zaxxer.**"},
+    {"excludeClasses": "com.alibaba.druid.**"},
+    {"excludeClasses": "org.springframework.**"},
+    {"excludeClasses": "org.apache.ibatis.binding.**"},
+    {"excludeClasses": "jakarta.servlet.**"},
+    {"excludeClasses": "com.fasterxml.jackson.**"},
+    {"excludeClasses": "com.baomidou.mybatisplus.**"}
+
+  ],
+  "regexRules": [
+    {"excludeClasses": ".*fixture*.*"},
+    {"excludeClasses": ".*Test*.*"}
+  ]
+}
