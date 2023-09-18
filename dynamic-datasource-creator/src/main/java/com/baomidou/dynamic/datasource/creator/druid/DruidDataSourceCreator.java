@@ -139,30 +139,38 @@ public class DruidDataSourceCreator implements DataSourceCreator {
 
     private List<Filter> initFilters(DataSourceProperty dataSourceProperty, String filters) {
         List<Filter> proxyFilters = new ArrayList<>(2);
+        DruidConfig druid = dataSourceProperty.getDruid();
         if (DsStrUtils.hasText(filters)) {
             String[] filterItems = filters.split(",");
             for (String filter : filterItems) {
                 switch (filter) {
                     case "stat":
-                        proxyFilters.add(DruidStatConfigUtil.toStatFilter(dataSourceProperty.getDruid().getStat(), gConfig.getStat()));
+                        proxyFilters.add(DruidStatConfigUtil.toStatFilter(druid.getStat(), gConfig.getStat()));
                         break;
                     case "wall":
-                        WallConfig wallConfig = DruidWallConfigUtil.toWallConfig(dataSourceProperty.getDruid().getWall(), gConfig.getWall());
+                        Map<String, Object> configWall = gConfig.getWall();
+                        Map<String, Object> globalWall = druid.getWall();
+                        WallConfig wallConfig = DruidWallConfigUtil.toWallConfig(globalWall, configWall);
                         WallFilter wallFilter = new WallFilter();
                         wallFilter.setConfig(wallConfig);
+                        String dbType = (String) configWall.get("db-type");
+                        if (!DsStrUtils.hasText(dbType)) {
+                            dbType = (String) globalWall.get("db-type");
+                        }
+                        wallFilter.setDbType(dbType);
                         proxyFilters.add(wallFilter);
                         break;
                     case "slf4j":
-                        proxyFilters.add(DruidLogConfigUtil.initFilter(Slf4jLogFilter.class, dataSourceProperty.getDruid().getSlf4j(), gConfig.getSlf4j()));
+                        proxyFilters.add(DruidLogConfigUtil.initFilter(Slf4jLogFilter.class, druid.getSlf4j(), gConfig.getSlf4j()));
                         break;
                     case "commons-log":
-                        proxyFilters.add(DruidLogConfigUtil.initFilter(CommonsLogFilter.class, dataSourceProperty.getDruid().getCommonsLog(), gConfig.getCommonsLog()));
+                        proxyFilters.add(DruidLogConfigUtil.initFilter(CommonsLogFilter.class, druid.getCommonsLog(), gConfig.getCommonsLog()));
                         break;
                     case "log4j":
-                        proxyFilters.add(DruidLogConfigUtil.initFilter(Log4jFilter.class, dataSourceProperty.getDruid().getLog4j(), gConfig.getLog4j()));
+                        proxyFilters.add(DruidLogConfigUtil.initFilter(Log4jFilter.class, druid.getLog4j(), gConfig.getLog4j()));
                         break;
                     case "log4j2":
-                        proxyFilters.add(DruidLogConfigUtil.initFilter(Log4j2Filter.class, dataSourceProperty.getDruid().getLog4j2(), gConfig.getLog4j2()));
+                        proxyFilters.add(DruidLogConfigUtil.initFilter(Log4j2Filter.class, druid.getLog4j2(), gConfig.getLog4j2()));
                         break;
                     default:
                         log.warn("dynamic-datasource current not support [{}]", filter);
