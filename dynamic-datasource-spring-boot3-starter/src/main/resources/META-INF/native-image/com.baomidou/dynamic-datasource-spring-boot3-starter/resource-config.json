@@ -1,8 +1,0 @@
-{
-  "resources":{
-  "includes":[{
-    "condition":{"typeReachable":"com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider"},
-    "pattern":"\\QMETA-INF/services/java.sql.Driver\\E"
-  }]},
-  "bundles":[]
-}
