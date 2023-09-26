@@ -24,7 +24,7 @@ env:
   MAVEN_OPTS: -Dhttps.protocols=TLSv1.2 -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true
 
 jobs:
-  #  We only execute nativeTest on `dynamic-datasource-spring-boot3-starter`, since only Spring Boot OSS 3 support provides support for GraalVM Native Image
+  #  We only execute nativeTest on `dynamic-datasource-spring-boot3-starter`, since only Spring Boot OSS 3 provides support for GraalVM Native Image
   test-graalvm-ce-ci:
     name: NativeTest CI - GraalVM CE ${{ matrix.java-version }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
@@ -33,7 +33,7 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest ]
-        java-version: [ '17.0.8' ]
+        java-version: [ '21' ]
     steps:
       - uses: actions/checkout@v3
       - uses: graalvm/setup-graalvm@v1
@@ -44,7 +44,7 @@ jobs:
           cache: 'maven'
       - name: Build Spring Boot Starter 3 test with Maven
         run: |
-          ./mvnw -am -pl dynamic-datasource-spring-boot3-starter -PnativeTestInSpringBoot -T1C -B -e clean test
+          ./mvnw -PnativeTestInSpringBoot -T1C -B -e clean test
   test-hotspot-jdk-ci:
     name: Test CI - JDK ${{ matrix.java-version }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
@@ -52,7 +52,7 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest ]
-        java-version: [ '17', '20' ]
+        java-version: [ '17', '21-ea' ]
     steps:
       - uses: actions/checkout@v3
       - name: Setup java

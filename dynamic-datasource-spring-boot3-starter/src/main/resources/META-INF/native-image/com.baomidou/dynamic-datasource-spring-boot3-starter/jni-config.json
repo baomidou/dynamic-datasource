@@ -6,10 +6,5 @@
 {
   "condition":{"typeReachable":"com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider"},
   "name":"[Lcom.sun.management.internal.DiagnosticCommandInfo;"
-},
-{
-  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider"},
-  "name":"java.util.Arrays",
-  "methods":[{"name":"asList","parameterTypes":["java.lang.Object[]"] }]
 }
 ]
