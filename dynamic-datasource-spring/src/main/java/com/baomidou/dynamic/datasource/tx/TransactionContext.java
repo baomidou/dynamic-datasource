@@ -15,7 +15,7 @@
  */
 package com.baomidou.dynamic.datasource.tx;
 
-import org.springframework.util.StringUtils;
+import com.baomidou.dynamic.datasource.toolkit.DsStrUtils;
 
 /**
  * @author funkye
@@ -31,7 +31,7 @@ public class TransactionContext {
      */
     public static String getXID() {
         String xid = CONTEXT_HOLDER.get();
-        if (!StringUtils.isEmpty(xid)) {
+        if (!DsStrUtils.isEmpty(xid)) {
             return xid;
         }
         return null;

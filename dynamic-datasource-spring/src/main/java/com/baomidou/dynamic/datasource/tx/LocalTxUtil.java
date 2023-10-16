@@ -15,8 +15,8 @@
  */
 package com.baomidou.dynamic.datasource.tx;
 
+import com.baomidou.dynamic.datasource.toolkit.DsStrUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
 
 import java.security.SecureRandom;
 import java.util.UUID;
@@ -75,7 +75,7 @@ public final class LocalTxUtil {
      */
     public static String startTransaction() {
         String xid = TransactionContext.getXID();
-        if (!StringUtils.isEmpty(xid)) {
+        if (!DsStrUtils.isEmpty(xid)) {
             log.debug("dynamic-datasource exist local tx [{}]", xid);
         } else {
             xid = randomUUID().toString();

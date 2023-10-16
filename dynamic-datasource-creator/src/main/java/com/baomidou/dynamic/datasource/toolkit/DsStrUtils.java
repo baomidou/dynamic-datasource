@@ -22,6 +22,10 @@ package com.baomidou.dynamic.datasource.toolkit;
  */
 public abstract class DsStrUtils {
 
+    public static boolean isEmpty(Object str) {
+        return str == null || "".equals(str);
+    }
+
     /**
      * 判断字符串是否为空
      *

@@ -41,15 +41,13 @@ public final class DruidStatConfigUtil {
     }
 
     /**
-     * 根据当前的配置和全局的配置生成druid防火墙配置
+     * 根据当前的配置生成druid防火墙配置
      *
-     * @param c 当前配置
-     * @param g 全局配置
+     * @param map 配置
      * @return StatFilter
      */
-    public static StatFilter toStatFilter(Map<String, Object> c, Map<String, Object> g) {
+    public static StatFilter toStatFilter(Map<String, Object> map) {
         StatFilter filter = new StatFilter();
-        Map<String, Object> map = DsConfigUtil.mergeMap(c, g);
         for (Map.Entry<String, Object> item : map.entrySet()) {
             String key = DsConfigUtil.lineToUpper(item.getKey());
             Method method = METHODS.get(key);

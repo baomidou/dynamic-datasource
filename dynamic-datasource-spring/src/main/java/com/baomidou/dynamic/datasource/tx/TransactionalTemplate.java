@@ -16,8 +16,8 @@
 package com.baomidou.dynamic.datasource.tx;
 
 import com.baomidou.dynamic.datasource.exception.TransactionException;
+import com.baomidou.dynamic.datasource.toolkit.DsStrUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
 
 import java.util.Objects;
 
@@ -106,7 +106,7 @@ public class TransactionalTemplate {
     private Object doExecute(TransactionalExecutor transactionalExecutor) throws Throwable {
         TransactionalInfo transactionInfo = transactionalExecutor.getTransactionInfo();
         DsPropagation propagation = transactionInfo.propagation;
-        if (!StringUtils.isEmpty(TransactionContext.getXID()) && !propagation.equals(DsPropagation.NESTED)) {
+        if (!DsStrUtils.isEmpty(TransactionContext.getXID()) && !propagation.equals(DsPropagation.NESTED)) {
             return transactionalExecutor.execute();
         }
         boolean state = true;
@@ -209,7 +209,7 @@ public class TransactionalTemplate {
      * @return 是否存在事务
      */
     public boolean existingTransaction() {
-        return !StringUtils.isEmpty(TransactionContext.getXID());
+        return !DsStrUtils.isEmpty(TransactionContext.getXID());
     }
 
     /**

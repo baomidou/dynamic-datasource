@@ -22,6 +22,7 @@ import com.baomidou.dynamic.datasource.exception.CannotFindDataSourceException;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
 import com.baomidou.dynamic.datasource.strategy.LoadBalanceDynamicDataSourceStrategy;
+import com.baomidou.dynamic.datasource.toolkit.DsStrUtils;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import com.p6spy.engine.spy.P6DataSource;
 import io.seata.rm.datasource.DataSourceProxy;
@@ -126,7 +127,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
      * @return 数据源
      */
     public DataSource getDataSource(String ds) {
-        if (StringUtils.isEmpty(ds)) {
+        if (DsStrUtils.isEmpty(ds)) {
             return determinePrimaryDataSource();
         } else if (!groupDataSources.isEmpty() && groupDataSources.containsKey(ds)) {
             log.debug("dynamic-datasource switch to the datasource named [{}]", ds);

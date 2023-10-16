@@ -15,11 +15,11 @@
  */
 package com.baomidou.dynamic.datasource.ds;
 
+import com.baomidou.dynamic.datasource.toolkit.DsStrUtils;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import com.baomidou.dynamic.datasource.tx.ConnectionFactory;
 import com.baomidou.dynamic.datasource.tx.ConnectionProxy;
 import com.baomidou.dynamic.datasource.tx.TransactionContext;
-import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -50,11 +50,11 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource {
     @Override
     public Connection getConnection() throws SQLException {
         String xid = TransactionContext.getXID();
-        if (StringUtils.isEmpty(xid)) {
+        if (DsStrUtils.isEmpty(xid)) {
             return determineDataSource().getConnection();
         } else {
             String ds = DynamicDataSourceContextHolder.peek();
-            ds = StringUtils.isEmpty(ds) ? getPrimary() : ds;
+            ds = DsStrUtils.isEmpty(ds) ? getPrimary() : ds;
             ConnectionProxy connection = ConnectionFactory.getConnection(xid, ds);
             return connection == null ? getConnectionProxy(xid, ds, determineDataSource().getConnection()) : connection;
         }
@@ -63,11 +63,11 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource {
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
         String xid = TransactionContext.getXID();
-        if (StringUtils.isEmpty(xid)) {
+        if (DsStrUtils.isEmpty(xid)) {
             return determineDataSource().getConnection(username, password);
         } else {
             String ds = DynamicDataSourceContextHolder.peek();
-            ds = StringUtils.isEmpty(ds) ? getPrimary() : ds;
+            ds = DsStrUtils.isEmpty(ds) ? getPrimary() : ds;
             ConnectionProxy connection = ConnectionFactory.getConnection(xid, ds);
             return connection == null ? getConnectionProxy(xid, ds, determineDataSource().getConnection(username, password))
                     : connection;
