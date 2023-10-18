@@ -21,6 +21,8 @@ import org.springframework.util.ReflectionUtils;
 import javax.sql.DataSource;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -36,22 +38,38 @@ public class DefaultDataSourceDestroyer implements DataSourceDestroyer {
 
     private static final String THREAD_NAME = "close-db";
 
+    private final List<DataSourceActiveDetector> detectors = new LinkedList<>();
+
+    public DefaultDataSourceDestroyer() {
+        detectors.add(new HikariDataSourceActiveDetector());
+    }
+
+
     public void asyncDestroy(String name, DataSource dataSource) {
-        ExecutorService executor = Executors.newSingleThreadExecutor(r -> {
-            Thread thread = new Thread(r);
-            thread.setName(THREAD_NAME);
-            return thread;
-        });
-        log.warn("dynamic-datasource async close the datasource named [{}],", name);
-        executor.execute(() -> {
-            try {
-                Thread.sleep(5000L);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
+        DataSourceActiveDetector detector = detectors.stream()
+                .filter(x -> x.support(dataSource))
+                .findFirst()
+                .orElse(null);
+        if (null == detector || detector.containsActiveConnection(dataSource)) {
+            ExecutorService executor = Executors.newSingleThreadExecutor(r -> {
+                Thread thread = new Thread(r);
+                thread.setName(THREAD_NAME);
+                return thread;
+            });
+            log.warn("dynamic-datasource async close the datasource named [{}],", name);
+            executor.execute(() -> {
+                try {
+                    Thread.sleep(5000L);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                destroy(name, dataSource);
+            });
+            executor.shutdown();
+        } else {
             destroy(name, dataSource);
-        });
-        executor.shutdown();
+        }
+
     }
 
     /**
