@@ -58,11 +58,6 @@ public class AddRemoveDatasourceTest {
         ds.addDataSource(dataSourceProperty.getPoolName(), dataSourceCreator.createDataSource(dataSourceProperty));
         assertThat(ds.getDataSources().keySet()).contains("slave_1");
         ds.removeDataSource("slave_1");
-        try {
-            Thread.sleep(6000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
         // close directly
         ds.setGraceDestroy(false);
         ds.addDataSource(dataSourceProperty.getPoolName(), dataSourceCreator.createDataSource(dataSourceProperty));
