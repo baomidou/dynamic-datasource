@@ -295,9 +295,9 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
             if (null != realDataSource) {
                 DataSourceDestroyer destroyer = new DefaultDataSourceDestroyer();
                 if (graceDestroy) {
-                    destroyer.asyncDestroy(ds, dataSource);
+                    destroyer.asyncDestroy(ds, realDataSource);
                 } else {
-                    destroyer.destroy(ds, dataSource);
+                    destroyer.destroy(ds, realDataSource);
                 }
             }
         } catch (Exception e) {

@@ -28,7 +28,7 @@ import java.util.concurrent.Executors;
 
 /**
  * Description
- * DefaultDataSourceDestroyer,  support all sources
+ * DefaultDataSourceDestroyer, support check hikari、druid and dhcp2
  *
  * @author alvinkwok
  * @since 2023/10/18
@@ -36,40 +36,52 @@ import java.util.concurrent.Executors;
 @Slf4j
 public class DefaultDataSourceDestroyer implements DataSourceDestroyer {
 
-    private static final String THREAD_NAME = "close-db";
+    private static final String THREAD_NAME = "close-datasource";
+
+    private static final long TIMEOUT_CLOSE = 10 * 1000;
 
     private final List<DataSourceActiveDetector> detectors = new LinkedList<>();
 
     public DefaultDataSourceDestroyer() {
         detectors.add(new HikariDataSourceActiveDetector());
+        detectors.add(new DruidDataSourceActiveDetector());
+        detectors.add(new Dhcp2DataSourceActiveDetector());
     }
 
 
     public void asyncDestroy(String name, DataSource dataSource) {
-        DataSourceActiveDetector detector = detectors.stream()
-                .filter(x -> x.support(dataSource))
-                .findFirst()
-                .orElse(null);
-        if (null == detector || detector.containsActiveConnection(dataSource)) {
-            ExecutorService executor = Executors.newSingleThreadExecutor(r -> {
-                Thread thread = new Thread(r);
-                thread.setName(THREAD_NAME);
-                return thread;
-            });
-            log.warn("dynamic-datasource async close the datasource named [{}],", name);
-            executor.execute(() -> {
+        log.info("dynamic-datasource start asynchronous task to close the datasource named [{}],", name);
+        ExecutorService executor = Executors.newSingleThreadExecutor(r -> {
+            Thread thread = new Thread(r);
+            thread.setName(THREAD_NAME);
+            return thread;
+        });
+        executor.execute(() -> graceDestroy(name, dataSource));
+        executor.shutdown();
+    }
+
+    private void graceDestroy(String name, DataSource dataSource) {
+        try {
+            DataSourceActiveDetector detector = detectors.stream()
+                    .filter(x -> x.support(dataSource))
+                    .findFirst()
+                    .orElse(null);
+            long start = System.currentTimeMillis();
+            while (detector == null || detector.containsActiveConnection(dataSource)) {
+                // make sure the datasource close
+                if (System.currentTimeMillis() - start > TIMEOUT_CLOSE) {
+                    break;
+                }
                 try {
-                    Thread.sleep(5000L);
+                    Thread.sleep(100L);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
-                destroy(name, dataSource);
-            });
-            executor.shutdown();
-        } else {
-            destroy(name, dataSource);
+            }
+        } catch (Exception e) {
+            log.warn("dynamic-datasource check the datasource named [{}] contains active connection failed,", name, e);
         }
-
+        destroy(name, dataSource);
     }
 
     /**
@@ -83,7 +95,7 @@ public class DefaultDataSourceDestroyer implements DataSourceDestroyer {
             Method closeMethod = ReflectionUtils.findMethod(clazz, "close");
             if (closeMethod != null) {
                 closeMethod.invoke(realDataSource);
-                log.info("dynamic-datasource close the datasource named [{}]  success,", name);
+                log.info("dynamic-datasource close the datasource named [{}] success,", name);
             }
         } catch (IllegalAccessException | InvocationTargetException e) {
             log.warn("dynamic-datasource close the datasource named [{}] failed,", name, e);
