@@ -15,6 +15,7 @@
  */
 package com.baomidou.dynamic.datasource.fixture.v1.service.nest;
 
+import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +33,21 @@ public class SchoolService {
     public int addTeacherAndStudentWithTx() {
         int aa = teacherService.addTeacherNoTx("aa", 3);
         int bb = studentService.addStudentNoTx("bb", 4);
+        return aa + bb;
+    }
+
+    @DSTransactional
+    public int addTeacherAndStudentWithDsTx() {
+        int aa = teacherService.addTeacherNoTx("hh", 5);
+        int bb = studentService.addStudentNoTx("zz", 6);
+        return aa + bb;
+    }
+
+    @DSTransactional(rollbackFor = Exception.class)
+    public int addTeacherAndStudentWithDsTxRollBack() {
+        int aa = teacherService.addTeacherNoTx("hh", 5);
+        int bb = studentService.addStudentNoTx("zz", 6);
+        int i = 1 / 0;
         return aa + bb;
     }
 }

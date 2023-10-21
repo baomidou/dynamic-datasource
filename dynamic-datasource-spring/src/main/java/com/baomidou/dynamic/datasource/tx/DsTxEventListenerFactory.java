@@ -28,7 +28,6 @@ import java.lang.reflect.Method;
  *
  * @author zp
  */
-
 public class DsTxEventListenerFactory implements EventListenerFactory, Ordered {
     private static final int EVENT_ORDER = 100;
 

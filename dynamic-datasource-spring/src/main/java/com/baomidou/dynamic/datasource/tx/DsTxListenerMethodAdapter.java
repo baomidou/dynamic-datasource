@@ -28,7 +28,6 @@ import java.util.Objects;
 /**
  * DsTxListenerMethodAdapter Referenced from org.springframework.transaction.event.TransactionalApplicationListenerMethodAdapter
  *
- * @author zp
  */
 public class DsTxListenerMethodAdapter extends ApplicationListenerMethodAdapter {
     private final DsTxEventListener dsTxEventListener;
