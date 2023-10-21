@@ -79,7 +79,7 @@ public class DynamicDataSourceAssistConfiguration {
     @Configuration
     static class DsTxEventListenerFactoryConfiguration {
         @Bean
-        @ConditionalOnClass
+        @ConditionalOnMissingBean
         public DsTxEventListenerFactory dsTxEventListenerFactory() {
             return new DsTxEventListenerFactory();
         }
