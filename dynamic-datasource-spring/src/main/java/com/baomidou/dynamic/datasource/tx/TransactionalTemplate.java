@@ -17,14 +17,15 @@ package com.baomidou.dynamic.datasource.tx;
 
 import com.baomidou.dynamic.datasource.exception.TransactionException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.util.StringUtils;
 
 import java.util.Objects;
 
 /**
- * 事务模板
+ * AOP事务模板
  *
- * @author Hzh
+ * @author Hzh zp
  */
 @Slf4j
 public class TransactionalTemplate {
@@ -118,10 +119,15 @@ public class TransactionalTemplate {
             state = !isRollback(e, transactionInfo);
             throw e;
         } finally {
+            invokeBeforeCompletion();
             if (state) {
+                invokeBeforeCommit();
                 LocalTxUtil.commit(xid);
+                invokeAfterCommit();
+                invokeAfterCompletion(TransactionSynchronization.STATUS_COMMITTED);
             } else {
                 LocalTxUtil.rollback(xid);
+                invokeAfterCompletion(TransactionSynchronization.STATUS_ROLLED_BACK);
             }
         }
         return o;
@@ -230,5 +236,60 @@ public class TransactionalTemplate {
      */
     public boolean isNotEmpty(Object[] array) {
         return !isEmpty(array);
+    }
+
+    /**
+     * Invoke before commit.
+     */
+    public void invokeBeforeCommit() {
+        if (shouldInvokeAction()) {
+            for (TransactionSynchronization synchronization : TransactionContext.getSynchronizations()) {
+                synchronization.beforeCommit(false);
+            }
+        }
+    }
+
+    /**
+     * Invoke before completion .
+     */
+    public void invokeBeforeCompletion() {
+        if (shouldInvokeAction()) {
+            for (TransactionSynchronization synchronization : TransactionContext.getSynchronizations()) {
+                synchronization.beforeCompletion();
+            }
+        }
+    }
+
+    /**
+     * Invoke after commit.
+     */
+    public void invokeAfterCommit() {
+        if (shouldInvokeAction()) {
+            for (TransactionSynchronization synchronization : TransactionContext.getSynchronizations()) {
+                synchronization.afterCommit();
+            }
+        }
+    }
+
+    /**
+     * Invoke after completion.
+     */
+    public void invokeAfterCompletion(int status) {
+        if (shouldInvokeAction()) {
+            for (TransactionSynchronization synchronization : TransactionContext.getSynchronizations()) {
+                synchronization.afterCompletion(status);
+            }
+        }
+        TransactionContext.removeSynchronizations();
+    }
+
+    /**
+     * Should invoke action boolean.
+     *
+     * @return the boolean
+     */
+    public boolean shouldInvokeAction() {
+        //If there is a savepoint, the action should not be executed
+        return !ConnectionFactory.hasSavepoint(TransactionContext.getXID());
     }
 }
