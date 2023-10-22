@@ -3,6 +3,9 @@
     "includes":[{
       "condition":{"typeReachable":"com.baomidou.dynamic.datasource.fixture.v3.NestDataSourceTest"},
       "pattern":"\\Qdb/add-remove-datasource.sql\\E"
+    },{
+        "condition":{"typeReachable":"com.baomidou.dynamic.datasource.fixture.v3.DsTransactionalTest"},
+        "pattern":"\\Qdb/ds-with-transactional.sql\\E"
     }, {
       "condition":{"typeReachable":"com.baomidou.dynamic.datasource.creator.druid.DruidDataSourceCreator"},
       "pattern":"\\QMETA-INF/druid-driver.properties\\E"
