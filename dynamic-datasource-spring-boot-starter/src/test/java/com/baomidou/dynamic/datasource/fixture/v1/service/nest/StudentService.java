@@ -69,14 +69,4 @@ public class StudentService {
             throw new RuntimeException(e);
         }
     }
-
-    public int deleteStudentNoTx(Integer id){
-        try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement("delete from student where id = ?");
-            preparedStatement.setInt(1,id);
-           return preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

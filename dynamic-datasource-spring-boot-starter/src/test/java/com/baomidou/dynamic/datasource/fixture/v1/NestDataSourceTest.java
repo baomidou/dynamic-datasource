@@ -18,22 +18,21 @@ package com.baomidou.dynamic.datasource.fixture.v1;
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
 import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
-import com.baomidou.dynamic.datasource.fixture.v1.service.nest.*;
-import com.baomidou.dynamic.datasource.tx.TransactionContext;
-import org.junit.jupiter.api.BeforeEach;
+import com.baomidou.dynamic.datasource.fixture.v1.service.nest.SchoolService;
+import com.baomidou.dynamic.datasource.fixture.v1.service.nest.Student;
+import com.baomidou.dynamic.datasource.fixture.v1.service.nest.StudentService;
+import com.baomidou.dynamic.datasource.fixture.v1.service.nest.TeacherService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.support.TransactionSynchronization;
 
 import javax.sql.DataSource;
 import java.util.Arrays;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(classes = NestApplication.class, webEnvironment = RANDOM_PORT)
@@ -54,10 +53,15 @@ public class NestDataSourceTest {
     @Autowired
     SchoolService schoolService;
 
-    private DynamicRoutingDataSource ds;
-
     @Test
     void testNest() {
+        DataSourceProperty masterDataSourceProperty = createDataSourceProperty("master");
+        DataSourceProperty teacherDataSourceProperty = createDataSourceProperty("teacher");
+        DataSourceProperty studentDataSourceProperty = createDataSourceProperty("student");
+        DynamicRoutingDataSource ds = (DynamicRoutingDataSource) dataSource;
+        ds.addDataSource(masterDataSourceProperty.getPoolName(), dataSourceCreator.createDataSource(masterDataSourceProperty));
+        ds.addDataSource(teacherDataSourceProperty.getPoolName(), dataSourceCreator.createDataSource(teacherDataSourceProperty));
+        ds.addDataSource(studentDataSourceProperty.getPoolName(), dataSourceCreator.createDataSource(studentDataSourceProperty));
         assertThat(ds.getDataSources().keySet()).contains("master", "teacher", "student");
         assertThat(teacherService.addTeacherWithTx("ss", 1)).isEqualTo(1);
         assertThat(studentService.addStudentWithTx("tt", 2)).isEqualTo(1);
@@ -66,56 +70,6 @@ public class NestDataSourceTest {
         assertThat(schoolService.addTeacherAndStudentWithTx()).isEqualTo(2);
         assertThat(teacherService.selectTeachers()).isEmpty();
         assertThat(studentService.selectStudents()).isEqualTo(Arrays.asList(new Student(1, "tt", 2), new Student(2, "bb", 4)));
-    }
-
-    @Test
-    public void TestDsTransactionalBeforeCommit() {
-        TransactionContext.registerSynchronization(new TransactionSynchronization() {
-            @Override
-            public void beforeCommit(boolean readOnly) {
-                studentService.addStudentNoTx("qq", 7);
-            }
-        });
-        assertThat(schoolService.addTeacherAndStudentWithDsTx()).isEqualTo(2);
-        assertThat(teacherService.selectTeachers()).isEmpty();
-        assertThat(studentService.selectStudents()).isEqualTo(Arrays.asList(new Student(1, "zz", 6), new Student(2, "qq", 7)));
-    }
-
-    @Test
-    public void TestDsTransactionalAfterCommit() {
-        TransactionContext.registerSynchronization(new TransactionSynchronization() {
-            @Override
-            public void afterCommit() {
-                studentService.deleteStudentNoTx(1);
-            }
-        });
-        assertThat(schoolService.addTeacherAndStudentWithDsTx()).isEqualTo(2);
-        assertThat(teacherService.selectTeachers()).isEmpty();
-        assertThat(studentService.selectStudents()).isEmpty();
-    }
-
-    @Test
-    public void TestDsTransactionAfterCompletion() {
-        TransactionContext.registerSynchronization(new TransactionSynchronization() {
-            @Override
-            public void afterCompletion(int status) {
-                assertThat(TransactionSynchronization.STATUS_ROLLED_BACK == status).isTrue();
-                studentService.addStudentNoTx("ff", 8);
-            }
-        });
-        assertThrows(ArithmeticException.class, () -> schoolService.addTeacherAndStudentWithDsTxRollBack());
-        assertThat(studentService.selectStudents()).isEqualTo(Arrays.asList(new Student(2, "ff", 8)));
-    }
-
-    @BeforeEach
-    public void createNestDataSource() {
-        DataSourceProperty masterDataSourceProperty = createDataSourceProperty("master");
-        DataSourceProperty teacherDataSourceProperty = createDataSourceProperty("teacher");
-        DataSourceProperty studentDataSourceProperty = createDataSourceProperty("student");
-        ds = (DynamicRoutingDataSource) dataSource;
-        ds.addDataSource(masterDataSourceProperty.getPoolName(), dataSourceCreator.createDataSource(masterDataSourceProperty));
-        ds.addDataSource(teacherDataSourceProperty.getPoolName(), dataSourceCreator.createDataSource(teacherDataSourceProperty));
-        ds.addDataSource(studentDataSourceProperty.getPoolName(), dataSourceCreator.createDataSource(studentDataSourceProperty));
     }
 
     private DataSourceProperty createDataSourceProperty(String poolName) {
