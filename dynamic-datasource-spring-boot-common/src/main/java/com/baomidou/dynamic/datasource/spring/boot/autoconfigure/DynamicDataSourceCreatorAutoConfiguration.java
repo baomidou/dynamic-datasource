@@ -16,23 +16,32 @@
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
 import cn.beecp.BeeDataSource;
+import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.atomikos.jdbc.AtomikosDataSourceBean;
 import com.baomidou.dynamic.datasource.creator.atomikos.AtomikosDataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.basic.BasicDataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.beecp.BeeCpDataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.dbcp.Dbcp2DataSourceCreator;
+import com.baomidou.dynamic.datasource.creator.druid.DruidConfig;
 import com.baomidou.dynamic.datasource.creator.druid.DruidDataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.hikaricp.HikariDataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.jndi.JndiDataSourceCreator;
+import com.baomidou.dynamic.datasource.toolkit.DsStrUtils;
 import com.baomidou.dynamic.datasource.tx.AtomikosTransactionFactory;
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.ibatis.transaction.TransactionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author TaoYu
@@ -65,12 +74,29 @@ public class DynamicDataSourceCreatorAutoConfiguration {
      */
     @ConditionalOnClass(DruidDataSource.class)
     @Configuration
+    @Slf4j
     static class DruidDataSourceCreatorConfiguration {
+
+        @Autowired(required = false)
+        private ApplicationContext applicationContext;
 
         @Bean
         @Order(DRUID_ORDER)
         public DruidDataSourceCreator druidDataSourceCreator(DynamicDataSourceProperties properties) {
-            return new DruidDataSourceCreator(properties.getDruid());
+            DruidConfig druid = properties.getDruid();
+            return new DruidDataSourceCreator(druid, proxyFilters -> {
+                List<Filter> filters = new ArrayList<>();
+                if (applicationContext != null && DsStrUtils.hasText(proxyFilters)) {
+                    for (String filterId : proxyFilters.split(",")) {
+                        try {
+                            filters.add(applicationContext.getBean(filterId, Filter.class));
+                        } catch (Exception e) {
+                            log.warn("dynamic-datasource cannot load druid filter with name [{}], will be ignored", filterId);
+                        }
+                    }
+                }
+                return filters;
+            });
         }
     }
 

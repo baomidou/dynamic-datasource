@@ -18,7 +18,9 @@ package com.baomidou.dynamic.datasource.creator.druid;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * Druid参数配置
@@ -89,5 +91,5 @@ public class DruidConfig {
     private Map<String, Object> commonsLog = new HashMap<>();
     private Map<String, Object> stat = new HashMap<>();
 
-    private List<String> proxyFilters = new ArrayList<>();
+    private String proxyFilters;
 }

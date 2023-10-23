@@ -77,6 +77,8 @@ public class DruidDataSourceCreator implements DataSourceCreator {
 
     private DruidConfig gConfig;
 
+    private DruidFilterCallBack druidFilterCallBack;
+
     /**
      * Druid since 1.2.17 use 'configFromPropeties' to copy config
      * Druid < 1.2.17 use 'configFromPropety' to copy config
@@ -114,6 +116,9 @@ public class DruidDataSourceCreator implements DataSourceCreator {
 
         String configFilters = properties.getProperty("druid.filters");
         List<Filter> proxyFilters = this.initFilters(config, configFilters);
+        if (druidFilterCallBack != null) {
+            proxyFilters.addAll(druidFilterCallBack.getFilters(config.getProxyFilters()));
+        }
         dataSource.setProxyFilters(proxyFilters);
         try {
             configMethod.invoke(dataSource, properties);
@@ -172,11 +177,6 @@ public class DruidDataSourceCreator implements DataSourceCreator {
                 }
             }
         }
-//        if (this.applicationContext != null) {
-//            for (String filterId : gConfig.getProxyFilters()) {
-//                proxyFilters.add(this.applicationContext.getBean(filterId, Filter.class));
-//            }
-//        }
         return proxyFilters;
     }
 
