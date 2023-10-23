@@ -38,19 +38,15 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(classes = DsTransactionalApplication.class, webEnvironment = RANDOM_PORT)
 public class DsTransactionalTest {
     @Autowired
-    private OrderService orderService;
-
-    @Autowired
-    private AccountService accountService;
-
-    @Autowired
-    private ProductService productService;
-
-    @Autowired
     DataSource dataSource;
-
     @Autowired
     DefaultDataSourceCreator dataSourceCreator;
+    @Autowired
+    private OrderService orderService;
+    @Autowired
+    private AccountService accountService;
+    @Autowired
+    private ProductService productService;
     private DynamicRoutingDataSource ds;
 
     @Test

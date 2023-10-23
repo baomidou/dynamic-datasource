@@ -268,9 +268,9 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
     /**
      * close db
      *
-     * @param ds         dsName
-     * @param dataSource db
-     * @param graceDestroy  If true, close the connection after a delay.
+     * @param ds           dsName
+     * @param dataSource   db
+     * @param graceDestroy If true, close the connection after a delay.
      */
     private void closeDataSource(String ds, DataSource dataSource, boolean graceDestroy) {
         try {
