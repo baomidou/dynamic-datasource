@@ -71,6 +71,7 @@ public class DynamicDataSourceAutoConfiguration implements InitializingBean {
         dataSource.setStrategy(properties.getStrategy());
         dataSource.setP6spy(properties.getP6spy());
         dataSource.setSeata(properties.getSeata());
+        dataSource.setGraceDestroy(properties.getGraceDestroy());
         return dataSource;
     }
 

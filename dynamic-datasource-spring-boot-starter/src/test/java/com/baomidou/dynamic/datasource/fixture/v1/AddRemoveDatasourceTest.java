@@ -53,6 +53,13 @@ public class AddRemoveDatasourceTest {
         dataSourceProperty.setUrl("jdbc:h2:mem:test1");
         dataSourceProperty.setDriverClassName("org.h2.Driver");
         DynamicRoutingDataSource ds = (DynamicRoutingDataSource) dataSource;
+        // async destroy datasource
+        ds.setGraceDestroy(true);
+        ds.addDataSource(dataSourceProperty.getPoolName(), dataSourceCreator.createDataSource(dataSourceProperty));
+        assertThat(ds.getDataSources().keySet()).contains("slave_1");
+        ds.removeDataSource("slave_1");
+        // close directly
+        ds.setGraceDestroy(false);
         ds.addDataSource(dataSourceProperty.getPoolName(), dataSourceCreator.createDataSource(dataSourceProperty));
         assertThat(ds.getDataSources().keySet()).contains("slave_1");
         ds.removeDataSource("slave_1");

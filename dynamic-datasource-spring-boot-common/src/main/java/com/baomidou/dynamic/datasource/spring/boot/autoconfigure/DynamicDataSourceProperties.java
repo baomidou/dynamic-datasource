@@ -69,6 +69,10 @@ public class DynamicDataSourceProperties {
      */
     private Boolean lazy = false;
     /**
+     * 是否优雅关闭数据源,等待一段时间后再将数据源销毁
+     */
+    private Boolean graceDestroy = false;
+    /**
      * seata使用模式，默认AT
      */
     private SeataMode seataMode = SeataMode.AT;
