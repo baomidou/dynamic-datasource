@@ -228,16 +228,21 @@
                 <groupId>com.mycila</groupId>
                 <artifactId>license-maven-plugin</artifactId>
                 <version>${license-maven-plugin.version}</version>
+
                 <configuration>
-                    <header>license.txt</header>
-                    <includes>
-                        <include>src/main/java/**</include>
-                    </includes>
-                    <excludes>
-                        <exclude>src/main/java/com/**/**/Base64.java</exclude>
-                        <exclude>src/main/java/com/**/**/CryptoUtils.java</exclude>
-                        <exclude>src/main/java/com/**/**/DruidDynamicDataSourceConfiguration.java</exclude>
-                    </excludes>
+                    <licenseSets>
+                        <licenseSet>
+                            <header>license.txt</header>
+                            <includes>
+                                <include>src/main/java/**</include>
+                            </includes>
+                            <excludes>
+                                <exclude>src/main/java/com/**/**/Base64.java</exclude>
+                                <exclude>src/main/java/com/**/**/CryptoUtils.java</exclude>
+                                <exclude>src/main/java/com/**/**/DruidDynamicDataSourceConfiguration.java</exclude>
+                            </excludes>
+                        </licenseSet>
+                    </licenseSets>
                 </configuration>
                 <executions>
                     <execution>

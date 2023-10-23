@@ -269,6 +269,7 @@ public class DataSourceClassResolver {
      * @param ae AnnotatedElement
      * @return 数据源映射持有者
      */
+    @SuppressWarnings("unchecked")
     private <T> BasicAttribute<T> findDataSourceAttribute(AnnotatedElement ae, Class<? extends Annotation> annotation) {
         if (annotation.isAssignableFrom(DS.class)) {
             //AnnotatedElementUtils.findMergedAnnotation()会委托给findMergedAnnotationAttributes()
