@@ -220,6 +220,9 @@ public class ConnectionFactory {
      */
     public static boolean hasSavepoint(String xid) {
         Map<String, List<SavePointHolder>> savePointMap = SAVEPOINT_CONNECTION_HOLDER.get();
+        if (CollectionUtils.isEmpty(savePointMap)) {
+            return false;
+        }
         List<SavePointHolder> savePointHolders = savePointMap.get(xid);
         return !CollectionUtils.isEmpty(savePointHolders);
     }
