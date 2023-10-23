@@ -17,8 +17,8 @@ package com.baomidou.dynamic.datasource.event;
 
 import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
 import com.baomidou.dynamic.datasource.toolkit.CryptoUtils;
+import com.baomidou.dynamic.datasource.toolkit.DsStrUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.util.regex.Matcher;
@@ -40,7 +40,7 @@ public class EncDataSourceInitEvent implements DataSourceInitEvent {
     @Override
     public void beforeCreate(DataSourceProperty dataSourceProperty) {
         String publicKey = dataSourceProperty.getPublicKey();
-        if (StringUtils.hasText(publicKey)) {
+        if (DsStrUtils.hasText(publicKey)) {
             dataSourceProperty.setUrl(decrypt(publicKey, dataSourceProperty.getUrl()));
             dataSourceProperty.setUsername(decrypt(publicKey, dataSourceProperty.getUsername()));
             dataSourceProperty.setPassword(decrypt(publicKey, dataSourceProperty.getPassword()));
@@ -56,7 +56,7 @@ public class EncDataSourceInitEvent implements DataSourceInitEvent {
      * 字符串解密
      */
     private String decrypt(String publicKey, String cipherText) {
-        if (StringUtils.hasText(cipherText)) {
+        if (DsStrUtils.hasText(cipherText)) {
             Matcher matcher = ENC_PATTERN.matcher(cipherText);
             if (matcher.find()) {
                 try {

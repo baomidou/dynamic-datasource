@@ -15,6 +15,7 @@
  */
 package com.baomidou.dynamic.datasource.support;
 
+import com.baomidou.dynamic.datasource.toolkit.DsStrUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -22,7 +23,6 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
-import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 
@@ -50,7 +50,7 @@ public class ScriptRunner {
      * @param location   脚本位置
      */
     public void runScript(DataSource dataSource, String location) {
-        if (StringUtils.hasText(location)) {
+        if (DsStrUtils.hasText(location)) {
             ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
             populator.setContinueOnError(continueOnError);
             populator.setSeparator(separator);

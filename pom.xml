@@ -54,13 +54,13 @@
         <spring-boot-dependencies.version>2.7.15</spring-boot-dependencies.version>
         <mybatis.plus.version>3.5.3.2</mybatis.plus.version>
         <hikaricp.version>2.4.13</hikaricp.version>
-        <druid.version>1.2.19</druid.version>
-        <beeCp.version>3.4.1</beeCp.version>
-        <commons-dbcp2.version>2.9.0</commons-dbcp2.version>
+        <druid.version>1.2.20</druid.version>
+        <beeCp.version>3.4.2</beeCp.version>
+        <commons-dbcp2.version>2.10.0</commons-dbcp2.version>
         <p6spy.version>3.9.1</p6spy.version>
         <seata.version>1.4.2</seata.version>
         <lombok.version>1.18.30</lombok.version>
-        <h2.version>2.2.222</h2.version>
+        <h2.version>2.2.224</h2.version>
         <atomikos.version>4.0.6</atomikos.version>
         <junit-jupiter.version>5.10.0</junit-jupiter.version>
 
@@ -69,13 +69,13 @@
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
         <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
-        <maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
+        <maven-javadoc-plugin.version>3.6.0</maven-javadoc-plugin.version>
         <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
 
-        <license-maven-plugin.version>4.2</license-maven-plugin.version>
+        <license-maven-plugin.version>4.3</license-maven-plugin.version>
         <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
-        <native-maven-plugin.version>0.9.27</native-maven-plugin.version>
+        <native-maven-plugin.version>0.9.28</native-maven-plugin.version>
     </properties>
 
     <dependencyManagement>

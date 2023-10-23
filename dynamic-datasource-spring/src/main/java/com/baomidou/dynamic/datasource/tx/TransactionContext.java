@@ -15,9 +15,9 @@
  */
 package com.baomidou.dynamic.datasource.tx;
 
+import com.baomidou.dynamic.datasource.toolkit.DsStrUtils;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.transaction.support.TransactionSynchronization;
-import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -28,7 +28,7 @@ public class TransactionContext {
 
     private static final ThreadLocal<String> CONTEXT_HOLDER = new ThreadLocal<>();
     private static final ThreadLocal<Set<TransactionSynchronization>> SYNCHRONIZATION_HOLDER =
-            ThreadLocal.withInitial(() -> new LinkedHashSet<>());
+            ThreadLocal.withInitial(LinkedHashSet::new);
 
     /**
      * Gets xid.
@@ -37,7 +37,7 @@ public class TransactionContext {
      */
     public static String getXID() {
         String xid = CONTEXT_HOLDER.get();
-        if (!StringUtils.isEmpty(xid)) {
+        if (DsStrUtils.hasText(xid)) {
             return xid;
         }
         return null;

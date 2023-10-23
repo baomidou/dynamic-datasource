@@ -17,8 +17,8 @@ package com.baomidou.dynamic.datasource.provider;
 
 import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
 import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
+import com.baomidou.dynamic.datasource.toolkit.DsStrUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -106,7 +106,7 @@ public abstract class AbstractJdbcDataSourceProvider extends AbstractDataSourceP
         try {
             // 由于 SPI 的支持，现在已无需显示加载驱动了
             // 但在用户显示配置的情况下，进行主动加载
-            if (!StringUtils.isEmpty(driverClassName)) {
+            if (!DsStrUtils.isEmpty(driverClassName)) {
                 Class.forName(driverClassName);
                 log.info("成功加载数据库驱动程序");
             }
@@ -116,7 +116,7 @@ public abstract class AbstractJdbcDataSourceProvider extends AbstractDataSourceP
             Map<String, DataSourceProperty> dataSourcePropertiesMap = executeStmt(stmt);
             return createDataSourceMap(dataSourcePropertiesMap);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("loadDataSources error", e);
         } finally {
             closeResource(conn);
             closeResource(stmt);

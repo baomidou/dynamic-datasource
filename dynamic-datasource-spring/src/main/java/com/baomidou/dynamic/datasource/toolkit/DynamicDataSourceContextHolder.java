@@ -16,7 +16,6 @@
 package com.baomidou.dynamic.datasource.toolkit;
 
 import org.springframework.core.NamedThreadLocal;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -66,7 +65,7 @@ public final class DynamicDataSourceContextHolder {
      * @return 数据源名称
      */
     public static String push(String ds) {
-        String dataSourceStr = StringUtils.isEmpty(ds) ? "" : ds;
+        String dataSourceStr = DsStrUtils.isEmpty(ds) ? "" : ds;
         LOOKUP_KEY_HOLDER.get().push(dataSourceStr);
         return dataSourceStr;
     }

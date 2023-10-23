@@ -20,12 +20,12 @@ import com.baomidou.dynamic.datasource.enums.SeataMode;
 import com.baomidou.dynamic.datasource.event.DataSourceInitEvent;
 import com.baomidou.dynamic.datasource.support.ScriptRunner;
 import com.baomidou.dynamic.datasource.toolkit.CryptoUtils;
+import com.baomidou.dynamic.datasource.toolkit.DsStrUtils;
 import com.p6spy.engine.spy.P6DataSource;
 import io.seata.rm.datasource.DataSourceProxy;
 import io.seata.rm.datasource.xa.DataSourceProxyXA;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -84,7 +84,7 @@ public class DefaultDataSourceCreator {
             throw new IllegalStateException("creator must not be null,please check the DataSourceCreator");
         }
         String propertyPublicKey = dataSourceProperty.getPublicKey();
-        if (StringUtils.isEmpty(propertyPublicKey)) {
+        if (DsStrUtils.isEmpty(propertyPublicKey)) {
             dataSourceProperty.setPublicKey(publicKey);
         }
         Boolean propertyLazy = dataSourceProperty.getLazy();
@@ -112,12 +112,12 @@ public class DefaultDataSourceCreator {
         DatasourceInitProperties initProperty = dataSourceProperty.getInit();
         String schema = initProperty.getSchema();
         String data = initProperty.getData();
-        if (StringUtils.hasText(schema) || StringUtils.hasText(data)) {
+        if (DsStrUtils.hasText(schema) || DsStrUtils.hasText(data)) {
             ScriptRunner scriptRunner = new ScriptRunner(initProperty.isContinueOnError(), initProperty.getSeparator());
-            if (StringUtils.hasText(schema)) {
+            if (DsStrUtils.hasText(schema)) {
                 scriptRunner.runScript(dataSource, schema);
             }
-            if (StringUtils.hasText(data)) {
+            if (DsStrUtils.hasText(data)) {
                 scriptRunner.runScript(dataSource, data);
             }
         }

@@ -24,6 +24,7 @@ import com.baomidou.dynamic.datasource.exception.CannotFindDataSourceException;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
 import com.baomidou.dynamic.datasource.strategy.LoadBalanceDynamicDataSourceStrategy;
+import com.baomidou.dynamic.datasource.toolkit.DsStrUtils;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import com.p6spy.engine.spy.P6DataSource;
 import io.seata.rm.datasource.DataSourceProxy;
@@ -32,7 +33,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
@@ -128,7 +128,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
      * @return 数据源
      */
     public DataSource getDataSource(String ds) {
-        if (StringUtils.isEmpty(ds)) {
+        if (DsStrUtils.isEmpty(ds)) {
             return determinePrimaryDataSource();
         } else if (!groupDataSources.isEmpty() && groupDataSources.containsKey(ds)) {
             log.debug("dynamic-datasource switch to the datasource named [{}]", ds);
@@ -188,7 +188,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
      * @param ds 数据源名称
      */
     public synchronized void removeDataSource(String ds) {
-        if (!StringUtils.hasText(ds)) {
+        if (!DsStrUtils.hasText(ds)) {
             throw new RuntimeException("remove parameter could not be empty");
         }
         if (primary.equals(ds)) {
