@@ -34,18 +34,16 @@ public final class DruidLogConfigUtil {
     private static final Map<String, Method> METHODS = DsConfigUtil.getSetterMethods(LogFilter.class);
 
     /**
-     * 根据当前的配置和全局的配置生成druid的日志filter
+     * 根据当前的配置生成druid的日志filter
      *
      * @param clazz 日志类
-     * @param c     当前配置
-     * @param g     全局配置
+     * @param map   配置
      * @return 日志filter
      */
-    public static LogFilter initFilter(Class<? extends LogFilter> clazz, Map<String, Object> c, Map<String, Object> g) {
+    public static LogFilter initFilter(Class<? extends LogFilter> clazz, Map<String, Object> map) {
         try {
             LogFilter filter = clazz.getDeclaredConstructor().newInstance();
-            Map<String, Object> params = DsConfigUtil.mergeMap(c, g);
-            for (Map.Entry<String, Object> item : params.entrySet()) {
+            for (Map.Entry<String, Object> item : map.entrySet()) {
                 String key = DsConfigUtil.lineToUpper(item.getKey());
                 Method method = METHODS.get(key);
                 if (method != null) {

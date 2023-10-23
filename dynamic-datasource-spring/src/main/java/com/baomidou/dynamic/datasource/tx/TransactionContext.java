@@ -37,7 +37,7 @@ public class TransactionContext {
      */
     public static String getXID() {
         String xid = CONTEXT_HOLDER.get();
-        if (DsStrUtils.hasText(xid)) {
+        if (!DsStrUtils.isEmpty(xid)) {
             return xid;
         }
         return null;

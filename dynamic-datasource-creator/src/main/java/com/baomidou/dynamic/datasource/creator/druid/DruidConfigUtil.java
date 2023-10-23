@@ -18,14 +18,14 @@ package com.baomidou.dynamic.datasource.creator.druid;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.baomidou.dynamic.datasource.toolkit.DsConfigUtil;
 import lombok.NonNull;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import java.beans.BeanInfo;
+import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Druid配置工具类
@@ -44,36 +44,29 @@ public final class DruidConfigUtil {
     private static final Map<String, PropertyDescriptor> CONFIG_DESCRIPTOR_MAP = DsConfigUtil.getPropertyDescriptorMap(DruidConfig.class);
     private static final Map<String, PropertyDescriptor> DATASOURCE_DESCRIPTOR_MAP = DsConfigUtil.getPropertyDescriptorMap(DruidDataSource.class);
 
-    private static final Class<?> CLAZZ = DruidDataSource.class;
-
     /**
      * 根据全局配置和本地配置结合转换为Properties
      *
-     * @param g 全局配置
-     * @param c 当前配置
+     * @param config 当前配置
      * @return Druid配置
      */
-    public static Properties mergeConfig(DruidConfig g, @NonNull DruidConfig c) {
+    public static Properties toProperties(@NonNull DruidConfig config) {
         Properties properties = new Properties();
         for (Map.Entry<String, PropertyDescriptor> entry : CONFIG_DESCRIPTOR_MAP.entrySet()) {
             String key = entry.getKey();
             PropertyDescriptor descriptor = entry.getValue();
             Method readMethod = descriptor.getReadMethod();
             Class<?> returnType = readMethod.getReturnType();
-            if (List.class.isAssignableFrom(returnType) || Set.class.isAssignableFrom(returnType) || Map.class.isAssignableFrom(returnType) || Properties.class.isAssignableFrom(returnType)) {
+            if (List.class.isAssignableFrom(returnType)
+                    || Set.class.isAssignableFrom(returnType)
+                    || Map.class.isAssignableFrom(returnType)
+                    || Properties.class.isAssignableFrom(returnType)) {
                 continue;
             }
             try {
-                Object cValue = readMethod.invoke(c);
+                Object cValue = readMethod.invoke(config);
                 if (cValue != null) {
                     properties.setProperty("druid." + key, String.valueOf(cValue));
-                    continue;
-                }
-                if (g != null) {
-                    Object gValue = readMethod.invoke(g);
-                    if (gValue != null) {
-                        properties.setProperty("druid." + key, String.valueOf(gValue));
-                    }
                 }
             } catch (Exception e) {
                 log.warn("druid current could not set  [" + key + " ]", e);
@@ -81,67 +74,24 @@ public final class DruidConfigUtil {
         }
 
         //filters单独处理，默认了stat
-        String filters = getValue(g, c, "filters");
+        String filters = config.getFilters();
         if (filters == null) {
             filters = STAT_STR;
         }
-        String publicKey = getValue(g, c, "publicKey");
-        boolean configFilterExist = publicKey != null && publicKey.length() > 0;
-        if (publicKey != null && publicKey.length() > 0 && !filters.contains(CONFIG_STR)) {
+        String publicKey = config.getPublicKey();
+        boolean configFilterExist = publicKey != null && !publicKey.isEmpty();
+        if (publicKey != null && !publicKey.isEmpty() && !filters.contains(CONFIG_STR)) {
             filters += "," + CONFIG_STR;
         }
         properties.setProperty(FILTERS, filters);
 
-        Properties connectProperties = new Properties();
-        Properties cConnectionProperties = c.getConnectionProperties();
-        if (g != null) {
-            Properties gConnectionProperties = g.getConnectionProperties();
-            if (gConnectionProperties != null) {
-                connectProperties.putAll(gConnectionProperties);
-            }
-        }
-        if (cConnectionProperties != null) {
-            connectProperties.putAll(cConnectionProperties);
-        }
+        Properties connectProperties = config.getConnectionProperties();
         if (configFilterExist) {
             connectProperties.setProperty("config.decrypt", Boolean.TRUE.toString());
             connectProperties.setProperty("config.decrypt.key", publicKey);
         }
-        c.setConnectionProperties(connectProperties);
+        config.setConnectionProperties(connectProperties);
         return properties;
-    }
-
-    /**
-     * @param g     全局配置
-     * @param c     当前配置
-     * @param field 字段
-     * @return 字段值
-     */
-    public static String getValue(DruidConfig g, @NonNull DruidConfig c, String field) {
-        PropertyDescriptor propertyDescriptor = CONFIG_DESCRIPTOR_MAP.get(field);
-        if (propertyDescriptor == null) {
-            return null;
-        }
-        Method method = propertyDescriptor.getReadMethod();
-        if (method == null) {
-            return null;
-        }
-        try {
-            Object value = method.invoke(c);
-            if (value != null) {
-                return String.valueOf(value);
-            }
-            if (g != null) {
-                value = method.invoke(g);
-                if (value != null) {
-                    return String.valueOf(value);
-                }
-            }
-        } catch (Exception e) {
-            // do nothing
-        }
-        return null;
-
     }
 
     /**
@@ -149,10 +99,9 @@ public final class DruidConfigUtil {
      *
      * @param dataSource DruidDataSource
      * @param field      字段
-     * @param g          全局配置
      * @param c          当前配置
      */
-    public static void setValue(DruidDataSource dataSource, String field, DruidConfig g, DruidConfig c) {
+    public static void setValue(DruidDataSource dataSource, String field, DruidConfig c) {
         PropertyDescriptor descriptor = DATASOURCE_DESCRIPTOR_MAP.get(field);
         if (descriptor == null) {
             log.warn("druid current not support [" + field + " ]");
@@ -168,16 +117,94 @@ public final class DruidConfigUtil {
             Object value = configReadMethod.invoke(c);
             if (value != null) {
                 writeMethod.invoke(dataSource, value);
-                return;
-            }
-            if (g != null) {
-                value = configReadMethod.invoke(g);
-                if (value != null) {
-                    writeMethod.invoke(dataSource, value);
-                }
             }
         } catch (Exception e) {
             log.warn("druid current  set  [" + field + " ] error");
         }
+    }
+
+    @SneakyThrows
+    public static void merge(DruidConfig global, DruidConfig item) {
+        if (global == null) {
+            return;
+        }
+        BeanInfo beanInfo = Introspector.getBeanInfo(DruidConfig.class, Object.class);
+        PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+        for (PropertyDescriptor pd : propertyDescriptors) {
+            Class<?> propertyType = pd.getPropertyType();
+            if (Properties.class == propertyType) {
+                mergeProperties(global, item, pd);
+            } else if (List.class == propertyType) {
+                mergeList(global, item, pd);
+            } else if (Map.class == propertyType) {
+                mergeMap(global, item, pd);
+            } else {
+                mergeBasic(global, item, pd);
+            }
+        }
+    }
+
+    @SneakyThrows
+    private static void mergeList(DruidConfig global, DruidConfig item, PropertyDescriptor pd) {
+        Method readMethod = pd.getReadMethod();
+        Method writeMethod = pd.getWriteMethod();
+        List<Object> result = new ArrayList<>();
+        List<Object> itemValue = (List) readMethod.invoke(item);
+        List<Object> globalValue = (List) readMethod.invoke(global);
+        if (globalValue != null) {
+            result.addAll(globalValue);
+        }
+        if (itemValue != null) {
+            result.addAll(itemValue);
+        }
+        writeMethod.invoke(item, result);
+    }
+
+    @SneakyThrows
+    private static void mergeMap(DruidConfig global, DruidConfig item, PropertyDescriptor pd) {
+        Method readMethod = pd.getReadMethod();
+        Method writeMethod = pd.getWriteMethod();
+        Map result = new HashMap();
+        Map itemValue = (Map) readMethod.invoke(item);
+        Map globalValue = (Map) readMethod.invoke(global);
+        if (globalValue != null) {
+            result.putAll(globalValue);
+        }
+        if (itemValue != null) {
+            result.putAll(itemValue);
+        }
+        writeMethod.invoke(item, result);
+    }
+
+    @SneakyThrows
+    private static void mergeProperties(DruidConfig global, DruidConfig item, PropertyDescriptor pd) {
+        Method readMethod = pd.getReadMethod();
+        Method writeMethod = pd.getWriteMethod();
+        Properties itemValue = (Properties) readMethod.invoke(item);
+        Properties globalValue = (Properties) readMethod.invoke(global);
+        Properties properties = new Properties();
+        if (globalValue != null) {
+            properties.putAll(globalValue);
+        }
+        if (itemValue != null) {
+            properties.putAll(itemValue);
+        }
+        if (!properties.isEmpty()) {
+            writeMethod.invoke(item, properties);
+        }
+    }
+
+    @SneakyThrows
+    private static void mergeBasic(DruidConfig global, DruidConfig item, PropertyDescriptor pd) {
+        Method readMethod = pd.getReadMethod();
+        Method writeMethod = pd.getWriteMethod();
+        Object itemValue = readMethod.invoke(item);
+        if (itemValue == null) {
+            Object globalValue = readMethod.invoke(global);
+            if (globalValue != null) {
+                writeMethod.invoke(item, globalValue);
+            }
+        }
+
     }
 }

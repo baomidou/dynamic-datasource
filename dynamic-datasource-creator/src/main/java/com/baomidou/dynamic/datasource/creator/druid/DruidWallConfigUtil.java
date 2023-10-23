@@ -36,13 +36,11 @@ public final class DruidWallConfigUtil {
     /**
      * 根据当前的配置和全局的配置生成druid防火墙配置
      *
-     * @param c 当前配置
-     * @param g 全局配置
+     * @param map 当前配置
      * @return 防火墙配置
      */
-    public static WallConfig toWallConfig(Map<String, Object> c, Map<String, Object> g) {
+    public static WallConfig toWallConfig(Map<String, Object> map) {
         WallConfig wallConfig = new WallConfig();
-        Map<String, Object> map = DsConfigUtil.mergeMap(c, g);
         Object dir = map.get("dir");
         if (dir != null) {
             wallConfig.loadConfig(String.valueOf(dir));
