@@ -103,6 +103,7 @@ spring-boot3及以上
 spring:
   datasource:
     dynamic:
+      enabled: true #启用动态数据源，默认true
       primary: master #设置默认的数据源或者数据源组,默认值即为master
       strict: false #严格匹配数据源,默认false. true未匹配到指定数据源时抛异常,false使用默认数据源
       grace-destroy: false #是否优雅关闭数据源，默认为false，设置为true时，关闭数据源时如果数据源中还存在活跃连接，至多等待10s后强制关闭
