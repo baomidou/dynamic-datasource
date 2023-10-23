@@ -75,8 +75,6 @@ public class DruidDataSourceCreator implements DataSourceCreator {
         PARAMS.add("socketTimeout");
     }
 
-    //    @Autowired(required = false)
-//    private ApplicationContext applicationContext;
     private DruidConfig gConfig;
 
     /**

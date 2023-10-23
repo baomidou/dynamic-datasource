@@ -102,20 +102,20 @@ public final class DruidConfigUtil {
      * @param c          当前配置
      */
     public static void setValue(DruidDataSource dataSource, String field, DruidConfig c) {
-        PropertyDescriptor descriptor = DATASOURCE_DESCRIPTOR_MAP.get(field);
-        if (descriptor == null) {
-            log.warn("druid current not support [" + field + " ]");
-            return;
-        }
-        Method writeMethod = descriptor.getWriteMethod();
-        if (writeMethod == null) {
-            log.warn("druid current could not set  [" + field + " ]");
-            return;
-        }
         try {
             Method configReadMethod = CONFIG_DESCRIPTOR_MAP.get(field).getReadMethod();
             Object value = configReadMethod.invoke(c);
             if (value != null) {
+                PropertyDescriptor descriptor = DATASOURCE_DESCRIPTOR_MAP.get(field);
+                if (descriptor == null) {
+                    log.warn("druid current not support [" + field + " ]");
+                    return;
+                }
+                Method writeMethod = descriptor.getWriteMethod();
+                if (writeMethod == null) {
+                    log.warn("druid current could not set  [" + field + " ]");
+                    return;
+                }
                 writeMethod.invoke(dataSource, value);
             }
         } catch (Exception e) {
