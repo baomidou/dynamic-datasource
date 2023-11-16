@@ -127,36 +127,42 @@ spring:
         #以上会配置一个默认库master，一个组slave下有两个子库slave_1,slave_2
 ```
 
+**多主多从：**
 ```yaml
-# 多主多从                      纯粹多库（记得设置primary）                   混合配置
 spring:
-  spring:
-    spring:
-    datasource:
-      datasource:
-        datasource:
-        dynamic:
-          dynamic:
-            dynamic:
-            datasource:
-              datasource:
-                datasource:
-                master_1:
-                  mysql:
-                    master:
-                master_2:
-                  oracle:
-                    slave_1:
-                slave_1:
-                  sqlserver:
-                    slave_2:
-                slave_2:
-                  postgresql:
-                    oracle_1:
-                slave_3:
-                  h2:
-                    oracle_2:
+  datasource:
+    dynamic:
+      master_1:
+      master_2:
+      slave_1:
+      slave_2:
+      slave_3:
 ```
+
+**纯粹多库：**
+```yaml
+spring:
+  datasource:
+    dynamic:
+      mysql:
+      oracle:
+      sqlserver:
+      postgresql:
+      h2:
+```
+
+**混合配置：**
+```yaml
+spring:
+  datasource:
+    dynamic:
+      master:
+      slave_1:
+      slave_2:
+      oracle_1:
+      oracle_2:
+```
+
 
 3. 使用  **@DS**  切换数据源。
 
