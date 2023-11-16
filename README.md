@@ -132,11 +132,12 @@ spring:
 spring:
   datasource:
     dynamic:
-      master_1:
-      master_2:
-      slave_1:
-      slave_2:
-      slave_3:
+      datasource:
+        master_1:
+        master_2:
+        slave_1:
+        slave_2:
+        slave_3:
 ```
 
 **纯粹多库：**
@@ -144,11 +145,12 @@ spring:
 spring:
   datasource:
     dynamic:
-      mysql:
-      oracle:
-      sqlserver:
-      postgresql:
-      h2:
+      datasource:
+        mysql:
+        oracle:
+        sqlserver:
+        postgresql:
+        h2:
 ```
 
 **混合配置：**
@@ -156,13 +158,13 @@ spring:
 spring:
   datasource:
     dynamic:
-      master:
-      slave_1:
-      slave_2:
-      oracle_1:
-      oracle_2:
+      datasource:
+        master:
+        slave_1:
+        slave_2:
+        oracle_1:
+        oracle_2:
 ```
-
 
 3. 使用  **@DS**  切换数据源。
 
