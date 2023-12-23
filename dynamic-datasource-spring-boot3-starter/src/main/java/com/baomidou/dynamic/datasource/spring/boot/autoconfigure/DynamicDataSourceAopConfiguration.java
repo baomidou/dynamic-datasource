@@ -32,7 +32,6 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Role;
@@ -47,8 +46,7 @@ import org.springframework.context.expression.BeanFactoryResolver;
  * @see DynamicRoutingDataSource
  * @since 1.0.0
  */
-@Configuration
-@EnableConfigurationProperties(DynamicDataSourceProperties.class)
+@Configuration(proxyBeanMethods = false)
 public class DynamicDataSourceAopConfiguration {
 
     private final DynamicDataSourceProperties properties;
@@ -57,6 +55,13 @@ public class DynamicDataSourceAopConfiguration {
         this.properties = properties;
     }
 
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    @Bean
+    public static DynamicDataSourceProperties dynamicDataSourceProperties() {
+        return new DynamicDataSourceProperties();
+    }
+
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     @Bean
     @ConditionalOnMissingBean
     public DsProcessor dsProcessor(BeanFactory beanFactory) {

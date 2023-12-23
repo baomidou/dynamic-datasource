@@ -40,8 +40,7 @@ import java.util.List;
  * @since 1.0.0
  */
 @Slf4j
-@Configuration
-@EnableConfigurationProperties(DynamicDataSourceProperties.class)
+@Configuration(proxyBeanMethods = false)
 @AutoConfigureBefore(
         value = DataSourceAutoConfiguration.class,
         name = {
