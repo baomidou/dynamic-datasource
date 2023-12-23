@@ -14,6 +14,10 @@
         https://github.com/baomidou/dynamic-datasource-spring-boot-starter/tree/master/dynamic-datasource-spring-boot-starter
     </url>
 
+    <properties>
+        <license-file>../license.txt</license-file>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.baomidou</groupId>

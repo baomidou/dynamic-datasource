@@ -73,6 +73,7 @@
         <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
 
         <license-maven-plugin.version>4.3</license-maven-plugin.version>
+        <license-file>license.txt</license-file>
         <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
         <native-maven-plugin.version>0.9.28</native-maven-plugin.version>
@@ -232,7 +233,7 @@
                 <configuration>
                     <licenseSets>
                         <licenseSet>
-                            <header>license.txt</header>
+                            <header>${license-file}</header>
                             <includes>
                                 <include>src/main/java/**</include>
                             </includes>
