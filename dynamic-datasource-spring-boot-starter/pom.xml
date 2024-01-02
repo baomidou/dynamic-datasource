@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.baomidou</groupId>
         <artifactId>dynamic-datasource</artifactId>
-        <version>4.2.0</version>
+        <version>4.3.0</version>
     </parent>
 
     <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
@@ -22,11 +22,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid-spring-boot-starter</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>

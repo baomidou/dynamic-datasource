@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.baomidou</groupId>
         <artifactId>dynamic-datasource</artifactId>
-        <version>4.2.0</version>
+        <version>4.3.0</version>
     </parent>
 
     <artifactId>dynamic-datasource-spring-boot3-starter</artifactId>
@@ -16,7 +16,7 @@
 
     <properties>
         <java.version>17</java.version>
-        <spring-boot-dependencies.version>3.1.5</spring-boot-dependencies.version>
+        <spring-boot-dependencies.version>3.2.1</spring-boot-dependencies.version>
     </properties>
 
     <dependencies>
@@ -27,11 +27,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid-spring-boot-3-starter</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
