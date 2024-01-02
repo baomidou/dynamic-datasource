@@ -28,12 +28,12 @@ jobs:
   test-graalvm-ce-ci:
     name: NativeTest CI - GraalVM CE ${{ matrix.java-version }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 90
+    timeout-minutes: 30
     continue-on-error: true
     strategy:
       matrix:
         os: [ ubuntu-latest ]
-        java-version: [ '21' ]
+        java-version: [ '21.0.1' ]
     steps:
       - uses: actions/checkout@v3
       - uses: graalvm/setup-graalvm@v1
@@ -48,11 +48,11 @@ jobs:
   test-hotspot-jdk-ci:
     name: Test CI - JDK ${{ matrix.java-version }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 60
+    timeout-minutes: 30
     strategy:
       matrix:
         os: [ ubuntu-latest ]
-        java-version: [ '17', '21-ea' ]
+        java-version: [ '17', '21' ]
     steps:
       - uses: actions/checkout@v3
       - name: Setup java
@@ -67,7 +67,7 @@ jobs:
   test-minimum-jdk-ci:
     name: Test CI - JDK ${{ matrix.java-version }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 60
+    timeout-minutes: 30
     strategy:
       matrix:
         os: [ ubuntu-latest ]

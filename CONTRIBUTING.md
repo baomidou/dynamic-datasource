@@ -9,7 +9,7 @@ Git Mirror 位于 https://github.com/baomidou/dynamic-datasource 。
 当项目导入 IntelliJ IDEA 或 VSCode 时，IDE 对项目的语言级别应当设置为 8。
 对于单独的 `com.baomidou:dynamic-datasource-spring-boot3-starter` 子模块，IDE 的语言级别应当设置为 17。
 
-提交 PR 前，应在 OpenJDK 17 下执行 `./mvnw -T1C -B clean test` 以验证更改是否未破坏单元测试。若有需要请补充或更改单元测试。
+提交 PR 前，应在 OpenJDK 17 下执行 `./mvnw -T1C clean test` 以验证更改是否未破坏单元测试。若有需要请补充或更改单元测试。
 
 假设贡献者处于新的 Ubuntu 22.04.3 LTS 实例下，其可通过如下 bash 命令来通过 SDKMAN! 管理 JDK 和工具链，并执行单元测试。
 
@@ -22,7 +22,7 @@ sdk use java 17.0.8-ms
 
 git clone git@github.com:baomidou/dynamic-datasource.git
 cd ./dynamic-datasource/
-./mvnw -T1C -B clean test
+./mvnw -T1C clean test
 ```
 
 ## 2.1. Execute NativeTest under GraalVM Native Image
@@ -41,8 +41,8 @@ failed to discover tests 的测试库。
 sudo apt install unzip zip curl sed -y
 curl -s "https://get.sdkman.io" | bash
 source "$HOME/.sdkman/bin/sdkman-init.sh"
-sdk install java 21-graalce
-sdk use java 21-graalce
+sdk install java 21.0.1-graalce
+sdk use java 21.0.1-graalce
 sudo apt-get install build-essential libz-dev zlib1g-dev -y
 
 git clone git@github.com:baomidou/dynamic-datasource.git
@@ -68,7 +68,7 @@ System Property 屏蔽部分单元测试在 GraalVM Native Image 下运行。
 已有的 GraalVM Reachability Metadata 文件。可通过如下 bash 命令简单处理此流程。贡献者仍可能需要手动调整具体的 JSON 条目，并在适当的时候
 调整 Maven Profile 和 GraalVM Tracing Agent 的 Filter 链。
 
-以下命令仅为 `dynamic-datasource-spring-boot3-starter` 生成 Conditioanl 形态的 GraalVM Reachability Metadata 的一个举例。
+以下命令仅为 `dynamic-datasource-spring-boot3-starter` 生成 Conditional 形态的 GraalVM Reachability Metadata 的一个举例。
 
 对于测试类和测试文件独立使用的 GraalVM Reachability Metadata，贡献者应该放置到相关子模块对应的 
 `${project.basedir}/src/test/resources/META-INF/native-image/${project.artifactId}-test-metadata/` 文件夹下。`${}` 内为 
@@ -78,7 +78,6 @@ POM 4.0 的常规系统变量，自行替换。
 git clone git@github.com:baomidou/dynamic-datasource.git
 cd ./dynamic-datasource/
 ./mvnw -PgenerateMetadata -DskipNativeTests -e -T1C clean test native:metadata-copy
-./mvnw -PnativeTestInSpringBoot -T1C -e clean test
 ```
 
 请手动删除无任何具体条目的 JSON 文件。
