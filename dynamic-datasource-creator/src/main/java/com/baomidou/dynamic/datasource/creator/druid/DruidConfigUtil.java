@@ -25,7 +25,13 @@ import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * Druid配置工具类
@@ -85,7 +91,8 @@ public final class DruidConfigUtil {
         }
         properties.setProperty(FILTERS, filters);
 
-        Properties connectProperties = config.getConnectionProperties();
+        Properties connectProperties = Optional.ofNullable(config.getConnectionProperties())
+                .orElse(new Properties());
         if (configFilterExist) {
             connectProperties.setProperty("config.decrypt", Boolean.TRUE.toString());
             connectProperties.setProperty("config.decrypt.key", publicKey);
