@@ -1,32 +1,35 @@
 {
   "rules": [
     {"includeClasses": "**"},
+
     {"excludeClasses": "java.lang.management.**"},
     {"excludeClasses": "jdk.management.**"},
     {"excludeClasses": "com.sun.management.**"},
     {"excludeClasses": "sun.management.**"},
     {"excludeClasses": "javax.management.**"},
+
     {"excludeClasses": "java.**"},
     {"includeClasses": "java.util.Properties"},
     {"includeClasses": "java.lang.Thread"},
-    {"excludeClasses": "sun.misc.**"},
-    {"excludeClasses": "sun.security.**"},
-    {"excludeClasses": "com.ibm.icu.text.**"},
     {"excludeClasses": "javax.naming.**"},
     {"excludeClasses": "javax.sql.**"},
-    {"excludeClasses": "org.h2.**"},
-    {"excludeClasses": "oracle.ucp.**"},
-    {"excludeClasses": "org.apache.tomcat.jdbc.**"},
-    {"excludeClasses": "org.apache.commons.**"},
+    {"excludeClasses": "sun.misc.**"},
+    {"excludeClasses": "sun.security.**"},
+
+    {"excludeClasses": "com.alibaba.druid.**"},
+    {"excludeClasses": "com.baomidou.mybatisplus.**"},
+    {"excludeClasses": "com.fasterxml.jackson.**"},
+    {"excludeClasses": "com.ibm.icu.text.**"},
     {"excludeClasses": "com.mchange.v2.**"},
     {"excludeClasses": "com.zaxxer.**"},
-    {"excludeClasses": "com.alibaba.druid.**"},
-    {"excludeClasses": "org.springframework.**"},
-    {"excludeClasses": "org.apache.ibatis.binding.**"},
     {"excludeClasses": "jakarta.servlet.**"},
-    {"excludeClasses": "com.fasterxml.jackson.**"},
-    {"excludeClasses": "com.baomidou.mybatisplus.**"}
-
+    {"excludeClasses": "oracle.ucp.**"},
+    {"excludeClasses": "org.apache.commons.**"},
+    {"excludeClasses": "org.apache.ibatis.**"},
+    {"excludeClasses": "org.apache.tomcat.jdbc.**"},
+    {"excludeClasses": "org.h2.**"},
+    {"excludeClasses": "org.mybatis.spring.**"},
+    {"excludeClasses": "org.springframework.**"}
   ],
   "regexRules": [
     {"excludeClasses": ".*fixture*.*"},
