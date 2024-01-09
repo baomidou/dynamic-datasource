@@ -46,6 +46,7 @@ import org.springframework.context.expression.BeanFactoryResolver;
  * @see DynamicRoutingDataSource
  * @since 1.0.0
  */
+@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 @Configuration(proxyBeanMethods = false)
 public class DynamicDataSourceAopConfiguration {
 
