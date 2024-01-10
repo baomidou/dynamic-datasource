@@ -194,7 +194,6 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
         }
         if (dataSourceMap.containsKey(ds)) {
             DataSource dataSource = dataSourceMap.remove(ds);
-            closeDataSource(ds, dataSource, graceDestroy);
             if (ds.contains(UNDERLINE)) {
                 String group = ds.split(UNDERLINE)[0];
                 if (groupDataSources.containsKey(group)) {
@@ -204,6 +203,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
                     }
                 }
             }
+            closeDataSource(ds, dataSource, graceDestroy);
             log.info("dynamic-datasource - remove the database named [{}] success", ds);
         } else {
             log.warn("dynamic-datasource - could not find a database named [{}]", ds);
