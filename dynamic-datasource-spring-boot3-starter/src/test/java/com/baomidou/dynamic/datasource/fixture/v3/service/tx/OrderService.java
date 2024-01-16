@@ -17,7 +17,9 @@ package com.baomidou.dynamic.datasource.fixture.v3.service.tx;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
+import com.baomidou.dynamic.datasource.tx.TransactionContext;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.support.TransactionSynchronization;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -40,6 +42,29 @@ public class OrderService {
 
     @DSTransactional
     public int placeOrder(PlaceOrderRequest request) {
+        TransactionContext.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCompletion(int status) {
+                if (status == STATUS_ROLLED_BACK) {
+                    request.setOrderStatus(OrderStatus.FAIL);
+                }
+            }
+        });
+        TransactionContext.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCompletion(int status) {
+                if (status == STATUS_ROLLED_BACK) {
+                    request.setOrderStatus(OrderStatus.FAIL);
+                }
+            }
+        });
+        TransactionContext.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                request.setOrderStatus(OrderStatus.SUCCESS);
+            }
+        });
+
         try (Connection connection = dataSource.getConnection()) {
             Integer userId = request.getUserId();
             Integer productId = request.getProductId();

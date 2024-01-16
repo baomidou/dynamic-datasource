@@ -61,14 +61,6 @@ public class DsTransactionalTest {
         PlaceOrderRequest placeOrderRequest = new PlaceOrderRequest(1, 1, 22, OrderStatus.INIT);
 
         //商品不足
-        TransactionContext.registerSynchronization(new TransactionSynchronization() {
-            @Override
-            public void afterCompletion(int status) {
-                if (status == STATUS_ROLLED_BACK) {
-                    placeOrderRequest.setOrderStatus(OrderStatus.FAIL);
-                }
-            }
-        });
         assertThrows(RuntimeException.class, () -> orderService.placeOrder(placeOrderRequest));
         assertThat(placeOrderRequest.getOrderStatus()).isEqualTo(OrderStatus.FAIL);
         assertThat(orderService.selectOrders()).isEmpty();
@@ -76,14 +68,6 @@ public class DsTransactionalTest {
         assertThat(productService.selectProduct()).isEqualTo(new Product(1, 10.0, 20));
 
         //账户不足
-        TransactionContext.registerSynchronization(new TransactionSynchronization() {
-            @Override
-            public void afterCompletion(int status) {
-                if (status == STATUS_ROLLED_BACK) {
-                    placeOrderRequest.setOrderStatus(OrderStatus.FAIL);
-                }
-            }
-        });
         placeOrderRequest.setAmount(6);
         placeOrderRequest.setOrderStatus(OrderStatus.INIT);
         assertThrows(RuntimeException.class, () -> orderService.placeOrder(placeOrderRequest));
@@ -93,12 +77,6 @@ public class DsTransactionalTest {
         assertThat(productService.selectProduct()).isEqualTo(new Product(1, 10.0, 20));
 
         //正常下单
-        TransactionContext.registerSynchronization(new TransactionSynchronization() {
-            @Override
-            public void afterCommit() {
-                placeOrderRequest.setOrderStatus(OrderStatus.SUCCESS);
-            }
-        });
         placeOrderRequest.setAmount(5);
         placeOrderRequest.setOrderStatus(OrderStatus.INIT);
         assertThat(orderService.placeOrder(placeOrderRequest)).isEqualTo(OrderStatus.INIT);
