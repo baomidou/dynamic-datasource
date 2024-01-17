@@ -113,21 +113,22 @@ public class TransactionalTemplate {
         boolean state = true;
         Object o;
         String xid = LocalTxUtil.startTransaction();
+        boolean shouldInvokeAction = TransactionContext.getSynchronizations().isEmpty();
         try {
             o = transactionalExecutor.execute();
         } catch (Exception e) {
             state = !isRollback(e, transactionInfo);
             throw e;
         } finally {
-            invokeBeforeCompletion();
+            invokeBeforeCompletion(shouldInvokeAction);
             if (state) {
-                invokeBeforeCommit();
+                invokeBeforeCommit(shouldInvokeAction);
                 LocalTxUtil.commit(xid);
-                invokeAfterCommit();
-                invokeAfterCompletion(TransactionSynchronization.STATUS_COMMITTED);
+                invokeAfterCommit(shouldInvokeAction);
+                invokeAfterCompletion(TransactionSynchronization.STATUS_COMMITTED, shouldInvokeAction);
             } else {
                 LocalTxUtil.rollback(xid);
-                invokeAfterCompletion(TransactionSynchronization.STATUS_ROLLED_BACK);
+                invokeAfterCompletion(TransactionSynchronization.STATUS_ROLLED_BACK, shouldInvokeAction);
             }
         }
         return o;
@@ -241,8 +242,8 @@ public class TransactionalTemplate {
     /**
      * Invoke before commit.
      */
-    public void invokeBeforeCommit() {
-        if (shouldInvokeAction()) {
+    public void invokeBeforeCommit(boolean shouldInvokeAction) {
+        if (shouldInvokeAction) {
             for (TransactionSynchronization synchronization : TransactionContext.getSynchronizations()) {
                 synchronization.beforeCommit(false);
             }
@@ -252,8 +253,8 @@ public class TransactionalTemplate {
     /**
      * Invoke before completion .
      */
-    public void invokeBeforeCompletion() {
-        if (shouldInvokeAction()) {
+    public void invokeBeforeCompletion(boolean shouldInvokeAction) {
+        if (shouldInvokeAction) {
             for (TransactionSynchronization synchronization : TransactionContext.getSynchronizations()) {
                 synchronization.beforeCompletion();
             }
@@ -263,8 +264,8 @@ public class TransactionalTemplate {
     /**
      * Invoke after commit.
      */
-    public void invokeAfterCommit() {
-        if (shouldInvokeAction()) {
+    public void invokeAfterCommit(boolean shouldInvokeAction) {
+        if (shouldInvokeAction) {
             for (TransactionSynchronization synchronization : TransactionContext.getSynchronizations()) {
                 synchronization.afterCommit();
             }
@@ -274,22 +275,12 @@ public class TransactionalTemplate {
     /**
      * Invoke after completion.
      */
-    public void invokeAfterCompletion(int status) {
-        if (shouldInvokeAction()) {
+    public void invokeAfterCompletion(int status, boolean shouldInvokeAction) {
+        if (shouldInvokeAction) {
             for (TransactionSynchronization synchronization : TransactionContext.getSynchronizations()) {
                 synchronization.afterCompletion(status);
             }
+            TransactionContext.removeSynchronizations();
         }
-        TransactionContext.removeSynchronizations();
-    }
-
-    /**
-     * Should invoke action boolean.
-     *
-     * @return the boolean
-     */
-    public boolean shouldInvokeAction() {
-        //If there is a savepoint, the action should not be executed
-        return !ConnectionFactory.hasSavepoint(TransactionContext.getXID());
     }
 }

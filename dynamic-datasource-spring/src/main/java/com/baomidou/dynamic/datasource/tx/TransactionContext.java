@@ -81,6 +81,9 @@ public class TransactionContext {
         if (Objects.isNull(synchronization)) {
             throw new IllegalArgumentException("TransactionSynchronization must not be null");
         }
+        if (DsStrUtils.isEmpty(TransactionContext.getXID())) {
+            throw new IllegalStateException("Transaction is not active");
+        }
         Set<TransactionSynchronization> synchs = SYNCHRONIZATION_HOLDER.get();
         synchs.add(synchronization);
     }
