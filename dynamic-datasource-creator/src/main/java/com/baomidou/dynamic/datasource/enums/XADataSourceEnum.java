@@ -25,6 +25,10 @@ import lombok.Getter;
 @Getter
 public enum XADataSourceEnum {
     /**
+     * <a href="https://dev.mysql.com/doc/connector-j/en/connector-j-api-changes.html">MySQL Connector/J 5.1 使用老的 MysqlXADataSource</a>
+     */
+    MYSQL_CONNECTOR_J_5("com.mysql.jdbc.jdbc2.optional.MysqlXADataSource"),
+    /**
      * mysql
      */
     MYSQL("com.mysql.cj.jdbc.MysqlXADataSource"),
