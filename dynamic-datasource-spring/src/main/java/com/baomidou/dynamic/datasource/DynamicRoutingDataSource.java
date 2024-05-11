@@ -272,7 +272,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
      */
     private void closeDataSource(String ds, DataSource dataSource, boolean graceDestroy) {
         try {
-            DataSource realDataSource = null;
+            DataSource realDataSource = dataSource;
             if (dataSource instanceof ItemDataSource) {
                 realDataSource = ((ItemDataSource) dataSource).getRealDataSource();
             } else {
