@@ -290,6 +290,10 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
                     }
                 }
             }
+
+            if (null == realDataSource) {
+                realDataSource = dataSource;
+            }
             if (null != realDataSource) {
                 DataSourceDestroyer destroyer = new DefaultDataSourceDestroyer();
                 if (graceDestroy) {
