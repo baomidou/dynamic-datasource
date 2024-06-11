@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.baomidou</groupId>
     <artifactId>dynamic-datasource</artifactId>
-    <version>4.3.0</version>
+    <version>4.3.1</version>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     <description>dynamic datasource</description>
@@ -51,7 +51,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
 
-        <spring-boot-dependencies.version>2.7.16</spring-boot-dependencies.version>
+        <spring-boot-dependencies.version>2.7.18</spring-boot-dependencies.version>
         <mybatis.plus.version>3.5.3.2</mybatis.plus.version>
         <hikaricp.version>2.4.13</hikaricp.version>
         <druid.version>1.2.20</druid.version>
@@ -64,18 +64,19 @@
         <atomikos.version>4.0.6</atomikos.version>
         <junit-jupiter.version>5.10.1</junit-jupiter.version>
 
-        <maven-clean-plugin.version>3.3.1</maven-clean-plugin.version>
-        <maven-install-plugin.version>3.1.1</maven-install-plugin.version>
+        <maven-clean-plugin.version>3.3.2</maven-clean-plugin.version>
+        <maven-install-plugin.version>3.1.2</maven-install-plugin.version>
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
-        <maven-surefire-plugin.version>3.2.3</maven-surefire-plugin.version>
-        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
-        <maven-javadoc-plugin.version>3.6.0</maven-javadoc-plugin.version>
-        <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
+        <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+        <maven-javadoc-plugin.version>3.7.0</maven-javadoc-plugin.version>
+        <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
+        <maven-enforcer-plugin.version>3.5.0</maven-enforcer-plugin.version>
 
-        <license-maven-plugin.version>4.3</license-maven-plugin.version>
-        <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
-        <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
-        <native-maven-plugin.version>0.9.28</native-maven-plugin.version>
+        <license-maven-plugin.version>4.5</license-maven-plugin.version>
+        <maven-gpg-plugin.version>3.2.4</maven-gpg-plugin.version>
+        <nexus-staging-maven-plugin.version>1.7.0</nexus-staging-maven-plugin.version>
+        <native-maven-plugin.version>0.10.2</native-maven-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -257,7 +258,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.3.0</version>
+                <version>${maven-enforcer-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>enforce-maven</id>
