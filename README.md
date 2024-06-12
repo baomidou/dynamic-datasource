@@ -41,10 +41,6 @@ dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成�
 
 其支持 **Jdk 1.7+, SpringBoot 1.5.x 2.x.x 3.x.x**。
 
-## 文档 | Documentation
-
-详细文档 https://www.kancloud.cn/tracy5546/dynamic-datasource/2264611
-
 ## 贡献 | Contributing
 
 我们欢迎社区的贡献，请查看 [CONTRIBUTING.md](./CONTRIBUTING.md) 。
@@ -72,14 +68,14 @@ dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成�
 2. 配置文件所有以下划线 `_` 分割的数据源 **首部** 即为组的名称，相同组名称的数据源会放在一个组下。
 3. 切换数据源可以是组名，也可以是具体数据源名称。组名则切换时采用负载均衡算法切换。
 4. 默认的数据源名称为  **master** ，你可以通过 `spring.datasource.dynamic.primary` 修改。
-5. 方法上的注解优先于类上注解。
-6. DS支持继承抽象类上的DS，暂不支持继承接口上的DS。
+5. 代码块里主动切换>方法上的注解优>类上注解（就近原则）。
+6. DS支持继承抽象类上的DS，支持继承接口上的DS。
 
 # 使用方法
 
-1. 引入dynamic-datasource-spring-boot-starter。
+1. 引入`dynamic-datasource-spring-boot-starter`或者`dynamic-datasource-spring-boot3-starter`。
 
-spring-boot 1.5.x 2.x.x
+- spring-boot 1.5.x 2.x.x
 
 ```xml
 
@@ -90,7 +86,7 @@ spring-boot 1.5.x 2.x.x
 </dependency>
 ```
 
-spring-boot3及以上
+- spring-boot3及以上
 
 ```xml
 
