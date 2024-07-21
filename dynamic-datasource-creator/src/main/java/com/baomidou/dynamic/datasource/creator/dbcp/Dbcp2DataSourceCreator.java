@@ -18,6 +18,7 @@ package com.baomidou.dynamic.datasource.creator.dbcp;
 import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
 import com.baomidou.dynamic.datasource.enums.DdConstants;
+import com.baomidou.dynamic.datasource.exception.ErrorCreateDataSourceException;
 import com.baomidou.dynamic.datasource.toolkit.ConfigMergeCreator;
 import com.baomidou.dynamic.datasource.toolkit.DsStrUtils;
 import lombok.AllArgsConstructor;
@@ -53,7 +54,13 @@ public class Dbcp2DataSourceCreator implements DataSourceCreator {
             dataSource.setDriverClassName(driverClassName);
         }
         if (Boolean.FALSE.equals(dataSourceProperty.getLazy())) {
-            dataSource.start();
+            try {
+                dataSource.start();
+            }catch (Exception e) {
+
+                throw new ErrorCreateDataSourceException(
+                    "dynamic-datasource create Dbcp2 database named " + dataSourceProperty.getPoolName() + " error", e);
+            }
         }
         return dataSource;
     }

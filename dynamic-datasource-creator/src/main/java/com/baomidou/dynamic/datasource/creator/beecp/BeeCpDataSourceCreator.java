@@ -20,6 +20,7 @@ import cn.beecp.BeeDataSourceConfig;
 import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
 import com.baomidou.dynamic.datasource.enums.DdConstants;
+import com.baomidou.dynamic.datasource.exception.ErrorCreateDataSourceException;
 import com.baomidou.dynamic.datasource.toolkit.ConfigMergeCreator;
 import com.baomidou.dynamic.datasource.toolkit.DsStrUtils;
 import lombok.AllArgsConstructor;
@@ -66,7 +67,12 @@ public class BeeCpDataSourceCreator implements DataSourceCreator {
             config.setDriverClassName(driverClassName);
         }
         if (Boolean.FALSE.equals(dataSourceProperty.getLazy())) {
-            return new BeeDataSource(config);
+            try {
+                return new BeeDataSource(config);
+            } catch (Exception e) {
+                throw new ErrorCreateDataSourceException(
+                    "dynamic-datasource create datasource named [" + dataSourceProperty.getPoolName() + "] error", e);
+            }
         }
         BeeDataSource beeDataSource = new BeeDataSource();
         try {

@@ -123,7 +123,7 @@ public class DruidDataSourceCreator implements DataSourceCreator {
         try {
             configMethod.invoke(dataSource, properties);
         } catch (Exception ignore) {
-
+            // Druid only prints logs when copying property errors
         }
         //连接参数单独设置
         dataSource.setConnectProperties(config.getConnectionProperties());
@@ -135,8 +135,9 @@ public class DruidDataSourceCreator implements DataSourceCreator {
         if (Boolean.FALSE.equals(dataSourceProperty.getLazy())) {
             try {
                 dataSource.init();
-            } catch (SQLException e) {
-                throw new ErrorCreateDataSourceException("druid create error", e);
+            } catch (Exception e) {
+                throw new ErrorCreateDataSourceException(
+                    "dynamic-datasource create datasource named [" + dataSourceProperty.getPoolName() + "] error", e);
             }
         }
         return dataSource;

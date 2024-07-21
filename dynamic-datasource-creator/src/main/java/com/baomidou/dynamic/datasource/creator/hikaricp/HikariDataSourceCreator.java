@@ -18,6 +18,7 @@ package com.baomidou.dynamic.datasource.creator.hikaricp;
 import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
 import com.baomidou.dynamic.datasource.enums.DdConstants;
+import com.baomidou.dynamic.datasource.exception.ErrorCreateDataSourceException;
 import com.baomidou.dynamic.datasource.toolkit.ConfigMergeCreator;
 import com.baomidou.dynamic.datasource.toolkit.DsStrUtils;
 import com.zaxxer.hikari.HikariConfig;
@@ -82,14 +83,19 @@ public class HikariDataSourceCreator implements DataSourceCreator {
             config.setDriverClassName(driverClassName);
         }
         if (Boolean.FALSE.equals(dataSourceProperty.getLazy())) {
-            return new HikariDataSource(config);
+            try {
+                return new HikariDataSource(config);
+            }catch (Exception e){
+                throw new ErrorCreateDataSourceException(
+                    "dynamic-datasource create datasource named [" + dataSourceProperty.getPoolName() + "] error", e);
+            }
         }
         config.validate();
         HikariDataSource dataSource = new HikariDataSource();
         try {
             configCopyMethod.invoke(config, dataSource);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException("HikariConfig failed to copy to HikariDataSource", e);
+            throw new ErrorCreateDataSourceException("HikariConfig failed to copy to HikariDataSource", e);
         }
         return dataSource;
     }
