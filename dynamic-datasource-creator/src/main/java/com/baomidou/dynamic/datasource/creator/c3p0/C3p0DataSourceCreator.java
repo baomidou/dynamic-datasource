@@ -9,7 +9,6 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
 
@@ -18,7 +17,6 @@ import javax.sql.DataSource;
  */
 @NoArgsConstructor
 @AllArgsConstructor
-@Slf4j
 public class C3p0DataSourceCreator implements DataSourceCreator {
 
     private static final ConfigMergeCreator<C3p0Config, ComboPooledDataSource> MERGE_CREATOR = new ConfigMergeCreator<>("C3p0", C3p0Config.class, ComboPooledDataSource.class);
