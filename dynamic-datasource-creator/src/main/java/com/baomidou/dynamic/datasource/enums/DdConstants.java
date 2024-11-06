@@ -52,4 +52,8 @@ public interface DdConstants {
      * Atomikos数据源
      */
     String ATOMIKOS_DATASOURCE = "com.atomikos.jdbc.AtomikosDataSourceBean";
+    /**
+     * C3P0数据源
+     */
+    String C3P0_DATASOURCE = "com.mchange.v2.c3p0.ComboPooledDataSource";
 }
