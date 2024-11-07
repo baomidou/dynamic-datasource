@@ -17,6 +17,7 @@ package com.baomidou.dynamic.datasource.creator;
 
 import com.baomidou.dynamic.datasource.creator.atomikos.AtomikosConfig;
 import com.baomidou.dynamic.datasource.creator.beecp.BeeCpConfig;
+import com.baomidou.dynamic.datasource.creator.c3p0.C3p0Config;
 import com.baomidou.dynamic.datasource.creator.dbcp.Dbcp2Config;
 import com.baomidou.dynamic.datasource.creator.druid.DruidConfig;
 import com.baomidou.dynamic.datasource.creator.hikaricp.HikariCpConfig;
@@ -97,6 +98,10 @@ public class DataSourceProperty {
      * atomikos参数配置
      */
     private AtomikosConfig atomikos = new AtomikosConfig();
+    /**
+     * c3p0参数配置
+     */
+    private C3p0Config c3p0 = new C3p0Config();
 
     /**
      * 解密公匙(如果未设置默认使用全局的)

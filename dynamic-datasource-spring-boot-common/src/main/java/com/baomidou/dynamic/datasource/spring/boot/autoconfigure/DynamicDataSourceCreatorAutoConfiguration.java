@@ -22,6 +22,7 @@ import com.atomikos.jdbc.AtomikosDataSourceBean;
 import com.baomidou.dynamic.datasource.creator.atomikos.AtomikosDataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.basic.BasicDataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.beecp.BeeCpDataSourceCreator;
+import com.baomidou.dynamic.datasource.creator.c3p0.C3p0DataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.dbcp.Dbcp2DataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.druid.DruidConfig;
 import com.baomidou.dynamic.datasource.creator.druid.DruidDataSourceCreator;
@@ -29,6 +30,7 @@ import com.baomidou.dynamic.datasource.creator.hikaricp.HikariDataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.jndi.JndiDataSourceCreator;
 import com.baomidou.dynamic.datasource.toolkit.DsStrUtils;
 import com.baomidou.dynamic.datasource.tx.AtomikosTransactionFactory;
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbcp2.BasicDataSource;
@@ -55,7 +57,8 @@ public class DynamicDataSourceCreatorAutoConfiguration {
     public static final int BEECP_ORDER = 4000;
     public static final int DBCP2_ORDER = 5000;
     public static final int ATOMIKOS_ORDER = 6000;
-    public static final int DEFAULT_ORDER = 7000;
+    public static final int C3P0_ORDER = 7000;
+    public static final int DEFAULT_ORDER = 8000;
 
     @Bean
     @Order(DEFAULT_ORDER)
@@ -160,5 +163,15 @@ public class DynamicDataSourceCreatorAutoConfiguration {
             return new AtomikosTransactionFactory();
         }
 
+    }
+
+    @ConditionalOnClass({ComboPooledDataSource.class})
+    @Configuration
+    static class C3p0DataSourceCreatorConfiguration {
+        @Bean
+        @Order(C3P0_ORDER)
+        public C3p0DataSourceCreator c3p0DataSourceCreator(DynamicDataSourceProperties properties) {
+            return new C3p0DataSourceCreator(properties.getC3p0());
+        }
     }
 }

@@ -18,6 +18,7 @@ package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
 import com.baomidou.dynamic.datasource.creator.atomikos.AtomikosConfig;
 import com.baomidou.dynamic.datasource.creator.beecp.BeeCpConfig;
+import com.baomidou.dynamic.datasource.creator.c3p0.C3p0Config;
 import com.baomidou.dynamic.datasource.creator.dbcp.Dbcp2Config;
 import com.baomidou.dynamic.datasource.creator.druid.DruidConfig;
 import com.baomidou.dynamic.datasource.creator.hikaricp.HikariCpConfig;
@@ -113,6 +114,11 @@ public class DynamicDataSourceProperties {
      */
     @NestedConfigurationProperty
     private AtomikosConfig atomikos = new AtomikosConfig();
+    /**
+     * c3p0全局参数配置
+     */
+    @NestedConfigurationProperty
+    private C3p0Config c3p0 = new C3p0Config();
 
     /**
      * aop with default ds annotation

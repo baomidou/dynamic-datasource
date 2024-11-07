@@ -62,6 +62,7 @@
         <lombok.version>1.18.30</lombok.version>
         <h2.version>2.2.224</h2.version>
         <atomikos.version>4.0.6</atomikos.version>
+        <c3p0.version>0.10.1</c3p0.version>
         <junit-jupiter.version>5.10.1</junit-jupiter.version>
 
         <maven-clean-plugin.version>3.3.2</maven-clean-plugin.version>
@@ -132,6 +133,11 @@
                 <groupId>com.atomikos</groupId>
                 <artifactId>transactions-jdbc</artifactId>
                 <version>${atomikos.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.mchange</groupId>
+                <artifactId>c3p0</artifactId>
+                <version>${c3p0.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.chris2018998</groupId>
