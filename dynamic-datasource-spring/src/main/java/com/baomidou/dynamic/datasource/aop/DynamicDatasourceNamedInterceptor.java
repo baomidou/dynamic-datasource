@@ -126,7 +126,7 @@ public class DynamicDatasourceNamedInterceptor implements MethodInterceptor {
         }
 
         // Look for direct name match.
-        String methodName = method.getName();
+        String methodName = ClassUtils.getQualifiedMethodName(method);
         String dsKey = this.nameMap.get(methodName);
 
         if (dsKey == null) {
