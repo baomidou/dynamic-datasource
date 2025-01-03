@@ -18,9 +18,7 @@ package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
-import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor;
-import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationInterceptor;
-import com.baomidou.dynamic.datasource.aop.DynamicLocalTransactionInterceptor;
+import com.baomidou.dynamic.datasource.aop.*;
 import com.baomidou.dynamic.datasource.processor.DsJakartaHeaderProcessor;
 import com.baomidou.dynamic.datasource.processor.DsJakartaSessionProcessor;
 import com.baomidou.dynamic.datasource.processor.DsProcessor;
@@ -84,6 +82,18 @@ public class DynamicDataSourceAopConfiguration {
         DynamicDataSourceAnnotationInterceptor interceptor = new DynamicDataSourceAnnotationInterceptor(aopProperties.getAllowedPublicOnly(), dsProcessor);
         DynamicDataSourceAnnotationAdvisor advisor = new DynamicDataSourceAnnotationAdvisor(interceptor, DS.class);
         advisor.setOrder(aopProperties.getOrder());
+        return advisor;
+    }
+
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    @Bean
+    @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX + ".aop", name = "enabled", havingValue = "true", matchIfMissing = true)
+    public Advisor dynamicDataSourceNamedAdvisor(DsProcessor dsProcessor) {
+        DynamicDatasourceAopProperties aopProperties = properties.getAop();
+        DynamicDatasourceNamedInterceptor interceptor = new DynamicDatasourceNamedInterceptor(dsProcessor);
+        interceptor.addPatternMap(aopProperties.getDsRoutes());
+        DynamicDataSourceNamedAdvisor advisor = new DynamicDataSourceNamedAdvisor(interceptor, aopProperties.getScanPackagePatterns());
+        advisor.setOrder(aopProperties.getOrder() + 1);
         return advisor;
     }
 

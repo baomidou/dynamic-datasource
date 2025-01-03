@@ -18,6 +18,9 @@ package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 import lombok.Data;
 import org.springframework.core.Ordered;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * 多数据源aop相关配置
  *
@@ -38,4 +41,14 @@ public class DynamicDatasourceAopProperties {
      * aop allowedPublicOnly
      */
     private Boolean allowedPublicOnly = true;
+
+    /**
+     * aop scanPackagePatterns
+     */
+    private List<String> scanPackagePatterns;
+
+    /**
+     * dynamic datasource routes
+     */
+    private Map<String, String> dsRoutes;
 }
