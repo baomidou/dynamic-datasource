@@ -39,7 +39,7 @@ import java.util.Properties;
  * @since 3.4.0
  */
 @Slf4j
-public class DynamicDatasourceNamedInterceptor implements MethodInterceptor {
+public class DynamicDataSourceNamedInterceptor implements MethodInterceptor {
 
     private static final String DYNAMIC_PREFIX = "#";
     private final Map<String, String> nameMap = new HashMap<>();
@@ -50,7 +50,7 @@ public class DynamicDatasourceNamedInterceptor implements MethodInterceptor {
      *
      * @param dsProcessor dsProcessor
      */
-    public DynamicDatasourceNamedInterceptor(DsProcessor dsProcessor) {
+    public DynamicDataSourceNamedInterceptor(DsProcessor dsProcessor) {
         this.dsProcessor = dsProcessor;
     }
 

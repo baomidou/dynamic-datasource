@@ -90,7 +90,7 @@ public class DynamicDataSourceAopConfiguration {
     @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX + ".aop", name = "enabled", havingValue = "true", matchIfMissing = true)
     public Advisor dynamicDataSourceNamedAdvisor(DsProcessor dsProcessor) {
         DynamicDatasourceAopProperties aopProperties = properties.getAop();
-        DynamicDatasourceNamedInterceptor interceptor = new DynamicDatasourceNamedInterceptor(dsProcessor);
+        DynamicDataSourceNamedInterceptor interceptor = new DynamicDataSourceNamedInterceptor(dsProcessor);
         interceptor.addPatternMap(aopProperties.getDsRoutes());
         DynamicDataSourceNamedAdvisor advisor = new DynamicDataSourceNamedAdvisor(interceptor, aopProperties.getScanPackagePatterns());
         advisor.setOrder(aopProperties.getOrder() + 1);
