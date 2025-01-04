@@ -82,10 +82,6 @@ public class DynamicDataSourceProperties {
      */
     private String publicKey = CryptoUtils.DEFAULT_PUBLIC_KEY_STRING;
     /**
-     * beanName
-     */
-    private String beanName;
-    /**
      * 每一个数据源
      */
     private Map<String, DataSourceProperty> datasource = new LinkedHashMap<>();
