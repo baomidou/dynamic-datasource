@@ -29,7 +29,6 @@ import com.baomidou.dynamic.datasource.toolkit.CryptoUtils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
@@ -46,7 +45,7 @@ import java.util.Map;
 @Getter
 @Setter
 @ConfigurationProperties(prefix = DynamicDataSourceProperties.PREFIX)
-public class DynamicDataSourceProperties implements BeanNameAware {
+public class DynamicDataSourceProperties {
 
     public static final String PREFIX = "spring.datasource.dynamic";
 
@@ -131,8 +130,4 @@ public class DynamicDataSourceProperties implements BeanNameAware {
     @NestedConfigurationProperty
     private DynamicDatasourceAopProperties aop = new DynamicDatasourceAopProperties();
 
-    @Override
-    public void setBeanName(String beanName) {
-        this.beanName = beanName;
-    }
 }
