@@ -93,9 +93,8 @@ public class DynamicDataSourcePackagePrefixPointcut implements Pointcut {
         }
         Set<Class<?>> superClazz = new LinkedHashSet<>();
         Class<?> current = clazz;
-        while (!superClazz.contains(current)) {
-            Class cls = current.getSuperclass();
-            superClazz.add(cls);
+        while (Objects.nonNull(current) && !superClazz.contains(current)) {
+            superClazz.add(current);
             current = current.getSuperclass();
         }
         return superClazz;
