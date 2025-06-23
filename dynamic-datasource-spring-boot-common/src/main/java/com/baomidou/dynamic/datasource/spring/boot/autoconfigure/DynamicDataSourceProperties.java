@@ -22,6 +22,7 @@ import com.baomidou.dynamic.datasource.creator.c3p0.C3p0Config;
 import com.baomidou.dynamic.datasource.creator.dbcp.Dbcp2Config;
 import com.baomidou.dynamic.datasource.creator.druid.DruidConfig;
 import com.baomidou.dynamic.datasource.creator.hikaricp.HikariCpConfig;
+import com.baomidou.dynamic.datasource.creator.oracleucp.OracleUcpConfig;
 import com.baomidou.dynamic.datasource.enums.SeataMode;
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
 import com.baomidou.dynamic.datasource.strategy.LoadBalanceDynamicDataSourceStrategy;
@@ -119,6 +120,11 @@ public class DynamicDataSourceProperties {
      */
     @NestedConfigurationProperty
     private C3p0Config c3p0 = new C3p0Config();
+    /**
+     * OracleUcp全局参数配置
+     */
+    @NestedConfigurationProperty
+    private OracleUcpConfig oracleUcp = new OracleUcpConfig();
 
     /**
      * aop with default ds annotation

@@ -57,6 +57,7 @@
         <druid.version>1.2.20</druid.version>
         <beeCp.version>3.4.2</beeCp.version>
         <commons-dbcp2.version>2.10.0</commons-dbcp2.version>
+        <oracle-ucp.version>23.4.0</oracle-ucp.version>
         <p6spy.version>3.9.1</p6spy.version>
         <seata.version>1.4.2</seata.version>
         <lombok.version>1.18.30</lombok.version>
@@ -138,6 +139,11 @@
                 <groupId>com.mchange</groupId>
                 <artifactId>c3p0</artifactId>
                 <version>${c3p0.version}</version>
+            </dependency>
+             <dependency>
+                <groupId>com.oracle.database.spring</groupId>
+                <artifactId>oracle-spring-boot-starter-ucp</artifactId>
+                <version>${oracle-ucp.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.chris2018998</groupId>

@@ -51,6 +51,10 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>com.oracle.database.spring</groupId>
+            <artifactId>oracle-spring-boot-starter-ucp</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus</artifactId>
             <optional>true</optional>
