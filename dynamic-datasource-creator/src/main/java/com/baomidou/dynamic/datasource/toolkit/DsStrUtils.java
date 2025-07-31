@@ -65,4 +65,15 @@ public abstract class DsStrUtils {
         }
         return false;
     }
+
+    /**
+     * 判断字符串是否有内容, 没内容就返回默认值
+     *
+     * @param str        字符串
+     * @param defaultStr 默认值
+     * @return
+     */
+    public static String defaultIfBlank(final String str, final String defaultStr) {
+        return !hasText(str) ? defaultStr : str;
+    }
 }

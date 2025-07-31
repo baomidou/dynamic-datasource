@@ -56,4 +56,8 @@ public interface DdConstants {
      * C3P0数据源
      */
     String C3P0_DATASOURCE = "com.mchange.v2.c3p0.ComboPooledDataSource";
+    /**
+     * OracleUCP数据源
+     */
+    String ORACLE_UCP_DATASOURCE = "oracle.ucp.jdbc.PoolDataSourceImpl";
 }
