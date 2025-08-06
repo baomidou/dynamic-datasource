@@ -83,6 +83,9 @@ public class DruidConfig {
     private Integer connectTimeout;
     private Integer socketTimeout;
     private Long timeBetweenConnectErrorMillis;
+    private Integer maxCreateTaskCount;
+    private Integer createSchedulerCorePoolSize;
+    private Integer destroySchedulerCorePoolSize;
 
     private Map<String, Object> wall = new HashMap<>();
     private Map<String, Object> slf4j = new HashMap<>();
