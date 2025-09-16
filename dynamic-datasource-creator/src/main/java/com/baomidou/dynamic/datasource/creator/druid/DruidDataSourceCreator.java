@@ -31,6 +31,7 @@ import com.baomidou.dynamic.datasource.toolkit.DsStrUtils;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Method;
@@ -139,7 +140,19 @@ public class DruidDataSourceCreator implements DataSourceCreator {
         if (config.getDestroySchedulerCorePoolSize() != null && config.getDestroySchedulerCorePoolSize() > 0) {
             dataSource.setDestroyScheduler(new ScheduledThreadPoolExecutor(config.getDestroySchedulerCorePoolSize()));
         }
-
+        if (null!=config.getPasswordCallback()){
+            dataSource.setPasswordCallback(config.getPasswordCallback());
+        }
+        if (StringUtils.hasText(config.getPasswordCallbackClassName())){
+            try {
+                dataSource.setPasswordCallbackClassName(config.getPasswordCallbackClassName());
+            }catch (Exception e){
+                throw new ErrorCreateDataSourceException("dynamic-datasource create datasource named [" + dataSourceProperty.getPoolName() + "] setPasswordCallbackClassName error", e);
+            }
+        }
+        if (null!=config.getUserCallback()){
+            dataSource.setUserCallback(config.getUserCallback());
+        }
         if (Boolean.FALSE.equals(dataSourceProperty.getLazy())) {
             try {
                 dataSource.init();
