@@ -18,6 +18,8 @@ package com.baomidou.dynamic.datasource.creator.druid;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.security.auth.callback.NameCallback;
+import javax.security.auth.callback.PasswordCallback;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -86,7 +88,9 @@ public class DruidConfig {
     private Integer maxCreateTaskCount;
     private Integer createSchedulerCorePoolSize;
     private Integer destroySchedulerCorePoolSize;
-
+    private PasswordCallback passwordCallback;
+    private NameCallback userCallback;
+    private String passwordCallbackClassName;
     private Map<String, Object> wall = new HashMap<>();
     private Map<String, Object> slf4j = new HashMap<>();
     private Map<String, Object> log4j = new HashMap<>();
