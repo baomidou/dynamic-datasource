@@ -34,8 +34,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Method;
-import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
  * Druid数据源创建器
@@ -73,6 +73,7 @@ public class DruidDataSourceCreator implements DataSourceCreator {
         PARAMS.add("timeBetweenConnectErrorMillis");
         PARAMS.add("connectTimeout");
         PARAMS.add("socketTimeout");
+        PARAMS.add("maxCreateTaskCount");
     }
 
     private DruidConfig gConfig;
@@ -130,6 +131,13 @@ public class DruidDataSourceCreator implements DataSourceCreator {
         //设置druid内置properties不支持的的参数
         for (String param : PARAMS) {
             DruidConfigUtil.setValue(dataSource, param, config);
+        }
+        // 设置线程池参数
+        if (config.getCreateSchedulerCorePoolSize() != null && config.getCreateSchedulerCorePoolSize() > 0) {
+            dataSource.setCreateScheduler(new ScheduledThreadPoolExecutor(config.getCreateSchedulerCorePoolSize()));
+        }
+        if (config.getDestroySchedulerCorePoolSize() != null && config.getDestroySchedulerCorePoolSize() > 0) {
+            dataSource.setDestroyScheduler(new ScheduledThreadPoolExecutor(config.getDestroySchedulerCorePoolSize()));
         }
 
         if (Boolean.FALSE.equals(dataSourceProperty.getLazy())) {
