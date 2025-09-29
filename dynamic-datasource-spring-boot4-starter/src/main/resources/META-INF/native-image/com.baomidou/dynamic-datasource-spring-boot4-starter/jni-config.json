@@ -1,0 +1,10 @@
+[
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider"},
+  "name":"[Lcom.sun.management.internal.DiagnosticCommandArgumentInfo;"
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider"},
+  "name":"[Lcom.sun.management.internal.DiagnosticCommandInfo;"
+}
+]
