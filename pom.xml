@@ -491,6 +491,7 @@
             <url>https://maven.aliyun.com/repository/public</url>
         </repository>
 
+        <!-- TODO 待 com.alibaba:druid-spring-boot-4-starter 完成发布后删除 -->
         <!-- https://gitlab.xuxiaowei.com.cn/xuxiaowei-com-cn/druid/-/packages -->
         <repository>
             <id>xuxiaowei-druid-gitlab-maven</id>

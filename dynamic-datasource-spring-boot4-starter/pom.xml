@@ -34,6 +34,7 @@
             <artifactId>spring-boot-jdbc</artifactId>
             <optional>true</optional>
         </dependency>
+        <!-- TODO 待 com.alibaba:druid-spring-boot-4-starter 完成发布后修正版本号 -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-4-starter</artifactId>
