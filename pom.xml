@@ -53,6 +53,7 @@
         <java.version>1.8</java.version>
 
         <spring-boot-dependencies.version>2.7.18</spring-boot-dependencies.version>
+        <mybatis-spring.version>2.1.2</mybatis-spring.version>
         <mybatis.plus.version>3.5.14</mybatis.plus.version>
         <hikaricp.version>2.4.13</hikaricp.version>
         <druid.version>1.2.20</druid.version>
@@ -105,6 +106,11 @@
                 <version>${spring-boot-dependencies.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis-spring</artifactId>
+                <version>${mybatis-spring.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.baomidou</groupId>

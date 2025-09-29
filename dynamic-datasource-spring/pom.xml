@@ -60,7 +60,6 @@
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis-spring</artifactId>
-            <version>3.0.5</version>
         </dependency>
     </dependencies>
 
