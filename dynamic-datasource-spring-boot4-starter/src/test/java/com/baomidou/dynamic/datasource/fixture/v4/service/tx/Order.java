@@ -13,21 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.baomidou.dynamic.datasource.fixture.v3.service.tx;
+package com.baomidou.dynamic.datasource.fixture.v4.service.tx;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
-public class PlaceOrderRequest {
+public class Order {
+    private Integer id;
+
+    /**
+     * 用户ID
+     */
     private Integer userId;
-
+    /**
+     * 商品ID
+     */
     private Integer productId;
-
+    /**
+     * 数量
+     */
     private Integer amount;
 
-    private Integer orderStatus;
+    /**
+     * 总金额
+     */
+    private Double totalPrice;
 }

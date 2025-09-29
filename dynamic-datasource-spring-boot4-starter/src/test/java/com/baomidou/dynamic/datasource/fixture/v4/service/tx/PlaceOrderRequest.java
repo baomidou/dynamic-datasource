@@ -13,7 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.baomidou.dynamic.datasource.fixture.v3.service.nest;
+package com.baomidou.dynamic.datasource.fixture.v4.service.tx;
 
-public record Teacher(Integer id, String name, Integer age) {
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class PlaceOrderRequest {
+    private Integer userId;
+
+    private Integer productId;
+
+    private Integer amount;
+
+    private Integer orderStatus;
 }

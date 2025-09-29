@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.baomidou.dynamic.datasource.fixture.v3.service.tx;
+package com.baomidou.dynamic.datasource.fixture.v4.service.tx;
 
-public class OrderStatus {
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+
+@Data
+@AllArgsConstructor
+public class Account {
+    private Integer id;
+
     /**
-     * INIT
+     * 余额
      */
-    public static final Integer INIT = 0;
-    /**
-     * SUCCESS
-     */
-    public static final Integer SUCCESS = 1;
-    /**
-     * FAIL
-     */
-    public static final Integer FAIL = 2;
+    private Double balance;
 }

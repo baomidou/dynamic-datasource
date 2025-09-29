@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.baomidou.dynamic.datasource.fixture.v3.service.tx;
+package com.baomidou.dynamic.datasource.fixture.v4.service.tx;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
 import org.springframework.stereotype.Service;
@@ -22,53 +22,55 @@ import org.springframework.util.Assert;
 import javax.sql.DataSource;
 import java.sql.*;
 
-
 @Service
-@DS("account")
-public class AccountService {
+@DS("product")
+public class ProductService {
     private final DataSource dataSource;
 
-    public AccountService(DataSource dataSource) {
+    public ProductService(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
-    public void reduceBalance(Integer userId, Double price) {
+    public Double reduceStock(Integer productId, Integer amount) {
         try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement("select * from account where id=?");
-            preparedStatement.setInt(1, userId);
+            PreparedStatement preparedStatement = connection.prepareStatement("select * from product where id=?");
+            preparedStatement.setInt(1, productId);
             ResultSet resultSet = preparedStatement.executeQuery();
-            Account account = null;
+            Product product = null;
             if (resultSet.next()) {
                 Integer id = resultSet.getObject(1, Integer.class);
-                Double balance = resultSet.getObject(2, Double.class);
-                account = new Account(id, balance);
+                Double price = resultSet.getObject(2, Double.class);
+                Integer stock = resultSet.getObject(3, Integer.class);
+                product = new Product(id, price, stock);
             }
-            Assert.notNull(account, "用户不存在");
-            Double balance = account.getBalance();
-            if (balance < price) {
-                throw new RuntimeException("余额不足");
+            Assert.notNull(product, "商品不存在");
+            Integer stock = product.getStock();
+            if (stock < amount) {
+                throw new RuntimeException("库存不足");
             }
-            double currentBalance = account.getBalance() - price;
-            String sql = "update account set balance=? where id=?";
+            int currentStock = stock - amount;
+            String sql = "update product set stock=? where id=?";
             PreparedStatement updateStatement = connection.prepareStatement(sql);
-            updateStatement.setDouble(1, currentBalance);
-            updateStatement.setInt(2, userId);
+            updateStatement.setInt(1, currentStock);
+            updateStatement.setInt(2, productId);
             updateStatement.executeUpdate();
+            return product.getPrice() * amount;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public Account selectAccount() {
+    public Product selectProduct() {
         try (Connection connection = dataSource.getConnection(); Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM account where id=1");
-            Account account = null;
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM product where id=1");
+            Product product = null;
             if (resultSet.next()) {
                 Integer id = resultSet.getObject(1, Integer.class);
-                Double balance = resultSet.getObject(2, Double.class);
-                account = new Account(id, balance);
+                Double price = resultSet.getObject(2, Double.class);
+                Integer stock = resultSet.getObject(3, Integer.class);
+                product = new Product(id, price, stock);
             }
-            return account;
+            return product;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

@@ -448,6 +448,7 @@
                             <configuration>
                                 <includes>
                                     <include>com.baomidou.dynamic.datasource.fixture.v3.**</include>
+                                    <include>com.baomidou.dynamic.datasource.fixture.v4.**</include>
                                 </includes>
                             </configuration>
                         </plugin>

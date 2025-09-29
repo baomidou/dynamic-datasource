@@ -13,32 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.baomidou.dynamic.datasource.fixture.v3.service.tx;
+package com.baomidou.dynamic.datasource.fixture.v4.service.spel;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-
-@Data
-@AllArgsConstructor
-public class Order {
-    private Integer id;
-
-    /**
-     * 用户ID
-     */
-    private Integer userId;
-    /**
-     * 商品ID
-     */
-    private Integer productId;
-    /**
-     * 数量
-     */
-    private Integer amount;
-
-    /**
-     * 总金额
-     */
-    private Double totalPrice;
+public record User(Integer id, String name, Integer age, String tenantName) {
+    public User(String tenantName) {
+        this(null, null, null, tenantName);
+    }
 }

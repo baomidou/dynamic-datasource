@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.baomidou.dynamic.datasource.fixture.v3;
+package com.baomidou.dynamic.datasource.fixture.v4;
 
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
 import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
-import com.baomidou.dynamic.datasource.fixture.v3.service.nest.SchoolService;
-import com.baomidou.dynamic.datasource.fixture.v3.service.nest.Student;
-import com.baomidou.dynamic.datasource.fixture.v3.service.nest.StudentService;
-import com.baomidou.dynamic.datasource.fixture.v3.service.nest.TeacherService;
+import com.baomidou.dynamic.datasource.fixture.v4.service.nest.SchoolService;
+import com.baomidou.dynamic.datasource.fixture.v4.service.nest.Student;
+import com.baomidou.dynamic.datasource.fixture.v4.service.nest.StudentService;
+import com.baomidou.dynamic.datasource.fixture.v4.service.nest.TeacherService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;

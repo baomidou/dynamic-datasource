@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.baomidou.dynamic.datasource.fixture.v3.controller;
+package com.baomidou.dynamic.datasource.fixture.v4.controller;
 
-import com.baomidou.dynamic.datasource.fixture.v3.service.spel.User;
-import com.baomidou.dynamic.datasource.fixture.v3.service.spel.UserService;
+import com.baomidou.dynamic.datasource.fixture.v4.service.spel.User;
+import com.baomidou.dynamic.datasource.fixture.v4.service.spel.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

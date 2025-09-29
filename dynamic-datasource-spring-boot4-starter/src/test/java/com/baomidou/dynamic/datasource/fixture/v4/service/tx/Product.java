@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.baomidou.dynamic.datasource.fixture.v3.service.tx;
+package com.baomidou.dynamic.datasource.fixture.v4.service.tx;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,11 +21,14 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class Account {
+public class Product {
     private Integer id;
-
     /**
-     * 余额
+     * 价格
      */
-    private Double balance;
+    private Double price;
+    /**
+     * 库存
+     */
+    private Integer stock;
 }

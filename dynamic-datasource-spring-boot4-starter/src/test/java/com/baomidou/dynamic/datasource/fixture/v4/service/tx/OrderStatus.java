@@ -13,10 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.baomidou.dynamic.datasource.fixture.v3.service.spel;
+package com.baomidou.dynamic.datasource.fixture.v4.service.tx;
 
-public record User(Integer id, String name, Integer age, String tenantName) {
-    public User(String tenantName) {
-        this(null, null, null, tenantName);
-    }
+public class OrderStatus {
+    /**
+     * INIT
+     */
+    public static final Integer INIT = 0;
+    /**
+     * SUCCESS
+     */
+    public static final Integer SUCCESS = 1;
+    /**
+     * FAIL
+     */
+    public static final Integer FAIL = 2;
 }
