@@ -1,0 +1,278 @@
+[
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider"},
+  "name":"[B"
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider"},
+  "name":"[C"
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider"},
+  "name":"[D"
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider"},
+  "name":"[F"
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider"},
+  "name":"[I"
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider"},
+  "name":"[J"
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider"},
+  "name":"[Ljava.lang.String;"
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider"},
+  "name":"[Ljavax.management.openmbean.CompositeData;"
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider"},
+  "name":"[S"
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider"},
+  "name":"[Z"
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"},
+  "name":"com.baomidou.dynamic.datasource.DynamicRoutingDataSource",
+  "methods":[{"name":"afterPropertiesSet","parameterTypes":[] }, {"name":"destroy","parameterTypes":[] }]
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"},
+  "name":"com.baomidou.dynamic.datasource.creator.DataSourceCreator",
+  "queryAllPublicMethods":true
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"},
+  "name":"com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator"
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"},
+  "name":"com.baomidou.dynamic.datasource.creator.basic.BasicDataSourceCreator",
+  "methods":[{"name":"createDataSource","parameterTypes":["com.baomidou.dynamic.datasource.creator.DataSourceProperty"] }, {"name":"support","parameterTypes":["com.baomidou.dynamic.datasource.creator.DataSourceProperty"] }]
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.creator.druid.DruidConfigUtil"},
+  "name":"com.baomidou.dynamic.datasource.creator.druid.DruidConfig",
+  "methods":[{"name":"getAsyncInit","parameterTypes":[] }, {"name":"getBreakAfterAcquireFailure","parameterTypes":[] }, {"name":"getClearFiltersEnable","parameterTypes":[] }, {"name":"getConnectTimeout","parameterTypes":[] }, {"name":"getConnectionErrorRetryAttempts","parameterTypes":[] }, {"name":"getDefaultAutoCommit","parameterTypes":[] }, {"name":"getDefaultCatalog","parameterTypes":[] }, {"name":"getDefaultReadOnly","parameterTypes":[] }, {"name":"getDefaultTransactionIsolation","parameterTypes":[] }, {"name":"getFailFast","parameterTypes":[] }, {"name":"getFilters","parameterTypes":[] }, {"name":"getInitConnectionSqls","parameterTypes":[] }, {"name":"getInitGlobalVariants","parameterTypes":[] }, {"name":"getInitVariants","parameterTypes":[] }, {"name":"getInitialSize","parameterTypes":[] }, {"name":"getKeepAlive","parameterTypes":[] }, {"name":"getKeepAliveBetweenTimeMillis","parameterTypes":[] }, {"name":"getKillWhenSocketReadTimeout","parameterTypes":[] }, {"name":"getLogAbandoned","parameterTypes":[] }, {"name":"getMaxActive","parameterTypes":[] }, {"name":"getMaxEvictableIdleTimeMillis","parameterTypes":[] }, {"name":"getMaxPoolPreparedStatementPerConnectionSize","parameterTypes":[] }, {"name":"getMaxWait","parameterTypes":[] }, {"name":"getMaxWaitThreadCount","parameterTypes":[] }, {"name":"getMinEvictableIdleTimeMillis","parameterTypes":[] }, {"name":"getMinIdle","parameterTypes":[] }, {"name":"getNotFullTimeoutRetryCount","parameterTypes":[] }, {"name":"getPhyMaxUseCount","parameterTypes":[] }, {"name":"getPhyTimeoutMillis","parameterTypes":[] }, {"name":"getPoolPreparedStatements","parameterTypes":[] }, {"name":"getPublicKey","parameterTypes":[] }, {"name":"getQueryTimeout","parameterTypes":[] }, {"name":"getRemoveAbandoned","parameterTypes":[] }, {"name":"getRemoveAbandonedTimeoutMillis","parameterTypes":[] }, {"name":"getResetStatEnable","parameterTypes":[] }, {"name":"getSharePreparedStatements","parameterTypes":[] }, {"name":"getSocketTimeout","parameterTypes":[] }, {"name":"getStatSqlMaxSize","parameterTypes":[] }, {"name":"getTestOnBorrow","parameterTypes":[] }, {"name":"getTestOnReturn","parameterTypes":[] }, {"name":"getTestWhileIdle","parameterTypes":[] }, {"name":"getTimeBetweenConnectErrorMillis","parameterTypes":[] }, {"name":"getTimeBetweenEvictionRunsMillis","parameterTypes":[] }, {"name":"getTimeBetweenLogStatsMillis","parameterTypes":[] }, {"name":"getTransactionQueryTimeout","parameterTypes":[] }, {"name":"getUseGlobalDataSourceStat","parameterTypes":[] }, {"name":"getUseUnfairLock","parameterTypes":[] }, {"name":"getValidationQuery","parameterTypes":[] }, {"name":"getValidationQueryTimeout","parameterTypes":[] }]
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.toolkit.DsConfigUtil"},
+  "name":"com.baomidou.dynamic.datasource.creator.druid.DruidConfig",
+  "queryAllPublicMethods":true
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.toolkit.DsConfigUtil"},
+  "name":"com.baomidou.dynamic.datasource.creator.druid.DruidConfigBeanInfo"
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.toolkit.DsConfigUtil"},
+  "name":"com.baomidou.dynamic.datasource.creator.druid.DruidConfigCustomizer"
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"},
+  "name":"com.baomidou.dynamic.datasource.creator.druid.DruidDataSourceCreator",
+  "methods":[{"name":"createDataSource","parameterTypes":["com.baomidou.dynamic.datasource.creator.DataSourceProperty"] }, {"name":"support","parameterTypes":["com.baomidou.dynamic.datasource.creator.DataSourceProperty"] }]
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"},
+  "name":"com.baomidou.dynamic.datasource.creator.jndi.JndiDataSourceCreator",
+  "methods":[{"name":"createDataSource","parameterTypes":["com.baomidou.dynamic.datasource.creator.DataSourceProperty"] }, {"name":"support","parameterTypes":["com.baomidou.dynamic.datasource.creator.DataSourceProperty"] }]
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"},
+  "name":"com.baomidou.dynamic.datasource.ds.AbstractDataSource",
+  "methods":[{"name":"getLogWriter","parameterTypes":[] }, {"name":"getLoginTimeout","parameterTypes":[] }, {"name":"getParentLogger","parameterTypes":[] }, {"name":"setLogWriter","parameterTypes":["java.io.PrintWriter"] }, {"name":"setLoginTimeout","parameterTypes":["int"] }]
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"},
+  "name":"com.baomidou.dynamic.datasource.ds.AbstractRoutingDataSource",
+  "methods":[{"name":"getConnection","parameterTypes":[] }, {"name":"getConnection","parameterTypes":["java.lang.String","java.lang.String"] }, {"name":"isWrapperFor","parameterTypes":["java.lang.Class"] }, {"name":"unwrap","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"},
+  "name":"com.baomidou.dynamic.datasource.event.DataSourceInitEvent",
+  "queryAllPublicMethods":true
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"},
+  "name":"com.baomidou.dynamic.datasource.event.EncDataSourceInitEvent",
+  "methods":[{"name":"afterCreate","parameterTypes":["javax.sql.DataSource"] }, {"name":"beforeCreate","parameterTypes":["com.baomidou.dynamic.datasource.creator.DataSourceProperty"] }]
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"},
+  "name":"com.baomidou.dynamic.datasource.processor.DsJakartaHeaderProcessor",
+  "methods":[{"name":"doDetermineDatasource","parameterTypes":["org.aopalliance.intercept.MethodInvocation","java.lang.String"] }, {"name":"matches","parameterTypes":["java.lang.String"] }]
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"},
+  "name":"com.baomidou.dynamic.datasource.processor.DsProcessor",
+  "methods":[{"name":"determineDatasource","parameterTypes":["org.aopalliance.intercept.MethodInvocation","java.lang.String"] }, {"name":"setNextProcessor","parameterTypes":["com.baomidou.dynamic.datasource.processor.DsProcessor"] }]
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"},
+  "name":"com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider",
+  "methods":[{"name":"loadDataSources","parameterTypes":[] }]
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"},
+  "name":"com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider",
+  "queryAllPublicMethods":true
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"},
+  "name":"com.baomidou.dynamic.datasource.provider.YmlDynamicDataSourceProvider",
+  "methods":[{"name":"loadDataSources","parameterTypes":[] }]
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"},
+  "name":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DruidDynamicDataSourceConfiguration",
+  "methods":[{"name":"setBeanFactory","parameterTypes":["org.springframework.beans.factory.BeanFactory"] }]
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DruidDynamicDataSourceConfiguration$$SpringCGLIB$$0"},
+  "name":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DruidDynamicDataSourceConfiguration$$SpringCGLIB$$0"
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAopConfiguration$$SpringCGLIB$$0"},
+  "name":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAopConfiguration",
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAopConfiguration$$SpringCGLIB$$0"},
+  "name":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAopConfiguration$$SpringCGLIB$$0",
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAopConfiguration$$SpringCGLIB$$0"},
+  "name":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAopConfiguration$$SpringCGLIB$$1",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAopConfiguration$$SpringCGLIB$$0"},
+  "name":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAopConfiguration$$SpringCGLIB$$2",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"},
+  "name":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAssistConfiguration",
+  "methods":[{"name":"setBeanFactory","parameterTypes":["org.springframework.beans.factory.BeanFactory"] }]
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAssistConfiguration$$SpringCGLIB$$0"},
+  "name":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAssistConfiguration",
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAssistConfiguration$$SpringCGLIB$$0"},
+  "name":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAssistConfiguration$$SpringCGLIB$$0",
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAssistConfiguration$$SpringCGLIB$$0"},
+  "name":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAssistConfiguration$$SpringCGLIB$$1",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAssistConfiguration$$SpringCGLIB$$0"},
+  "name":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAssistConfiguration$$SpringCGLIB$$2",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"},
+  "name":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAutoConfiguration",
+  "methods":[{"name":"afterPropertiesSet","parameterTypes":[] }, {"name":"setBeanFactory","parameterTypes":["org.springframework.beans.factory.BeanFactory"] }]
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAutoConfiguration$$SpringCGLIB$$0"},
+  "name":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAutoConfiguration",
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAutoConfiguration$$SpringCGLIB$$0"},
+  "name":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAutoConfiguration$$SpringCGLIB$$0",
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAutoConfiguration$$SpringCGLIB$$0"},
+  "name":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAutoConfiguration$$SpringCGLIB$$1",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAutoConfiguration$$SpringCGLIB$$0"},
+  "name":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAutoConfiguration$$SpringCGLIB$$2",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"},
+  "name":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceCreatorAutoConfiguration",
+  "methods":[{"name":"setBeanFactory","parameterTypes":["org.springframework.beans.factory.BeanFactory"] }]
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceCreatorAutoConfiguration$$SpringCGLIB$$0"},
+  "name":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceCreatorAutoConfiguration",
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceCreatorAutoConfiguration$$SpringCGLIB$$0"},
+  "name":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceCreatorAutoConfiguration$$SpringCGLIB$$0",
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceCreatorAutoConfiguration$$SpringCGLIB$$0"},
+  "name":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceCreatorAutoConfiguration$$SpringCGLIB$$1",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceCreatorAutoConfiguration$$SpringCGLIB$$0"},
+  "name":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceCreatorAutoConfiguration$$SpringCGLIB$$2",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"},
+  "name":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceCreatorAutoConfiguration$DruidDataSourceCreatorConfiguration",
+  "methods":[{"name":"setBeanFactory","parameterTypes":["org.springframework.beans.factory.BeanFactory"] }]
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceCreatorAutoConfiguration$DruidDataSourceCreatorConfiguration$$SpringCGLIB$$0"},
+  "name":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceCreatorAutoConfiguration$DruidDataSourceCreatorConfiguration",
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceCreatorAutoConfiguration$DruidDataSourceCreatorConfiguration$$SpringCGLIB$$0"},
+  "name":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceCreatorAutoConfiguration$DruidDataSourceCreatorConfiguration$$SpringCGLIB$$0",
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceCreatorAutoConfiguration$DruidDataSourceCreatorConfiguration$$SpringCGLIB$$0"},
+  "name":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceCreatorAutoConfiguration$DruidDataSourceCreatorConfiguration$$SpringCGLIB$$1",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceCreatorAutoConfiguration$DruidDataSourceCreatorConfiguration$$SpringCGLIB$$0"},
+  "name":"com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceCreatorAutoConfiguration$DruidDataSourceCreatorConfiguration$$SpringCGLIB$$2",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "condition":{"typeReachable":"com.baomidou.dynamic.datasource.DynamicRoutingDataSource"},
+  "name":"com.baomidou.dynamic.datasource.strategy.LoadBalanceDynamicDataSourceStrategy",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+}
+]
