@@ -120,9 +120,6 @@ public class OracleUcpDataSourceCreator implements DataSourceCreator {
         if (DsStrUtils.hasText(connectionLabelingCallbackClassName)) {
             Class<?> labelingClass = Class.forName(connectionLabelingCallbackClassName);
             ConnectionLabelingCallback labelingObject = (ConnectionLabelingCallback) labelingClass.newInstance();
-            if (labelingObject == null) {
-                throw new IllegalArgumentException("param [connection-labeling-callback] has to be non-null");
-            }
             targetConfig.registerConnectionLabelingCallback(labelingObject);
         }
 
@@ -130,9 +127,6 @@ public class OracleUcpDataSourceCreator implements DataSourceCreator {
         if (DsStrUtils.hasText(connectionAffinityCallbackClassClassName)) {
             Class<?> affinityClass = Class.forName(connectionAffinityCallbackClassClassName);
             ConnectionAffinityCallback affinityObject = (ConnectionAffinityCallback) affinityClass.newInstance();
-            if (affinityObject == null) {
-                throw new IllegalArgumentException("param [connection-initialization-callback] has to be non-null");
-            }
             targetConfig.registerConnectionAffinityCallback(affinityObject);
         }
 
@@ -140,9 +134,6 @@ public class OracleUcpDataSourceCreator implements DataSourceCreator {
         if (DsStrUtils.hasText(connectionInitializationCallbackClassName)) {
             Class<?> initializationClass = Class.forName(connectionInitializationCallbackClassName);
             ConnectionInitializationCallback initializationObject = (ConnectionInitializationCallback) initializationClass.newInstance();
-            if (initializationObject == null) {
-                throw new IllegalArgumentException("param [connection-initialization-callback] has to be non-null");
-            }
             targetConfig.registerConnectionInitializationCallback(initializationObject);
         }
     }
