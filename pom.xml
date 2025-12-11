@@ -366,6 +366,11 @@
                         <groupId>org.sonatype.central</groupId>
                         <artifactId>central-publishing-maven-plugin</artifactId>
                         <version>0.9.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>ossrh</publishingServerId>
+                            <autoPublish>true</autoPublish>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
