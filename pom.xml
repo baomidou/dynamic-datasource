@@ -68,19 +68,18 @@
         <c3p0.version>0.10.1</c3p0.version>
         <junit-jupiter.version>5.10.1</junit-jupiter.version>
 
-        <maven-clean-plugin.version>3.3.2</maven-clean-plugin.version>
-        <maven-install-plugin.version>3.1.2</maven-install-plugin.version>
-        <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
-        <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
-        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
-        <maven-javadoc-plugin.version>3.7.0</maven-javadoc-plugin.version>
-        <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
-        <maven-enforcer-plugin.version>3.5.0</maven-enforcer-plugin.version>
+        <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
+        <maven-install-plugin.version>3.1.4</maven-install-plugin.version>
+        <maven-resources-plugin.version>3.4.0</maven-resources-plugin.version>
+        <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
+        <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
+        <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
+        <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
+        <maven-enforcer-plugin.version>3.6.2</maven-enforcer-plugin.version>
 
-        <license-maven-plugin.version>4.5</license-maven-plugin.version>
-        <maven-gpg-plugin.version>3.2.4</maven-gpg-plugin.version>
-        <nexus-staging-maven-plugin.version>1.7.0</nexus-staging-maven-plugin.version>
-        <native-maven-plugin.version>0.10.2</native-maven-plugin.version>
+        <license-maven-plugin.version>5.0.0</license-maven-plugin.version>
+        <maven-gpg-plugin.version>3.2.48</maven-gpg-plugin.version>
+        <native-maven-plugin.version>0.11.3</native-maven-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -317,6 +316,14 @@
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <version>${maven-javadoc-plugin.version}</version>
                         <configuration>
+                            <!-- 核心：禁用所有 Javadoc 检查 -->
+                            <additionalOptions>-Xdoclint:none</additionalOptions>
+                            <!-- 可选：静默模式，隐藏非必要输出 -->
+                            <quiet>true</quiet>
+                            <!-- 解决中文乱码 -->
+                            <encoding>UTF-8</encoding>
+                            <charset>UTF-8</charset>
+                            <!-- 忽略 javadoc 执行失败（即使有错误也不中断构建） -->
                             <failOnError>false</failOnError>
                         </configuration>
                         <executions>
@@ -356,15 +363,9 @@
                         </executions>
                     </plugin>
                     <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>${nexus-staging-maven-plugin.version}</version>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <serverId>ossrh</serverId>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                        </configuration>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.9.0</version>
                     </plugin>
                 </plugins>
             </build>
