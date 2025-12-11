@@ -58,12 +58,6 @@ public class DynamicDataSourceAopConfiguration {
 
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     @Bean
-    public static DynamicDataSourceProperties dynamicDataSourceProperties() {
-        return new DynamicDataSourceProperties();
-    }
-
-    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-    @Bean
     @ConditionalOnMissingBean
     public DsProcessor dsProcessor(BeanFactory beanFactory) {
         DsProcessor headerProcessor = new DsHeaderProcessor();
