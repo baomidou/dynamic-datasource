@@ -78,7 +78,7 @@
         <maven-enforcer-plugin.version>3.6.2</maven-enforcer-plugin.version>
 
         <license-maven-plugin.version>5.0.0</license-maven-plugin.version>
-        <maven-gpg-plugin.version>3.2.48</maven-gpg-plugin.version>
+        <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
         <native-maven-plugin.version>0.11.3</native-maven-plugin.version>
     </properties>
 
