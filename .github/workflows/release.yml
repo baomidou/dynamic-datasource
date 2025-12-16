@@ -1,67 +1,50 @@
-name: Release to Maven Central
+name: Maven - Build & Publish
 
+# 触发条件：推送以 v 开头的标签（如 v1.0.0）
 on:
   push:
     tags:
-      - 'v*'
-  workflow_dispatch:
+      - v*
 
 jobs:
-  release:
-    runs-on: ubuntu-latest
+  build-and-publish:
+    runs-on: ubuntu-22.04
     steps:
-      - name: Checkout Code
+      # 1. 拉取代码
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # 拉取完整历史，确保版本号正确
 
-      # 步骤1：仅配置JDK，移除GPG相关参数
-      - name: Set Up JDK 17
+      # 2. 设置 JDK 17
+      - name: Set up Apache Maven Central
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
-          cache: 'maven'
-          # 移除 gpg-private-key/gpg-passphrase 参数，改为手动导入
+          server-id: ossrh  # 对应 settings.xml 中的 server id
+          server-username: MAVEN_USERNAME  # 环境变量名，对应 OSSRH 用户名
+          server-password: MAVEN_CENTRAL_TOKEN  # 环境变量名，对应 OSSRH 令牌
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}  # 从 Secrets 读取 GPG 私钥
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE  # 环境变量名，对应 GPG 密码
 
-      # 步骤2：手动配置Maven Settings（OSSRH认证）
-      - name: Configure Maven Settings
-        run: |
-          mkdir -p ~/.m2
-          cat > ~/.m2/settings.xml << EOF
-          <settings>
-            <servers>
-              <server>
-                <id>ossrh</id>
-                <username>${{ secrets.OSSRH_USERNAME }}</username>
-                <password>${{ secrets.OSSRH_TOKEN }}</password>
-              </server>
-            </servers>
-          </settings>
-          EOF
+      # 3. 缓存 Maven 本地仓库
+      - name: Cache local Maven repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
 
-      # 步骤3：手动导入GPG私钥（核心修复，添加兼容参数）
-      - name: Import GPG Private Key
-        run: |
-          # 1. 将私钥写入文件（避免管道传递的格式问题）
-          echo "${{ secrets.GPG_PRIVATE_KEY }}" > private-key.asc
-          # 2. 导入私钥（添加--pinentry-mode loopback避免交互，--batch静默执行）
-          echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --pinentry-mode loopback --import private-key.asc
-          # 3. 验证密钥是否导入成功（可选，调试用）
-          gpg --list-secret-keys --keyid-format short
+      # 4. 构建项目（跳过测试，与 snail-job 一致）
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml -DskipTests
 
-      # 步骤4：发布到Maven Central（指定GPG密钥ID和参数）
-      - name: Publish to OSSRH
-        run: |
-          mvn clean deploy \
-            -P release \
-            -DskipTests \
-            -Dgpg.useAgent=false \
-            -Dgpg.keyname=${{ secrets.GPG_KEY_ID }} \
-            -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
-            -Dgpg.pinentry-mode=loopback \
-            -Dgpg.batch=true
+      #5. 发布到 Maven 中央仓库
+      - name: Publish to Apache Maven Central
+        run: mvn deploy -P release -f pom.xml
         env:
-          # 仅传递OSSRH认证，GPG参数直接从Secrets读取
-          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}  # OSSRH 用户名（GitHub Secrets 配置）
+          MAVEN_CENTRAL_TOKEN: ${{ secrets.OSSRH_TOKEN }}  # OSSRH 令牌（GitHub Secrets 配置）
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}  # GPG 私钥密码（GitHub Secrets 配置）
