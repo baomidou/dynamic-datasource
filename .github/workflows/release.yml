@@ -3,34 +3,31 @@ name: Release to Maven Central
 on:
   push:
     tags:
-      - 'v*'  # 仅触发v开头的标签（如v4.5.0）
-  workflow_dispatch:  # 保留手动触发能力
+      - 'v*'
+  workflow_dispatch:
 
 jobs:
   release:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read  # 基础权限，按需添加
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # 必须：获取完整git历史（标签、提交记录）
+          fetch-depth: 0
 
-      # 步骤1：配置JDK（新版setup-java v4 最佳实践）
+      # 步骤1：仅配置JDK，移除GPG相关参数
       - name: Set Up JDK 17
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'  # 官方推荐（Eclipse Temurin）
-          java-version: '17'       # 匹配dynamic-datasource的JDK版本
-          cache: 'maven'           # 缓存Maven依赖（大幅加速构建）
-          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}  # 直接传入GPG私钥
-          gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}    # 直接传入GPG密码（新版可直接传值，无需变量映射）
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+          # 移除 gpg-private-key/gpg-passphrase 参数，改为手动导入
 
-      # 步骤2：配置Maven Settings（核心优化：避免setup-java的server-*参数误解）
+      # 步骤2：手动配置Maven Settings（OSSRH认证）
       - name: Configure Maven Settings
         run: |
-          # 生成临时settings.xml，直接注入OSSRH认证信息（新版推荐）
+          mkdir -p ~/.m2
           cat > ~/.m2/settings.xml << EOF
           <settings>
             <servers>
@@ -43,11 +40,28 @@ jobs:
           </settings>
           EOF
 
-      # 步骤3：发布到Maven Central（极简命令，无冗余参数）
+      # 步骤3：手动导入GPG私钥（核心修复，添加兼容参数）
+      - name: Import GPG Private Key
+        run: |
+          # 1. 将私钥写入文件（避免管道传递的格式问题）
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" > private-key.asc
+          # 2. 导入私钥（添加--pinentry-mode loopback避免交互，--batch静默执行）
+          echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --pinentry-mode loopback --import private-key.asc
+          # 3. 验证密钥是否导入成功（可选，调试用）
+          gpg --list-secret-keys --keyid-format short
+
+      # 步骤4：发布到Maven Central（指定GPG密钥ID和参数）
       - name: Publish to OSSRH
         run: |
           mvn clean deploy \
             -P release \
             -DskipTests \
-            -Dgpg.useAgent=false \  
-            -Dgpg.keyname=${{ secrets.GPG_KEY_ID }}
+            -Dgpg.useAgent=false \
+            -Dgpg.keyname=${{ secrets.GPG_KEY_ID }} \
+            -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
+            -Dgpg.pinentry-mode=loopback \
+            -Dgpg.batch=true
+        env:
+          # 仅传递OSSRH认证，GPG参数直接从Secrets读取
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
