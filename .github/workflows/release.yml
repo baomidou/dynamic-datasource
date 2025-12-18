@@ -1,56 +1,32 @@
-name: Gradle - Build & Publish
-
-# 触发条件：推送以 v 开头的标签（如 v1.0.0）
+name: Publish package to the Maven Central Repository
 on:
   push:
     tags:
       - v*
-
 jobs:
-  build-and-publish:
-    runs-on: ubuntu-22.04
+  build:
+    runs-on: ubuntu-latest
     steps:
-      # 1. 拉取代码
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # 拉取完整历史，确保版本号正确
-
-      # 2. 设置 JDK 17（与 snail-job 一致的环境）
+      - uses: actions/checkout@v4
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
-          distribution: 'temurin'  # 使用 temurin 发行版
-          cache: gradle  # 缓存 Gradle 依赖，加速构建
+          distribution: 'temurin'
 
-      # 3. 缓存 Gradle 本地缓存
-      - name: Cache Gradle packages
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts', '**/gradle.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
 
-      # 4. 构建项目（跳过测试，与 snail-job 一致）
-      - name: Build with Gradle
-        run: ./gradlew build -x test --no-daemon
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
-      # 5. 配置 GPG 签名
-      - name: Import GPG key
-        run: |
-          echo "${{ secrets.GPG_SECRET }}" | base64 --decode | gpg --batch --import
+      - name: Build without tests
+        run: ./gradlew build -x test
+
+      - name: Publish package to maven central
         env:
-          GPG_SECRET: ${{ secrets.GPG_SECRET }}
-
-      # 6. 发布到 Maven 中央仓库
-      - name: Publish to Maven Central
-        run: ./gradlew publish --no-daemon
-        env:
-          ORG_GRADLE_PROJECT_ossrhUsername: ${{ secrets.OSSRH_USERNAME }}
-          ORG_GRADLE_PROJECT_ossrhPassword: ${{ secrets.OSSRH_TOKEN }}
-          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_SECRET }}
-          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_PASSWORD }}
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.GPG_PASSPHRASE }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_SECRET_KEY }}
+        run: ./gradlew publishAllPublicationsToMavenCentralRepository
