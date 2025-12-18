@@ -1,5 +1,12 @@
+// Spring Boot 3.x Starter - JDK 17+
+apply plugin: 'io.spring.dependency-management'
 
-compileJava {
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+tasks.withType(JavaCompile).configureEach {
     options.release = 17
 }
 
@@ -26,6 +33,8 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-starter-web")
     // Make compileOnly dependencies available for tests
-    testRuntimeOnly("com.alibaba:druid-spring-boot-3-starter:${druidVersion}")
+//    testRuntimeOnly("com.alibaba:druid-spring-boot-3-starter:${druidVersion}")
     testRuntimeOnly("com.zaxxer:HikariCP")
+    // Fix JUnit Platform version incompatibility with Spring Boot 3.x
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }

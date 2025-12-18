@@ -1,3 +1,12 @@
+// Spring Boot 2.x 兼容模块 - JDK 8+
+apply plugin: 'io.spring.dependency-management'
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.boot:spring-boot-dependencies:${springBoot2Version}"
+    }
+}
+
 dependencies {
     api project(":dynamic-datasource-creator")
 

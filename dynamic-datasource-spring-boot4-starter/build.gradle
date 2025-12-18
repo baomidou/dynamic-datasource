@@ -1,5 +1,12 @@
+// Spring Boot 4.x Starter - JDK 17+
+apply plugin: 'io.spring.dependency-management'
 
-compileJava {
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+tasks.withType(JavaCompile).configureEach {
     options.release = 17
 }
 

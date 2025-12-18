@@ -1,9 +1,12 @@
 // 编译脚本
 buildscript {
     ext {
-        springBootVersion = "2.7.0"
-        springBoot3Version = "3.5.7"
-        springBoot4Version = "4.0.0"
+        // Spring Boot 版本定义 - 按子模块适配
+        springBoot2Version = "2.7.18"  // Spring Boot 2.x 最新稳定版，JDK 8+
+        springBoot3Version = "3.5.7"   // Spring Boot 3.x，JDK 17+
+        springBoot4Version = "4.0.0"   // Spring Boot 4.x，JDK 17+
+
+        // 第三方库版本
         mybatisPlusVersion = "3.5.14"
         mybatisSpringVersion = "2.1.2"
         p6spyVersion = "3.9.1"
@@ -20,14 +23,14 @@ buildscript {
     // 仓库配置
     repositories {
         mavenLocal()
-        maven { url 'https://maven.aliyun.com/repository/central' }
-        maven { url 'https://maven.aliyun.com/repository/spring' }
-        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url = 'https://maven.aliyun.com/repository/central' }
+        maven { url = 'https://maven.aliyun.com/repository/spring' }
+        maven { url = 'https://maven.aliyun.com/repository/google' }
         mavenCentral()
     }
 
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("io.spring.dependency-management:io.spring.dependency-management.gradle.plugin:1.1.7")
         classpath("com.vanniktech:gradle-maven-publish-plugin:0.32.0")
     }
 }
@@ -36,8 +39,8 @@ description = "mybatis dynamic datasource"
 
 // 项目配置
 allprojects {
-    group APP_GROUP
-    version APP_VERSION
+    group = APP_GROUP
+    version = APP_VERSION
 }
 
 // 子模块配置
@@ -45,32 +48,15 @@ subprojects {
     apply plugin: 'java-library'
     apply plugin: 'com.vanniktech.maven.publish'
     apply plugin: 'signing'
-    apply plugin: 'io.spring.dependency-management'
 
     // 仓库配置
     repositories {
         mavenLocal()
-        maven { url 'https://maven.aliyun.com/repository/central' }
-        maven { url 'https://maven.aliyun.com/repository/spring' }
-        maven { url 'https://maven.aliyun.com/repository/google' }
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url = 'https://maven.aliyun.com/repository/central' }
+        maven { url = 'https://maven.aliyun.com/repository/spring' }
+        maven { url = 'https://maven.aliyun.com/repository/google' }
+        maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
-    }
-
-    // 依赖管理
-    dependencyManagement {
-        imports {
-            mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
-        }
-
-        dependencies {
-            dependency("mysql:mysql-connector-java:8.0.33")
-
-            // orm db
-            dependency("com.baomidou:mybatis-plus-boot-starter:${mybatisPlusVersion}")
-            dependency("com.baomidou:mybatis-plus-core:${mybatisPlusVersion}")
-
-        }
     }
 
     // 依赖配置
@@ -85,20 +71,21 @@ subprojects {
         testCompileOnly("org.projectlombok:lombok")
     }
 
-    // 编译环境 JDK-1.8+
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    // 默认编译环境 JDK-1.8+ (子模块可覆盖)
+    java {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
 
     tasks.named('test') {
         useJUnitPlatform()
     }
 
     tasks.withType(JavaCompile).configureEach {
-        options.compilerArgs << "-Xlint:unchecked" << "-Xlint:-serial"
         options.encoding = 'UTF-8'
         options.warnings = false
         options.deprecation = true
-        options.compilerArgs += ["-parameters"]
+        options.compilerArgs += ["-parameters", "-Xlint:unchecked", "-Xlint:-serial"]
     }
 
     tasks.withType(GenerateModuleMetadata).configureEach {

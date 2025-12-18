@@ -1,3 +1,17 @@
+// Spring Boot 2.x Starter - JDK 8+
+apply plugin: 'io.spring.dependency-management'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.boot:spring-boot-dependencies:${springBoot2Version}"
+    }
+}
+
 dependencies {
     api project(":dynamic-datasource-spring-boot-common")
     
