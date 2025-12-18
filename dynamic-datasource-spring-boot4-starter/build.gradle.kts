@@ -1,13 +1,3 @@
-plugins {
-    `java-library`
-    id("io.spring.dependency-management") version "1.1.4"
-}
-
-// Only apply GraalVM plugin when running on Java 17+
-if (JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
-    apply(plugin = "org.graalvm.buildtools.native")
-}
-
 buildscript {
     repositories {
         gradlePluginPortal()
@@ -17,6 +7,16 @@ buildscript {
             classpath("org.graalvm.buildtools:native-gradle-plugin:0.11.3")
         }
     }
+}
+
+plugins {
+    `java-library`
+    id("io.spring.dependency-management") version "1.1.4"
+}
+
+// Only apply GraalVM plugin when running on Java 17+
+if (JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
+    apply(plugin = "org.graalvm.buildtools.native")
 }
 
 java {
