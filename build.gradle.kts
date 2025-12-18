@@ -22,7 +22,6 @@ allprojects {
 subprojects {
     apply(plugin = "java")
     apply(plugin = "com.vanniktech.maven.publish")
-    apply(plugin = "signing")
 
     java {
         sourceCompatibility = JavaVersion.VERSION_1_8
