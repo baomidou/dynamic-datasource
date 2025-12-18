@@ -1,0 +1,15 @@
+
+dependencies {
+    compileOnly("org.springframework:spring-core")
+    compileOnly("com.alibaba:druid:${druidVersion}")
+    compileOnly("com.zaxxer:HikariCP-java7:${hikaricpVersion}")
+    compileOnly("com.github.chris2018998:beecp:${beeCpVersion}") {
+        exclude group: "org.slf4j"
+    }
+    compileOnly("com.mchange:c3p0:${c3p0Version}")
+    compileOnly("com.oracle.database.spring:oracle-spring-boot-starter-ucp:${oracleUcpVersion}")
+    compileOnly("com.oracle.database.jdbc:ucp:23.4.0.24.05")
+    compileOnly("org.apache.commons:commons-dbcp2:${commonsDbcp2Version}")
+    compileOnly("com.atomikos:transactions-jdbc:${atomikosVersion}")
+}
+

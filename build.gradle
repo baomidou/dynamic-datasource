@@ -1,0 +1,135 @@
+// 编译脚本
+buildscript {
+    ext {
+        springBootVersion = "2.7.0"
+        springBoot3Version = "3.5.7"
+        springBoot4Version = "4.0.0"
+        mybatisPlusVersion = "3.5.14"
+        mybatisSpringVersion = "2.1.2"
+        p6spyVersion = "3.9.1"
+        seataVersion = "1.4.2"
+        h2Version = "2.2.224"
+        commonsDbcp2Version = "2.10.0"
+        atomikosVersion = "4.0.6"
+        oracleUcpVersion = "23.4.0"
+        hikaricpVersion = "2.4.13"
+        beeCpVersion = "3.4.2"
+        c3p0Version = "0.10.1"
+        druidVersion = "1.2.27"
+    }
+    // 仓库配置
+    repositories {
+        mavenLocal()
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://maven.aliyun.com/repository/spring' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("com.vanniktech:gradle-maven-publish-plugin:0.32.0")
+    }
+}
+
+description = "mybatis dynamic datasource"
+
+// 项目配置
+allprojects {
+    group APP_GROUP
+    version APP_VERSION
+}
+
+// 子模块配置
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'com.vanniktech.maven.publish'
+    apply plugin: 'signing'
+    apply plugin: 'io.spring.dependency-management'
+
+    // 仓库配置
+    repositories {
+        mavenLocal()
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://maven.aliyun.com/repository/spring' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        mavenCentral()
+    }
+
+    // 依赖管理
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
+        }
+
+        dependencies {
+            dependency("mysql:mysql-connector-java:8.0.33")
+
+            // orm db
+            dependency("com.baomidou:mybatis-plus-boot-starter:${mybatisPlusVersion}")
+            dependency("com.baomidou:mybatis-plus-core:${mybatisPlusVersion}")
+
+        }
+    }
+
+    // 依赖配置
+    dependencies {
+        // 日志
+        api("org.slf4j:slf4j-api")
+
+        // lombok
+        compileOnly("org.projectlombok:lombok")
+        annotationProcessor("org.projectlombok:lombok")
+        testAnnotationProcessor("org.projectlombok:lombok")
+        testCompileOnly("org.projectlombok:lombok")
+    }
+
+    // 编译环境 JDK-1.8+
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
+    tasks.named('test') {
+        useJUnitPlatform()
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.compilerArgs << "-Xlint:unchecked" << "-Xlint:-serial"
+        options.encoding = 'UTF-8'
+        options.warnings = false
+        options.deprecation = true
+        options.compilerArgs += ["-parameters"]
+    }
+
+    tasks.withType(GenerateModuleMetadata).configureEach {
+        enabled = false
+    }
+
+    tasks.register('sourcesJar', Jar) {
+        dependsOn classes
+        archiveClassifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    javadoc {
+        options {
+            encoding "UTF-8"
+            charSet 'UTF-8'
+            author true
+            version true
+            failOnError false
+            links "https://docs.oracle.com/javase/8/docs/api"
+        }
+    }
+
+    tasks.withType(MavenPublication).configureEach {
+        doFirst {
+            options.skipCertificateChecks = true
+        }
+    }
+
+    tasks.register('javadocJar', Jar) {
+        archiveClassifier = 'javadoc'
+        from javadoc
+    }
+}

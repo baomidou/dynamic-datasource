@@ -1,0 +1,19 @@
+dependencies {
+    api project(":dynamic-datasource-creator")
+
+    // Third-party dependencies
+    compileOnly("com.baomidou:mybatis-plus:${mybatisPlusVersion}")
+    compileOnly("p6spy:p6spy:${p6spyVersion}")
+    compileOnly("io.seata:seata-rm-datasource:${seataVersion}") {
+        exclude group: "com.alibaba", module:"druid"
+    }
+    
+    // Spring dependencies
+    api("org.springframework:spring-core")
+    api("org.springframework:spring-beans")
+    api("org.springframework:spring-context")
+    api("org.springframework:spring-jdbc")
+    api("org.springframework:spring-aop")
+    api("org.springframework:spring-expression")
+    api("org.mybatis:mybatis-spring:${mybatisSpringVersion}")
+}
