@@ -54,6 +54,8 @@ subprojects {
     dependencies {
         compileOnly("org.projectlombok:lombok:${property("lombokVersion")}")
         annotationProcessor("org.projectlombok:lombok:${property("lombokVersion")}")
+        testCompileOnly("org.projectlombok:lombok:${property("lombokVersion")}")
+        testAnnotationProcessor("org.projectlombok:lombok:${property("lombokVersion")}")
     }
 
     publishing {

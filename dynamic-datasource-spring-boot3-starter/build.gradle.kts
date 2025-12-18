@@ -1,7 +1,10 @@
 plugins {
     `java-library`
     id("io.spring.dependency-management") version "1.1.4"
-    id("org.graalvm.buildtools.native") version "0.11.3"
+    // Only apply GraalVM plugin when running on Java 17+
+    if (JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
+        id("org.graalvm.buildtools.native") version "0.11.3"
+    }
 }
 
 java {
@@ -27,4 +30,5 @@ dependencies {
     
     testImplementation("com.h2database:h2:${property("h2Version")}")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-web")
 }
