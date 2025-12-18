@@ -45,6 +45,10 @@ dependencies {
     testImplementation("com.h2database:h2:${property("h2Version")}")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-starter-web")
+    testImplementation("org.springframework.boot:spring-boot-starter-jdbc")
     // Make compileOnly dependencies available for tests
+    testRuntimeOnly("com.alibaba:druid:${property("druidVersion")}")
     testRuntimeOnly("com.zaxxer:HikariCP")
+    // Fix JUnit Platform version incompatibility with Spring Boot 4.0.0
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
