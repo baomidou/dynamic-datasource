@@ -1,0 +1,10 @@
+rootProject.name = "dynamic-datasource"
+
+include(
+    "dynamic-datasource-creator",
+    "dynamic-datasource-spring",
+    "dynamic-datasource-spring-boot-common",
+    "dynamic-datasource-spring-boot-starter",
+    "dynamic-datasource-spring-boot3-starter",
+    "dynamic-datasource-spring-boot4-starter"
+)

@@ -1,4 +1,4 @@
-name: Maven - Build & Publish
+name: Gradle - Build & Publish
 
 # 触发条件：推送以 v 开头的标签（如 v1.0.0）
 on:
@@ -22,37 +22,35 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'  # 使用 temurin 发行版
-          cache: maven  # 缓存 Maven 依赖，加速构建
+          cache: gradle  # 缓存 Gradle 依赖，加速构建
 
-      # 3. 缓存 Maven 本地仓库
-      - name: Cache local Maven repository
+      # 3. 缓存 Gradle 本地缓存
+      - name: Cache Gradle packages
         uses: actions/cache@v3
         with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts', '**/gradle.properties') }}
           restore-keys: |
-            ${{ runner.os }}-maven-
+            ${{ runner.os }}-gradle-
 
       # 4. 构建项目（跳过测试，与 snail-job 一致）
-      - name: Build with Maven
-        run: mvn -B package --file pom.xml -Dmaven.test.skip=true
+      - name: Build with Gradle
+        run: ./gradlew build -x test --no-daemon
 
-      # 5. 配置 Maven 中央仓库发布信息（含 GPG 签名）
-      - name: Set up Apache Maven Central
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-          server-id: ossrh  # 对应 settings.xml 中的 server id
-          server-username: MAVEN_USERNAME  # 环境变量名，对应 OSSRH 用户名
-          server-password: MAVEN_CENTRAL_TOKEN  # 环境变量名，对应 OSSRH 令牌
-          gpg-private-key: ${{ secrets.GPG_SECRET }}  # 从 Secrets 读取 GPG 私钥
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE  # 环境变量名，对应 GPG 密码
+      # 5. 配置 GPG 签名
+      - name: Import GPG key
+        run: |
+          echo "${{ secrets.GPG_SECRET }}" | base64 --decode | gpg --batch --import
+        env:
+          GPG_SECRET: ${{ secrets.GPG_SECRET }}
 
       # 6. 发布到 Maven 中央仓库
-      - name: Publish to Apache Maven Central
-        run: mvn deploy -P release -f pom.xml
+      - name: Publish to Maven Central
+        run: ./gradlew publish --no-daemon
         env:
-          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}  # OSSRH 用户名（GitHub Secrets 配置）
-          MAVEN_CENTRAL_TOKEN: ${{ secrets.OSSRH_TOKEN }}  # OSSRH 令牌（GitHub Secrets 配置）
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSWORD }}  # GPG 私钥密码（GitHub Secrets 配置）
+          ORG_GRADLE_PROJECT_ossrhUsername: ${{ secrets.OSSRH_USERNAME }}
+          ORG_GRADLE_PROJECT_ossrhPassword: ${{ secrets.OSSRH_TOKEN }}
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_SECRET }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_PASSWORD }}

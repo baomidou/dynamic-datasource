@@ -5,14 +5,18 @@ on:
     branches: [ master ]
     paths:
       - '.github/workflows/ci.yml'
-      - '**/pom.xml'
+      - '**/build.gradle.kts'
+      - 'gradle.properties'
+      - 'settings.gradle.kts'
       - '**/src/main/**'
       - '**/src/test/**'
   pull_request:
     branches: [ master ]
     paths:
       - '.github/workflows/ci.yml'
-      - '**/pom.xml'
+      - '**/build.gradle.kts'
+      - 'gradle.properties'
+      - 'settings.gradle.kts'
       - '**/src/main/**'
       - '**/src/test/**'
 
@@ -21,7 +25,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  MAVEN_OPTS: -Dhttps.protocols=TLSv1.2 -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true
+  GRADLE_OPTS: -Dorg.gradle.daemon=false -Dorg.gradle.parallel=true -Dorg.gradle.caching=true
 
 jobs:
   #  We only execute nativeTest on `dynamic-datasource-spring-boot3-starter`, since only Spring Boot OSS 3 provides support for GraalVM Native Image
@@ -41,10 +45,10 @@ jobs:
           java-version: ${{ matrix.java-version }}
           distribution: 'graalvm-community'
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          cache: 'maven'
-      - name: Build Spring Boot Starter 3 test with Maven
+          cache: 'gradle'
+      - name: Build Spring Boot Starter 3 test with Gradle
         run: |
-          ./mvnw -PnativeTestInSpringBoot -T1C -B -e clean test
+          ./gradlew :dynamic-datasource-spring-boot3-starter:nativeTest --no-daemon
   test-hotspot-jdk-ci:
     name: Test CI - JDK ${{ matrix.java-version }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
@@ -60,10 +64,10 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: ${{ matrix.java-version }}
-          cache: 'maven'
-      - name: Build test with Maven
+          cache: 'gradle'
+      - name: Build test with Gradle
         run: |
-          ./mvnw -T1C -B -e clean test
+          ./gradlew clean test --no-daemon --parallel
   test-minimum-jdk-ci:
     name: Test CI - JDK ${{ matrix.java-version }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
@@ -79,10 +83,10 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: ${{ matrix.java-version }}
-          cache: 'maven'
-      - name: Build test with Maven
+          cache: 'gradle'
+      - name: Build test with Gradle
         run: |
-          ./mvnw -am -pl dynamic-datasource-creator -T1C -B -e clean test
-          ./mvnw -am -pl dynamic-datasource-spring -T1C -B -e clean test
-          ./mvnw -am -pl dynamic-datasource-spring-boot-common -T1C -B -e clean test
-          ./mvnw -am -pl dynamic-datasource-spring-boot-starter -T1C -B -e clean test
+          ./gradlew :dynamic-datasource-creator:clean :dynamic-datasource-creator:test --no-daemon
+          ./gradlew :dynamic-datasource-spring:clean :dynamic-datasource-spring:test --no-daemon
+          ./gradlew :dynamic-datasource-spring-boot-common:clean :dynamic-datasource-spring-boot-common:test --no-daemon
+          ./gradlew :dynamic-datasource-spring-boot-starter:clean :dynamic-datasource-spring-boot-starter:test --no-daemon

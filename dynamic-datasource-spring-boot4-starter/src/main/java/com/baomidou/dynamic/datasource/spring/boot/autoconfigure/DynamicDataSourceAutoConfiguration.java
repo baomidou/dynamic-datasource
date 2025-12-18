@@ -46,7 +46,7 @@ import java.util.List;
                 "com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure",
                 "com.alibaba.druid.spring.boot4.autoconfigure.DruidDataSourceAutoConfigure"
         })
-@Import({DruidDynamicDataSourceConfiguration.class, DynamicDataSourceCreatorAutoConfiguration.class, DynamicDataSourceAopConfiguration.class, DynamicDataSourceAssistConfiguration.class})
+@Import({DynamicDataSourceCreatorAutoConfiguration.class, DynamicDataSourceAopConfiguration.class, DynamicDataSourceAssistConfiguration.class})
 @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class DynamicDataSourceAutoConfiguration implements InitializingBean {
 
