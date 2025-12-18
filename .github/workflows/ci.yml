@@ -78,15 +78,22 @@ jobs:
         java-version: [ '8' ]
     steps:
       - uses: actions/checkout@v3
-      - name: Setup java
+      - name: Setup JDK 17 for Gradle
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+      - name: Setup JDK ${{ matrix.java-version }} for compilation
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: ${{ matrix.java-version }}
-          cache: 'gradle'
       - name: Build test with Gradle
         run: |
           ./gradlew :dynamic-datasource-creator:clean :dynamic-datasource-creator:test --no-daemon
           ./gradlew :dynamic-datasource-spring:clean :dynamic-datasource-spring:test --no-daemon
           ./gradlew :dynamic-datasource-spring-boot-common:clean :dynamic-datasource-spring-boot-common:test --no-daemon
           ./gradlew :dynamic-datasource-spring-boot-starter:clean :dynamic-datasource-spring-boot-starter:test --no-daemon
+        env:
+          JAVA_HOME: ${{ env.JAVA_HOME_8_X64 }}
