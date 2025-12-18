@@ -4,7 +4,7 @@ buildscript {
     }
     dependencies {
         if (JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
-            classpath("org.graalvm.buildtools:native-gradle-plugin:0.11.3")
+            classpath("org.graalvm.buildtools:native-gradle-plugin:${property("graalvmPluginVersion")}")
         }
     }
 }
