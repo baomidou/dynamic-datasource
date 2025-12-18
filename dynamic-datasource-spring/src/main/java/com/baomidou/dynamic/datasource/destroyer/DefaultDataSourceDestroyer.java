@@ -19,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ReflectionUtils;
 
 import javax.sql.DataSource;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
@@ -97,7 +96,7 @@ public class DefaultDataSourceDestroyer implements DataSourceDestroyer {
                 closeMethod.invoke(realDataSource);
                 log.info("dynamic-datasource close the datasource named [{}] success,", name);
             }
-        } catch (IllegalAccessException | InvocationTargetException e) {
+        } catch (Exception e) {
             log.warn("dynamic-datasource close the datasource named [{}] failed,", name, e);
         }
     }
