@@ -1,7 +1,6 @@
 plugins {
     java
-    `maven-publish`
-    signing
+    id("com.vanniktech.maven.publish") version "0.32.0" apply false
 }
 
 allprojects {
@@ -22,8 +21,7 @@ allprojects {
 
 subprojects {
     apply(plugin = "java")
-    apply(plugin = "maven-publish")
-    apply(plugin = "signing")
+    apply(plugin = "com.vanniktech.maven.publish")
 
     java {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -56,63 +54,5 @@ subprojects {
         annotationProcessor("org.projectlombok:lombok:${property("lombokVersion")}")
         testCompileOnly("org.projectlombok:lombok:${property("lombokVersion")}")
         testAnnotationProcessor("org.projectlombok:lombok:${property("lombokVersion")}")
-    }
-
-    publishing {
-        publications {
-            create<MavenPublication>("mavenJava") {
-                from(components["java"])
-                
-                pom {
-                    name.set(project.name)
-                    description.set("dynamic datasource")
-                    url.set("https://github.com/baomidou/dynamic-datasource-spring-boot-starter")
-                    inceptionYear.set("2018")
-                    
-                    licenses {
-                        license {
-                            name.set("Apache License, Version 2.0")
-                            url.set("https://www.apache.org/licenses/LICENSE-2.0")
-                        }
-                    }
-                    
-                    organization {
-                        name.set("baomidou")
-                        url.set("https://github.com/baomidou")
-                    }
-                    
-                    developers {
-                        developer {
-                            name.set("TaoYu")
-                            email.set("tracy5546@gmail.com")
-                        }
-                    }
-                    
-                    scm {
-                        url.set("https://github.com/baomidou/dynamic-datasource-spring-boot-starter")
-                        connection.set("scm:git:https://github.com/baomidou/dynamic-datasource-spring-boot-starter.git")
-                        developerConnection.set("scm:git:https://github.com/baomidou/dynamic-datasource-spring-boot-starter.git")
-                        tag.set("HEAD")
-                    }
-                }
-            }
-        }
-        
-        repositories {
-            maven {
-                name = "ossrh"
-                val releasesRepoUrl = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
-                val snapshotsRepoUrl = uri("https://oss.sonatype.org/content/repositories/snapshots")
-                url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
-                credentials {
-                    username = project.findProperty("ossrhUsername") as String? ?: ""
-                    password = project.findProperty("ossrhPassword") as String? ?: ""
-                }
-            }
-        }
-    }
-
-    signing {
-        sign(publishing.publications["mavenJava"])
     }
 }
