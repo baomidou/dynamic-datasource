@@ -22,4 +22,7 @@ dependencies {
     testImplementation("com.h2database:h2:${property("h2Version")}")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-starter-web")
+    // Make compileOnly dependencies available for tests
+    testRuntimeOnly("com.alibaba:druid-spring-boot-starter:${property("druidVersion")}")
+    testRuntimeOnly("com.zaxxer:HikariCP")
 }
