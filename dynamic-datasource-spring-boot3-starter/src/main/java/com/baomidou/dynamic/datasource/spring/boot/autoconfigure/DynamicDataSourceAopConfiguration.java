@@ -32,6 +32,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Role;
@@ -48,18 +49,13 @@ import org.springframework.context.expression.BeanFactoryResolver;
  */
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 @Configuration(proxyBeanMethods = false)
+@EnableConfigurationProperties(DynamicDataSourceProperties.class)
 public class DynamicDataSourceAopConfiguration {
 
     private final DynamicDataSourceProperties properties;
 
     public DynamicDataSourceAopConfiguration(DynamicDataSourceProperties properties) {
         this.properties = properties;
-    }
-
-    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-    @Bean
-    public static DynamicDataSourceProperties dynamicDataSourceProperties() {
-        return new DynamicDataSourceProperties();
     }
 
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
