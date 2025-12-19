@@ -49,14 +49,14 @@ jobs:
       - name: Build Spring Boot Starter 3 test with Gradle
         run: |
           ./gradlew :dynamic-datasource-spring-boot3-starter:nativeTest --no-daemon
-  test-hotspot-jdk-ci:
+  test-jdk-ci:
     name: Test CI - JDK ${{ matrix.java-version }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     strategy:
       matrix:
         os: [ ubuntu-latest ]
-        java-version: [ '17', '21' ]
+        java-version: [ '8', '17', '21' ]
     steps:
       - uses: actions/checkout@v4
       - name: Setup java
@@ -65,28 +65,11 @@ jobs:
           distribution: 'temurin'
           java-version: ${{ matrix.java-version }}
           cache: 'gradle'
-      - name: Build test with Gradle
+      - name: Build test with Gradle (JDK 8)
+        if: matrix.java-version == '8'
+        run: |
+          ./gradlew :dynamic-datasource-spring-boot-starter:clean :dynamic-datasource-spring-boot-starter:test --no-daemon
+      - name: Build test with Gradle (JDK 11+)
+        if: matrix.java-version != '8'
         run: |
           ./gradlew clean test --no-daemon --parallel
-  test-minimum-jdk-ci:
-    name: Test CI - JDK ${{ matrix.java-version }} on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
-    strategy:
-      matrix:
-        os: [ ubuntu-latest ]
-        java-version: [ '8' ]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: ${{ matrix.java-version }}
-          cache: 'gradle'
-      - name: Build test with Gradle
-        run: |
-          ./gradlew :dynamic-datasource-creator:clean :dynamic-datasource-creator:test --no-daemon
-          ./gradlew :dynamic-datasource-spring:clean :dynamic-datasource-spring:test --no-daemon
-          ./gradlew :dynamic-datasource-spring-boot-common:clean :dynamic-datasource-spring-boot-common:test --no-daemon
-          ./gradlew :dynamic-datasource-spring-boot-starter:clean :dynamic-datasource-spring-boot-starter:test --no-daemon
