@@ -24,7 +24,7 @@
         <img src="https://img.shields.io/badge/JDK-8+-green.svg" >
     </a>
     <a>
-        <img src="https://img.shields.io/badge/springBoot-1.5.x__2.x.x__3.x.x-green.svg" >
+        <img src="https://img.shields.io/badge/springBoot-1.5.x__2.x.x__3.x.x__4.x.x-green.svg" >
     </a>
     <a href="https://www.jetbrains.com">
         <img src="https://img.shields.io/badge/IntelliJ%20IDEA-support-blue.svg" >
@@ -39,7 +39,7 @@
 
 dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成多数据源的启动器。
 
-其支持 **Jdk 1.7+, SpringBoot 1.5.x 2.x.x 3.x.x**。
+其支持 **Jdk 1.7+, SpringBoot 1.5.x 2.x.x 3.x.x 4.x.x**。
 
 ## 文档 | Documentation
 
@@ -77,29 +77,20 @@ dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成�
 
 # 使用方法
 
-1. 引入`dynamic-datasource-spring-boot-starter`或者`dynamic-datasource-spring-boot3-starter`。
+## 版本选择
 
-- spring-boot 1.5.x 2.x.x
+根据您的 Spring Boot 和 JDK 版本选择对应的 starter 模块：
 
-```xml
+| Spring Boot 版本 | JDK 版本要求 | 项目开始支持版本 | Starter 模块                                |
+|:--------------:|:--------:|:--------:|:------------------------------------------|
+| 1.5.x ~ 2.x.x  |  JDK 8+  |  1.0.0+  | `dynamic-datasource-spring-boot-starter`  |
+|     3.x.x      | JDK 17+  |  4.0.0+  | `dynamic-datasource-spring-boot3-starter` |
+|     4.x.x      | JDK 17+  |  4.5.0+  | `dynamic-datasource-spring-boot4-starter` |
 
-<dependency>
-    <groupId>com.baomidou</groupId>
-    <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
-    <version>${version}</version>
-</dependency>
-```
-
-- spring-boot3及以上
-
-```xml
-
-<dependency>
-    <groupId>com.baomidou</groupId>
-    <artifactId>dynamic-datasource-spring-boot3-starter</artifactId>
-    <version>${version}</version>
-</dependency>
-```
+> **说明：**
+> - Spring Boot 1.5.x ~ 2.x.x 使用 `dynamic-datasource-spring-boot-starter`，支持 JDK 8 及以上版本
+> - Spring Boot 3.x.x 使用 `dynamic-datasource-spring-boot3-starter`，**要求 JDK 17 及以上**
+> - Spring Boot 4.x.x 使用 `dynamic-datasource-spring-boot4-starter`，**要求 JDK 17 及以上**
 
 2. 配置数据源。
 
