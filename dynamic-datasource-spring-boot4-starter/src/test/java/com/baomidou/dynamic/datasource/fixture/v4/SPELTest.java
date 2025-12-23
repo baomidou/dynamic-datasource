@@ -18,8 +18,8 @@ package com.baomidou.dynamic.datasource.fixture.v4;
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
 import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
-import com.baomidou.dynamic.datasource.fixture.v4.service.spel.User;
-import com.baomidou.dynamic.datasource.fixture.v4.service.spel.UserService;
+import com.baomidou.dynamic.datasource.fixture.service.spel.User;
+import com.baomidou.dynamic.datasource.fixture.service.spel.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledInNativeImage;
@@ -111,7 +111,7 @@ public class SPELTest {
     }
 }
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.baomidou.dynamic.datasource.fixture")
 class SPELApplication {
     public static void main(String[] args) {
         SpringApplication.run(SPELApplication.class, args);

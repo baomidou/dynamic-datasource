@@ -67,7 +67,7 @@ public class AddRemoveDatasourceTest {
     }
 }
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.baomidou.dynamic.datasource.fixture")
 class AddRemoveDatasourceApplication {
     public static void main(String[] args) {
         SpringApplication.run(AddRemoveDatasourceApplication.class, args);

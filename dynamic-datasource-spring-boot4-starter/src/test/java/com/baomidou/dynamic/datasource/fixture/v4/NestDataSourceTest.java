@@ -18,10 +18,10 @@ package com.baomidou.dynamic.datasource.fixture.v4;
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
 import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
-import com.baomidou.dynamic.datasource.fixture.v4.service.nest.SchoolService;
-import com.baomidou.dynamic.datasource.fixture.v4.service.nest.Student;
-import com.baomidou.dynamic.datasource.fixture.v4.service.nest.StudentService;
-import com.baomidou.dynamic.datasource.fixture.v4.service.nest.TeacherService;
+import com.baomidou.dynamic.datasource.fixture.service.nest.SchoolService;
+import com.baomidou.dynamic.datasource.fixture.service.nest.Student;
+import com.baomidou.dynamic.datasource.fixture.service.nest.StudentService;
+import com.baomidou.dynamic.datasource.fixture.service.nest.TeacherService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -82,7 +82,7 @@ public class NestDataSourceTest {
     }
 }
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.baomidou.dynamic.datasource.fixture")
 class NestApplication {
     public static void main(String[] args) {
         SpringApplication.run(NestApplication.class, args);

@@ -52,7 +52,7 @@ public class LoadDatasourceFromJDBCTest {
 }
 
 @SuppressWarnings({"SqlDialectInspection", "SqlNoDataSourceInspection"})
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.baomidou.dynamic.datasource.fixture")
 class LoadDatasourceFromJDBCApplication {
 
     public static void main(String[] args) {

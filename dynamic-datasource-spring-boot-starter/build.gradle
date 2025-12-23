@@ -22,6 +22,7 @@ dependencies {
     compileOnly("org.springframework.boot:spring-boot-configuration-processor")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     
+    testImplementation(project(":dynamic-datasource-test-fixtures"))
     testImplementation("com.h2database:h2:${h2Version}")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-starter-web")

@@ -18,7 +18,7 @@ package com.baomidou.dynamic.datasource.fixture.v1;
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
 import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
-import com.baomidou.dynamic.datasource.fixture.v1.service.tx.*;
+import com.baomidou.dynamic.datasource.fixture.service.tx.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -95,7 +95,7 @@ public class DsTransactionalTest {
     }
 }
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.baomidou.dynamic.datasource.fixture")
 class DsTransactionalApplication {
     public static void main(String[] args) {
         SpringApplication.run(DsTransactionalApplication.class, args);
