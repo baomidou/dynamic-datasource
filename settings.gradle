@@ -7,5 +7,5 @@ include(
     "dynamic-datasource-spring-boot-starter",
     "dynamic-datasource-spring-boot3-starter",
     "dynamic-datasource-spring-boot4-starter",
-    "dynamic-datasource-test-fixtures"
+    "dynamic-datasource-test-common"
 )
