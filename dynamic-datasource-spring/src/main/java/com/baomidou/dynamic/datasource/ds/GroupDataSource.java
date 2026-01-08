@@ -64,6 +64,8 @@ public class GroupDataSource {
     public DataSource addDatasource(String ds, DataSource dataSource) {
         DataSource result = dataSourceMap.put(ds, dataSource);
         // Update cached keys list after modification with immutable copy
+        // Note: Cache rebuild is acceptable here as add/remove operations are infrequent
+        // compared to determineDataSource calls which benefit from the cached list
         cachedDsKeys = Collections.unmodifiableList(new ArrayList<>(dataSourceMap.keySet()));
         return result;
     }
@@ -74,6 +76,8 @@ public class GroupDataSource {
     public DataSource removeDatasource(String ds) {
         DataSource result = dataSourceMap.remove(ds);
         // Update cached keys list after modification with immutable copy
+        // Note: Cache rebuild is acceptable here as add/remove operations are infrequent
+        // compared to determineDataSource calls which benefit from the cached list
         cachedDsKeys = Collections.unmodifiableList(new ArrayList<>(dataSourceMap.keySet()));
         return result;
     }

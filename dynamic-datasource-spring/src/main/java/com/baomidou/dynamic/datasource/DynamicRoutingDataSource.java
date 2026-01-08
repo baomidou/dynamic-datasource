@@ -166,6 +166,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
      */
     private void addGroupDataSource(String ds, DataSource dataSource) {
         int underlineIndex = ds.indexOf(UNDERLINE);
+        // Only process if underscore exists and is not at the start (group name must not be empty)
         if (underlineIndex > 0) {
             // Extract group name without using split() for better performance
             String group = ds.substring(0, underlineIndex);
@@ -197,6 +198,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
         if (dataSourceMap.containsKey(ds)) {
             DataSource dataSource = dataSourceMap.remove(ds);
             int underlineIndex = ds.indexOf(UNDERLINE);
+            // Only process if underscore exists and is not at the start (group name must not be empty)
             if (underlineIndex > 0) {
                 // Extract group name without using split() for better performance
                 String group = ds.substring(0, underlineIndex);
