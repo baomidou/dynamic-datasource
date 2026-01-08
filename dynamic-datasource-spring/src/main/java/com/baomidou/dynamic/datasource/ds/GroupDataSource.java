@@ -20,6 +20,7 @@ import lombok.Data;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -42,10 +43,11 @@ public class GroupDataSource {
     private Map<String, DataSource> dataSourceMap = new ConcurrentHashMap<>();
     
     /**
-     * Cached list of datasource keys to avoid recreating ArrayList on every call.
+     * Cached immutable list of datasource keys to avoid recreating ArrayList on every call.
      * Marked as volatile to ensure visibility across threads.
+     * Immutable to prevent concurrent modification issues.
      */
-    private volatile List<String> cachedDsKeys = new ArrayList<>();
+    private volatile List<String> cachedDsKeys = Collections.emptyList();
 
     public GroupDataSource(String groupName, DynamicDataSourceStrategy dynamicDataSourceStrategy) {
         this.groupName = groupName;
@@ -61,8 +63,8 @@ public class GroupDataSource {
      */
     public DataSource addDatasource(String ds, DataSource dataSource) {
         DataSource result = dataSourceMap.put(ds, dataSource);
-        // Update cached keys list after modification
-        cachedDsKeys = new ArrayList<>(dataSourceMap.keySet());
+        // Update cached keys list after modification with immutable copy
+        cachedDsKeys = Collections.unmodifiableList(new ArrayList<>(dataSourceMap.keySet()));
         return result;
     }
 
@@ -71,18 +73,19 @@ public class GroupDataSource {
      */
     public DataSource removeDatasource(String ds) {
         DataSource result = dataSourceMap.remove(ds);
-        // Update cached keys list after modification
-        cachedDsKeys = new ArrayList<>(dataSourceMap.keySet());
+        // Update cached keys list after modification with immutable copy
+        cachedDsKeys = Collections.unmodifiableList(new ArrayList<>(dataSourceMap.keySet()));
         return result;
     }
 
     /**
      * determineDsKey
-     * Performance optimized: uses cached list instead of creating new ArrayList on each call
+     * Performance optimized: uses cached immutable list instead of creating new ArrayList on each call
      *
      * @return the name of the datasource
      */
     public String determineDsKey() {
+        // Safe to pass directly - list is immutable and strategies only read from it
         return dynamicDataSourceStrategy.determineKey(cachedDsKeys);
     }
 

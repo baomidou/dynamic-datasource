@@ -49,6 +49,9 @@ public class ConfigMergeCreator<C, T> {
     private volatile BeanInfo cachedBeanInfo;
     
     public ConfigMergeCreator(String configName, Class<C> configClazz, Class<T> targetClazz) {
+        if (configName == null || configClazz == null || targetClazz == null) {
+            throw new IllegalArgumentException("ConfigMergeCreator parameters cannot be null");
+        }
         this.configName = configName;
         this.configClazz = configClazz;
         this.targetClazz = targetClazz;
