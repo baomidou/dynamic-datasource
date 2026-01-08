@@ -35,7 +35,6 @@ import java.util.Properties;
  * @author TaoYu
  */
 @Slf4j
-@AllArgsConstructor
 public class ConfigMergeCreator<C, T> {
 
     private final String configName;
@@ -43,6 +42,17 @@ public class ConfigMergeCreator<C, T> {
     private final Class<C> configClazz;
 
     private final Class<T> targetClazz;
+    
+    /**
+     * Cached BeanInfo to avoid repeated introspection for better performance
+     */
+    private volatile BeanInfo cachedBeanInfo;
+    
+    public ConfigMergeCreator(String configName, Class<C> configClazz, Class<T> targetClazz) {
+        this.configName = configName;
+        this.configClazz = configClazz;
+        this.targetClazz = targetClazz;
+    }
 
     @SneakyThrows
     @SuppressWarnings("unchecked")
@@ -51,8 +61,17 @@ public class ConfigMergeCreator<C, T> {
             return (T) item;
         }
         T result = targetClazz.getDeclaredConstructor().newInstance();
-        BeanInfo beanInfo = Introspector.getBeanInfo(configClazz, Object.class);
-        PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+        
+        // Use cached BeanInfo or create and cache it
+        if (cachedBeanInfo == null) {
+            synchronized (this) {
+                if (cachedBeanInfo == null) {
+                    cachedBeanInfo = Introspector.getBeanInfo(configClazz, Object.class);
+                }
+            }
+        }
+        
+        PropertyDescriptor[] propertyDescriptors = cachedBeanInfo.getPropertyDescriptors();
         for (PropertyDescriptor pd : propertyDescriptors) {
             Class<?> propertyType = pd.getPropertyType();
             if (Properties.class == propertyType) {

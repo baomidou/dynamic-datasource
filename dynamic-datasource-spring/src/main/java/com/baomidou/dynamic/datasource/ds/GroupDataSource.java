@@ -20,6 +20,7 @@ import lombok.Data;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -39,6 +40,12 @@ public class GroupDataSource {
     private DynamicDataSourceStrategy dynamicDataSourceStrategy;
 
     private Map<String, DataSource> dataSourceMap = new ConcurrentHashMap<>();
+    
+    /**
+     * Cached list of datasource keys to avoid recreating ArrayList on every call.
+     * Marked as volatile to ensure visibility across threads.
+     */
+    private volatile List<String> cachedDsKeys = new ArrayList<>();
 
     public GroupDataSource(String groupName, DynamicDataSourceStrategy dynamicDataSourceStrategy) {
         this.groupName = groupName;
@@ -53,23 +60,30 @@ public class GroupDataSource {
      * @return the previous value associated with ds, or null if there was no mapping for ds.
      */
     public DataSource addDatasource(String ds, DataSource dataSource) {
-        return dataSourceMap.put(ds, dataSource);
+        DataSource result = dataSourceMap.put(ds, dataSource);
+        // Update cached keys list after modification
+        cachedDsKeys = new ArrayList<>(dataSourceMap.keySet());
+        return result;
     }
 
     /**
      * @param ds the name of the datasource
      */
     public DataSource removeDatasource(String ds) {
-        return dataSourceMap.remove(ds);
+        DataSource result = dataSourceMap.remove(ds);
+        // Update cached keys list after modification
+        cachedDsKeys = new ArrayList<>(dataSourceMap.keySet());
+        return result;
     }
 
     /**
      * determineDsKey
+     * Performance optimized: uses cached list instead of creating new ArrayList on each call
      *
      * @return the name of the datasource
      */
     public String determineDsKey() {
-        return dynamicDataSourceStrategy.determineKey(new ArrayList<>(dataSourceMap.keySet()));
+        return dynamicDataSourceStrategy.determineKey(cachedDsKeys);
     }
 
     /**
