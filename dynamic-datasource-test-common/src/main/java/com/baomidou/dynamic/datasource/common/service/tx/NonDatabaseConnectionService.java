@@ -18,7 +18,6 @@ package com.baomidou.dynamic.datasource.common.service.tx;
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.dynamic.datasource.tx.DsPropagation;
-import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
@@ -33,9 +32,11 @@ import java.sql.Statement;
 @DS("order")
 public class NonDatabaseConnectionService {
     private final DataSource dataSource;
+    private final NoConnectionService noConnectionService;
 
-    public NonDatabaseConnectionService(DataSource dataSource) {
+    public NonDatabaseConnectionService(DataSource dataSource, NoConnectionService noConnectionService) {
         this.dataSource = dataSource;
+        this.noConnectionService = noConnectionService;
     }
 
     /**
@@ -46,17 +47,7 @@ public class NonDatabaseConnectionService {
         // Trigger JDBC connection
         triggerJdbcConnection();
         // Call nested REQUIRES_NEW without JDBC connection
-        ((NonDatabaseConnectionService) AopContext.currentProxy()).innerRequiresNewWithoutConnection();
-    }
-
-    /**
-     * Inner REQUIRES_NEW transaction without JDBC connection
-     * This should not throw NPE when committing
-     */
-    @DSTransactional(propagation = DsPropagation.REQUIRES_NEW)
-    public void innerRequiresNewWithoutConnection() {
-        // No database operations - just business logic
-        System.out.println("Business logic without database operations");
+        noConnectionService.innerRequiresNewWithoutConnection();
     }
 
     /**
