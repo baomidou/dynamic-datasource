@@ -109,6 +109,9 @@ public class ConnectionFactory {
         boolean hasSavepoint = hasSavepoint(xid);
         List<SavePointHolder> savePointHolders = savePointMap.get(xid);
         Map<String, ConnectionProxy> connectionProxyMap = concurrentHashMap.get(xid);
+        if (connectionProxyMap == null) {
+            return;
+        }
         try {
             //If there is a savepoint,Indicates a nested transaction.
             if (hasSavepoint) {

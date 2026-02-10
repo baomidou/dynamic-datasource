@@ -45,6 +45,8 @@ public class DsTransactionalTest {
     private AccountService accountService;
     @Autowired
     private ProductService productService;
+    @Autowired
+    private NonDatabaseConnectionService nonDatabaseConnectionService;
     private DynamicRoutingDataSource ds;
 
     @Test
@@ -82,6 +84,19 @@ public class DsTransactionalTest {
         assertThat(orderService.selectOrders()).isEqualTo(Arrays.asList(new Order(3, 1, 1, 5, 50.0)));
         assertThat(accountService.selectAccount()).isEqualTo(new Account(1, 0.0));
         assertThat(productService.selectProduct()).isEqualTo(new Product(1, 10.0, 15));
+    }
+
+    @Test
+    public void testRequiredWithRequiresNewNoConnection() {
+        // Setup datasources
+        ds = (DynamicRoutingDataSource) dataSource;
+        if (!ds.getDataSources().containsKey("order")) {
+            DataSourceProperty orderDataSourceProperty = createDataSourceProperty("order");
+            ds.addDataSource(orderDataSourceProperty.getPoolName(), dataSourceCreator.createDataSource(orderDataSourceProperty));
+        }
+        
+        // This should not throw NPE even though the inner REQUIRES_NEW transaction has no JDBC connections
+        nonDatabaseConnectionService.outerRequiredWithConnection();
     }
 
     private DataSourceProperty createDataSourceProperty(String poolName) {
