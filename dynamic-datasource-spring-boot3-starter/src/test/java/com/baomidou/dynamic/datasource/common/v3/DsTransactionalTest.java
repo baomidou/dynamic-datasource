@@ -89,9 +89,11 @@ public class DsTransactionalTest {
     @Test
     public void testRequiredWithRequiresNewNoConnection() {
         // Setup datasources
-        DataSourceProperty orderDataSourceProperty = createDataSourceProperty("order");
         ds = (DynamicRoutingDataSource) dataSource;
-        ds.addDataSource(orderDataSourceProperty.getPoolName(), dataSourceCreator.createDataSource(orderDataSourceProperty));
+        if (!ds.getDataSources().containsKey("order")) {
+            DataSourceProperty orderDataSourceProperty = createDataSourceProperty("order");
+            ds.addDataSource(orderDataSourceProperty.getPoolName(), dataSourceCreator.createDataSource(orderDataSourceProperty));
+        }
         
         // This should not throw NPE even though the inner REQUIRES_NEW transaction has no JDBC connections
         nonDatabaseConnectionService.outerRequiredWithConnection();
