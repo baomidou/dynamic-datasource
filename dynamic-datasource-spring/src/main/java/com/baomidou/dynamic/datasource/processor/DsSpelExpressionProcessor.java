@@ -22,12 +22,14 @@ import org.springframework.context.expression.MethodBasedEvaluationContext;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.expression.BeanResolver;
+import org.springframework.expression.EvaluationException;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.ParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import java.lang.reflect.Method;
+import java.util.Collections;
 
 /**
  * SpEL表达式处理器
@@ -82,6 +84,11 @@ public class DsSpelExpressionProcessor extends DsProcessor {
         ExpressionRootObject rootObject = new ExpressionRootObject(method, arguments, invocation.getThis());
         StandardEvaluationContext context = new MethodBasedEvaluationContext(rootObject, method, arguments, NAME_DISCOVERER);
         context.setBeanResolver(beanResolver);
+        // Prevent SpEL injection: block T(...) type references and new instance creation
+        context.setTypeLocator(typeName -> {
+            throw new EvaluationException("Type access is not allowed in DS SpEL expressions: " + typeName);
+        });
+        context.setConstructorResolvers(Collections.emptyList());
         final Object value = PARSER.parseExpression(key, parserContext).getValue(context);
         return value == null ? null : value.toString();
     }
