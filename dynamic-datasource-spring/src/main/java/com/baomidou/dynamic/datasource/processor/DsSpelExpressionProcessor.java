@@ -71,6 +71,18 @@ public class DsSpelExpressionProcessor extends DsProcessor {
         }
     };
     private BeanResolver beanResolver;
+    /**
+     * Whether to allow SpEL type references (e.g. {@code T(java.lang.Runtime)}) and constructor
+     * expressions in datasource key expressions.
+     * <p>
+     * Defaults to {@code false} (restricted / safe mode). When {@code false}, any attempt to use
+     * {@code T(...)} type-references or {@code new} constructor expressions will throw an
+     * {@link EvaluationException}, preventing potential SpEL-injection / RCE attacks.
+     * <p>
+     * Set to {@code true} only if your application genuinely requires such expressions and you
+     * fully understand the security implications.
+     */
+    private boolean allowedSpelTypeAccess = false;
 
     @Override
     public boolean matches(String key) {
@@ -84,13 +96,26 @@ public class DsSpelExpressionProcessor extends DsProcessor {
         ExpressionRootObject rootObject = new ExpressionRootObject(method, arguments, invocation.getThis());
         StandardEvaluationContext context = new MethodBasedEvaluationContext(rootObject, method, arguments, NAME_DISCOVERER);
         context.setBeanResolver(beanResolver);
-        // Prevent SpEL injection: block T(...) type references and new instance creation
-        context.setTypeLocator(typeName -> {
-            throw new EvaluationException("Type access is not allowed in DS SpEL expressions: " + typeName);
-        });
-        context.setConstructorResolvers(Collections.emptyList());
+        if (!allowedSpelTypeAccess) {
+            // Prevent SpEL injection: block T(...) type references and new instance creation
+            context.setTypeLocator(typeName -> {
+                throw new EvaluationException("Type access is not allowed in DS SpEL expressions: " + typeName);
+            });
+            context.setConstructorResolvers(Collections.emptyList());
+        }
         final Object value = PARSER.parseExpression(key, parserContext).getValue(context);
         return value == null ? null : value.toString();
+    }
+
+    /**
+     * Allow or restrict SpEL type references ({@code T(...)}) and constructor expressions in
+     * datasource key resolution. Defaults to {@code false} (restricted). Enable only when
+     * strictly necessary and you accept the associated security risk.
+     *
+     * @param allowedSpelTypeAccess {@code true} to allow type access, {@code false} to block it
+     */
+    public void setAllowedSpelTypeAccess(boolean allowedSpelTypeAccess) {
+        this.allowedSpelTypeAccess = allowedSpelTypeAccess;
     }
 
     /**

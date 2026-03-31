@@ -38,4 +38,12 @@ public class DynamicDatasourceAopProperties {
      * aop allowedPublicOnly
      */
     private Boolean allowedPublicOnly = true;
+    /**
+     * Whether to allow SpEL type references (e.g. T(java.lang.Runtime)) and constructor
+     * expressions in datasource key expressions resolved by DsSpelExpressionProcessor.
+     * Defaults to false (restricted / safe mode) to prevent SpEL injection attacks.
+     * Set to true only if your application genuinely requires such expressions and you
+     * fully understand the security risk.
+     */
+    private Boolean allowedSpelTypeAccess = false;
 }

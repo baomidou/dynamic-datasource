@@ -30,7 +30,8 @@ import static org.mockito.Mockito.when;
 
 /**
  * Security tests for {@link DsSpelExpressionProcessor} verifying that SpEL injection via
- * type references (T(...)) is blocked to prevent Remote Code Execution.
+ * type references (T(...)) is blocked to prevent Remote Code Execution, and that the
+ * behaviour can be restored by explicitly enabling {@code allowedSpelTypeAccess}.
  */
 class DsSpelExpressionProcessorSecurityTest {
 
@@ -56,7 +57,7 @@ class DsSpelExpressionProcessorSecurityTest {
     }
 
     @Test
-    void typeReferenceExpressionShouldBeBlocked() {
+    void typeReferenceExpressionShouldBeBlockedByDefault() {
         // T(...) type references must be blocked to prevent SpEL injection / RCE
         assertThrows(EvaluationException.class, () ->
                 processor.doDetermineDatasource(invocation, "T(java.lang.Runtime).getRuntime().exec('id')")
@@ -64,11 +65,20 @@ class DsSpelExpressionProcessorSecurityTest {
     }
 
     @Test
-    void newInstanceExpressionShouldBeBlocked() {
+    void newInstanceExpressionShouldBeBlockedByDefault() {
         // new Type(...) constructor invocations must also be blocked
         assertThrows(EvaluationException.class, () ->
                 processor.doDetermineDatasource(invocation, "new java.lang.ProcessBuilder('id').start()")
         );
+    }
+
+    @Test
+    void typeReferenceExpressionShouldWorkWhenExplicitlyAllowed() {
+        // When allowedSpelTypeAccess=true, T(...) expressions are permitted (opt-in unsafe mode)
+        processor.setAllowedSpelTypeAccess(true);
+        // T(java.lang.String) is a safe type reference to verify the restriction is lifted
+        String result = processor.doDetermineDatasource(invocation, "T(java.lang.String).valueOf(#tenant)");
+        assertEquals("tenant1", result);
     }
 
     static class SampleService {

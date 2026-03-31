@@ -66,6 +66,7 @@ public class DynamicDataSourceAopConfiguration {
         DsProcessor sessionProcessor = new DsJakartaSessionProcessor();
         DsSpelExpressionProcessor spelExpressionProcessor = new DsSpelExpressionProcessor();
         spelExpressionProcessor.setBeanResolver(new BeanFactoryResolver(beanFactory));
+        spelExpressionProcessor.setAllowedSpelTypeAccess(properties.getAop().getAllowedSpelTypeAccess());
         headerProcessor.setNextProcessor(sessionProcessor);
         sessionProcessor.setNextProcessor(spelExpressionProcessor);
         return headerProcessor;
