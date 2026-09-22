@@ -18,6 +18,7 @@ dependencyManagement {
 
 dependencies {
     api project(":dynamic-datasource-spring-boot-common")
+    api("org.mybatis:mybatis-spring:4.0.0")
     
     compileOnly("org.springframework.boot:spring-boot-starter-web")
     compileOnly("org.springframework.boot:spring-boot-jdbc")
