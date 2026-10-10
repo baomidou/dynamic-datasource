@@ -33,6 +33,9 @@ public class LoadBalanceDynamicDataSourceStrategy implements DynamicDataSourceSt
 
     @Override
     public String determineKey(List<String> dsNames) {
-        return dsNames.get(Math.abs(index.getAndAdd(1) % dsNames.size()));
+        // Use getAndIncrement with proper modulo to prevent issues with negative values
+        // when counter overflows. Using & Integer.MAX_VALUE ensures non-negative value
+        int currentIndex = index.getAndIncrement() & Integer.MAX_VALUE;
+        return dsNames.get(currentIndex % dsNames.size());
     }
 }
