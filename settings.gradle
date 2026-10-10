@@ -1,3 +1,8 @@
+plugins {
+    // Auto-provision missing toolchains via the Foojay Disco API (1.0.0+ is required for Gradle 9)
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+}
+
 rootProject.name = "dynamic-datasource"
 
 include(

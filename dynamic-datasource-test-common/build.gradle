@@ -2,6 +2,14 @@
 // This module contains shared test code for all starter modules
 apply plugin: 'io.spring.dependency-management'
 
+// Compile and test with a JDK 8 toolchain to keep the Boot 2 line JDK 8 compatible.
+// Missing toolchains are auto-provisioned via Foojay (see settings.gradle).
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
+
 // Do not publish this module - disable all publishing tasks
 if (JavaVersion.current() >= JavaVersion.VERSION_11) {
     tasks.withType(PublishToMavenRepository).configureEach {
