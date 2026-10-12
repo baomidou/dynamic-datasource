@@ -4,12 +4,18 @@ Git Mirror 位于 https://github.com/baomidou/dynamic-datasource 。
 
 # 2. RUN TEST
 
-此项目在 OpenJDK 17 下完成构建，输出产物指向 OpenJDK 8。
+此项目使用 Gradle 9 构建，**Gradle 客户端与守护进程要求 JVM 17 或更高**（即使 Boot 2 线产物
+面向 OpenJDK 8——编译/测试由各模块的 Java toolchain 决定，缺失的 toolchain 会通过 Foojay 自动供给）。
+若本机默认 `JAVA_HOME` 指向 JDK 8，`./gradlew` 会直接报 `Gradle requires JVM 17 or later to run`，
+需要先切换到 JDK 17+。
+
+项目的输出产物对在 GraalVM Native Image 下的可用性的验证，是通过原生镜像测试完成的（CI 中暂时禁用，待修复）。
 
 当项目导入 IntelliJ IDEA 或 VSCode 时，IDE 对项目的语言级别应当设置为 8。
 对于单独的 `com.baomidou:dynamic-datasource-spring-boot3-starter` 子模块，IDE 的语言级别应当设置为 17。
 
-提交 PR 前，应在 OpenJDK 17 下执行 `./mvnw -T1C clean test` 以验证更改是否未破坏单元测试。若有需要请补充或更改单元测试。
+提交 PR 前，应在 OpenJDK 17+ 下执行 `./gradlew clean test` 以验证更改是否未破坏单元测试
+（JDK 8 toolchain 下的 Boot 2 线测试会在构建中自动使用/下载 JDK 8）。若有需要请补充或更改单元测试。
 
 假设贡献者处于新的 Ubuntu 22.04.3 LTS 实例下，其可通过如下 bash 命令来通过 SDKMAN! 管理 JDK 和工具链，并执行单元测试。
 
@@ -22,7 +28,7 @@ sdk use java 17.0.8-ms
 
 git clone git@github.com:baomidou/dynamic-datasource.git
 cd ./dynamic-datasource/
-./mvnw -T1C clean test
+./gradlew clean test
 ```
 
 ## 2.1. Execute NativeTest under GraalVM Native Image
@@ -32,7 +38,8 @@ cd ./dynamic-datasource/
 GraalVM Native Image 下的单元测试覆盖率。请不要使用 `io.kotest:kotest-runner-junit5-jvm:5.5.4` 等在 `test listener` mode 下 
 failed to discover tests 的测试库。
 
-项目定义了 `nativeTestInSpringBoot` 的 Maven Profile 用于为 `dynamic-datasource-spring-boot3-starter` 模块执行 nativeTest。
+`dynamic-datasource-spring-boot3-starter` 模块的 nativeTest 由 Gradle 的 `nativeTest` 任务提供
+（CI 中对应 `:dynamic-datasource-spring-boot3-starter:nativeTest`，目前暂时禁用、待修复）。
 
 假设贡献者处于新的 Ubuntu 22.04.3 LTS 实例下，其可通过如下 bash 命令通过 SDKMAN! 管理 JDK 和工具链，
 并为 `dynamic-datasource-spring-boot3-starter` 子模块执行 nativeTest。
@@ -47,7 +54,7 @@ sudo apt-get install build-essential libz-dev zlib1g-dev -y
 
 git clone git@github.com:baomidou/dynamic-datasource.git
 cd ./dynamic-datasource/
-./mvnw -PnativeTestInSpringBoot -T1C -e clean test
+./gradlew :dynamic-datasource-spring-boot3-starter:nativeTest
 ```
 
 贡献者在提交 PR 后，位于 Github Actions 的 CI 将进行此验证。如果 nativeTest 执行失败，请跳转到[本文的 2.2 一节](./CONTRIBUTING.md)。
@@ -57,6 +64,9 @@ https://github.com/oracle/graalvm-reachability-metadata 打开新的 issue， �
 Metadata 的 PR。
 
 ## 2.2 Generate or merge GraalVM Reachability Metadata for unit tests
+
+> 注：本节仍描述的是 Maven 时代的流程。项目已迁移到 Gradle，`generateMetadata` Maven Profile
+> 已不存在，Gradle 下的等价流程待 nativeTest 修复后一并补充；下方命令仅作历史参考。
 
 如果 nativeTest 执行失败， 应为单元测试生成初步的 GraalVM Reachability Metadata，并手动调整以修复 nativeTest。
 如有需要，请使用 `org.junit.jupiter.api.condition.DisabledInNativeImage` 注解或 `org.graalvm.nativeimage.imagecode` 的 
