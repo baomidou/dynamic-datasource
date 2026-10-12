@@ -19,6 +19,7 @@ buildscript {
         beeCpVersion = "3.4.2"
         c3p0Version = "0.10.1"
         druidVersion = "1.2.27"
+        druidSpringBoot4Version = "1.2.28"   // Boot 4 starter first released in 1.2.28
         // Lombok must be >= 1.18.40 for JDK 25 support (TypeTag::UNKNOWN issue)
         // Spring Boot 2.7.18 BOM only manages 1.18.30, which fails to compile on JDK 25, so pin it here
         lombokVersion = "1.18.42"
