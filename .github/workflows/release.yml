@@ -29,4 +29,7 @@ jobs:
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
           ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.GPG_PASSPHRASE }}
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_SECRET_KEY }}
-        run: ./gradlew publishAllPublicationsToMavenCentralRepository
+        # io.spring.dependency-management's POM withXml() is not configuration-cache
+        # safe ("this.delegate is null" on cache-miss generation), so publishing runs
+        # with the cache disabled. Test/build jobs keep using the cache.
+        run: ./gradlew publishAllPublicationsToMavenCentralRepository --no-configuration-cache

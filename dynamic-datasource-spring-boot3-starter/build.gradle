@@ -12,16 +12,23 @@ java {
 
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.boot:spring-boot-dependencies:${springBoot3Version}"
+        mavenBom "org.springframework.boot:spring-boot-dependencies:${libs.versions.springBoot3.get()}"
     }
 }
 
 dependencies {
+    // 日志与 lombok（原由 root subprojects 统一注入，为避免隐式父项目属性查找下移到本模块）
+    api(libs.slf4j.api)
+    compileOnly(libs.lombok)
+    annotationProcessor(libs.lombok)
+    testAnnotationProcessor(libs.lombok)
+    testCompileOnly(libs.lombok)
+
     api project(":dynamic-datasource-spring-boot-common")
 
     compileOnly("jakarta.servlet:jakarta.servlet-api:5.0.0")
     compileOnly("org.springframework.boot:spring-boot-starter-web")
-    compileOnly("com.alibaba:druid-spring-boot-3-starter:${druidVersion}") {
+    compileOnly(libs.druid.boot3.starter) {
         exclude group: "org.springframework.boot"
     }
     compileOnly("org.springframework.boot:spring-boot-starter-actuator")
@@ -30,7 +37,7 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     
     testImplementation(project(":dynamic-datasource-test-common"))
-    testImplementation("com.h2database:h2:${h2Version}")
+    testImplementation(libs.h2)
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-starter-web")
     // Make compileOnly dependencies available for tests

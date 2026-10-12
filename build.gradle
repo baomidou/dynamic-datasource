@@ -1,29 +1,5 @@
-// 编译脚本
+// 编译脚本（依赖版本统一维护在 gradle/libs.versions.toml 版本目录）
 buildscript {
-    ext {
-        // Spring Boot 版本定义 - 按子模块适配
-        springBoot2Version = "2.7.18"  // Spring Boot 2.x 最新稳定版，JDK 8+
-        springBoot3Version = "3.5.7"   // Spring Boot 3.x，JDK 17+
-        springBoot4Version = "4.0.0"   // Spring Boot 4.x，JDK 17+
-
-        // 第三方库版本
-        mybatisPlusVersion = "3.5.14"
-        mybatisSpringVersion = "2.1.2"
-        p6spyVersion = "3.9.1"
-        seataVersion = "1.4.2"
-        h2Version = "2.2.224"
-        commonsDbcp2Version = "2.10.0"
-        atomikosVersion = "4.0.6"
-        oracleUcpVersion = "23.4.0"
-        hikaricpVersion = "2.4.13"
-        beeCpVersion = "3.4.2"
-        c3p0Version = "0.10.1"
-        druidVersion = "1.2.27"
-        druidSpringBoot4Version = "1.2.28"   // Boot 4 starter first released in 1.2.28
-        // Lombok must be >= 1.18.40 for JDK 25 support (TypeTag::UNKNOWN issue)
-        // Spring Boot 2.7.18 BOM only manages 1.18.30, which fails to compile on JDK 25, so pin it here
-        lombokVersion = "1.18.42"
-    }
     // 仓库配置：镜像仅作加速，明确 ordered；不启用 mavenLocal，保证构建可复现
     repositories {
         maven { url = 'https://maven.aliyun.com/repository/central' }
@@ -77,19 +53,10 @@ subprojects {
         mavenCentral()
     }
 
-    // 依赖配置
-    dependencies {
-        // 日志
-        api("org.slf4j:slf4j-api")
-
-        // lombok: pin the version for JDK 25 support, overriding the older versions from Spring Boot BOMs
-        // (e.g. Spring Boot 2.7.18 BOM manages 1.18.30, which fails on JDK 25 with TypeTag::UNKNOWN)
-        def lombokVer = rootProject.ext.lombokVersion
-        compileOnly("org.projectlombok:lombok:${lombokVer}")
-        annotationProcessor("org.projectlombok:lombok:${lombokVer}")
-        testAnnotationProcessor("org.projectlombok:lombok:${lombokVer}")
-        testCompileOnly("org.projectlombok:lombok:${lombokVer}")
-    }
+    // 依赖说明：slf4j-api 与 lombok（锁定版本以支持 JDK 25，见 gradle/libs.versions.toml）
+    // 在各子模块 build.gradle 中声明——root 的 subprojects 块执行时子项目尚未评估，
+    // 无法拿到其版本目录；而在 root 脚本里直接写 `libs` 会触发已弃用的隐式父项目属性查找，
+    // Gradle 10 将报错
 
     // 默认编译环境 JDK-1.8+ (子模块可覆盖，如 boot3/boot4 使用 toolchain 17)
     // 用 toolchain 而非 source/targetCompatibility，避免 Gradle 9 元数据版本与
@@ -121,12 +88,12 @@ subprojects {
     // "multiple artifacts with the identical extension and classifier ('jar', 'javadoc')"
     javadoc {
         options {
-            encoding "UTF-8"
-            charSet 'UTF-8'
-            author true
-            version true
-            failOnError false
-            links "https://docs.oracle.com/javase/8/docs/api"
+            encoding = 'UTF-8'
+            charSet = 'UTF-8'
+            author = true
+            version = true
+            failOnError = false
+            links = ["https://docs.oracle.com/javase/8/docs/api"]
         }
     }
 

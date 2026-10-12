@@ -12,11 +12,18 @@ java {
 
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.boot:spring-boot-dependencies:${springBoot4Version}"
+        mavenBom "org.springframework.boot:spring-boot-dependencies:${libs.versions.springBoot4.get()}"
     }
 }
 
 dependencies {
+    // 日志与 lombok（原由 root subprojects 统一注入，为避免隐式父项目属性查找下移到本模块）
+    api(libs.slf4j.api)
+    compileOnly(libs.lombok)
+    annotationProcessor(libs.lombok)
+    testAnnotationProcessor(libs.lombok)
+    testCompileOnly(libs.lombok)
+
     api project(":dynamic-datasource-spring-boot-common")
     api("org.mybatis:mybatis-spring:4.0.0")
     
@@ -24,7 +31,7 @@ dependencies {
     compileOnly("org.springframework.boot:spring-boot-jdbc")
     // Druid's Boot 4 starter is published since 1.2.28; exclude its bundled Spring Boot
     // artifacts so versions stay managed by the spring-boot-dependencies BOM (same as Boot3 module)
-    compileOnly("com.alibaba:druid-spring-boot-4-starter:${druidSpringBoot4Version}") {
+    compileOnly(libs.druid.boot4.starter) {
         exclude group: "org.springframework.boot"
     }
     compileOnly("org.springframework.boot:spring-boot-starter-actuator")
@@ -33,12 +40,12 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     
     testImplementation(project(":dynamic-datasource-test-common"))
-    testImplementation("com.h2database:h2:${h2Version}")
+    testImplementation(libs.h2)
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-starter-web")
     testImplementation("org.springframework.boot:spring-boot-starter-jdbc")
     // Make compileOnly dependencies available for tests
-    testRuntimeOnly("com.alibaba:druid-spring-boot-4-starter:${druidSpringBoot4Version}")
+    testRuntimeOnly(libs.druid.boot4.starter)
     testRuntimeOnly("com.zaxxer:HikariCP")
     // Fix JUnit Platform version incompatibility with Spring Boot 4.0.0
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")

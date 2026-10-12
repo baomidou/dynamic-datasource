@@ -11,17 +11,24 @@ java {
 
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.boot:spring-boot-dependencies:${springBoot2Version}"
+        mavenBom "org.springframework.boot:spring-boot-dependencies:${libs.versions.springBoot2.get()}"
     }
 }
 
 dependencies {
+    // 日志与 lombok（原由 root subprojects 统一注入，为避免隐式父项目属性查找下移到本模块）
+    api(libs.slf4j.api)
+    compileOnly(libs.lombok)
+    annotationProcessor(libs.lombok)
+    testAnnotationProcessor(libs.lombok)
+    testCompileOnly(libs.lombok)
+
     api project(":dynamic-datasource-creator")
 
     // Third-party dependencies
-    compileOnly("com.baomidou:mybatis-plus:${mybatisPlusVersion}")
-    compileOnly("p6spy:p6spy:${p6spyVersion}")
-    compileOnly("io.seata:seata-rm-datasource:${seataVersion}") {
+    compileOnly(libs.mybatis.plus)
+    compileOnly(libs.p6spy)
+    compileOnly(libs.seata.rm.datasource) {
         exclude group: "com.alibaba", module:"druid"
     }
     
@@ -32,5 +39,5 @@ dependencies {
     api("org.springframework:spring-jdbc")
     api("org.springframework:spring-aop")
     api("org.springframework:spring-expression")
-    api("org.mybatis:mybatis-spring:${mybatisSpringVersion}")
+    api(libs.mybatis.springBoot)
 }

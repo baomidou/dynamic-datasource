@@ -1,0 +1,48 @@
+# Dependency and plugin versions for the whole build.
+# Replaces the former buildscript { ext { ... } } block, which forced every
+# subproject to rely on implicit parent-project property lookups (deprecated
+# in Gradle 9, removed in Gradle 10).
+[versions]
+springBoot2 = "2.7.18"        # Spring Boot 2.x latest stable, JDK 8+
+springBoot3 = "3.5.7"         # Spring Boot 3.x, JDK 17+
+springBoot4 = "4.0.0"         # Spring Boot 4.x, JDK 17+
+mybatisPlus = "3.5.14"
+mybatisSpring = "2.1.2"
+p6spy = "3.9.1"
+seata = "1.4.2"
+h2 = "2.2.224"
+commonsDbcp2 = "2.10.0"
+atomikos = "4.0.6"
+oracleUcp = "23.4.0"
+hikaricp = "2.4.13"
+beeCp = "3.4.2"
+c3p0 = "0.10.1"
+druid = "1.2.27"
+druidSpringBoot4 = "1.2.28"   # Boot 4 starter first released in 1.2.28
+# Lombok must be >= 1.18.40 for JDK 25 support (TypeTag::UNKNOWN issue).
+# Spring Boot 2.7.18 BOM only manages 1.18.30, which fails to compile on JDK 25, so pin it here.
+lombok = "1.18.42"
+
+[libraries]
+# NOTE: the spring-boot-dependencies BOMs are referenced via libs.versions.springBootN.get()
+# in each module's dependencyManagement block, because io.spring's mavenBom() only accepts
+# a String and rejects catalog Provider objects.
+
+slf4j-api = { module = "org.slf4j:slf4j-api" }
+lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
+
+mybatis-plus = { module = "com.baomidou:mybatis-plus", version.ref = "mybatisPlus" }
+mybatis-springBoot = { module = "org.mybatis:mybatis-spring", version.ref = "mybatisSpring" }
+p6spy = { module = "p6spy:p6spy", version.ref = "p6spy" }
+seata-rm-datasource = { module = "io.seata:seata-rm-datasource", version.ref = "seata" }
+h2 = { module = "com.h2database:h2", version.ref = "h2" }
+commons-dbcp2 = { module = "org.apache.commons:commons-dbcp2", version.ref = "commonsDbcp2" }
+atomikos-transactions-jdbc = { module = "com.atomikos:transactions-jdbc", version.ref = "atomikos" }
+oracle-ucp-spring-boot-starter = { module = "com.oracle.database.spring:oracle-spring-boot-starter-ucp", version.ref = "oracleUcp" }
+hikaricp-java7 = { module = "com.zaxxer:HikariCP-java7", version.ref = "hikaricp" }
+beecp = { module = "com.github.chris2018998:beecp", version.ref = "beeCp" }
+c3p0 = { module = "com.mchange:c3p0", version.ref = "c3p0" }
+druid = { module = "com.alibaba:druid", version.ref = "druid" }
+druid-spring-boot-starter = { module = "com.alibaba:druid-spring-boot-starter", version.ref = "druid" }
+druid-boot3-starter = { module = "com.alibaba:druid-spring-boot-3-starter", version.ref = "druid" }
+druid-boot4-starter = { module = "com.alibaba:druid-spring-boot-4-starter", version.ref = "druidSpringBoot4" }

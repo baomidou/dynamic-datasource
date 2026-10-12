@@ -11,21 +11,28 @@ java {
 
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.boot:spring-boot-dependencies:${springBoot2Version}"
+        mavenBom "org.springframework.boot:spring-boot-dependencies:${libs.versions.springBoot2.get()}"
     }
 }
 
 dependencies {
+    // 日志与 lombok（原由 root subprojects 统一注入，为避免隐式父项目属性查找下移到本模块）
+    api(libs.slf4j.api)
+    compileOnly(libs.lombok)
+    annotationProcessor(libs.lombok)
+    testAnnotationProcessor(libs.lombok)
+    testCompileOnly(libs.lombok)
+
     compileOnly("org.springframework:spring-core")
-    compileOnly("com.alibaba:druid:${druidVersion}")
-    compileOnly("com.zaxxer:HikariCP-java7:${hikaricpVersion}")
-    compileOnly("com.github.chris2018998:beecp:${beeCpVersion}") {
+    compileOnly(libs.druid)
+    compileOnly(libs.hikaricp.java7)
+    compileOnly(libs.beecp) {
         exclude group: "org.slf4j"
     }
-    compileOnly("com.mchange:c3p0:${c3p0Version}")
-    compileOnly("com.oracle.database.spring:oracle-spring-boot-starter-ucp:${oracleUcpVersion}")
+    compileOnly(libs.c3p0)
+    compileOnly(libs.oracle.ucp.spring.boot.starter)
     compileOnly("com.oracle.database.jdbc:ucp:23.4.0.24.05")
-    compileOnly("org.apache.commons:commons-dbcp2:${commonsDbcp2Version}")
-    compileOnly("com.atomikos:transactions-jdbc:${atomikosVersion}")
+    compileOnly(libs.commons.dbcp2)
+    compileOnly(libs.atomikos.transactions.jdbc)
 }
 
