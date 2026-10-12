@@ -24,9 +24,8 @@ buildscript {
         // Spring Boot 2.7.18 BOM only manages 1.18.30, which fails to compile on JDK 25, so pin it here
         lombokVersion = "1.18.42"
     }
-    // 仓库配置
+    // 仓库配置：镜像仅作加速，明确 ordered；不启用 mavenLocal，保证构建可复现
     repositories {
-        mavenLocal()
         maven { url = 'https://maven.aliyun.com/repository/central' }
         maven { url = 'https://maven.aliyun.com/repository/spring' }
         maven { url = 'https://maven.aliyun.com/repository/google' }
@@ -67,12 +66,13 @@ subprojects {
         apply plugin: 'signing'
     }
 
-    // 仓库配置
+    // 仓库配置：镜像仅作加速，明确 ordered；不启用 mavenLocal——本地仓库构件不可复现，
+    // CI/其他机器无法保证同版本依赖，且可能撞上本地陈旧快照
     repositories {
-        mavenLocal()
         maven { url = 'https://maven.aliyun.com/repository/central' }
         maven { url = 'https://maven.aliyun.com/repository/spring' }
         maven { url = 'https://maven.aliyun.com/repository/google' }
+        // 仅供需要快照版依赖的开发机使用，当前无模块声明 -SNAPSHOT 依赖
         maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
     }
