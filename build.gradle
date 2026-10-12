@@ -115,12 +115,10 @@ subprojects {
         enabled = false
     }
 
-    tasks.register('sourcesJar', Jar) {
-        dependsOn classes
-        archiveClassifier = 'sources'
-        from sourceSets.main.allSource
-    }
-
+    // sourcesJar / javadocJar 由 gradle-maven-publish-plugin (vanniktech) 自动注册
+    // （内部调用 java.withSourcesJar()/withJavadocJar() 并接入 publication），
+    // 此处切勿再次手动添加，否则 publication 会出现重复构件报：
+    // "multiple artifacts with the identical extension and classifier ('jar', 'javadoc')"
     javadoc {
         options {
             encoding "UTF-8"
@@ -136,10 +134,5 @@ subprojects {
         doFirst {
             options.skipCertificateChecks = true
         }
-    }
-
-    tasks.register('javadocJar', Jar) {
-        archiveClassifier = 'javadoc'
-        from javadoc
     }
 }
