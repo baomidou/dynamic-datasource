@@ -1,0 +1,7 @@
+# Pin line endings for Gradle Wrapper Neo launch scripts,
+# so core.autocrlf never breaks gradlew on Linux
+gradlew text eol=lf
+*.ps1 text eol=lf
+*.bat text eol=crlf
+gradle/wrapper/GradleWrapperNeo.java text eol=lf
+gradle/wrapper/gradle-wrapper.properties text eol=lf

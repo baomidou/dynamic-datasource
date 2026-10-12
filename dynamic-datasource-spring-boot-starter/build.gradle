@@ -4,6 +4,11 @@ apply plugin: 'io.spring.dependency-management'
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
+    // Compile and test with a JDK 8 toolchain to keep the Boot 2 line JDK 8 compatible.
+    // Missing toolchains are auto-provisioned via Foojay (see settings.gradle).
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
 }
 
 dependencyManagement {
@@ -29,4 +34,6 @@ dependencies {
     // Make compileOnly dependencies available for tests
     testRuntimeOnly("com.alibaba:druid-spring-boot-starter:${druidVersion}")
     testRuntimeOnly("com.zaxxer:HikariCP")
+    // Fix JUnit Platform version incompatibility (required for tests on Gradle 9 + JDK 25)
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }

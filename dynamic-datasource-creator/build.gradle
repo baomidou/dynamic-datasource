@@ -1,6 +1,14 @@
 // Spring Boot 2.x 兼容模块 - JDK 8+
 apply plugin: 'io.spring.dependency-management'
 
+// Compile and test with a JDK 8 toolchain to keep the Boot 2 line JDK 8 compatible.
+// Missing toolchains are auto-provisioned via Foojay (see settings.gradle).
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
+
 dependencyManagement {
     imports {
         mavenBom "org.springframework.boot:spring-boot-dependencies:${springBoot2Version}"

@@ -19,6 +19,9 @@ buildscript {
         beeCpVersion = "3.4.2"
         c3p0Version = "0.10.1"
         druidVersion = "1.2.27"
+        // Lombok must be >= 1.18.40 for JDK 25 support (TypeTag::UNKNOWN issue)
+        // Spring Boot 2.7.18 BOM only manages 1.18.30, which fails to compile on JDK 25, so pin it here
+        lombokVersion = "1.18.42"
     }
     // 仓库配置
     repositories {
@@ -36,6 +39,12 @@ buildscript {
             classpath("com.vanniktech:gradle-maven-publish-plugin:0.32.0")
         }
     }
+}
+
+plugins {
+    // Gradle Wrapper Neo: source-based wrapper, no gradle-wrapper.jar stored in the repo
+    // Manage the version via ./gradlew wrapperNeo --gradle-version <version>
+    id 'org.glavo.gradle-wrapper-neo' version '0.2.0'
 }
 
 description = "mybatis dynamic datasource"
@@ -72,11 +81,13 @@ subprojects {
         // 日志
         api("org.slf4j:slf4j-api")
 
-        // lombok
-        compileOnly("org.projectlombok:lombok")
-        annotationProcessor("org.projectlombok:lombok")
-        testAnnotationProcessor("org.projectlombok:lombok")
-        testCompileOnly("org.projectlombok:lombok")
+        // lombok: pin the version for JDK 25 support, overriding the older versions from Spring Boot BOMs
+        // (e.g. Spring Boot 2.7.18 BOM manages 1.18.30, which fails on JDK 25 with TypeTag::UNKNOWN)
+        def lombokVer = rootProject.ext.lombokVersion
+        compileOnly("org.projectlombok:lombok:${lombokVer}")
+        annotationProcessor("org.projectlombok:lombok:${lombokVer}")
+        testAnnotationProcessor("org.projectlombok:lombok:${lombokVer}")
+        testCompileOnly("org.projectlombok:lombok:${lombokVer}")
     }
 
     // 默认编译环境 JDK-1.8+ (子模块可覆盖)
