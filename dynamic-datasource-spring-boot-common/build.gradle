@@ -26,8 +26,8 @@ dependencies {
     compileOnly("org.apache.commons:commons-dbcp2:${commonsDbcp2Version}")
     compileOnly("com.atomikos:transactions-jdbc:${atomikosVersion}")
     compileOnly("com.mchange:c3p0:${c3p0Version}")
-    api("com.oracle.database.spring:oracle-spring-boot-starter-ucp:${oracleUcpVersion}")
-    api("com.oracle.database.jdbc:ucp:23.4.0.24.05")
+    compileOnly("com.oracle.database.spring:oracle-spring-boot-starter-ucp:${oracleUcpVersion}")
+    compileOnly("com.oracle.database.jdbc:ucp:23.4.0.24.05")
     compileOnly("com.baomidou:mybatis-plus:${mybatisPlusVersion}")
     
     // Use Spring Framework AOP directly instead of Spring Boot starter
