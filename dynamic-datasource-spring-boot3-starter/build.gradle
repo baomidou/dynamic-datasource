@@ -1,4 +1,11 @@
 // Spring Boot 3.x Starter - JDK 17+
+plugins {
+    // Spring Boot version: libs.versions.springBoot3 in gradle/libs.versions.toml
+    id 'org.springframework.boot' version '3.5.7'
+    // GraalVM `nativeTest`; the shared configuration lives in the root build
+    id 'org.graalvm.buildtools.native'
+}
+
 apply plugin: 'io.spring.dependency-management'
 
 java {
@@ -8,6 +15,20 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
     }
+}
+
+// library module: only the plain jar is assembled and published
+tasks.named('bootJar') {
+    enabled = false
+}
+
+// no main class: main AOT is not applicable, `nativeTest` only needs the test AOT
+tasks.named('processAot') {
+    enabled = false
+}
+
+tasks.named('jar') {
+    archiveClassifier = ''
 }
 
 dependencyManagement {
@@ -25,6 +46,8 @@ dependencies {
     testCompileOnly(libs.lombok)
 
     api project(":dynamic-datasource-spring-boot-common")
+    // GraalVM Reachability Metadata for native-image builds (resources only, no Java code)
+    implementation project(":dynamic-datasource-native-metadata")
 
     compileOnly("jakarta.servlet:jakarta.servlet-api:5.0.0")
     compileOnly("org.springframework.boot:spring-boot-starter-web")

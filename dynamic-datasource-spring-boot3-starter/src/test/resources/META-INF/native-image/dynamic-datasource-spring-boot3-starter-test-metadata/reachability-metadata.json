@@ -1,0 +1,16 @@
+{
+  "resources": [
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.common.v3.NestDataSourceTest"
+      },
+      "glob": "db/add-remove-datasource.sql"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.common.v3.DsTransactionalTest"
+      },
+      "glob": "db/ds-with-transactional.sql"
+    }
+  ]
+}

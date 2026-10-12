@@ -40,7 +40,7 @@ The project consists of 6 modules:
 ### Multi-version Spring Boot Support
 The project supports multiple Spring Boot versions:
 - Spring Boot 2.7.18 (Java 8+)
-- Spring Boot 3.2.1 (Java 17+)
+- Spring Boot 3.5.7 (Java 17+)
 - Spring Boot 4.0.0 (Java 17+)
 
 ### Publishing Configuration
@@ -54,9 +54,10 @@ Requirements:
 - Configure GPG signing for releases
 
 ### GraalVM Native Image
-Spring Boot 3 and 4 starters support GraalVM native image:
+The Spring Boot 3 and 4 starters support `nativeTest`; the reachability metadata lives in the
+`dynamic-datasource-native-metadata` module (see [CONTRIBUTING.md](../CONTRIBUTING.md)):
 ```bash
-./gradlew nativeCompile
+./gradlew nativeTest
 ```
 
 ## Common Tasks

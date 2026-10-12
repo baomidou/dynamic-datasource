@@ -1,0 +1,225 @@
+{
+  "reflection": [
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.pool.DruidDataSource"
+      },
+      "type": "com.alibaba.druid.filter.Filter"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.pool.DruidDataSource"
+      },
+      "type": "com.alibaba.druid.filter.FilterAdapter"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.pool.DruidDataSource"
+      },
+      "type": "com.alibaba.druid.filter.FilterAdapterBeanInfo"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.pool.DruidDataSource"
+      },
+      "type": "com.alibaba.druid.filter.FilterAdapterCustomizer"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.pool.DruidDataSource"
+      },
+      "type": "com.alibaba.druid.filter.FilterEventAdapter"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.pool.DruidDataSource"
+      },
+      "type": "com.alibaba.druid.filter.FilterEventAdapterBeanInfo"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.pool.DruidDataSource"
+      },
+      "type": "com.alibaba.druid.filter.FilterEventAdapterCustomizer"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.pool.DruidDataSource"
+      },
+      "type": "com.alibaba.druid.filter.stat.StatFilter"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.pool.DruidDataSource"
+      },
+      "type": "com.alibaba.druid.filter.stat.StatFilterBeanInfo"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.pool.DruidDataSource"
+      },
+      "type": "com.alibaba.druid.filter.stat.StatFilterCustomizer"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.pool.DruidDataSource"
+      },
+      "type": "com.alibaba.druid.filter.stat.StatFilterMBean"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.mock.MockDriver"
+      },
+      "type": "com.alibaba.druid.mock.MockDriver"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.mock.MockDriver"
+      },
+      "type": "com.alibaba.druid.mock.MockDriverMBean"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.pool.DruidDataSource"
+      },
+      "type": "com.alibaba.druid.pool.DruidAbstractDataSource"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.pool.DruidDataSource"
+      },
+      "type": "com.alibaba.druid.pool.DruidAbstractDataSourceBeanInfo"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.pool.DruidDataSource"
+      },
+      "type": "com.alibaba.druid.pool.DruidAbstractDataSourceCustomizer"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.pool.DruidDataSource"
+      },
+      "type": "com.alibaba.druid.pool.DruidAbstractDataSourceMBean"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.pool.DruidDataSource"
+      },
+      "type": "com.alibaba.druid.pool.DruidDataSource",
+      "allPublicMethods": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.pool.DruidDataSource"
+      },
+      "type": "com.alibaba.druid.pool.DruidDataSourceBeanInfo"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.pool.DruidDataSource"
+      },
+      "type": "com.alibaba.druid.pool.DruidDataSourceCustomizer"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.pool.DruidDataSource"
+      },
+      "type": "com.alibaba.druid.pool.DruidDataSourceMBean"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.pool.DruidDataSource"
+      },
+      "type": "com.alibaba.druid.pool.DruidPooledConnection"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.pool.DruidDataSource"
+      },
+      "type": "com.alibaba.druid.pool.ManagedDataSource"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.pool.DruidDataSource"
+      },
+      "type": "com.alibaba.druid.pool.WrapperAdapter"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.pool.DruidDataSource"
+      },
+      "type": "com.alibaba.druid.pool.WrapperAdapterBeanInfo"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.pool.DruidDataSource"
+      },
+      "type": "com.alibaba.druid.pool.WrapperAdapterCustomizer"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.proxy.DruidDriver"
+      },
+      "type": "com.alibaba.druid.proxy.DruidDriver"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.proxy.DruidDriver"
+      },
+      "type": "com.alibaba.druid.proxy.DruidDriverMBean"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.pool.DruidDataSource"
+      },
+      "type": "com.alibaba.druid.proxy.jdbc.DataSourceProxy"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.pool.DruidDataSource"
+      },
+      "type": "com.alibaba.druid.stat.DataSourceMonitorable"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.pool.DruidDataSource"
+      },
+      "type": "com.alibaba.druid.stat.JdbcSqlStat"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.pool.DruidDataSource"
+      },
+      "type": "com.alibaba.druid.support.logging.SLF4JImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.pool.DruidDataSource"
+      },
+      "glob": "META-INF/druid-driver.properties"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.pool.DruidDataSource"
+      },
+      "glob": "META-INF/druid-filter.properties"
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.druid.pool.DruidDataSource"
+      },
+      "glob": "META-INF/services/com.alibaba.druid.filter.Filter"
+    }
+  ]
+}

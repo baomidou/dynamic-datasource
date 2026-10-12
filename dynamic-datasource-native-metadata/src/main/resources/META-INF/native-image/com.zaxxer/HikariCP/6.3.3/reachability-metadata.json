@@ -1,0 +1,30 @@
+{
+  "reflection": [
+    {
+      "condition": {
+        "typeReached": "com.zaxxer.hikari.HikariConfig"
+      },
+      "type": "com.zaxxer.hikari.HikariConfig",
+      "allDeclaredFields": true,
+      "allPublicMethods": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.zaxxer.hikari.HikariDataSource"
+      },
+      "type": "com.zaxxer.hikari.HikariDataSource",
+      "methods": [
+        {
+          "name": "close",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.zaxxer.hikari.HikariDataSource"
+      },
+      "type": "com.zaxxer.hikari.util.ConcurrentBag$IConcurrentBagEntry[]"
+    }
+  ]
+}

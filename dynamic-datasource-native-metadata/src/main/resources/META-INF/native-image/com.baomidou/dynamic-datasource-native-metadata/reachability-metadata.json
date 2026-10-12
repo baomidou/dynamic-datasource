@@ -1,0 +1,511 @@
+{
+  "reflection": [
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"
+      },
+      "type": "com.baomidou.dynamic.datasource.DynamicRoutingDataSource"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.support.DataSourceClassResolver"
+      },
+      "type": "com.baomidou.dynamic.datasource.annotation.DS"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"
+      },
+      "type": "com.baomidou.dynamic.datasource.creator.DataSourceCreator"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"
+      },
+      "type": "com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"
+      },
+      "type": "com.baomidou.dynamic.datasource.creator.basic.BasicDataSourceCreator"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.creator.druid.DruidConfigUtil"
+      },
+      "type": "com.baomidou.dynamic.datasource.creator.druid.DruidConfig",
+      "methods": [
+        {
+          "name": "getAsyncInit",
+          "parameterTypes": []
+        },
+        {
+          "name": "getBreakAfterAcquireFailure",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClearFiltersEnable",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCommonsLog",
+          "parameterTypes": []
+        },
+        {
+          "name": "getConnectTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "getConnectionErrorRetryAttempts",
+          "parameterTypes": []
+        },
+        {
+          "name": "getConnectionProperties",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCreateSchedulerCorePoolSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDefaultAutoCommit",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDefaultCatalog",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDefaultReadOnly",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDefaultTransactionIsolation",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDestroySchedulerCorePoolSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFailFast",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFilters",
+          "parameterTypes": []
+        },
+        {
+          "name": "getInitConnectionSqls",
+          "parameterTypes": []
+        },
+        {
+          "name": "getInitGlobalVariants",
+          "parameterTypes": []
+        },
+        {
+          "name": "getInitVariants",
+          "parameterTypes": []
+        },
+        {
+          "name": "getInitialSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getKeepAlive",
+          "parameterTypes": []
+        },
+        {
+          "name": "getKeepAliveBetweenTimeMillis",
+          "parameterTypes": []
+        },
+        {
+          "name": "getKillWhenSocketReadTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLog4j",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLog4j2",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLogAbandoned",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxActive",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxCreateTaskCount",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxEvictableIdleTimeMillis",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxPoolPreparedStatementPerConnectionSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxWait",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxWaitThreadCount",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMinEvictableIdleTimeMillis",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMinIdle",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNotFullTimeoutRetryCount",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPasswordCallback",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPasswordCallbackClassName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPhyMaxUseCount",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPhyTimeoutMillis",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPoolPreparedStatements",
+          "parameterTypes": []
+        },
+        {
+          "name": "getProxyFilters",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPublicKey",
+          "parameterTypes": []
+        },
+        {
+          "name": "getQueryTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRemoveAbandoned",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRemoveAbandonedTimeoutMillis",
+          "parameterTypes": []
+        },
+        {
+          "name": "getResetStatEnable",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSharePreparedStatements",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSlf4j",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSocketTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStat",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStatSqlMaxSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTestOnBorrow",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTestOnReturn",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTestWhileIdle",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTimeBetweenConnectErrorMillis",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTimeBetweenEvictionRunsMillis",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTimeBetweenLogStatsMillis",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTransactionQueryTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUseGlobalDataSourceStat",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUseUnfairLock",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUserCallback",
+          "parameterTypes": []
+        },
+        {
+          "name": "getValidationQuery",
+          "parameterTypes": []
+        },
+        {
+          "name": "getValidationQueryTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWall",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCommonsLog",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "setLog4j",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "setLog4j2",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "setSlf4j",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "setStat",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "setWall",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.toolkit.DsConfigUtil"
+      },
+      "type": "com.baomidou.dynamic.datasource.creator.druid.DruidConfig"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.creator.druid.DruidConfigUtil"
+      },
+      "type": "com.baomidou.dynamic.datasource.creator.druid.DruidConfigBeanInfo"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.toolkit.DsConfigUtil"
+      },
+      "type": "com.baomidou.dynamic.datasource.creator.druid.DruidConfigBeanInfo"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.creator.druid.DruidConfigUtil"
+      },
+      "type": "com.baomidou.dynamic.datasource.creator.druid.DruidConfigCustomizer"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.toolkit.DsConfigUtil"
+      },
+      "type": "com.baomidou.dynamic.datasource.creator.druid.DruidConfigCustomizer"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"
+      },
+      "type": "com.baomidou.dynamic.datasource.creator.druid.DruidDataSourceCreator"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.toolkit.ConfigMergeCreator"
+      },
+      "type": "com.baomidou.dynamic.datasource.creator.hikaricp.HikariCpConfig",
+      "allPublicMethods": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.toolkit.ConfigMergeCreator"
+      },
+      "type": "com.baomidou.dynamic.datasource.creator.hikaricp.HikariCpConfigBeanInfo"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.toolkit.ConfigMergeCreator"
+      },
+      "type": "com.baomidou.dynamic.datasource.creator.hikaricp.HikariCpConfigCustomizer"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"
+      },
+      "type": "com.baomidou.dynamic.datasource.creator.hikaricp.HikariDataSourceCreator"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"
+      },
+      "type": "com.baomidou.dynamic.datasource.creator.jndi.JndiDataSourceCreator"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"
+      },
+      "type": "com.baomidou.dynamic.datasource.event.DataSourceInitEvent"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"
+      },
+      "type": "com.baomidou.dynamic.datasource.event.EncDataSourceInitEvent"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"
+      },
+      "type": "com.baomidou.dynamic.datasource.processor.DsJakartaHeaderProcessor"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"
+      },
+      "type": "com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"
+      },
+      "type": "com.baomidou.dynamic.datasource.provider.YmlDynamicDataSourceProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"
+      },
+      "type": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAssistConfiguration"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAssistConfiguration$$SpringCGLIB$$0"
+      },
+      "type": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAssistConfiguration"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAssistConfiguration$DsTxEventListenerFactoryConfiguration$$SpringCGLIB$$0"
+      },
+      "type": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAssistConfiguration$DsTxEventListenerFactoryConfiguration"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"
+      },
+      "type": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAutoConfiguration"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"
+      },
+      "type": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceCreatorAutoConfiguration"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceCreatorAutoConfiguration$$SpringCGLIB$$0"
+      },
+      "type": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceCreatorAutoConfiguration"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"
+      },
+      "type": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceCreatorAutoConfiguration$DruidDataSourceCreatorConfiguration"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceCreatorAutoConfiguration$DruidDataSourceCreatorConfiguration$$SpringCGLIB$$0"
+      },
+      "type": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceCreatorAutoConfiguration$DruidDataSourceCreatorConfiguration"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"
+      },
+      "type": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceCreatorAutoConfiguration$HikariDataSourceCreatorConfiguration"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceCreatorAutoConfiguration$HikariDataSourceCreatorConfiguration$$SpringCGLIB$$0"
+      },
+      "type": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceCreatorAutoConfiguration$HikariDataSourceCreatorConfiguration"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.DynamicRoutingDataSource"
+      },
+      "type": "com.baomidou.dynamic.datasource.strategy.LoadBalanceDynamicDataSourceStrategy",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.creator.hikaricp.HikariDataSourceCreator"
+      },
+      "type": "com.zaxxer.hikari.HikariConfig",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    }
+  ]
+}
