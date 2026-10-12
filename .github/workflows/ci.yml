@@ -37,6 +37,7 @@ jobs:
         run: |
           ./gradlew :dynamic-datasource-spring-boot3-starter:nativeTest --no-daemon
   test-jdk-ci:
+    if: github.repository == 'baomidou/dynamic-datasource'
     name: Test CI - JDK ${{ matrix.java-version }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
@@ -55,6 +56,7 @@ jobs:
       - name: Build test with Gradle
         run: ./gradlew clean test --no-daemon --parallel
   test-jdk8-ci:
+    if: github.repository == 'baomidou/dynamic-datasource'
     name: Test CI - JDK 8 toolchain on ubuntu-latest
     runs-on: ubuntu-latest
     timeout-minutes: 30
