@@ -2,12 +2,12 @@
 apply plugin: 'io.spring.dependency-management'
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-}
-
-tasks.withType(JavaCompile).configureEach {
-    options.release = 17
+    // Build and test on a dedicated JDK 17 toolchain (auto-provisioned via Foojay),
+    // so compilation no longer links against APIs of newer JDKs (e.g. 21/25) that
+    // happen to be installed on the developer/CI machine.
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
 dependencyManagement {

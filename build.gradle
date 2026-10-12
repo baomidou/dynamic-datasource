@@ -90,10 +90,13 @@ subprojects {
         testCompileOnly("org.projectlombok:lombok:${lombokVer}")
     }
 
-    // 默认编译环境 JDK-1.8+ (子模块可覆盖)
+    // 默认编译环境 JDK-1.8+ (子模块可覆盖，如 boot3/boot4 使用 toolchain 17)
+    // 用 toolchain 而非 source/targetCompatibility，避免 Gradle 9 元数据版本与
+    // 模块 toolchain 不一致导致依赖解析被降级到 JVM 8
     java {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(8)
+        }
     }
 
     tasks.named('test') {
