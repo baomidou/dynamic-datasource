@@ -156,6 +156,13 @@ gh release create v4.6.0 --generate-notes --latest \
   4.1.3 / 4.2.0 / 4.3.0 / 4.3.1 的 boot-common POM 里 `oracle` 出现 0 次，**不受影响**；
   Central 上无 4.4.x。Maven Central 不可撤回，只能靠下一版覆盖。
 - **已修复**：`cd4e8c0`（#787）改为 `compileOnly`；当前 HEAD 生成的 POM 里 `oracle` 出现 0 次。
+  上报与复现都在 #784（中文）/ #785（英文），修复者 linghengqian。
+- **真实影响（报告者已复现，不是推测）**：`ojdbc11` 是 Java 11 字节码（class file version 55.0）。
+  **JDK 8 上**启动时 `java.sql.DriverManager` 用 ServiceLoader 遍历 `META-INF/services/java.sql.Driver`，
+  实例化 `oracle.jdbc.OracleDriver` 会抛 `UnsupportedClassVersionError`，**整个遍历就此中断**，
+  排在 Oracle 后面的驱动全部没注册，最后报 `No suitable driver`。报告者在 Temurin 1.8.0_504 上实测
+  5 个驱动只注册了 3 个，同一配置在 JDK 17+ 正常。JDK 17+ / Boot 3 / Boot 4 用户只是凭空多了两个 jar，无行为差异。
+  这也是为什么看起来"没人报"：报错现场看上去像用户自己的驱动/配置问题，没人会想到是 starter 递过来的 ojdbc11。
 - **实测依赖树**（`mvn dependency:tree`，干净本地仓库强制走 Central）：
 
   ```text
@@ -185,24 +192,28 @@ gh release create v4.6.0 --generate-notes --latest \
   B 里版本被 Boot BOM 拉齐了，所以 Boot 2 应用不会拿到 Boot 3 jar，但 ojdbc11/ucp 仍然凭空
   出现在 classpath 上（并且被 BOM 从 23.4.x 静默降到 21.5.0.0，与 starter 自己声明的版本并不
   一致）；A 场景则是真的把 Boot 3 的 spring-boot-starter 与 logback 1.4.11 混进了 Boot 2 应用。
-  两种情况下 `oracle-spring-boot-starter-ucp` 自己的自动装配类也因此上了 classpath，具备了被
-  意外激活的条件（未实际跑应用验证它一定激活，描述时建议只说"多了预期外的 Oracle 依赖"）。
+  两种情况下 `oracle-spring-boot-starter-ucp` 自己的自动装配类也因此上了 classpath（它是
+  `@ConditionalOnClass` 守卫的，Boot 3/4 侧未见因它报错的报告）。真正会造成故障的是上面说的
+  JDK 8 驱动注册，不是自动装配。
 - **下一版 Release Note 建议文案**（中英各一版，可直接粘）：
 
   ```markdown
-  - 修复：4.5.0 会把 `oracle-spring-boot-starter-ucp`、`ucp`（以及经由它引入的 `ojdbc11`、
-    `spring-boot-starter`、logback）作为 compile 依赖传递给所有使用方。现已改为 compileOnly。
-    仍在使用 4.5.0 且不需要 Oracle UCP 的应用，请升级到本版本，或临时排除：
-    `com.oracle.database.spring:oracle-spring-boot-starter-ucp` 与 `com.oracle.database.jdbc:ucp`。
+  - 修复依赖泄漏：4.5.0 会把 `oracle-spring-boot-starter-ucp`、`ucp`（及 `ojdbc11`）传递给所有
+    使用方。`ojdbc11` 是 Java 11 字节码，在 **JDK 8** 上会让 `DriverManager` 的驱动 ServiceLoader
+    遍历中断，导致其他驱动（mysql 等）注册失败、报 `No suitable driver`。现已改为 compileOnly。
+    仍在 4.5.0 上的 JDK 8 应用：升级至本版本，或排除 `com.oracle.database.spring:oracle-spring-boot-starter-ucp`
+    与 `com.oracle.database.jdbc:ucp`。
 
-  - Fix: 4.5.0 leaked `oracle-spring-boot-starter-ucp`, `ucp` (and transitively `ojdbc11`,
-    `spring-boot-starter`, logback) to every consumer as compile-scope dependencies. They are
-    `compileOnly` again. If you are pinned to 4.5.0 and don't use Oracle UCP, exclude
+  - Fix dependency leak: 4.5.0 passed `oracle-spring-boot-starter-ucp`, `ucp` (and `ojdbc11`) to every
+    consumer. `ojdbc11` carries Java 11 bytecode, so on **JDK 8** it aborts `DriverManager`'s driver
+    ServiceLoader iteration — other drivers (mysql etc.) never register and you get `No suitable driver`.
+    These dependencies are now `compileOnly`. If you must stay on 4.5.0 on JDK 8, exclude
     `com.oracle.database.spring:oracle-spring-boot-starter-ucp` and `com.oracle.database.jdbc:ucp`.
   ```
 
-- **同一事实在 issue 里也值得回一句**：4.5.0 期间凡是报"启动多了 Oracle 相关 bean / logback 版本冲突"
-  的历史 issue，根因都是这一条，可以在关闭时指向本节的说明。
+- **标题里就写 JDK 8**：Release Note 里这一条别只说"依赖泄漏"，要带上 `No suitable driver` 关键字，
+  否则受影响的人搜不到，也认不出是自己的问题。下游 samples 仓库已在 PR
+  [dynamic-datasource/dynamic-datasource-samples#53](https://github.com/dynamic-datasource/dynamic-datasource-samples/pull/53) 里用过排除方案。
 
 # 5. 构建约束（改构建脚本前必读）
 
