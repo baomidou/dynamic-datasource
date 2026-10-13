@@ -49,7 +49,7 @@ jobs:
       - name: Generate CycloneDX SBOM
         run: ./gradlew cyclonedxBom
       - name: Upload SBOM
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: sbom-${{ github.ref_name }}
           path: build/reports/cyclonedx/bom.json

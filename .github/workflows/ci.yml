@@ -36,6 +36,16 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           cache: 'gradle'
           native-image-job-reports: 'true'
+      # wrapper 发行版（~120MB）和 Foojay 自动供给的 toolchain JDK 不在 setup-java/setup-graalvm
+      # 的 cache:gradle 范围内，每次冷 run 各付一份下载税；key 同时钉住 wrapper 配置与
+      # 声明 toolchain 需求的构建脚本，变更时自动失效。
+      - uses: actions/cache@v6
+        with:
+          path: |
+            ~/.gradle/wrapper/dists
+            ~/.gradle/jdks
+          key: gradle-dist-${{ runner.os }}-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties', 'build.gradle', 'gradle.properties') }}
+          restore-keys: gradle-dist-${{ runner.os }}-
       - name: Run nativeTest for ${{ matrix.starter }}
         run: ./gradlew :${{ matrix.starter }}:nativeTest
   test-jdk-ci:
@@ -55,6 +65,13 @@ jobs:
           distribution: 'temurin'
           java-version: ${{ matrix.java-version }}
           cache: 'gradle'
+      - uses: actions/cache@v6
+        with:
+          path: |
+            ~/.gradle/wrapper/dists
+            ~/.gradle/jdks
+          key: gradle-dist-${{ runner.os }}-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties', 'build.gradle', 'gradle.properties') }}
+          restore-keys: gradle-dist-${{ runner.os }}-
       - name: Build test with Gradle
         run: ./gradlew clean test
       # 覆盖率只在 JDK 17 这一腿采集：矩阵各腿跑的是同一套测试，重复生成没有信息量。
@@ -65,7 +82,7 @@ jobs:
         run: ./gradlew jacocoRootReport
       - name: Upload coverage report
         if: matrix.java-version == '17'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-jdk${{ matrix.java-version }}-${{ matrix.os }}
           path: |
@@ -83,7 +100,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Review dependency changes
-        uses: actions/dependency-review-action@v4
+        uses: actions/dependency-review-action@v5
         with:
           comment-mode: summary
           fail-on-severity: high
