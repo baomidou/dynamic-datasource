@@ -36,6 +36,9 @@ dependencies {
     compileOnly(libs.oracle.ucp.spring.boot.starter)
     compileOnly("com.oracle.database.jdbc:ucp:23.4.0.24.05")
     compileOnly(libs.mybatis.plus)
+    // Actuator endpoint（DynamicDataSourceEndpoint）编译期依赖：三条产线共用同一份实现，
+    // 注解 API 在 actuator 2.2+ ~ Boot4 之间二进制兼容，更老的 classpath 由 @ConditionalOnClass 整体跳过
+    compileOnly("org.springframework.boot:spring-boot-starter-actuator")
     
     // Use Spring Framework AOP directly instead of Spring Boot starter
     api("org.springframework:spring-aop")

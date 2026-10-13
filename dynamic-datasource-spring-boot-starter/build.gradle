@@ -42,6 +42,8 @@ dependencies {
     // Make compileOnly dependencies available for tests
     testRuntimeOnly(libs.druid.spring.boot.starter)
     testRuntimeOnly("com.zaxxer:HikariCP")
+    // endpoint 注册回归测试需要 actuator 在测试运行时存在
+    testRuntimeOnly("org.springframework.boot:spring-boot-starter-actuator")
     // Fix JUnit Platform version incompatibility (required for tests on Gradle 9 + JDK 25)
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
