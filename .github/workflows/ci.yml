@@ -5,6 +5,11 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+  # manual trigger for troubleshooting CI/toolchain problems without opening a PR
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 concurrency:
   group: ${{ github.event_name }}-${{ github.workflow }}-${{ github.ref }}
@@ -70,3 +75,17 @@ jobs:
           cache: 'gradle'
       - name: Build test with Gradle (tests run on the JDK 8 toolchain)
         run: ./gradlew :dynamic-datasource-spring-boot-starter:clean :dynamic-datasource-spring-boot-starter:test --no-daemon
+  # Fail early on PRs that introduce a dependency with a known vulnerability.
+  # GitHub-native action, no build-time dependency added to the project itself.
+  dependency-review:
+    if: github.event_name == 'pull_request' && github.repository == 'baomidou/dynamic-datasource'
+    name: Dependency review
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Review dependency changes
+        uses: actions/dependency-review-action@v4
+        with:
+          comment-mode: summary
+          fail-on-severity: high
