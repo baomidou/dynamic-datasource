@@ -64,7 +64,7 @@ public class BasicDataSourceCreator implements DataSourceCreator {
                 driverClassNameMethod = builderClass.getDeclaredMethod("driverClassName", String.class);
                 buildMethod = builderClass.getDeclaredMethod("build");
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("BasicDataSourceCreator could not introspect DataSourceBuilder", e);
             }
         }
     }
@@ -77,6 +77,13 @@ public class BasicDataSourceCreator implements DataSourceCreator {
      */
     @Override
     public DataSource createDataSource(DataSourceProperty dataSourceProperty) {
+        if (createMethod == null) {
+            // static-init reflection failure left every Method null; the invoke below used to
+            // throw a bare NPE with no hint about the missing DataSourceBuilder class.
+            throw new ErrorCreateDataSourceException(
+                "dynamic-datasource BasicDataSourceCreator unavailable: spring-boot DataSourceBuilder "
+                    + "not on classpath or its API changed, check spring-boot version compatibility");
+        }
         try {
             Object o1 = createMethod.invoke(null);
             Object o2 = typeMethod.invoke(o1, dataSourceProperty.getType());

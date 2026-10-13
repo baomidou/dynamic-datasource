@@ -1,6 +1,8 @@
 package com.baomidou.dynamic.datasource.toolkit;
 
 import javax.crypto.Cipher;
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -32,6 +34,7 @@ import java.util.Arrays;
  *
  * @author alibaba
  */
+@Slf4j
 public class CryptoUtils {
 
     public static final String DEFAULT_PUBLIC_KEY_STRING = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJ4o6sn4WoPmbs7DR9mGQzuuUQM9erQTVPpwxIzB0ETYkyKffO097qXVRLA6KPmaV+/siWewR7vpfYYjWajw5KkCAwEAAQ==";
@@ -95,7 +98,7 @@ public class CryptoUtils {
                 try {
                     in.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    log.debug("close key stream failed", e);
                 }
             }
         }
@@ -116,7 +119,7 @@ public class CryptoUtils {
             byte[] publicKeyBytes = Base64.base64ToByteArray(publicKeyText);
             X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(publicKeyBytes);
 
-            KeyFactory keyFactory = KeyFactory.getInstance("RSA", "SunRsaSign");
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             return keyFactory.generatePublic(x509KeySpec);
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed to get public key", e);
@@ -146,7 +149,7 @@ public class CryptoUtils {
 
             byte[] publicKeyBytes = out.toByteArray();
             X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKeyBytes);
-            KeyFactory factory = KeyFactory.getInstance("RSA", "SunRsaSign");
+            KeyFactory factory = KeyFactory.getInstance("RSA");
             return factory.generatePublic(spec);
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed to get public key", e);
@@ -155,7 +158,7 @@ public class CryptoUtils {
                 try {
                     in.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    log.debug("close key stream failed", e);
                 }
             }
         }
@@ -247,7 +250,7 @@ public class CryptoUtils {
      */
     public static String encrypt(byte[] keyBytes, String plainText) throws Exception {
         PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
-        KeyFactory factory = KeyFactory.getInstance("RSA", "SunRsaSign");
+        KeyFactory factory = KeyFactory.getInstance("RSA");
         PrivateKey privateKey = factory.generatePrivate(spec);
         Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         try {
@@ -291,15 +294,17 @@ public class CryptoUtils {
     public static byte[][] genKeyPairBytes(int keySize) {
         byte[][] keyPairBytes = new byte[2][];
         try {
-            KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA", "SunRsaSign");
+            KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA");
             gen.initialize(keySize, new SecureRandom());
             KeyPair pair = gen.generateKeyPair();
 
             keyPairBytes[0] = pair.getPrivate().getEncoded();
             keyPairBytes[1] = pair.getPublic().getEncoded();
 
-        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
-            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            // used to printStackTrace and return the half-empty array: callers silently got null
+            // keys and the real failure only surfaced much later as decrypt/enlist errors.
+            throw new IllegalStateException("dynamic-datasource could not generate an RSA key pair", e);
         }
         return keyPairBytes;
     }

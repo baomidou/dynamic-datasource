@@ -75,10 +75,18 @@ public class BeeCpDataSourceCreator implements DataSourceCreator {
             }
         }
         BeeDataSource beeDataSource = new BeeDataSource();
+        if (copyToMethod == null) {
+            // the static block tolerated the method's absence; falling through here used to NPE
+            // (not covered by the catch below) or silently hand back an unconfigured lazy pool.
+            throw new ErrorCreateDataSourceException(
+                "dynamic-datasource create datasource named [" + dataSourceProperty.getPoolName()
+                    + "] error: BeeDataSourceConfig.copyTo not found, check beecp version compatibility");
+        }
         try {
             copyToMethod.invoke(config, beeDataSource);
         } catch (InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
+            throw new ErrorCreateDataSourceException(
+                "dynamic-datasource create datasource named [" + dataSourceProperty.getPoolName() + "] error", e);
         }
         return beeDataSource;
     }

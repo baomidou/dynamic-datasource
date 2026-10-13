@@ -124,8 +124,12 @@ public class DruidDataSourceCreator implements DataSourceCreator {
         dataSource.setProxyFilters(proxyFilters);
         try {
             configMethod.invoke(dataSource, properties);
-        } catch (Exception ignore) {
-            // Druid only prints logs when copying property errors
+        } catch (Exception e) {
+            // InvocationTargetException from *our* reflection (invalid property value, or a
+            // renamed property after a Druid upgrade) is not logged by Druid itself; swallowing
+            // it made every druid.* setting silently vanish.
+            log.warn("dynamic-datasource failed to apply druid config to datasource [{}]",
+                    dataSourceProperty.getPoolName(), e);
         }
         //连接参数单独设置
         dataSource.setConnectProperties(config.getConnectionProperties());
