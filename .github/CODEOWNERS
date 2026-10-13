@@ -1,9 +1,10 @@
 # Code owners.
 #
-# Handle verified rather than guessed: GitHub user huayanYu is this repository's top
-# contributor, and the git history maps `huayanYu <tracy5546@gmail.com>`. tracy5546 is a
-# Gmail/kancloud namespace only - there is no such GitHub account, and naming a non-existent
-# handle here silently breaks the review request on every PR.
+# Handle verified rather than guessed, and it needs this comment to stay understandable:
+# the GitHub account was renamed, so the current login is huayanYu while git history,
+# commit emails (tracy5546@gmail.com) and old issue threads still say tracy5546. Do not
+# "correct" the rule below back to @tracy5546 — that login no longer exists, GitHub would
+# resolve no owner, and review requests on every PR would silently go nowhere.
 #
 # The project is maintained by one person, so a single catch-all rule is the honest state.
 # Whether a review is actually *required* is configured in branch protection, not here;
