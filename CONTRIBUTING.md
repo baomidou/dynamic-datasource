@@ -159,28 +159,34 @@ gh release create v4.6.0 --generate-notes --latest \
 - **实测依赖树**（`mvn dependency:tree`，干净本地仓库强制走 Central）：
 
   ```text
-  # 无 Spring Boot BOM 参与版本管理时（Gradle 侧、或不使用 boot parent 的 Maven 工程）
-  com.baomidou:dynamic-datasource-spring-boot-common:4.5.0
-   +- com.oracle.database.spring:oracle-spring-boot-starter-ucp:23.4.0
-   |  +- org.springframework.boot:spring-boot-starter:3.1.5          # Boot 3 jar 进了 Boot 2 应用
-   |  |  +- org.springframework.boot:spring-boot-starter-logging:3.1.5
-   |  |  |  +- ch.qos.logback:logback-classic:1.4.11
-   |  |  |  |  \- ch.qos.logback:logback-core:1.4.11
-   |  |  \- com.oracle.database.jdbc:ojdbc11:21.9.0.0
-   +- com.oracle.database.jdbc:ucp:23.4.0.24.05
+  # A) 没有 Spring Boot BOM 参与版本管理时（Gradle 侧、或不使用 boot parent 的 Maven 工程）
+  \- com.baomidou:dynamic-datasource-spring-boot-common:jar:4.5.0:compile
+     +- com.oracle.database.spring:oracle-spring-boot-starter-ucp:jar:23.4.0:compile
+     |  +- org.springframework.boot:spring-boot-starter:jar:3.1.5:compile          # Boot 3 jar
+     |  |  +- org.springframework.boot:spring-boot-starter-logging:jar:3.1.5:compile
+     |  |  |  +- ch.qos.logback:logback-classic:jar:1.4.11:compile
+     |  |  |  |  \- ch.qos.logback:logback-core:jar:1.4.11:compile
+     |  \- com.oracle.database.jdbc:ojdbc11:jar:21.9.0.0:compile
+     +- com.oracle.database.jdbc:ucp:jar:23.4.0.24.05:compile
+     \- org.springframework.boot:spring-boot-autoconfigure:jar:2.7.0:compile
 
-  # 以 spring-boot-starter-parent:2.7.18 为 parent 的 Boot 2 应用：版本被 BOM 拉齐，
-  # 不会拿到 Boot 3 jar，但下面这些仍然会凭空出现在 classpath 上
-   +- com.oracle.database.spring:oracle-spring-boot-starter-ucp:23.4.0
-   |  +- org.springframework.boot:spring-boot-starter:2.7.18
-   |  |  |  +- ch.qos.logback:logback-classic:1.2.12
-   |  |  \- com.oracle.database.jdbc:ojdbc11:21.5.0.0
-   +- com.oracle.database.jdbc:ucp:21.5.0.0
+  # B) 以 spring-boot-starter-parent:2.7.18 为 parent 的 Boot 2 应用（三个 starter 都会这样）
+  \- com.baomidou:dynamic-datasource-spring-boot-starter:jar:4.5.0:compile
+     \- com.baomidou:dynamic-datasource-spring-boot-common:jar:4.5.0:compile
+        +- com.oracle.database.spring:oracle-spring-boot-starter-ucp:jar:23.4.0:compile
+        |  +- org.springframework.boot:spring-boot-starter:jar:2.7.18:compile
+        |  |  +- org.springframework.boot:spring-boot-starter-logging:jar:2.7.18:compile
+        |  |  |  +- ch.qos.logback:logback-classic:jar:1.2.12:compile
+        |  |  |  |  \- ch.qos.logback:logback-core:jar:1.2.12:compile
+        |  \- com.oracle.database.jdbc:ojdbc11:jar:21.5.0.0:compile
+        +- com.oracle.database.jdbc:ucp:jar:21.5.0.0:compile
   ```
 
-  也就是说：不用 Oracle 的应用被塞了 ojdbc11 + ucp（约 5 MB）和 Oracle 自己的自动装配；
-  用 Gradle 或不带 BOM 解析的 Boot 2 应用还会额外看到 Boot 3 的 `spring-boot-starter`/logback
-  混进 classpath，出现难以解释的启动或日志行为差异。
+  B 里版本被 Boot BOM 拉齐了，所以 Boot 2 应用不会拿到 Boot 3 jar，但 ojdbc11/ucp 仍然凭空
+  出现在 classpath 上（并且被 BOM 从 23.4.x 静默降到 21.5.0.0，与 starter 自己声明的版本并不
+  一致）；A 场景则是真的把 Boot 3 的 spring-boot-starter 与 logback 1.4.11 混进了 Boot 2 应用。
+  两种情况下 `oracle-spring-boot-starter-ucp` 自己的自动装配类也因此上了 classpath，具备了被
+  意外激活的条件（未实际跑应用验证它一定激活，描述时建议只说"多了预期外的 Oracle 依赖"）。
 - **下一版 Release Note 建议文案**（中英各一版，可直接粘）：
 
   ```markdown
@@ -197,7 +203,6 @@ gh release create v4.6.0 --generate-notes --latest \
 
 - **同一事实在 issue 里也值得回一句**：4.5.0 期间凡是报"启动多了 Oracle 相关 bean / logback 版本冲突"
   的历史 issue，根因都是这一条，可以在关闭时指向本节的说明。
-
 
 # 5. 构建约束（改构建脚本前必读）
 
