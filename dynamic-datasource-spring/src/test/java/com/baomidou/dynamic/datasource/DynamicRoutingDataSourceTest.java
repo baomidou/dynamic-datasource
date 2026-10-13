@@ -115,4 +115,23 @@ class DynamicRoutingDataSourceTest {
         assertThat(router.getDataSources().keySet()).doesNotContain("g_1");
         assertThat(router.getGroupDataSources().get("g").size()).isEqualTo(1);
     }
+
+    @Test
+    void removingLastGroupMemberShouldDropTheGroup() {
+        // 旧实现：最后一个成员被删后组还在，后续路由命中空组直接 ArithmeticException(/ by zero)
+        router.removeDataSource("g_1");
+        router.removeDataSource("g_2");
+        assertThat(router.getGroupDataSources()).doesNotContainKey("g");
+
+        router.setStrict(false);
+        assertThat(router.getDataSource("g")).isSameAs(master);
+        router.setStrict(true);
+        assertThatThrownBy(() -> router.getDataSource("g"))
+                .isInstanceOf(CannotFindDataSourceException.class);
+
+        // 重新加入同组数据源后，组正常重建
+        router.setStrict(false);
+        router.addDataSource("g_3", g1);
+        assertThat(router.getDataSource("g")).isSameAs(g1);
+    }
 }

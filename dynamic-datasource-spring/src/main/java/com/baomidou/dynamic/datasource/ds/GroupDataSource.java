@@ -15,6 +15,7 @@
  */
 package com.baomidou.dynamic.datasource.ds;
 
+import com.baomidou.dynamic.datasource.exception.CannotFindDataSourceException;
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
 import lombok.Data;
 
@@ -69,6 +70,10 @@ public class GroupDataSource {
      * @return the name of the datasource
      */
     public String determineDsKey() {
+        if (dataSourceMap.isEmpty()) {
+            // 防御兼定位：对空集合取模会把底层策略的 / by zero 包装成带组名的明确异常
+            throw new CannotFindDataSourceException("dynamic-datasource group [" + groupName + "] has no datasource");
+        }
         return dynamicDataSourceStrategy.determineKey(new ArrayList<>(dataSourceMap.keySet()));
     }
 

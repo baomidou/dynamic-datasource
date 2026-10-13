@@ -15,6 +15,7 @@
  */
 package com.baomidou.dynamic.datasource.ds;
 
+import com.baomidou.dynamic.datasource.exception.CannotFindDataSourceException;
 import com.baomidou.dynamic.datasource.strategy.LoadBalanceDynamicDataSourceStrategy;
 import org.junit.jupiter.api.Test;
 
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -31,6 +33,15 @@ import static org.mockito.Mockito.mock;
  * @author TaoYu
  */
 class GroupDataSourceTest {
+
+    @Test
+    void determineOnEmptyGroupShouldThrowNamedExceptionNotDivideByZero() {
+        // 旧实现：空集合取模 → ArithmeticException: / by zero，错误信息与数据源毫无关联
+        GroupDataSource group = new GroupDataSource("slave", new LoadBalanceDynamicDataSourceStrategy());
+        assertThatThrownBy(group::determineDataSource)
+                .isInstanceOf(CannotFindDataSourceException.class)
+                .hasMessageContaining("slave");
+    }
 
     @Test
     void addShouldReturnNullThenPreviousOnOverwrite() {

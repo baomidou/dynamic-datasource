@@ -128,12 +128,20 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
     public DataSource getDataSource(String ds) {
         if (DsStrUtils.isEmpty(ds)) {
             return determinePrimaryDataSource();
-        } else if (!groupDataSources.isEmpty() && groupDataSources.containsKey(ds)) {
+        }
+        // 每个 map 至多查一次：旧的 containsKey -> get 双读如果恰好被并发的 removeDataSource
+        // 插入，会把 null 直接交给调用方（getConnection 时 NPE），strict 模式也拦不住。
+        if (!groupDataSources.isEmpty()) {
+            GroupDataSource groupDataSource = groupDataSources.get(ds);
+            if (groupDataSource != null) {
+                log.debug("dynamic-datasource switch to the datasource named [{}]", ds);
+                return groupDataSource.determineDataSource();
+            }
+        }
+        DataSource dataSource = dataSourceMap.get(ds);
+        if (dataSource != null) {
             log.debug("dynamic-datasource switch to the datasource named [{}]", ds);
-            return groupDataSources.get(ds).determineDataSource();
-        } else if (dataSourceMap.containsKey(ds)) {
-            log.debug("dynamic-datasource switch to the datasource named [{}]", ds);
-            return dataSourceMap.get(ds);
+            return dataSource;
         }
         if (strict) {
             throw new CannotFindDataSourceException("dynamic-datasource could not find a datasource named " + ds);
@@ -197,9 +205,14 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
             if (ds.contains(UNDERLINE)) {
                 String group = ds.split(UNDERLINE)[0];
                 if (groupDataSources.containsKey(group)) {
-                    DataSource oldDataSource = groupDataSources.get(group).removeDatasource(ds);
+                    GroupDataSource groupDataSource = groupDataSources.get(group);
+                    DataSource oldDataSource = groupDataSource.removeDatasource(ds);
                     if (oldDataSource == null) {
                         log.warn("fail for remove datasource from group. dataSource: {} ,group: {}", ds, group);
+                    } else if (groupDataSource.size() == 0) {
+                        // 空组会被后续路由命中：负载均衡/随机策略对空集合取模直接
+                        // ArithmeticException(/ by zero)，删掉让语义回到正常的"找不到"分支。
+                        groupDataSources.remove(group);
                     }
                 }
             }
