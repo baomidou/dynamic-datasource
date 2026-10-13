@@ -15,7 +15,8 @@ CREATE TABLE IF NOT EXISTS account
     balance          DOUBLE   DEFAULT NULL,
     PRIMARY KEY (id)
 );
-insert into account (id, balance) VALUES (1, 50.0);
+-- MERGE 而非 INSERT：H2 的 INIT=RUNSCRIPT 在库重开时会重复执行脚本，非幂等 insert 会造成主键冲突并使连接创建失败
+MERGE INTO account (id, balance) VALUES (1, 50.0);
 
 CREATE TABLE IF NOT EXISTS product
 (
@@ -24,4 +25,11 @@ CREATE TABLE IF NOT EXISTS product
     stock            INT DEFAULT NULL,
     PRIMARY KEY (id)
 );
-insert into product (id, price, stock) VALUES (1, 10.0, 20);
+MERGE INTO product (id, price, stock) VALUES (1, 10.0, 20);
+
+CREATE TABLE IF NOT EXISTS tx_probe
+(
+    id  INT NOT NULL AUTO_INCREMENT,
+    tag VARCHAR(64) DEFAULT NULL,
+    PRIMARY KEY (id)
+);
