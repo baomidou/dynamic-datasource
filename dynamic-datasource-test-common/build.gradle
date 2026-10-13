@@ -24,6 +24,13 @@ if (JavaVersion.current() >= JavaVersion.VERSION_11) {
     }
 }
 
+// 同上：本模块不上 Central，因此也不能出现在对外分发的聚合 SBOM 里。
+// 用 enabled = false 而非 onlyIf：聚合任务把各模块的 direct SBOM 视为必需生产者，
+// 仅执行期跳过会让 cyclonedxBom 因缺输出而失败。
+tasks.matching { it.name == 'cyclonedxDirectBom' }.configureEach {
+    enabled = false
+}
+
 dependencyManagement {
     imports {
         mavenBom "org.springframework.boot:spring-boot-dependencies:${libs.versions.springBoot2.get()}"

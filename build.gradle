@@ -24,6 +24,11 @@ plugins {
     // GraalVM Native Build Tools. `apply false`: a single plugin class loader is shared by all
     // subprojects (gradle/gradle#17559), and the starters apply it without a version.
     id 'org.graalvm.buildtools.native' version '1.1.13' apply false
+
+    // SBOM (CycloneDX): applied on the root only. In 3.x this registers cyclonedxDirectBom on every
+    // subproject and cyclonedxBom (the aggregate) here. Not wired into `build`/`check`; CI and the
+    // release job invoke the task explicitly so ordinary developer builds pay no cost.
+    id 'org.cyclonedx.bom' version '3.5.1'
 }
 
 description = "mybatis dynamic datasource"
@@ -143,5 +148,17 @@ subprojects {
             // metadataCopy consumes the agent output written by the instrumented `test` task
             mustRunAfter 'test'
         }
+    }
+}
+
+// SBOM (CycloneDX)：只描述会传递给消费方的作用域。
+// 默认作用域会把测试依赖（junit / h2 / spring-boot-starter-test 等）一并写入 BOM，
+// 而这些构件根本不会传递给使用者（test 作用域不传递），列进去只会给漏洞扫描制造噪声。
+// 注意：includeConfigs 只存在于 cyclonedxDirectBom，聚合任务 cyclonedxBom 没有该属性
+//（给它设上会直接报 Could not set unknown property 'includeConfigs'），聚合结果由各模块的
+// direct SBOM 合并而来，因此只配 direct 任务即可生效。
+allprojects {
+    tasks.matching { it.name == 'cyclonedxDirectBom' }.configureEach {
+        includeConfigs = ['runtimeClasspath', 'compileClasspath']
     }
 }
