@@ -1,0 +1,132 @@
+/*
+ * Copyright © 2018 organization baomidou
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.baomidou.dynamic.datasource.tx;
+
+import org.junit.jupiter.api.Test;
+
+import java.sql.Connection;
+import java.sql.Savepoint;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+/**
+ * {@link ConnectionFactory} 单元测试：基于 ThreadLocal 的连接登记/查询、扁平事务的 {@code notify}
+ * 提交回滚、以及嵌套事务保存点的创建与释放。每个用例使用独立 xid 避免线程上下文相互污染。
+ *
+ * @author TaoYu
+ */
+class ConnectionFactoryTest {
+
+    @Test
+    void putThenGetShouldRoundTrip() throws Exception {
+        String xid = "x-roundtrip";
+        Connection connection = mock(Connection.class);
+        ConnectionProxy proxy = new ConnectionProxy(connection, "ds1");
+
+        ConnectionFactory.putConnection(xid, "ds1", proxy);
+
+        assertThat(ConnectionFactory.getConnection(xid, "ds1")).isSameAs(proxy);
+        assertThat(ConnectionFactory.getConnection(xid, "missingDs")).isNull();
+        assertThat(ConnectionFactory.getConnection("missingXid", "ds1")).isNull();
+        // putConnection 会强制关闭自动提交
+        verify(connection).setAutoCommit(false);
+    }
+
+    @Test
+    void putShouldNotOverwriteExistingDs() throws Exception {
+        String xid = "x-overwrite";
+        ConnectionProxy first = new ConnectionProxy(mock(Connection.class), "ds");
+        ConnectionProxy second = new ConnectionProxy(mock(Connection.class), "ds");
+
+        ConnectionFactory.putConnection(xid, "ds", first);
+        ConnectionFactory.putConnection(xid, "ds", second);
+
+        assertThat(ConnectionFactory.getConnection(xid, "ds")).isSameAs(first);
+    }
+
+    @Test
+    void notifyFlatCommitShouldCommitAndRemove() throws Exception {
+        String xid = "x-flat-commit";
+        Connection connection = mock(Connection.class);
+        ConnectionFactory.putConnection(xid, "ds", new ConnectionProxy(connection, "ds"));
+
+        ConnectionFactory.notify(xid, true);
+
+        verify(connection).commit();
+        verify(connection).close();
+        assertThat(ConnectionFactory.getConnection(xid, "ds")).isNull();
+    }
+
+    @Test
+    void notifyFlatRollbackShouldRollbackAndRemove() throws Exception {
+        String xid = "x-flat-rollback";
+        Connection connection = mock(Connection.class);
+        ConnectionFactory.putConnection(xid, "ds", new ConnectionProxy(connection, "ds"));
+
+        ConnectionFactory.notify(xid, false);
+
+        verify(connection).rollback();
+        verify(connection, never()).commit();
+        verify(connection).close();
+    }
+
+    @Test
+    void notifyUnknownXidShouldBeNoOp() throws Exception {
+        // 未登记过的 xid 不应抛异常，也不影响其他连接
+        ConnectionFactory.notify("x-unknown-never-used", true);
+    }
+
+    @Test
+    void createSavepointShouldRegisterNestedHolder() throws Exception {
+        String xid = "x-create-savepoint";
+        Connection connection = mock(Connection.class);
+        when(connection.setSavepoint(anyString())).thenReturn(mock(Savepoint.class));
+        ConnectionFactory.putConnection(xid, "ds", new ConnectionProxy(connection, "ds"));
+
+        assertThat(ConnectionFactory.hasSavepoint(xid)).isFalse();
+        ConnectionFactory.createSavepoint(xid);
+
+        assertThat(ConnectionFactory.hasSavepoint(xid)).isTrue();
+        verify(connection).setSavepoint("DYNAMIC_0");
+    }
+
+    @Test
+    void notifyWithSavepointShouldReleaseNested() throws Exception {
+        String xid = "x-nested-release";
+        Connection connection = mock(Connection.class);
+        Savepoint savepoint = mock(Savepoint.class);
+        when(savepoint.getSavepointName()).thenReturn("DYNAMIC_0");
+        when(connection.setSavepoint(anyString())).thenReturn(savepoint);
+        ConnectionFactory.putConnection(xid, "ds", new ConnectionProxy(connection, "ds"));
+        ConnectionFactory.createSavepoint(xid);
+
+        ConnectionFactory.notify(xid, true);
+
+        // 嵌套事务提交走保存点释放路径，而非直接提交底层连接
+        verify(connection).releaseSavepoint(savepoint);
+        verify(connection, never()).commit();
+    }
+
+    @Test
+    void hasSavepointShouldBeFalseForUnknownXid() {
+        assertThat(ConnectionFactory.hasSavepoint("x-no-savepoint")).isFalse();
+    }
+}
