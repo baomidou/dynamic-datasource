@@ -1,0 +1,58 @@
+# osv-scanner 忽略清单（.github/workflows/dependency-scan.yml 扫描 SBOM 时自动读取本文件）。
+#
+# 背景：SBOM 只包含会发布给消费方的作用域（runtimeClasspath），其中 Boot 2 线固定为
+# Spring Boot 2.7.18 / Spring Framework 5.3.31。该组合的 OSS 支持均已 EOL（Boot 2.7 止于
+# 2023-11，Spring 5.3 OSS 止于 2024-08），下列 CVE 的修复只存在于跨大版本线（Spring 6.x /
+# Boot 3.x+），本库为保持 Boot 2 兼容无法跨越，经评审后按条目忽略。
+# Boot 3/4 线不在此列：一旦命中应升级对应 patch 版本修复，而不是加进本清单。
+#
+# 维护约定：每出现新的 Boot 2 线 CVE 需新增条目并评审；若存在同线修复版本则优先升级而非忽略。
+# 格式参考：https://google.github.io/osv-scanner/configuration/
+
+[[IgnoredVulns]]
+id = "CVE-2024-38808"
+reason = "spring-expression 5.3.31：同线修复在 5.3.39，但 Boot 2.7 BOM 已不再更新，为 1 条告警单独覆盖版本收益低，评审后接受"
+
+[[IgnoredVulns]]
+id = "CVE-2024-38820"
+reason = "spring-context 5.3.31：修复仅存在于 Spring 6.1.14+，Boot 2 兼容线无法跨大版本升级"
+
+[[IgnoredVulns]]
+id = "CVE-2025-22233"
+reason = "spring-context 5.3.31：修复仅存在于 Spring 6.1.20/6.2.7+，Boot 2 兼容线无法跨大版本升级"
+
+[[IgnoredVulns]]
+id = "CVE-2025-41249"
+reason = "spring-core 5.3.31：修复仅存在于 Spring 6.2.11+，Boot 2 兼容线无法跨大版本升级"
+
+[[IgnoredVulns]]
+id = "CVE-2026-41848"
+reason = "spring-core 5.3.31：修复仅存在于 Spring 6.2.19/7.0.8+，Boot 2 兼容线无法跨大版本升级"
+
+[[IgnoredVulns]]
+id = "CVE-2026-41849"
+reason = "spring-expression 5.3.31：上游暂无修复版本（GHSA-775g-4xr8-78h8，5.3/6.2/7.0 均未修复）"
+
+[[IgnoredVulns]]
+id = "CVE-2026-41850"
+reason = "spring-expression 5.3.31：修复仅存在于 Spring 6.2.19/7.0.8+，Boot 2 兼容线无法跨大版本升级"
+
+[[IgnoredVulns]]
+id = "CVE-2026-41851"
+reason = "spring-expression 5.3.31：修复仅存在于 Spring 6.2.19/7.0.8+，Boot 2 兼容线无法跨大版本升级"
+
+[[IgnoredVulns]]
+id = "CVE-2026-41852"
+reason = "spring-expression 5.3.31：修复仅存在于 Spring 6.2.19/7.0.8+，Boot 2 兼容线无法跨大版本升级"
+
+[[IgnoredVulns]]
+id = "CVE-2025-22235"
+reason = "spring-boot 2.7.18：修复仅存在于 Boot 3.3.11/3.4.5+，Boot 2 兼容线无法跨大版本升级"
+
+[[IgnoredVulns]]
+id = "CVE-2026-40973"
+reason = "spring-boot 2.7.18：修复仅存在于 Boot 3.5.14/4.0.6+，Boot 2 兼容线无法跨大版本升级"
+
+[[IgnoredVulns]]
+id = "CVE-2026-41001"
+reason = "spring-boot-autoconfigure 2.7.18：修复仅存在于 Boot 3.5.15/4.0.7+，Boot 2 兼容线无法跨大版本升级"
