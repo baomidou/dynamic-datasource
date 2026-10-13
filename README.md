@@ -8,26 +8,32 @@
 </p>
 
 <p align="center">
-   <a>
-        <img src="https://badgen.net/github/stars/baomidou/dynamic-datasource-spring-boot-starter" >
+   <a href="https://github.com/baomidou/dynamic-datasource/stargazers">
+        <img src="https://img.shields.io/github/stars/baomidou/dynamic-datasource?style=social" >
+    </a>
+    <a href="https://github.com/baomidou/dynamic-datasource/actions/workflows/ci.yml">
+        <img src="https://github.com/baomidou/dynamic-datasource/actions/workflows/ci.yml/badge.svg" >
     </a>
     <a href="https://mvnrepository.com/artifact/com.baomidou/dynamic-datasource-spring-boot-starter" target="_blank">
-        <img src="https://img.shields.io/maven-central/v/com.baomidou/dynamic-datasource-spring-boot-starter.svg" >
+        <img src="https://img.shields.io/maven-central/v/com.baomidou/dynamic-datasource-spring-boot-starter.svg?label=boot2%20starter" >
+    </a>
+    <a href="https://mvnrepository.com/artifact/com.baomidou/dynamic-datasource-spring-boot3-starter" target="_blank">
+        <img src="https://img.shields.io/maven-central/v/com.baomidou/dynamic-datasource-spring-boot3-starter.svg?label=boot3%20starter" >
+    </a>
+    <a href="https://mvnrepository.com/artifact/com.baomidou/dynamic-datasource-spring-boot4-starter" target="_blank">
+        <img src="https://img.shields.io/maven-central/v/com.baomidou/dynamic-datasource-spring-boot4-starter.svg?label=boot4%20starter" >
     </a>
     <a href="https://www.apache.org/licenses/LICENSE-2.0.html" target="_blank">
         <img src="https://img.shields.io/:license-apache-brightgreen.svg" >
     </a>
     <a>
-        <img src="https://img.shields.io/badge/JDK-8+-green.svg" >
+        <img src="https://img.shields.io/badge/JDK-8%2B%20(Boot3/4%20need%2017%2B)-green.svg" >
     </a>
     <a>
         <img src="https://img.shields.io/badge/springBoot-1.5.x__2.x.x__3.x.x__4.x.x-green.svg" >
     </a>
     <a href="https://www.jetbrains.com">
         <img src="https://img.shields.io/badge/IntelliJ%20IDEA-support-blue.svg" >
-    </a>
-    <a>
-        <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" >
     </a>
     <a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=ded31006508b57d2d732c81266dd2c26e33283f84464e2c294309d90b9674992"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="dynamic-sring-boot-starter" title="dynamic-sring-boot-starter"></a>
 </p>
@@ -36,13 +42,17 @@
 
 dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成多数据源的启动器。
 
-其支持 **Jdk 1.7+, SpringBoot 1.5.x 2.x.x 3.x.x 4.x.x**。
+其支持 **Jdk 8+（Spring Boot 3.x / 4.x 要求 JDK 17+）, SpringBoot 1.5.x 2.x.x 3.x.x 4.x.x**。
 
 ## 文档 | Documentation
 
 最新文档 https://doc.xiuceyun.cn
 
-旧看云文档，后面不维护更新了 https://www.kancloud.cn/tracy5546/dynamic-datasource/2264611
+旧看云文档，后面不维护更新了 https://www.kancloud.cn/tracy5546/dynamic-datasource （仅作历史参考，具体章节链接可能已失效）
+
+## 安全 | Security
+
+发现安全漏洞请勿直接开公开 issue，请查看 [SECURITY.md](./SECURITY.md) 。
 
 ## 贡献 | Contributing
 
@@ -90,6 +100,45 @@ dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成�
 > - Spring Boot 1.5.x ~ 2.x.x 使用 `dynamic-datasource-spring-boot-starter`，支持 JDK 8 及以上版本
 > - Spring Boot 3.x.x 使用 `dynamic-datasource-spring-boot3-starter`，**要求 JDK 17 及以上**
 > - Spring Boot 4.x.x 使用 `dynamic-datasource-spring-boot4-starter`，**要求 JDK 17 及以上**
+
+1. 引入依赖（以当前版本 **4.5.0** 为例，请替换为 [最新 released 版本](https://github.com/baomidou/dynamic-datasource/releases)）。
+
+**Spring Boot 2.x（含 1.5.x）：**
+```xml
+<dependency>
+    <groupId>com.baomidou</groupId>
+    <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+    <version>4.5.0</version>
+</dependency>
+```
+
+**Spring Boot 3.x：**
+```xml
+<dependency>
+    <groupId>com.baomidou</groupId>
+    <artifactId>dynamic-datasource-spring-boot3-starter</artifactId>
+    <version>4.5.0</version>
+</dependency>
+```
+
+**Spring Boot 4.x：**
+```xml
+<dependency>
+    <groupId>com.baomidou</groupId>
+    <artifactId>dynamic-datasource-spring-boot4-starter</artifactId>
+    <version>4.5.0</version>
+</dependency>
+```
+
+**Gradle：**
+```groovy
+// 按你的 Spring Boot 版本选择 三个 starter 之一
+implementation 'com.baomidou:dynamic-datasource-spring-boot-starter:4.5.0'
+implementation 'com.baomidou:dynamic-datasource-spring-boot3-starter:4.5.0'
+implementation 'com.baomidou:dynamic-datasource-spring-boot4-starter:4.5.0'
+```
+
+> 连接池（Druid / HikariCP 等）与 JDBC 驱动 **不包含** 在本 starter 中，需项目自行引入并保持版本匹配。
 
 2. 配置数据源。
 
