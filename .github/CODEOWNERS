@@ -1,0 +1,13 @@
+# Code owners.
+#
+# Handle verified rather than guessed: GitHub user huayanYu is this repository's top
+# contributor, and the git history maps `huayanYu <tracy5546@gmail.com>`. tracy5546 is a
+# Gmail/kancloud namespace only - there is no such GitHub account, and naming a non-existent
+# handle here silently breaks the review request on every PR.
+#
+# The project is maintained by one person, so a single catch-all rule is the honest state.
+# Whether a review is actually *required* is configured in branch protection, not here;
+# splitting ownership (e.g. per starter line, or build/release) only becomes meaningful when
+# a second maintainer can approve, at which point add narrower rules above this catch-all.
+
+* @huayanYu
