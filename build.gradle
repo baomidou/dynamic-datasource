@@ -21,6 +21,9 @@ plugins {
     // Gradle Wrapper Neo: source-based wrapper, no gradle-wrapper.jar stored in the repo
     // Manage the version via ./gradlew wrapperNeo --gradle-version <version>
     id 'org.glavo.gradle-wrapper-neo' version '0.2.0'
+    // GraalVM Native Build Tools. `apply false`: a single plugin class loader is shared by all
+    // subprojects (gradle/gradle#17559), and the starters apply it without a version.
+    id 'org.graalvm.buildtools.native' version '1.1.13' apply false
 }
 
 description = "mybatis dynamic datasource"
@@ -100,6 +103,45 @@ subprojects {
     tasks.withType(MavenPublication).configureEach {
         doFirst {
             options.skipCertificateChecks = true
+        }
+    }
+
+    // GraalVM Native Image, shared by the starters that apply the plugin:
+    // test all starters with `./gradlew nativeTest --continue`, regenerate the metadata with
+    // `./gradlew generateMetadata -Pagent`. See CONTRIBUTING.md.
+    plugins.withId('org.graalvm.buildtools.native') {
+        graalvmNative {
+            metadataRepository {
+                enabled = true
+            }
+            agent {
+                // instrument the tests only when `-Pagent` is passed, so that `nativeTest`
+                // validates the committed metadata instead of metadata generated on the fly
+                defaultMode = 'conditional'
+                enabled = false
+                modes {
+                    conditional {
+                        userCodeFilterPath = "${rootDir}/native-image/user-code-filter.json"
+                        extraFilterPath = "${rootDir}/native-image/extra-filter.json"
+                    }
+                }
+                metadataCopy {
+                    inputTaskNames.add('test')
+                    outputDirectories.add("${rootDir}/dynamic-datasource-native-metadata/src/main/resources/META-INF/native-image/com.baomidou/dynamic-datasource-native-metadata")
+                    mergeWithExisting = true
+                }
+            }
+        }
+
+        tasks.register('generateMetadata') {
+            group = 'native'
+            description = 'Runs the tests with the GraalVM Tracing Agent (-Pagent) and merges the generated reachability metadata.'
+            dependsOn 'test', 'metadataCopy'
+        }
+
+        tasks.named('metadataCopy') {
+            // metadataCopy consumes the agent output written by the instrumented `test` task
+            mustRunAfter 'test'
         }
     }
 }

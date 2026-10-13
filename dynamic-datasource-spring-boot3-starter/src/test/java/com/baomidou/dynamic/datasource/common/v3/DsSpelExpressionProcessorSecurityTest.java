@@ -19,6 +19,7 @@ import com.baomidou.dynamic.datasource.processor.DsSpelExpressionProcessor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledInNativeImage;
 import org.springframework.expression.EvaluationException;
 
 import java.lang.reflect.Method;
@@ -32,7 +33,10 @@ import static org.mockito.Mockito.when;
  * Security tests for {@link DsSpelExpressionProcessor} verifying that SpEL injection via
  * type references (T(...)) is blocked to prevent Remote Code Execution, and that the
  * behaviour can be restored by explicitly enabling {@code allowedSpelTypeAccess}.
+ *
+ * <p>Mockito cannot be initialized inside a GraalVM Native Image, so these tests only run on the JVM.</p>
  */
+@DisabledInNativeImage
 class DsSpelExpressionProcessorSecurityTest {
 
     private DsSpelExpressionProcessor processor;

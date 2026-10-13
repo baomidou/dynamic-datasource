@@ -1,0 +1,6 @@
+// GraalVM Reachability Metadata (native-image resources only, no Java code).
+// Layout under src/main/resources/META-INF/native-image:
+//   com.baomidou/dynamic-datasource-native-metadata  - dynamic-datasource classes
+//   com.alibaba/druid/1.2.27                         - Druid
+//   com.zaxxer/HikariCP/6.3.3                        - HikariCP
+// See CONTRIBUTING.md for how to regenerate the metadata.

@@ -1,0 +1,25 @@
+{
+  "rules": [
+    {"includeClasses": "**"},
+
+    {"excludeClasses": "ch.**"},
+    {"excludeClasses": "com.**"},
+    {"excludeClasses": "io.**"},
+    {"excludeClasses": "jakarta.**"},
+    {"excludeClasses": "java.**"},
+    {"excludeClasses": "javax.**"},
+    {"excludeClasses": "jdk.**"},
+    {"excludeClasses": "net.**"},
+    {"excludeClasses": "oracle.**"},
+    {"excludeClasses": "org.**"},
+    {"excludeClasses": "sun.**"},
+
+    {"includeClasses": "com.baomidou.dynamic.datasource.**"},
+    {"excludeClasses": "com.baomidou.dynamic.datasource.common.**"},
+    {"includeClasses": "java.lang.Thread"},
+    {"includeClasses": "java.util.Properties"}
+  ],
+  "regexRules": [
+    {"excludeClasses": ".*Test"}
+  ]
+}

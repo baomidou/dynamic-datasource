@@ -100,6 +100,7 @@ dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成�
 > - Spring Boot 1.5.x ~ 2.x.x 使用 `dynamic-datasource-spring-boot-starter`，支持 JDK 8 及以上版本
 > - Spring Boot 3.x.x 使用 `dynamic-datasource-spring-boot3-starter`，**要求 JDK 17 及以上**
 > - Spring Boot 4.x.x 使用 `dynamic-datasource-spring-boot4-starter`，**要求 JDK 17 及以上**
+> - Spring Boot 3.x.x / 4.x.x 的 starter 提供对应的 GraalVM Reachability Metadata，并支持通过 `nativeTest` 验证在 GraalVM Native Image 下的单元测试，详见 [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 1. 引入依赖（以当前版本 **4.5.0** 为例，请替换为 [最新 released 版本](https://github.com/baomidou/dynamic-datasource/releases)）。
 
