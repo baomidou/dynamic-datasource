@@ -78,8 +78,10 @@ public class SavePointHolder {
     public boolean releaseSavepoint() throws SQLException {
         Savepoint savepoint = savepoints.pollLast();
         if (savepoint != null) {
-            connectionProxy.releaseSavepoint(savepoint);
+            // 先取名字再释放：H2 等驱动在 release 后立即让 Savepoint 对象失效，后置调用
+            // getSavepointName() 会抛 "Savepoint is invalid"，使 NESTED 的成功路径反而报错
             String savepointName = savepoint.getSavepointName();
+            connectionProxy.releaseSavepoint(savepoint);
             log.info("dynamic-datasource releaseSavepoint [{}]", savepointName);
             return savepoints.isEmpty();
         }
@@ -95,8 +97,9 @@ public class SavePointHolder {
     public boolean rollbackSavePoint() throws SQLException {
         Savepoint savepoint = savepoints.pollLast();
         if (savepoint != null) {
-            connectionProxy.rollback(savepoint);
+            // 同上：savepoint 对象在回滚后状态由驱动自定，先行取值避免依赖驱动实现细节
             String savepointName = savepoint.getSavepointName();
+            connectionProxy.rollback(savepoint);
             log.info("dynamic-datasource rollbackSavePoint [{}]", savepointName);
             return savepoints.isEmpty();
         }
