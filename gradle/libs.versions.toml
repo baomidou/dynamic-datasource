@@ -4,8 +4,8 @@
 # in Gradle 9, removed in Gradle 10).
 [versions]
 springBoot2 = "2.7.18"        # Spring Boot 2.x latest stable, JDK 8+
-springBoot3 = "3.5.7"         # Spring Boot 3.x, JDK 17+
-springBoot4 = "4.0.0"         # Spring Boot 4.x, JDK 17+
+springBoot3 = "3.5.16"        # Spring Boot 3.x, JDK 17+（含 Spring 6.2.19，修复 Code Scanning 命中的 spring-expression 告警）
+springBoot4 = "4.0.8"         # Spring Boot 4.x, JDK 17+（含 Spring 7.0.9 / logback 1.5.38）
 mybatisPlus = "3.5.14"
 mybatisSpring = "2.1.2"
 p6spy = "3.9.1"

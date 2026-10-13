@@ -187,12 +187,16 @@ subprojects {
 // SBOM (CycloneDX)：只描述会传递给消费方的作用域。
 // 默认作用域会把测试依赖（junit / h2 / spring-boot-starter-test 等）一并写入 BOM，
 // 而这些构件根本不会传递给使用者（test 作用域不传递），列进去只会给漏洞扫描制造噪声。
+// compileClasspath 同样排除：它会把 compileOnly 的集成库（seata/druid/hikari/c3p0、
+// spring-boot-starter-web/actuator 等）连同传递闭包写进 BOM（仅 seata 1.4.2 一条链就带出
+// netty/guava/ant 等大量历史 CVE），但这些库不随构件发布、由使用者自带版本，扫描结果对
+// 使用方没有意义，只会把 Security > Code Scanning 页面淹没（实测 317 条告警约 85% 来自此）。
 // 注意：includeConfigs 只存在于 cyclonedxDirectBom，聚合任务 cyclonedxBom 没有该属性
 //（给它设上会直接报 Could not set unknown property 'includeConfigs'），聚合结果由各模块的
 // direct SBOM 合并而来，因此只配 direct 任务即可生效。
 allprojects {
     tasks.matching { it.name == 'cyclonedxDirectBom' }.configureEach {
-        includeConfigs = ['runtimeClasspath', 'compileClasspath']
+        includeConfigs = ['runtimeClasspath']
     }
 }
 
