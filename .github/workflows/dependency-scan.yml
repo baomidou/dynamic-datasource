@@ -1,0 +1,65 @@
+name: Dependency Scan
+# 全量漏洞扫描：先由构建生成"实际发布构件"的 SBOM，再让 osv-scanner 针对该 SBOM 扫描 OSV 库，
+# 结果上传到 Security > Code Scanning。与 ci.yml 里的 dependency-review（只看 PR 增量）互补。
+on:
+  schedule:
+    # cron 按 UTC 解释：周五 19:00 UTC = 周六 03:00 北京时间，与 dependabot.yml 的时点一致
+    - cron: '0 19 * * 5'
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dependency-scan-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sbom:
+    name: Generate aggregate SBOM
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17 (Gradle runtime)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      # 只生成 SBOM，不跑测试：测试由 ci.yml 负责，这里要保证的是"每天有一份依赖清单可扫"
+      - name: Generate CycloneDX SBOM
+        run: ./gradlew cyclonedxBom --no-daemon
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: build/reports/cyclonedx/bom.json
+          if-no-files-found: error
+
+  osv-scan:
+    name: Scan SBOM against OSV
+    needs: sbom
+    # reusable workflow 内部的 SARIF 上传步骤需要这三个权限；调用方必须显式授予，
+    # 否则会静默降级（顶层 permissions 只有 contents: read）
+    permissions:
+      contents: read
+      actions: read
+      security-events: write
+    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@v2.7.0
+    with:
+      # 下载上面产出的名为 sbom 的 workflow artifact（reusable workflow 会解到仓库根，
+      # 因此文件名就是 bom.json），再让 osv-scanner 以 SBOM 模式扫描。
+      # 不这么做的话，本仓库是 Gradle 项目、没有 lockfile/verification-metadata，
+      # osv-scanner 递扫源码也读不出依赖，扫描会变成"零发现"的假绿。
+      download-artifact: sbom
+      scan-args: |-
+        --sbom=bom.json
+      # 首次全量扫描几乎必然命中传递依赖的历史漏洞，先把红点留给 Code Scanning 页面；
+      # 待存量清零后再改 true，让它变成真正的门禁。
+      fail-on-vuln: false
+      upload-sarif: true
