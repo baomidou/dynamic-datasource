@@ -95,4 +95,51 @@ cd ./dynamic-datasource/
 # 3. PR
 
 PR 应提交到位于 Github 的 Git Mirror，即 https://github.com/baomidou/dynamic-datasource 。
-位于 Github Actions 的 CI 将在 OpenJDK 8+ 下对 PR 对应分支执行对应的单元测试。
+位于 Github Actions 的 CI 会在 JDK 8 toolchain 下编译并测试 Boot 2 线产物，并在 JDK 17/21/25 矩阵下
+验证其余模块（运行器上的 Gradle 客户端本身需要 JVM 17+）。
+
+PR 标题与 commit message 建议使用 conventional 前缀（`fix:` / `feat:` / `build:` / `docs:` /
+`refactor:` / `ci:` / `chore:` / `test:`），一个 commit 只做一件事；发布说明（release notes）
+正是由这些标题汇总生成的。请填写 `.github/pull_request_template.md` 中的影响面清单，
+涉及 `@DS` 解析、数据源切换栈语义、事务模式的改动必须同时保留 v1/v3/v4 三套测试的有效性。
+
+# 4. RELEASE
+
+版本号唯一来源是根目录 `gradle.properties` 的 `APP_VERSION`（当前 `4.5.0`），
+它由根 `build.gradle` 赋给所有模块的 `version`。
+
+## 4.1 Tag 约定
+
+仓库历史上同时存在 `V1.0.0`、`v4.3.1`、`v4.50` 等形态，而 GitHub Release 标题写的是 `v4.5.0`。
+统一为**小写 `v` + 完整语义化版本**：
+
+- 正确：`v4.5.0`、`v4.6.0`、`v4.5.1`（`v*` 才会触发发布流水线，大写 `V` 不匹配该模式）
+- 避免：`v4.50`（看不出三段式，无法区分 patch/minor）、`V1.0.0`、不带 `v` 的裸版本号
+
+MAJOR/MINOR/PATCH 的含义：MAJOR = 不兼容的公开 API 或配置项变更；MINOR = 向后兼容的新能力
+（新增注解、新增连接池支持）；PATCH = 缺陷修复。Security fix 走 PATCH，并按 `SECURITY.md`
+发布 GitHub Advisory。
+
+## 4.2 发布步骤
+
+```bash
+# 1) 确认主干 CI 为绿，发布不可撤回
+# 2) 修改 gradle.properties 的 APP_VERSION 并提交
+git commit -am "build: release 4.6.0"
+# 3) 打附注标签并推送标签，触发 release.yml
+git tag -a v4.6.0 -m "v4.6.0"
+git push origin v4.6.0
+# 4) 流水线成功且构件已同步到 Maven Central 后，创建对应 Release
+git checkout v4.6.0
+gh release create v4.6.0 --generate-notes --latest
+```
+
+`release.yml` 会先执行 `./gradlew clean build`（含三套 starter 测试）作为发布门禁，再执行
+`publishAllPublicationsToMavenCentralRepository`。凭据全部来自仓库 Secrets：
+`MAVEN_CENTRAL_USERNAME` / `MAVEN_CENTRAL_PASSWORD` / `GPG_SECRET_KEY` / `GPG_PASSPHRASE`，
+以 in-memory 方式签名。
+
+请勿在本地执行 `publish*` 任务（`gradle.properties` 中的 `RELEASE_SIGNING_ENABLED` 与
+`mavenCentral*` 属性由 CI 注入，本地没有可用凭据），也不要将密钥环、口令或私钥写入被跟踪
+的文件——历史上 `gradle.properties` 曾以明文提交过 file-based 签名配置，该 key 仍存在于 git
+历史中，**应当轮换/撤销并重新生成**，新 key 只通过 Secrets 提供给 CI。
