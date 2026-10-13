@@ -87,7 +87,7 @@
 
 ## 版本兼容
 
-按你的 Spring Boot 版本选择对应的 starter：
+按你的 Spring Boot 版本选择对应的 starter（各产线的维护状态见 [SUPPORT.md](./SUPPORT.md)）：
 
 | Spring Boot | JDK 要求 | Starter 构件 | 项目开始支持版本 |
 | :---: | :---: | :--- | :---: |

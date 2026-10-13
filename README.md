@@ -91,7 +91,7 @@ plus GraalVM Native Image.
 
 ## Compatibility
 
-Pick the starter that matches your Spring Boot line:
+Pick the starter that matches your Spring Boot line (the maintenance status of each line is defined in [SUPPORT.md](./SUPPORT.md)):
 
 | Spring Boot | JDK | Starter artifact | Available since |
 | :---: | :---: | :--- | :---: |
