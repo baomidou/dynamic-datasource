@@ -119,6 +119,15 @@ subprojects {
         enabled = false
     }
 
+    // 给所有 jar 补 Automatic-Module-Name：JPMS 使用者（把本库放 module path）若缺此属性，模块名会
+    // 按 jar 文件名推导（连字符转点），jar 命名一变契约即断。命名与 Maven 坐标对应
+    //（com.baomidou.dynamic.datasource[.<模块后缀>]），一经发布不可更改。
+    // 工程名必须保持 dynamic-datasource- 前缀：改名会让 substring 直接抛异常（显式失败优于静默生成错误模块名）。
+    tasks.withType(Jar).configureEach {
+        def moduleSuffix = project.name.substring('dynamic-datasource'.length()).replace('-', '.')
+        manifest.attributes('Automatic-Module-Name': 'com.baomidou.dynamic.datasource' + moduleSuffix)
+    }
+
     // sourcesJar / javadocJar 由 gradle-maven-publish-plugin (vanniktech) 自动注册
     // （内部调用 java.withSourcesJar()/withJavadocJar() 并接入 publication），
     // 此处切勿再次手动添加，否则 publication 会出现重复构件报：
