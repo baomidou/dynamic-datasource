@@ -69,6 +69,9 @@
 > 它只做一件事——**决定一次调用打到哪个 `DataSource` 上**——并且刻意不限制你随后做什么。任意 CRUD、
 > 任意 ORM、任意事务策略。
 
+> 完整文档（所有配置项、连接池适配与集成方案）在 [秀策云文档站](https://doc.xiuceyun.cn)，
+> 后续会逐页迁入 [Wiki](https://github.com/baomidou/dynamic-datasource/wiki)，详见[文档](#文档)。
+
 ## 核心特性
 
 | 维度 | 能力 |
@@ -161,7 +164,7 @@ spring:
           password: 123456
           driver-class-name: com.mysql.cj.jdbc.Driver
         slave_2:
-          url: ENC(xxxxx)        # 内置加密，详见文档
+          url: ENC(xxxxx)        # 内置加密，详见文档站
           username: ENC(xxxxx)
           password: ENC(xxxxx)
           driver-class-name: com.mysql.cj.jdbc.Driver
@@ -312,7 +315,7 @@ public void closeTenant(String tenantId) {
 - **MyBatis / MyBatis-Plus**：可直接作为普通 `DataSource` 使用；`MasterSlaveAutoRoutingPlugin` 无需任何
   注解即可实现纯读写分离（`SELECT` 走 `slave`，其余走 `master`）。
 - **Quartz**：把调度器的 `DataSource` 换成动态数据源，文档中的方案同时覆盖 JDBC JobStore。
-- **ShardingSphere / ShardingJDBC、P6spy、JNDI**：提供集成方案；相关内容正在逐步迁回 wiki，过渡期可参考旧版看云文档。
+- **ShardingSphere / ShardingJDBC、P6spy、JNDI**：提供集成方案，具体写在文档站（doc.xiuceyun.cn），相关内容正在逐页迁回 wiki。
 - **GraalVM Native Image**：本项目、Druid 与 HikariCP 的 Reachability Metadata 位于
   `dynamic-datasource-native-metadata`，starter 用户通过官方元数据仓库自动获取。
 
@@ -331,12 +334,14 @@ public void closeTenant(String tenantId) {
 
 ## 文档
 
+- **文档站 · 秀策云** — <https://doc.xiuceyun.cn>：当前最完整的配置项、集成方案与进阶用法均在此。
 - **Wiki（中文）** — <https://github.com/baomidou/dynamic-datasource/wiki>
 - **Wiki (English)** — <https://github.com/baomidou/dynamic-datasource/wiki/Home-English>
+  wiki 是文档后续的沉淀方向，正在逐页补齐；在对应主题迁入 wiki 之前，仍以文档站为准。
 - **FAQ · 事务内 `@DS` 不切换数据源** — <https://github.com/baomidou/dynamic-datasource/wiki/DS-Switching-Inside-Transactions>
 - **示例工程** — <https://github.com/dynamic-datasource/dynamic-datasource-samples>
 - **QQ 群**（中文交流）— [点击入群](https://shang.qq.com/wpa/qunwpa?idkey=ded31006508b57d2d732c81266dd2c26e33283f84464e2c294309d90b9674992)
-- **旧版看云文档（不再维护，仅作历史参考）** — <https://www.kancloud.cn/tracy5546/dynamic-datasource>
+- **旧版看云文档（仅作历史参考）** — <https://www.kancloud.cn/tracy5546/dynamic-datasource>
 
 ## 贡献与安全
 

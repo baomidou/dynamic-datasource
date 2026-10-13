@@ -72,6 +72,10 @@ plus GraalVM Native Image.
 > It does exactly one thing — **choosing which `DataSource` a call runs against** — and deliberately
 > does not constrain what you do afterwards. Any CRUD, any ORM, any transaction strategy.
 
+> The full reference — every configuration key, connection pool and integration recipe — lives on
+> [doc.xiuceyun.cn](https://doc.xiuceyun.cn) (Chinese); the [wiki](https://github.com/baomidou/dynamic-datasource/wiki/Home-English)
+> is taking over page by page. See [Documentation](#documentation).
+
 ## Highlights
 
 | Area | What you get |
@@ -329,8 +333,8 @@ public void closeTenant(String tenantId) {
 - **MyBatis / MyBatis-Plus** — usable as a plain `DataSource`; `MasterSlaveAutoRoutingPlugin` gives
   pure read/write splitting with no annotation at all (`SELECT` → `slave`, everything else → `master`).
 - **Quartz** — hand the scheduler the dynamic `DataSource`; the documented recipe covers the JDBC job store.
-- **ShardingSphere / ShardingJDBC, P6spy, JNDI** — integration recipes; they are being folded into the
-  wiki, the legacy Kancloud documentation covers them meanwhile.
+- **ShardingSphere / ShardingJDBC, P6spy, JNDI** — integration recipes are on the documentation site;
+  they are being migrated into the wiki step by step.
 - **GraalVM Native Image** — reachability metadata for this project, Druid and HikariCP ships in
   `dynamic-datasource-native-metadata`; starter users pick it up through the native metadata repository.
 
@@ -349,12 +353,16 @@ public void closeTenant(String tenantId) {
 
 ## Documentation
 
+- **Documentation — 秀策云** — <https://doc.xiuceyun.cn>: the current reference for configuration keys,
+  integration recipes and advanced scenarios.
 - **Wiki (English)** — <https://github.com/baomidou/dynamic-datasource/wiki/Home-English>
 - **Wiki (简体中文)** — <https://github.com/baomidou/dynamic-datasource/wiki>
+  The wiki is where documentation is headed; it is being filled in page by page, so treat the docs site
+  as authoritative until a topic shows up here.
 - **FAQ · `@DS` not switching inside a transaction** — <https://github.com/baomidou/dynamic-datasource/wiki/DS-Switching-Inside-Transactions>
 - **Samples** — <https://github.com/dynamic-datasource/dynamic-datasource-samples>
 - **QQ group** (Chinese-speaking community) — [join](https://shang.qq.com/wpa/qunwpa?idkey=ded31006508b57d2d732c81266dd2c26e33283f84464e2c294309d90b9674992)
-- **Legacy docs (Kancloud, no longer maintained)** — <https://www.kancloud.cn/tracy5546/dynamic-datasource>
+- **Legacy docs (Kancloud, historical reference only)** — <https://www.kancloud.cn/tracy5546/dynamic-datasource>
 
 ## Contributing, Security and License
 
