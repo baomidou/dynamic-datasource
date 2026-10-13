@@ -15,77 +15,10 @@
  */
 package com.baomidou.dynamic.datasource.common.v1;
 
-import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
-import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
-import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
-import com.baomidou.dynamic.datasource.common.service.nest.SchoolService;
-import com.baomidou.dynamic.datasource.common.service.nest.Student;
-import com.baomidou.dynamic.datasource.common.service.nest.StudentService;
-import com.baomidou.dynamic.datasource.common.service.nest.TeacherService;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.test.context.SpringBootTest;
+import com.baomidou.dynamic.datasource.common.base.AbstractNestDataSourceTest;
 
-import javax.sql.DataSource;
-import java.util.Arrays;
-import java.util.Collections;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-
-@SpringBootTest(classes = NestApplication.class, webEnvironment = RANDOM_PORT)
-public class NestDataSourceTest {
-
-    @Autowired
-    DataSource dataSource;
-
-    @Autowired
-    DefaultDataSourceCreator dataSourceCreator;
-
-    @Autowired
-    TeacherService teacherService;
-
-    @Autowired
-    StudentService studentService;
-
-    @Autowired
-    SchoolService schoolService;
-
-    @Test
-    void testNest() {
-        DataSourceProperty masterDataSourceProperty = createDataSourceProperty("master");
-        DataSourceProperty teacherDataSourceProperty = createDataSourceProperty("teacher");
-        DataSourceProperty studentDataSourceProperty = createDataSourceProperty("student");
-        DynamicRoutingDataSource ds = (DynamicRoutingDataSource) dataSource;
-        ds.addDataSource(masterDataSourceProperty.getPoolName(), dataSourceCreator.createDataSource(masterDataSourceProperty));
-        ds.addDataSource(teacherDataSourceProperty.getPoolName(), dataSourceCreator.createDataSource(teacherDataSourceProperty));
-        ds.addDataSource(studentDataSourceProperty.getPoolName(), dataSourceCreator.createDataSource(studentDataSourceProperty));
-        assertThat(ds.getDataSources().keySet()).contains("master", "teacher", "student");
-        assertThat(teacherService.addTeacherWithTx("ss", 1)).isEqualTo(1);
-        assertThat(studentService.addStudentWithTx("tt", 2)).isEqualTo(1);
-        assertThat(teacherService.selectTeachers()).isEmpty();
-        assertThat(studentService.selectStudents()).isEqualTo(Collections.singletonList(new Student(1, "tt", 2)));
-        assertThat(schoolService.addTeacherAndStudentWithTx()).isEqualTo(2);
-        assertThat(teacherService.selectTeachers()).isEmpty();
-        assertThat(studentService.selectStudents()).isEqualTo(Arrays.asList(new Student(1, "tt", 2), new Student(2, "bb", 4)));
-    }
-
-    private DataSourceProperty createDataSourceProperty(String poolName) {
-        DataSourceProperty result = new DataSourceProperty();
-        result.setPoolName(poolName);
-        result.setDriverClassName("org.h2.Driver");
-        result.setUrl("jdbc:h2:mem:" + poolName + ";INIT=RUNSCRIPT FROM 'classpath:db/add-remove-datasource.sql'");
-        result.setUsername("sa");
-        result.setPassword("");
-        return result;
-    }
-}
-
-@SpringBootApplication(scanBasePackages = "com.baomidou.dynamic.datasource.common")
-class NestApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(NestApplication.class, args);
-    }
+/**
+ * Boot2 侧嵌套数据源场景：断言全部来自共享基类，此处仅绑定本版本的自动装配。
+ */
+public class NestDataSourceTest extends AbstractNestDataSourceTest {
 }

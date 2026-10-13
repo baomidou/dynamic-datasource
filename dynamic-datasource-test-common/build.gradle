@@ -1,6 +1,9 @@
 // Test Common Module - NOT published
 // This module contains shared test code for all starter modules
 apply plugin: 'io.spring.dependency-management'
+// 共享集成测试基类放 src/testFixtures/java，供三个 starter 以 testFixtures(project(...)) 复用，
+// 保证版本无关的场景在 Boot2/3/4 上跑的是同一套断言，消除逐份复制漂移。
+apply plugin: 'java-test-fixtures'
 
 // Compile and test with a JDK 8 toolchain to keep the Boot 2 line JDK 8 compatible.
 // Missing toolchains are auto-provisioned via Foojay (see settings.gradle).
@@ -49,4 +52,10 @@ dependencies {
     
     compileOnly("org.springframework:spring-web")
     compileOnly("org.springframework:spring-tx")
+
+    // testFixtures 里的共享集成测试基类所需依赖（版本由上方 spring-boot-2 BOM 管理）。
+    // 用 api 暴露 JUnit/AssertJ，使各 starter 的薄子类无需再单独声明即可编译。
+    testFixturesImplementation("org.springframework.boot:spring-boot-starter-test")
+    testFixturesApi("org.junit.jupiter:junit-jupiter")
+    testFixturesApi("org.assertj:assertj-core")
 }

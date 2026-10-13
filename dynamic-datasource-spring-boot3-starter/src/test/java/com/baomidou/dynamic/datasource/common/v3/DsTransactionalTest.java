@@ -15,104 +15,11 @@
  */
 package com.baomidou.dynamic.datasource.common.v3;
 
-import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
-import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
-import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
-import com.baomidou.dynamic.datasource.common.service.tx.*;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.test.context.SpringBootTest;
+import com.baomidou.dynamic.datasource.common.base.AbstractDsTransactionalTest;
 
-import javax.sql.DataSource;
-import java.util.Arrays;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-
-
-@SpringBootTest(classes = DsTransactionalApplication.class, webEnvironment = RANDOM_PORT)
-public class DsTransactionalTest {
-    @Autowired
-    DataSource dataSource;
-    @Autowired
-    DefaultDataSourceCreator dataSourceCreator;
-    @Autowired
-    private OrderService orderService;
-    @Autowired
-    private AccountService accountService;
-    @Autowired
-    private ProductService productService;
-    @Autowired
-    private NonDatabaseConnectionService nonDatabaseConnectionService;
-    private DynamicRoutingDataSource ds;
-
-    @Test
-    public void testDsTransactional() {
-        DataSourceProperty orderDataSourceProperty = createDataSourceProperty("order");
-        DataSourceProperty productDataSourceProperty = createDataSourceProperty("product");
-        DataSourceProperty accountDataSourceProperty = createDataSourceProperty("account");
-        ds = (DynamicRoutingDataSource) dataSource;
-        ds.addDataSource(orderDataSourceProperty.getPoolName(), dataSourceCreator.createDataSource(orderDataSourceProperty));
-        ds.addDataSource(productDataSourceProperty.getPoolName(), dataSourceCreator.createDataSource(productDataSourceProperty));
-        ds.addDataSource(accountDataSourceProperty.getPoolName(), dataSourceCreator.createDataSource(accountDataSourceProperty));
-        PlaceOrderRequest placeOrderRequest = new PlaceOrderRequest(1, 1, 22, OrderStatus.INIT);
-
-        //商品不足
-        assertThrows(RuntimeException.class, () -> orderService.placeOrder(placeOrderRequest));
-        assertThat(placeOrderRequest.getOrderStatus()).isEqualTo(OrderStatus.FAIL);
-        assertThat(orderService.selectOrders()).isEmpty();
-        assertThat(accountService.selectAccount()).isEqualTo(new Account(1, 50.0));
-        assertThat(productService.selectProduct()).isEqualTo(new Product(1, 10.0, 20));
-
-        //账户不足
-        placeOrderRequest.setAmount(6);
-        placeOrderRequest.setOrderStatus(OrderStatus.INIT);
-        assertThrows(RuntimeException.class, () -> orderService.placeOrder(placeOrderRequest));
-        assertThat(placeOrderRequest.getOrderStatus()).isEqualTo(OrderStatus.FAIL);
-        assertThat(orderService.selectOrders()).isEmpty();
-        assertThat(accountService.selectAccount()).isEqualTo(new Account(1, 50.0));
-        assertThat(productService.selectProduct()).isEqualTo(new Product(1, 10.0, 20));
-
-        //正常下单
-        placeOrderRequest.setAmount(5);
-        placeOrderRequest.setOrderStatus(OrderStatus.INIT);
-        assertThat(orderService.placeOrder(placeOrderRequest)).isEqualTo(OrderStatus.INIT);
-        assertThat(placeOrderRequest.getOrderStatus()).isEqualTo(OrderStatus.SUCCESS);
-        assertThat(orderService.selectOrders()).isEqualTo(Arrays.asList(new Order(3, 1, 1, 5, 50.0)));
-        assertThat(accountService.selectAccount()).isEqualTo(new Account(1, 0.0));
-        assertThat(productService.selectProduct()).isEqualTo(new Product(1, 10.0, 15));
-    }
-
-    @Test
-    public void testRequiredWithRequiresNewNoConnection() {
-        // Setup datasources
-        ds = (DynamicRoutingDataSource) dataSource;
-        if (!ds.getDataSources().containsKey("order")) {
-            DataSourceProperty orderDataSourceProperty = createDataSourceProperty("order");
-            ds.addDataSource(orderDataSourceProperty.getPoolName(), dataSourceCreator.createDataSource(orderDataSourceProperty));
-        }
-        
-        // This should not throw NPE even though the inner REQUIRES_NEW transaction has no JDBC connections
-        nonDatabaseConnectionService.outerRequiredWithConnection();
-    }
-
-    private DataSourceProperty createDataSourceProperty(String poolName) {
-        DataSourceProperty result = new DataSourceProperty();
-        result.setPoolName(poolName);
-        result.setDriverClassName("org.h2.Driver");
-        result.setUrl("jdbc:h2:mem:" + poolName + ";INIT=RUNSCRIPT FROM 'classpath:db/ds-with-transactional.sql'");
-        result.setUsername("sa");
-        result.setPassword("");
-        return result;
-    }
-}
-
-@SpringBootApplication(scanBasePackages = "com.baomidou.dynamic.datasource.common")
-class DsTransactionalApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(DsTransactionalApplication.class, args);
-    }
+/**
+ * Spring Boot 3.x 下运行共享的 {@code @DSTransactional} 集成场景。
+ * 断言全部在 {@link AbstractDsTransactionalTest} 中，与其它 Boot 版本完全一致。
+ */
+public class DsTransactionalTest extends AbstractDsTransactionalTest {
 }

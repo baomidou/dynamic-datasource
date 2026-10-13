@@ -15,61 +15,10 @@
  */
 package com.baomidou.dynamic.datasource.common.v4;
 
-import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
-import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
-import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
-import com.baomidou.dynamic.datasource.creator.hikaricp.HikariCpConfig;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import com.baomidou.dynamic.datasource.common.base.AbstractAddRemoveDatasourceTest;
 
-import javax.sql.DataSource;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-
-@SpringBootTest(classes = AddRemoveDatasourceApplication.class, webEnvironment = RANDOM_PORT)
-public class AddRemoveDatasourceTest {
-
-    @Autowired
-    DataSource dataSource;
-
-    @Autowired
-    DefaultDataSourceCreator dataSourceCreator;
-
-    @Test
-    void testAddAndRemoveDataSource() {
-        HikariCpConfig hikariCpConfig = new HikariCpConfig();
-        hikariCpConfig.setConnectionTestQuery("select 1");
-        DataSourceProperty dataSourceProperty = new DataSourceProperty();
-        dataSourceProperty.setHikari(hikariCpConfig);
-        dataSourceProperty.setPoolName("slave_1");
-        dataSourceProperty.setUsername("sa");
-        dataSourceProperty.setPassword("");
-        dataSourceProperty.setType(SimpleDriverDataSource.class);
-        dataSourceProperty.setUrl("jdbc:h2:mem:test1");
-        dataSourceProperty.setDriverClassName("org.h2.Driver");
-        DynamicRoutingDataSource ds = (DynamicRoutingDataSource) dataSource;
-        // async destroy datasource
-        ds.setGraceDestroy(true);
-        ds.addDataSource(dataSourceProperty.getPoolName(), dataSourceCreator.createDataSource(dataSourceProperty));
-        assertThat(ds.getDataSources().keySet()).contains("slave_1");
-        ds.removeDataSource("slave_1");
-        // close directly
-        ds.setGraceDestroy(false);
-        ds.addDataSource(dataSourceProperty.getPoolName(), dataSourceCreator.createDataSource(dataSourceProperty));
-        assertThat(ds.getDataSources().keySet()).contains("slave_1");
-        ds.removeDataSource("slave_1");
-        assertThat(ds.getDataSources().keySet()).doesNotContain("slave_1");
-    }
-}
-
-@SpringBootApplication(scanBasePackages = "com.baomidou.dynamic.datasource.common")
-class AddRemoveDatasourceApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(AddRemoveDatasourceApplication.class, args);
-    }
+/**
+ * Boot4 侧运行时增删数据源场景：断言全部来自共享基类，此处仅绑定本版本的自动装配。
+ */
+public class AddRemoveDatasourceTest extends AbstractAddRemoveDatasourceTest {
 }
