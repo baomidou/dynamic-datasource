@@ -117,10 +117,17 @@ git commit -am "build: release 4.6.0"
 # 3) 打附注标签并推送标签，触发 release.yml
 git tag -a v4.6.0 -m "v4.6.0"
 git push origin v4.6.0
-# 4) 流水线成功且构件已同步到 Maven Central 后，创建对应 Release
+# 4) 流水线成功且构件已同步到 Maven Central 后，创建对应 Release（并附上 SBOM）
 git checkout v4.6.0
-gh release create v4.6.0 --generate-notes --latest
+./gradlew cyclonedxBom
+gh release create v4.6.0 --generate-notes --latest \
+  build/reports/cyclonedx/bom.json#"CycloneDX SBOM (published artifacts)"
 ```
+
+`cyclonedxBom` 生成的是**聚合 SBOM**（`build/reports/cyclonedx/bom.json`），只包含实际会传递给
+使用方的作用域（`runtimeClasspath`/`compileClasspath`）与已发布构件；`dynamic-datasource-test-common`
+不发布，因此已被排除在其 `cyclonedxDirectBom` 之外。供 `dependency-scan.yml` 做漏洞扫描用的就是这份清单，
+所以不要手改它的内容来"降噪"——需要排除某个模块时，去禁用它的 direct BOM 任务。
 
 `release.yml` 会先执行 `./gradlew clean build`（含三套 starter 测试）作为发布门禁，再执行
 `publishAllPublicationsToMavenCentralRepository`。凭据全部来自仓库 Secrets：

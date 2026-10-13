@@ -43,3 +43,14 @@ jobs:
         # io.spring.dependency-management's POM withXml() is not cache-safe
         # ("this.delegate is null" on cache-miss generation). Test/build jobs keep the cache.
         run: ./gradlew publishAllPublicationsToMavenCentralRepository --no-configuration-cache
+
+      # SBOM for exactly the tree that was just published, kept with the run (and downloadable
+      # for attaching to the GitHub Release).
+      - name: Generate CycloneDX SBOM
+        run: ./gradlew cyclonedxBom
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-${{ github.ref_name }}
+          path: build/reports/cyclonedx/bom.json
+          if-no-files-found: error
