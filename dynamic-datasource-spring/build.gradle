@@ -40,4 +40,10 @@ dependencies {
     api("org.springframework:spring-aop")
     api("org.springframework:spring-expression")
     api(libs.mybatis.springBoot)
+
+    // 单元测试：JUnit5 + AssertJ + Mockito，版本由上方 spring-boot-2 BOM 统一管理
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.assertj:assertj-core")
+    testImplementation("org.mockito:mockito-core")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
