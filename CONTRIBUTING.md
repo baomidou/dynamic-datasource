@@ -162,5 +162,17 @@ gh release create v4.6.0 --generate-notes --latest \
    `withSourcesJar()`/`withJavadocJar()`），手写同名任务会触发
    `multiple artifacts with the identical extension and classifier ('jar', 'javadoc')`。
 7. **Lombok 版本不得低于 1.18.42**，否则在 JDK 25 矩阵下编译报 `TypeTag::UNKNOWN`。
-8. 不启用 `mavenLocal()`：本地仓库构件不可复现。镜像仓库仅作加速，必须保留 Maven Central 傅底。
+8. 不启用 `mavenLocal()`：本地仓库构件不可复现。镜像仓库仅作加速，必须保留 Maven Central 兜底。
 9. `doc/` 下原有的 Maven→Gradle 迁移记录已删除（内容被后续重构取代），上述约束即为其存活部分。
+10. **JaCoCo 聚合报告不能把三个 starter 模块放进同一个 bundle**。它们按 Boot 2/3/4 各自携带同名
+    类的不同副本（`...check.SeataDataSourceProxyChecker`、`...processor.DsJakarta*Processor`、
+    `*AutoConfiguration` 等），一起分析时 JaCoCo 报
+    `IllegalStateException: Can't add different class with same name`，而失败信号是含糊的
+    `Error while creating report`。Gradle 9.8 的 `JacocoReport` 没有多 bundle（`additionalGroupData`）
+    入口，所以 `jacocoRootReport` 只统计 `coverageModules` 里的无重名库模块——往这个清单里加模块前，
+    先确认它与已列模块没有同名类。
+11. **仓库列表声明在 `allprojects` 而不是 `subprojects`**：根任务需要解析 `jacocoAnt`
+    （`org.jacoco:org.jacoco.ant`），只在 `subprojects` 里声明会让根项目在写配置缓存时报
+    `Cannot resolve external dependency ... because no repositories are defined`。同理 JaCoCo 版本
+    写成 root 脚本的局部变量 `jacocoToolVersion`（约束 4：`subprojects {}` 里拿不到版本目录），
+    根与子模块共用它，agent 与报告工具版本必须一致，否则 exec 文件解析失败。

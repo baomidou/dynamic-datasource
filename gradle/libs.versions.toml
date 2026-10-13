@@ -22,6 +22,9 @@ druidSpringBoot4 = "1.2.28"   # Boot 4 starter first released in 1.2.28
 # Lombok must be >= 1.18.40 for JDK 25 support (TypeTag::UNKNOWN issue).
 # Spring Boot 2.7.18 BOM only manages 1.18.30, which fails to compile on JDK 25, so pin it here.
 lombok = "1.18.42"
+# JaCoCo is deliberately NOT versioned here: the jacoco plugin is applied from the root
+# `subprojects {}` block, which runs before any subproject is evaluated and therefore cannot
+# read this catalog. Its toolVersion lives in build.gradle (search for `toolVersion =`).
 
 [libraries]
 # NOTE: the spring-boot-dependencies BOMs are referenced via libs.versions.springBootN.get()

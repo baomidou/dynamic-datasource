@@ -33,10 +33,31 @@ plugins {
 
 description = "mybatis dynamic datasource"
 
+// JaCoCo 版本单一来源：根项目（聚合报告用 jacocoAnt）与各模块（agent 用）必须同一版本，
+// exec 文件由低版本 agent 写出会让高版本报告工具无法解析，反之亦然。
+// 不能放进 gradle/libs.versions.toml：本变量要在 subprojects 块里被引用，而该块执行时
+// 子项目尚未评估、拿不到版本目录（见 CONTRIBUTING.md 第 5 节约束 4）。
+// 升级 JaCoCo 只改这一行。
+def jacocoToolVersion = '0.8.15'
+
 // 项目配置
 allprojects {
     group = APP_GROUP
     version = APP_VERSION
+
+    // 仓库配置：镜像仅作加速，明确 ordered；不启用 mavenLocal，保证构建可复现
+    // ——本地仓库构件不可复现，CI/其他机器无法保证同版本依赖，且可能撞上本地陈旧快照。
+    // 提到 allprojects 是因为根项目也需要解析（根任务的 jacocoAnt 配置，见文件末尾的
+    // jacocoRootReport）：只在 subprojects 里声明会让根项目报
+    // "Cannot resolve external dependency org.jacoco:org.jacoco.ant ... no repositories are defined"。
+    repositories {
+        maven { url = 'https://maven.aliyun.com/repository/central' }
+        maven { url = 'https://maven.aliyun.com/repository/spring' }
+        maven { url = 'https://maven.aliyun.com/repository/google' }
+        // 仅供需要快照版依赖的开发机使用，当前无模块声明 -SNAPSHOT 依赖
+        maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
+        mavenCentral()
+    }
 }
 
 // 子模块配置
@@ -50,16 +71,7 @@ subprojects {
         apply plugin: 'signing'
     }
 
-    // 仓库配置：镜像仅作加速，明确 ordered；不启用 mavenLocal——本地仓库构件不可复现，
-    // CI/其他机器无法保证同版本依赖，且可能撞上本地陈旧快照
-    repositories {
-        maven { url = 'https://maven.aliyun.com/repository/central' }
-        maven { url = 'https://maven.aliyun.com/repository/spring' }
-        maven { url = 'https://maven.aliyun.com/repository/google' }
-        // 仅供需要快照版依赖的开发机使用，当前无模块声明 -SNAPSHOT 依赖
-        maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
-        mavenCentral()
-    }
+    // 仓库配置见上方 allprojects：此处不重复声明，否则镜像/快照策略会在两处漂移
 
     // 依赖说明：slf4j-api 与 lombok（锁定版本以支持 JDK 25，见 gradle/libs.versions.toml）
     // 在各子模块 build.gradle 中声明——root 的 subprojects 块执行时子项目尚未评估，
@@ -77,6 +89,23 @@ subprojects {
 
     tasks.named('test') {
         useJUnitPlatform()
+    }
+
+    // 覆盖率：JaCoCo 是 Gradle 核心插件，不引入额外三方依赖。
+    // 这里只为拿到 agent 与各模块的 build/jacoco/test.exec；对外/CI 看的报告是根任务的
+    // jacocoRootReport（原因见文件末尾）。报告不接入 build/check，日常构建不付生成开销。
+    apply plugin: 'jacoco'
+
+    jacoco {
+        toolVersion = jacocoToolVersion
+    }
+
+    tasks.withType(JacocoReport).configureEach {
+        reports {
+            xml.required = true
+            html.required = true
+            csv.required = false
+        }
     }
 
     tasks.withType(JavaCompile).configureEach {
@@ -160,5 +189,58 @@ subprojects {
 allprojects {
     tasks.matching { it.name == 'cyclonedxDirectBom' }.configureEach {
         includeConfigs = ['runtimeClasspath', 'compileClasspath']
+    }
+}
+
+// 覆盖率聚合报告。为什么不用各模块自带的 jacocoTestReport：
+// 测试代码全部集中在三个 starter 模块，被测的核心逻辑却在 dynamic-datasource-spring /
+// -creator / -boot-common 里，而 JaCoCo 的模块级报告只统计本模块的 class 输出——核心模块
+// 没有 test 任务，报告压根不生成，看起来像 0%；starter 模块的百分比也只反映它们自己那几个
+// 自动装配类。这里用全部模块的 test.exec 去查这三个库模块的 class，得到的才是“真实被测覆盖率”。
+//
+// 聚合范围不含三个 starter：它们按 Boot2/3/4 各自携带同名类的不同副本
+//（com.baomidou...check.SeataDataSourceProxyChecker、DsJakarta*Processor、*AutoConfiguration 等），
+// 放进同一个 bundle 会让 JaCoCo 直接失败：
+//   java.lang.IllegalStateException: Can't add different class with same name: ...
+// Gradle 9.8 的 JacocoReport 没有 additionalGroupData（多 bundle）支持，已实测确认，
+// 所以只能限定到无重名的模块。starter 层的覆盖率看各模块自己的 jacocoTestReport。
+//
+// 由 CI 显式调用（./gradlew jacocoRootReport），不接入 build/check。
+apply plugin: 'jacoco'
+
+jacoco {
+    toolVersion = jacocoToolVersion
+}
+
+// 被测的库模块（即会上 Central 的核心代码）。新增模块时记得同步这里，
+// 否则它会默默地从分母里消失——下面的校验就是防这个的。
+def coverageModules = [
+    'dynamic-datasource-creator',
+    'dynamic-datasource-spring',
+    'dynamic-datasource-spring-boot-common',
+]
+
+tasks.register('jacocoRootReport', JacocoReport) {
+    group = 'verification'
+    description = 'Coverage of the library modules, measured by tests that live in the starters'
+    dependsOn subprojects.collect { it.path + ':test' }
+
+    def targets = subprojects.findAll { it.name in coverageModules }
+    if (targets.size() != coverageModules.size()) {
+        def lost = coverageModules - targets*.name
+        throw new GradleException("jacocoRootReport: coverage modules not found in this build: ${lost}. " +
+            'Module renamed or removed? Update the coverageModules list in build.gradle rather than letting it drop out silently.')
+    }
+
+    // 执行数据仍然取全部模块：starter 里的测试会踩到库模块的代码，agent 记录的是运行时
+    // 加载过的所有类；报告只会拿它去匹配下面三个模块的 class。
+    executionData.from files(subprojects.collect { it.layout.buildDirectory.files('jacoco/test.exec') })
+    classDirectories.from files(targets.collect { it.layout.buildDirectory.files('classes/java/main') })
+    sourceDirectories.from files(targets.collect { it.file('src/main/java') })
+
+    reports {
+        xml.required = true
+        html.required = true
+        csv.required = false
     }
 }

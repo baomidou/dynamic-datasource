@@ -55,6 +55,22 @@ jobs:
           cache: 'gradle'
       - name: Build test with Gradle
         run: ./gradlew clean test
+      # 覆盖率只在 JDK 17 这一腿采集：矩阵各腿跑的是同一套测试，重复生成没有信息量。
+      # 复用上面 test 已经写出的 build/jacoco/test.exec，jacocoRootReport 里的 test 依赖会命中
+      # up-to-date，不会重跑测试。报告不入 build/check，也不接外部徽章服务。
+      - name: Generate aggregated coverage report
+        if: matrix.java-version == '17'
+        run: ./gradlew jacocoRootReport
+      - name: Upload coverage report
+        if: matrix.java-version == '17'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-jdk${{ matrix.java-version }}-${{ matrix.os }}
+          path: |
+            build/reports/jacoco/jacocoRootReport/jacocoRootReport.xml
+            build/reports/jacoco/jacocoRootReport/html/
+          if-no-files-found: error
+          retention-days: 14
   # Fail early on PRs that introduce a dependency with a known vulnerability.
   # GitHub-native action, no build-time dependency added to the project itself.
   dependency-review:
