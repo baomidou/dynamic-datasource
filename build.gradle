@@ -207,7 +207,7 @@ allprojects {
 // 自动装配类。这里用全部模块的 test.exec 去查这三个库模块的 class，得到的才是“真实被测覆盖率”。
 //
 // 聚合范围不含三个 starter：它们按 Boot2/3/4 各自携带同名类的不同副本
-//（com.baomidou...check.SeataDataSourceProxyChecker、DsJakarta*Processor、*AutoConfiguration 等），
+//（com.baomidou...processor.DsJakarta*Processor、*AutoConfiguration 等），
 // 放进同一个 bundle 会让 JaCoCo 直接失败：
 //   java.lang.IllegalStateException: Can't add different class with same name: ...
 // Gradle 9.8 的 JacocoReport 没有 additionalGroupData（多 bundle）支持，已实测确认，

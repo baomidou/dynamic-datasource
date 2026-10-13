@@ -241,8 +241,7 @@ gh release create v4.6.0 --generate-notes --latest \
 8. 不启用 `mavenLocal()`：本地仓库构件不可复现。镜像仓库仅作加速，必须保留 Maven Central 兜底。
 9. `doc/` 下原有的 Maven→Gradle 迁移记录已删除（内容被后续重构取代），上述约束即为其存活部分。
 10. **JaCoCo 聚合报告不能把三个 starter 模块放进同一个 bundle**。它们按 Boot 2/3/4 各自携带同名
-    类的不同副本（`...check.SeataDataSourceProxyChecker`、`...processor.DsJakarta*Processor`、
-    `*AutoConfiguration` 等），一起分析时 JaCoCo 报
+    类的不同副本（`...processor.DsJakarta*Processor`、`*AutoConfiguration` 等），一起分析时 JaCoCo 报
     `IllegalStateException: Can't add different class with same name`，而失败信号是含糊的
     `Error while creating report`。Gradle 9.8 的 `JacocoReport` 没有多 bundle（`additionalGroupData`）
     入口，所以 `jacocoRootReport` 只统计 `coverageModules` 里的无重名库模块——往这个清单里加模块前，
