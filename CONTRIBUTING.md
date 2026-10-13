@@ -117,7 +117,8 @@ git commit -am "build: release 4.6.0"
 # 3) 打附注标签并推送标签，触发 release.yml
 git tag -a v4.6.0 -m "v4.6.0"
 git push origin v4.6.0
-# 4) 流水线成功且构件已同步到 Maven Central 后，创建对应 Release（并附上 SBOM）
+# 4) 流水线成功且构件已同步到 Maven Central 后，创建对应 Release
+#    （附 SBOM；Release Note 需交代的事项见 4.3）
 git checkout v4.6.0
 ./gradlew cyclonedxBom
 gh release create v4.6.0 --generate-notes --latest \
@@ -138,6 +139,65 @@ gh release create v4.6.0 --generate-notes --latest \
 `mavenCentral*` 属性由 CI 注入，本地没有可用凭据），也不要将密钥环、口令或私钥写入被跟踪
 的文件——历史上 `gradle.properties` 曾以明文提交过 file-based 签名配置，该 key 仍存在于 git
 历史中，**应当轮换/撤销并重新生成**，新 key 只通过 Secrets 提供给 CI。
+
+另：本地一旦跑过 `publishToMavenLocal`，`~/.m2` 里同 GAV 的线上构件会被覆盖（版本号未变时
+尤其隐蔽）。审计"已发布 POM/依赖树"必须用干净仓库：`mvn -Dmaven.repo.local=/tmp/freshm2 ...`。
+
+## 4.3 发布说明：必须向使用方交代的遗留问题
+> **这一节是待办清单。下面每条在对应 Release 贴出后即可删除；新增遗留问题时也按同样格式补一条。**
+> 之所以写在 CONTRIBUTING 而不是 issue：发布动作本身就是照着 4.2 走的，提醒放在必经之路上才不会漏。
+
+### 4.3.1 4.5.0 会把 Oracle UCP / ojdbc11 带进消费方 classpath（下一版发布时告知）
+
+- **影响范围**：仅已发布的 `4.5.0` 全系 starter（三个 starter 都依赖
+  `dynamic-datasource-spring-boot-common:4.5.0`，其 POM 把
+  `com.oracle.database.spring:oracle-spring-boot-starter-ucp:23.4.0` 与
+  `com.oracle.database.jdbc:ucp` 声明成了 `<scope>compile</scope>`，且非 optional）。
+  4.1.3 / 4.2.0 / 4.3.0 / 4.3.1 的 boot-common POM 里 `oracle` 出现 0 次，**不受影响**；
+  Central 上无 4.4.x。Maven Central 不可撤回，只能靠下一版覆盖。
+- **已修复**：`cd4e8c0`（#787）改为 `compileOnly`；当前 HEAD 生成的 POM 里 `oracle` 出现 0 次。
+- **实测依赖树**（`mvn dependency:tree`，干净本地仓库强制走 Central）：
+
+  ```text
+  # 无 Spring Boot BOM 参与版本管理时（Gradle 侧、或不使用 boot parent 的 Maven 工程）
+  com.baomidou:dynamic-datasource-spring-boot-common:4.5.0
+   +- com.oracle.database.spring:oracle-spring-boot-starter-ucp:23.4.0
+   |  +- org.springframework.boot:spring-boot-starter:3.1.5          # Boot 3 jar 进了 Boot 2 应用
+   |  |  +- org.springframework.boot:spring-boot-starter-logging:3.1.5
+   |  |  |  +- ch.qos.logback:logback-classic:1.4.11
+   |  |  |  |  \- ch.qos.logback:logback-core:1.4.11
+   |  |  \- com.oracle.database.jdbc:ojdbc11:21.9.0.0
+   +- com.oracle.database.jdbc:ucp:23.4.0.24.05
+
+  # 以 spring-boot-starter-parent:2.7.18 为 parent 的 Boot 2 应用：版本被 BOM 拉齐，
+  # 不会拿到 Boot 3 jar，但下面这些仍然会凭空出现在 classpath 上
+   +- com.oracle.database.spring:oracle-spring-boot-starter-ucp:23.4.0
+   |  +- org.springframework.boot:spring-boot-starter:2.7.18
+   |  |  |  +- ch.qos.logback:logback-classic:1.2.12
+   |  |  \- com.oracle.database.jdbc:ojdbc11:21.5.0.0
+   +- com.oracle.database.jdbc:ucp:21.5.0.0
+  ```
+
+  也就是说：不用 Oracle 的应用被塞了 ojdbc11 + ucp（约 5 MB）和 Oracle 自己的自动装配；
+  用 Gradle 或不带 BOM 解析的 Boot 2 应用还会额外看到 Boot 3 的 `spring-boot-starter`/logback
+  混进 classpath，出现难以解释的启动或日志行为差异。
+- **下一版 Release Note 建议文案**（中英各一版，可直接粘）：
+
+  ```markdown
+  - 修复：4.5.0 会把 `oracle-spring-boot-starter-ucp`、`ucp`（以及经由它引入的 `ojdbc11`、
+    `spring-boot-starter`、logback）作为 compile 依赖传递给所有使用方。现已改为 compileOnly。
+    仍在使用 4.5.0 且不需要 Oracle UCP 的应用，请升级到本版本，或临时排除：
+    `com.oracle.database.spring:oracle-spring-boot-starter-ucp` 与 `com.oracle.database.jdbc:ucp`。
+
+  - Fix: 4.5.0 leaked `oracle-spring-boot-starter-ucp`, `ucp` (and transitively `ojdbc11`,
+    `spring-boot-starter`, logback) to every consumer as compile-scope dependencies. They are
+    `compileOnly` again. If you are pinned to 4.5.0 and don't use Oracle UCP, exclude
+    `com.oracle.database.spring:oracle-spring-boot-starter-ucp` and `com.oracle.database.jdbc:ucp`.
+  ```
+
+- **同一事实在 issue 里也值得回一句**：4.5.0 期间凡是报"启动多了 Oracle 相关 bean / logback 版本冲突"
+  的历史 issue，根因都是这一条，可以在关闭时指向本节的说明。
+
 
 # 5. 构建约束（改构建脚本前必读）
 

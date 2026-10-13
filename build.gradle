@@ -134,12 +134,6 @@ subprojects {
         }
     }
 
-    tasks.withType(MavenPublication).configureEach {
-        doFirst {
-            options.skipCertificateChecks = true
-        }
-    }
-
     // GraalVM Native Image, shared by the starters that apply the plugin:
     // test all starters with `./gradlew nativeTest --continue`, regenerate the metadata with
     // `./gradlew generateMetadata -Pagent`. See CONTRIBUTING.md.
