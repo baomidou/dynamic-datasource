@@ -1,0 +1,118 @@
+name: Bug report
+description: 报告缺陷 / Report a bug（请认真填写，信息不全的 issue 会被关闭 / incomplete reports will be closed）
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        请认真填写以下信息，**缺少环境信息或可复现步骤的 issue 会被关闭**。
+        安全漏洞请勿在此提交，见
+        [SECURITY.md](https://github.com/baomidou/dynamic-datasource/blob/master/SECURITY.md)。
+
+        Please fill in everything below; issues without environment info or a
+        reproducer will be closed. Do NOT report security vulnerabilities here.
+
+        提问前请先确认：是否已阅读文档 https://doc.xiuceyun.cn ，以及是否已在
+        [Discussions](https://github.com/baomidou/dynamic-datasource/discussions) 搜索过相似问题。
+  - type: dropdown
+    id: component
+    attributes:
+      label: 使用的 starter 模块 / Starter artifact
+      description: 选错模块是最常见的"看起来像 bug"的问题（Boot 2/3/4 各自对应不同 artifact）
+      options:
+        - dynamic-datasource-spring-boot-starter (Spring Boot 1.5.x ~ 2.x.x)
+        - dynamic-datasource-spring-boot3-starter (Spring Boot 3.x.x)
+        - dynamic-datasource-spring-boot4-starter (Spring Boot 4.x.x)
+        - 其他 / 不确定 (other / unsure)
+      multiple: false
+    validations:
+      required: true
+  - type: input
+    id: dd-version
+    attributes:
+      label: dynamic-datasource 版本 (required)
+      placeholder: "4.5.0"
+    validations:
+      required: true
+  - type: input
+    id: springboot-version
+    attributes:
+      label: Spring Boot 版本 (required)
+      placeholder: "3.5.7"
+    validations:
+      required: true
+  - type: input
+    id: jdk-version
+    attributes:
+      label: JDK 版本 (required)
+      description: 请给出 `java -version` 的完整输出，包括发行版（Temurin/GraalVM/Oracle…）
+      placeholder: |
+        openjdk version "17.0.8" 2023-07-18
+        OpenJDK Runtime Environment Temurin-17.0.8+7
+    validations:
+      required: true
+  - type: input
+    id: pool-version
+    attributes:
+      label: 连接池与版本 (optional)
+      description: Druid / HikariCP / c3p0 / beecp / dbcp2 / Oracle UCP，以及是否使用了 XA/Atomikos、Seata
+      placeholder: "druid-spring-boot-3-starter 1.2.28, atomikos 6.0.0"
+  - type: textarea
+    id: describe
+    attributes:
+      label: 问题描述 / Describe the bug
+      description: 说明现象、以及它为什么是问题
+      placeholder: 数据源分组切换后，@DS 注解在同类内部调用时未生效……
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望结果 / Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际结果 / Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: config
+    attributes:
+      label: 相关配置 / Relevant configuration
+      description: spring.datasource.dynamic.* 等配置片段（**请脱敏密码、连接串中的账号信息**）
+      render: yaml
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: 复现步骤 / Minimal reproducer
+      description: |
+        请给出可复现的最小步骤或 demo 工程链接。没有复现方式的 issue 通常无法定位，
+        会被关闭。Steps to reproduce, or a link to a minimal demo project.
+      placeholder: |
+        1. 以 demo 工程 https://github.com/<you>/<repo> 启动
+        2. 调用 GET /user/list
+        3. 观察日志/抛出异常
+    validations:
+      required: true
+  - type: textarea
+    id: stacktrace
+    attributes:
+      label: 异常栈 / Stack trace
+      description: |
+        有异常请粘贴完整栈（含 caused by）。请粘贴文本而非截图，也不要按日志级别过滤后只贴其中一段——
+        同一毫秒的 ERROR 行往往正是关键信息。
+      render: log
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: 提交前确认 / Preflight
+      options:
+        - label: 我已搜索过 open/closed issues 与 Discussions，没有重复
+          required: true
+        - label: 我已确认 JDK / Spring Boot 与 starter 模块的版本是匹配的（见 README 版本选择表）
+          required: true
+        - label: 我已对配置内容脱敏（不含真实密码/密钥）
+          required: true

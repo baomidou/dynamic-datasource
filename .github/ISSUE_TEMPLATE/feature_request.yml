@@ -1,0 +1,50 @@
+name: Feature request
+description: 功能建议 / Suggest an idea for this project
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        请先确认该能力是否属于本框架的职责边界：**本框架只做"切换数据源"这一件事**。
+        连接池治理、SQL 改写、分库分表、ORM 能力等属于其他项目的范畴。
+
+        Note the project scope: this library only routes/switches datasources.
+        Pool tuning, SQL rewriting, sharding and ORM features belong elsewhere.
+  - type: textarea
+    attributes:
+      label: 想解决的问题 / The problem to solve
+      description: 请描述你在什么场景下被卡住，而不是直接给出你想要的 API 名称
+      placeholder: 我需要在运行时按租户路由数据源，但……
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 期望的行为 / Proposed behaviour
+      description: 配置项形态、注解形态、与现有 @DS / 事务（DSTransactional、Seata、XA）如何共存
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 现在的替代方案 / Current workaround
+      description: 你现在是如何绕过它的？这能帮助判断优先级
+  - type: dropdown
+    attributes:
+      label: 影响范围 / Which part is affected
+      options:
+        - 数据源切换与注解 (@DS / DS processor)
+        - 数据源创建与连接池 (creator)
+        - 事务 (DSTransactional / XA / Seata)
+        - 分组与负载均衡 (GroupDataSource / strategy)
+        - 加解密 ENC / 配置
+        - 构建与发布 (Gradle / CI)
+        - 文档
+      multiple: true
+  - type: checkboxes
+    attributes:
+      label: 提交前确认 / Preflight
+      options:
+        - label: 我已搜索过 open/closed issues 与 Discussions，没有重复建议
+          required: true
+        - label: 我愿意提交 PR 实现它（可选，但会大大提高被接纳的概率）
+          required: false

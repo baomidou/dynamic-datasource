@@ -1,0 +1,13 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 使用问题与提问 / Questions & usage help
+    url: https://github.com/baomidou/dynamic-datasource/discussions
+    about: |
+      用法咨询、"为什么我的注解没生效"、环境排查类问题请发到 Discussions，
+      这里只留缺陷与功能需求。Questions about usage belong in Discussions.
+  - name: 文档 / Documentation
+    url: https://doc.xiuceyun.cn
+    about: 配置项、注解、事务方案的全部说明 Documentation for config keys, annotations and transactions.
+  - name: 安全漏洞 / Security vulnerabilities
+    url: https://github.com/baomidou/dynamic-datasource/security/advisories/new
+    about: 请勿开公开 issue，见 SECURITY.md Please use private vulnerability reporting.
