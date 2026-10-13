@@ -142,6 +142,16 @@ subprojects {
             metadataRepository {
                 enabled = true
             }
+            binaries {
+                configureEach {
+                    // -Ob (quick build): lower optimization level for faster native compilation.
+                    // These binaries only run CI tests, so startup/perf quality is irrelevant.
+                    // No class-file cache is wired up: the NBT Gradle plugin (1.1.13) exposes no
+                    // incremental-cache support, so cross-run caching of nativeTestCompile stays
+                    // out of scope until the plugin supports it.
+                    buildArgs.add('-Ob')
+                }
+            }
             agent {
                 // instrument the tests only when `-Pagent` is passed, so that `nativeTest`
                 // validates the committed metadata instead of metadata generated on the fly

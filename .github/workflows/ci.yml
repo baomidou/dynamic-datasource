@@ -17,14 +17,16 @@ concurrency:
 
 jobs:
   test-graalvm-ce-ci:
-    name: NativeTest CI - GraalVM CE ${{ matrix.version }} on ${{ matrix.os }}
+    name: NativeTest CI - ${{ matrix.starter }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 60
-    continue-on-error: true
+    timeout-minutes: 30
     strategy:
       matrix:
         os: [ ubuntu-latest ]
         version: [ '25.3.4.1' ]
+        # 按 starter 拆腿：native-image 编译（每腿约 5 分钟）是 wall time 大头，串行两条不如并行两条。
+        # nativeTest 已稳定修复（#760/#788），不再用 continue-on-error 容忍失败。
+        starter: [ 'dynamic-datasource-spring-boot3-starter', 'dynamic-datasource-spring-boot4-starter' ]
     steps:
       - uses: actions/checkout@v7
       - uses: graalvm/setup-graalvm@v1
@@ -34,8 +36,8 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           cache: 'gradle'
           native-image-job-reports: 'true'
-      - name: Run nativeTest for all starters with Gradle
-        run: ./gradlew nativeTest --continue
+      - name: Run nativeTest for ${{ matrix.starter }}
+        run: ./gradlew :${{ matrix.starter }}:nativeTest
   test-jdk-ci:
     if: github.repository == 'baomidou/dynamic-datasource'
     name: Test CI - JDK ${{ matrix.java-version }} on ${{ matrix.os }}
