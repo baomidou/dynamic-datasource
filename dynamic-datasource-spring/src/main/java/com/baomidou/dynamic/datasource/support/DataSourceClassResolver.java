@@ -18,6 +18,7 @@ package com.baomidou.dynamic.datasource.support;
 import com.baomidou.dynamic.datasource.annotation.BasicAttribute;
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
+import com.baomidou.dynamic.datasource.tx.DsPropagation;
 import com.baomidou.dynamic.datasource.tx.TransactionalInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopProxyUtils;
@@ -41,9 +42,15 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DataSourceClassResolver {
 
     /**
-     * 默认事务属性
+     * 默认事务属性：必须携带可用默认值——类级 @DSTransactional 配合非 public 方法
+     * （allowedPublicOnly）会返回本占位对象，而 TransactionalTemplate.execute 直接
+     * {@code switch (propagation)}，null 在这里就是 NPE。
      */
     private static final TransactionalInfo NULL_TRANSACTION_ATTRIBUTE = new TransactionalInfo() {
+        {
+            setPropagation(DsPropagation.REQUIRED);
+        }
+
         @Override
         public String toString() {
             return "null";

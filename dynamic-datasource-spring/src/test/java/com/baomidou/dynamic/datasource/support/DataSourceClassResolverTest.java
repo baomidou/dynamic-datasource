@@ -57,6 +57,9 @@ class DataSourceClassResolverTest {
 
         public void unannotated() {
         }
+
+        protected void protectedUnannotated() {
+        }
     }
 
     private static Method method(Class<?> clazz, String name, Class<?>... params) {
@@ -116,6 +119,17 @@ class DataSourceClassResolverTest {
                 method(MixedTarget.class, "txMethod"), new MixedTarget(), DSTransactional.class);
         assertThat(info).isNotNull();
         assertThat(info.getPropagation()).isEqualTo(DsPropagation.REQUIRES_NEW);
+    }
+
+    @Test
+    void placeholderTransactionalInfoShouldCarryNonNullPropagation() {
+        // allowedPublicOnly=true 时非 public 方进入占位分支；占位对象若不带 propagation，
+        // TransactionalTemplate.execute 的 switch(null) 直接 NPE（旧行为）。
+        DataSourceClassResolver resolver = new DataSourceClassResolver(true);
+        TransactionalInfo info = resolver.findTransactionalInfo(
+                method(MixedTarget.class, "protectedUnannotated"), new MixedTarget(), DSTransactional.class);
+        assertThat(info).isNotNull();
+        assertThat(info.getPropagation()).isSameAs(DsPropagation.REQUIRED);
     }
 
     @Test
