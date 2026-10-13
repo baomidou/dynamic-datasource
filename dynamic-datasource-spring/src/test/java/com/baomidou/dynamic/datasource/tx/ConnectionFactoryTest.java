@@ -16,12 +16,16 @@
 package com.baomidou.dynamic.datasource.tx;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.transaction.CannotCreateTransactionException;
 
 import java.sql.Connection;
 import java.sql.Savepoint;
+import java.sql.SQLException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -123,6 +127,21 @@ class ConnectionFactoryTest {
         // 嵌套事务提交走保存点释放路径，而非直接提交底层连接
         verify(connection).releaseSavepoint(savepoint);
         verify(connection, never()).commit();
+    }
+
+    @Test
+    void putConnectionShouldRefuseEnlistmentWhenAutoCommitCannotBeDisabled() throws Exception {
+        // 驱动拒绝 setAutoCommit(false) 时绝不能继续登记：否则该连接上每条 SQL 立即落库，
+        // 而事务机制还以为自己能回滚，产生"部分成功"脏数据。
+        String xid = "x-autocommit-refused";
+        Connection connection = mock(Connection.class);
+        doThrow(new SQLException("driver refuses")).when(connection).setAutoCommit(false);
+
+        assertThatThrownBy(() -> ConnectionFactory.putConnection(xid, "ds",
+                new ConnectionProxy(connection, "ds")))
+                .isInstanceOf(CannotCreateTransactionException.class)
+                .hasMessageContaining("ds");
+        assertThat(ConnectionFactory.getConnection(xid, "ds")).isNull();
     }
 
     @Test

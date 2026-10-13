@@ -16,6 +16,7 @@
 package com.baomidou.dynamic.datasource.event;
 
 import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
+import com.baomidou.dynamic.datasource.exception.ErrorCreateDataSourceException;
 import com.baomidou.dynamic.datasource.toolkit.CryptoUtils;
 import com.baomidou.dynamic.datasource.toolkit.DsStrUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -62,7 +63,12 @@ public class EncDataSourceInitEvent implements DataSourceInitEvent {
                 try {
                     return CryptoUtils.decrypt(publicKey, matcher.group(1));
                 } catch (Exception e) {
-                    log.error("DynamicDataSourceProperties.decrypt error ", e);
+                    // Fail fast. Returning the ciphertext used to boot the app with the literal
+                    // "ENC(...)" string as password/url, surfacing later as misleading
+                    // "access denied"/URL-parse errors while the real cause (wrong public key,
+                    // key-length mismatch) stayed buried in an earlier log line.
+                    throw new ErrorCreateDataSourceException(
+                            "dynamic-datasource could not decrypt an ENC(...) property, check the public-key configuration", e);
                 }
             }
         }

@@ -16,10 +16,12 @@
 package com.baomidou.dynamic.datasource.event;
 
 import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
+import com.baomidou.dynamic.datasource.exception.ErrorCreateDataSourceException;
 import com.baomidou.dynamic.datasource.toolkit.CryptoUtils;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * {@link EncDataSourceInitEvent} 配置解密（{@code ENC(...)}）基本功能的单元测试。
@@ -69,6 +71,22 @@ class EncDataSourceInitEventTest {
         assertThat(property.getUrl()).isEqualTo("jdbc:h2:mem:plain");
         assertThat(property.getUsername()).isEqualTo("sa");
         assertThat(property.getPassword()).isEqualTo("plain-pwd");
+    }
+
+    @Test
+    void decryptionFailureWithWrongKeyShouldThrowInsteadOfReturningCiphertext() throws Exception {
+        // 旧实现吞异常返回密文原文：应用带着字面量 "ENC(...)" 当密码启动，
+        // 报出来的是误导性的 access denied，真因（公钥不匹配/密钥长度）被埋在第一层日志。
+        String[] encKeyPair = CryptoUtils.genKeyPair(512);
+        String[] wrongKeyPair = CryptoUtils.genKeyPair(512);
+
+        DataSourceProperty property = new DataSourceProperty();
+        property.setPublicKey(wrongKeyPair[1]);
+        property.setPassword("ENC(" + CryptoUtils.encrypt(encKeyPair[0], "secret") + ")");
+
+        assertThatThrownBy(() -> event.beforeCreate(property))
+                .isInstanceOf(ErrorCreateDataSourceException.class)
+                .hasMessageContaining("public-key");
     }
 
     @Test

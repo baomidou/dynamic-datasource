@@ -59,6 +59,12 @@ public class ScriptRunner {
                 populator.addScripts(resolver.getResources(location));
                 DatabasePopulatorUtils.execute(populator, dataSource);
             } catch (DataAccessException e) {
+                if (!continueOnError) {
+                    // The populator was explicitly configured to abort on SQL errors; swallowing
+                    // here let broken init scripts pass silently - the datasource booted fine and
+                    // the first real query then failed with "table doesn't exist".
+                    throw e;
+                }
                 log.warn("execute sql error", e);
             } catch (Exception e1) {
                 log.warn("failed to initialize dataSource from schema file {} ", location, e1);

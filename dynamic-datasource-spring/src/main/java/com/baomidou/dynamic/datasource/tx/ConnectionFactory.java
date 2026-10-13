@@ -70,7 +70,11 @@ public class ConnectionFactory {
             try {
                 connection.setAutoCommit(false);
             } catch (SQLException e) {
-                e.printStackTrace();
+                // A connection that refuses setAutoCommit(false) must not be enlisted: every
+                // statement on it would commit immediately while the tx machinery still believes
+                // it can roll the ds back - silently producing "partial success" dirty data.
+                throw new CannotCreateTransactionException(
+                        "Could not disable autoCommit for datasource [" + ds + "]", e);
             }
             connectionProxyMap.put(ds, connection);
         }
