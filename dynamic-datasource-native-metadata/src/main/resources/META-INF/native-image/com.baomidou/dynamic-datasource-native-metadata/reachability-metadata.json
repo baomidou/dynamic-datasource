@@ -497,6 +497,18 @@
     },
     {
       "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.DynamicRoutingDataSource"
+      },
+      "type": "com.baomidou.dynamic.datasource.strategy.RandomDynamicDataSourceStrategy",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
         "typeReached": "com.baomidou.dynamic.datasource.creator.hikaricp.HikariDataSourceCreator"
       },
       "type": "com.zaxxer.hikari.HikariConfig",
