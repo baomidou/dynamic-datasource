@@ -18,6 +18,7 @@ package com.baomidou.dynamic.datasource.tx;
 import com.baomidou.dynamic.datasource.exception.TransactionException;
 import com.baomidou.dynamic.datasource.toolkit.DsStrUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.transaction.support.TransactionSynchronization;
 
 import java.util.Objects;
@@ -111,27 +112,79 @@ public class TransactionalTemplate {
             return transactionalExecutor.execute();
         }
         boolean state = true;
+        boolean bodyThrew = false;
         Object o;
         String xid = LocalTxUtil.startTransaction();
         boolean shouldInvokeAction = TransactionContext.getSynchronizations().isEmpty();
         try {
             o = transactionalExecutor.execute();
-        } catch (Exception e) {
-            state = !isRollback(e, transactionInfo);
+        } catch (Throwable e) {
+            // Used to be `catch (Exception)`: an Error leaking out of the business method (e.g. a
+            // NoClassDefFoundError from class-init failure) kept state=true and COMMITTED the broken
+            // transaction. Anything that is not an Exception now always rolls back.
+            bodyThrew = true;
+            state = e instanceof Exception && !isRollback(e, transactionInfo);
             throw e;
         } finally {
+            completeTransaction(xid, state, shouldInvokeAction, bodyThrew);
+        }
+        return o;
+    }
+
+    /**
+     * 提交/回滚并回调监听器，逐步保护：任何一步抛错（失灵的 @DsTxEventListener、提交时库连接已断）
+     * 都不许跳过后续步骤。旧实现是一条裸串行链，一旦中途抛异常，xid、连接与同步器全部残留在
+     * 当前线程上——线程归还线程池后，该线程之后的每一次写都会静默丢失。
+     */
+    private void completeTransaction(String xid, boolean state, boolean shouldInvokeAction, boolean bodyThrew) {
+        int status = state ? TransactionSynchronization.STATUS_COMMITTED : TransactionSynchronization.STATUS_ROLLED_BACK;
+        boolean settled = false;
+        Throwable completionError = null;
+        try {
             invokeBeforeCompletion(shouldInvokeAction);
             if (state) {
                 invokeBeforeCommit(shouldInvokeAction);
                 LocalTxUtil.commit(xid);
-                invokeAfterCommit(shouldInvokeAction);
-                invokeAfterCompletion(TransactionSynchronization.STATUS_COMMITTED, shouldInvokeAction);
             } else {
                 LocalTxUtil.rollback(xid);
-                invokeAfterCompletion(TransactionSynchronization.STATUS_ROLLED_BACK, shouldInvokeAction);
+            }
+            settled = true;
+            if (state) {
+                invokeAfterCommit(shouldInvokeAction);
+            }
+        } catch (Throwable t) {
+            completionError = t;
+            status = TransactionSynchronization.STATUS_UNKNOWN;
+            log.error("dynamic-datasource failed to complete transaction [{}]", xid, t);
+        } finally {
+            if (!settled) {
+                // commit/rollback itself never finished: force-release the connections and unbind the
+                // xid. notify() clears the connection map in its own finally, so this is a no-op when
+                // the failure happened after the map was already removed.
+                try {
+                    LocalTxUtil.rollback(xid);
+                } catch (Throwable t) {
+                    log.error("dynamic-datasource failed to force-rollback transaction [{}]", xid, t);
+                }
+            }
+            try {
+                invokeAfterCompletion(status, shouldInvokeAction);
+            } catch (Throwable t) {
+                log.error("dynamic-datasource afterCompletion callback failed for transaction [{}]", xid, t);
+            }
+            if (shouldInvokeAction) {
+                // removeSynchronizations() used to run only at the tail of invokeAfterCompletion;
+                // a listener throwing earlier left the ThreadLocal forever on this thread.
+                TransactionContext.removeSynchronizations();
             }
         }
-        return o;
+        if (settled || bodyThrew || !state) {
+            return;
+        }
+        // Business method succeeded but the commit did not go through: let the caller see that the
+        // "success" was an illusion. Only for the body-succeeded path, so a propagating business
+        // exception is never masked.
+        throw new TransactionSystemException("Could not commit local tx [" + xid + "]", completionError);
     }
 
     /**
