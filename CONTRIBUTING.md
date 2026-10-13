@@ -131,3 +131,29 @@ gh release create v4.6.0 --generate-notes --latest
 `mavenCentral*` 属性由 CI 注入，本地没有可用凭据），也不要将密钥环、口令或私钥写入被跟踪
 的文件——历史上 `gradle.properties` 曾以明文提交过 file-based 签名配置，该 key 仍存在于 git
 历史中，**应当轮换/撤销并重新生成**，新 key 只通过 Secrets 提供给 CI。
+
+# 5. 构建约束（改构建脚本前必读）
+
+以下每条都是实际调试付出过代价的硬约束，违反后的失败信号并不直观：
+
+1. **发布任务必须 `--no-configuration-cache`**。`io.spring.dependency-management` 在生成 POM 时
+   回调 `withXml()`，该动作不是缓存安全的（缓存复用后报 `this.delegate is null`）。因此
+   `release.yml` 的 publish 步骤显式关掉了缓存；测试/构建任务仍使用缓存。
+2. **JDK 基线只能走 toolchain，不能与 `sourceCompatibility` 混用**。一旦 root 的 `subprojects`
+   里残留 `sourceCompatibility = 1.8`，Gradle 9 会按 "JVM 8 兼容库" 的元数据约束去解析依赖，
+   Boot 3/4 模块直接报 `spring-boot-starter-web:x is only compatible with JVM 17+`。各模块统一
+   用 `java { toolchain { ... } }`（默认 8，boot3/boot4 为 17）。
+3. **Gradle 客户端自身需要 JVM 17+，且无法用 `gradle-daemon-jvm.properties` 绕过**：该检查发生在
+   守护进程启动之前。本机默认 `JAVA_HOME` 为 JDK 8 时需先切到 17+。
+4. **`subprojects {}` 块里访问不到版本目录 `libs`**：root 脚本执行时子项目尚未评估，强行使用会得
+   到隐式父属性查找弃用警告或 `No such property`。公共依赖（`slf4j-api`、Lombok）因此写在各子
+   模块自己的 `build.gradle` 中。同理，版本目录别名不能数字开头（`druid-boot3-starter` 不合法，
+   实际生成的访问器保留 camelCase），且访问器名与 `[versions]` 键一致（`libs.versions.springBoot2`，
+   写成 `libs.versions.spring.boot2` 会报错）。
+5. **`mavenBom` 只接受 `String`**，不能直接传版本目录 Provider，需要 `"...:${libs.versions.x.get()}"` 插值。
+6. **sources/javadoc jar 由发布插件自动提供**（`com.vanniktech.maven.publish` 默认
+   `withSourcesJar()`/`withJavadocJar()`），手写同名任务会触发
+   `multiple artifacts with the identical extension and classifier ('jar', 'javadoc')`。
+7. **Lombok 版本不得低于 1.18.42**，否则在 JDK 25 矩阵下编译报 `TypeTag::UNKNOWN`。
+8. 不启用 `mavenLocal()`：本地仓库构件不可复现。镜像仓库仅作加速，必须保留 Maven Central 傅底。
+9. `doc/` 下原有的 Maven→Gradle 迁移记录已删除（内容被后续重构取代），上述约束即为其存活部分。
