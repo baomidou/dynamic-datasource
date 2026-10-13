@@ -126,6 +126,41 @@ class ConnectionFactoryTest {
     }
 
     @Test
+    void notifyWithSavepointRollbackShouldRollbackAndCloseUnmarkedConnection() throws Exception {
+        // 场景：外层先建保存点（ds1 被标记），嵌套内层又新开了一个数据源（ds2 无保存点）后回滚。
+        // ds2 的 proxy 一旦脱离 connectionProxyMap 就再也拿不到 notify()，
+        // 旧代码调的是 no-op 的 proxy.rollback()，物理连接既不回滚也不归还，永久泄漏。
+        String xid = "x-nested-rollback-unmarked";
+        Connection markedConn = mock(Connection.class);
+        Savepoint savepoint = mock(Savepoint.class);
+        when(savepoint.getSavepointName()).thenReturn("DYNAMIC_0");
+        when(markedConn.setSavepoint(anyString())).thenReturn(savepoint);
+        ConnectionFactory.putConnection(xid, "ds1", new ConnectionProxy(markedConn, "ds1"));
+        ConnectionFactory.createSavepoint(xid);
+        Connection unmarkedConn = mock(Connection.class);
+        ConnectionFactory.putConnection(xid, "ds2", new ConnectionProxy(unmarkedConn, "ds2"));
+
+        ConnectionFactory.notify(xid, false);
+
+        // 被标记连接回滚到保存点，仍留在事务里等最外层结算
+        verify(markedConn).rollback(savepoint);
+        verify(markedConn, never()).close();
+        // 未标记连接必须真实回滚并归还连接池
+        verify(unmarkedConn).rollback();
+        verify(unmarkedConn).close();
+        assertThat(ConnectionFactory.getConnection(xid, "ds2")).isNull();
+    }
+
+    @Test
+    void createSavepointWithoutAnyConnectionShouldBeNoOp() {
+        // 外层事务全程没取过连接，内层 NESTED 进入时 xid 下没有连接映射：
+        // 旧代码在这里直接 .values() 抛 NPE，应与 notify() 一样安全返回。
+        String xid = "x-savepoint-no-connection";
+        ConnectionFactory.createSavepoint(xid);
+        assertThat(ConnectionFactory.hasSavepoint(xid)).isFalse();
+    }
+
+    @Test
     void hasSavepointShouldBeFalseForUnknownXid() {
         assertThat(ConnectionFactory.hasSavepoint("x-no-savepoint")).isFalse();
     }

@@ -141,7 +141,11 @@ public class ConnectionFactory {
                             Map.Entry<String, ConnectionProxy> connectionProxyEntry = entryIterator.next();
                             ConnectionProxy value = connectionProxyEntry.getValue();
                             if (!markedConnectionProxy.contains(value)) {
-                                value.rollback();
+                                // notify(false) is the only path that really rolls back the underlying
+                                // connection and returns it to the pool; ConnectionProxy.rollback() is a
+                                // deliberate no-op, so calling it here used to detach the proxy from the
+                                // map while its physical connection stayed open and un-rolled-back forever.
+                                value.notify(false);
                                 entryIterator.remove();
                             }
                         }
@@ -184,6 +188,12 @@ public class ConnectionFactory {
             List<SavePointHolder> savePointHolders = savePointMap.get(xid);
             Map<String, Map<String, ConnectionProxy>> concurrentHashMap = CONNECTION_HOLDER.get();
             Map<String, ConnectionProxy> connectionProxyMap = concurrentHashMap.get(xid);
+            if (connectionProxyMap == null) {
+                // The transaction has not touched any connection yet (e.g. outer @DSTransactional
+                // never queried the DB before entering a NESTED method). Same guard as notify():
+                // there is nothing to place a savepoint on.
+                return;
+            }
             if (CollectionUtils.isEmpty(savePointHolders)) {
                 savePointHolders = new ArrayList<>();
                 for (ConnectionProxy connectionProxy : connectionProxyMap.values()) {
