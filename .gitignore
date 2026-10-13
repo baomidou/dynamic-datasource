@@ -1,9 +1,13 @@
-# Maven
+# Legacy Maven output. The build is Gradle-only now, but working trees migrated
+# from Maven still contain per-module target/ directories; ignore them so they
+# never get committed by accident.
 target/
 
 # Gradle
 .gradle/
 build/
+# The wrapper jar is generated on demand (source-built Gradle Wrapper Neo) and
+# checksum-verified, so it must stay out of the repository.
 gradle/wrapper/gradle-wrapper.jar
 
 ### STS ###
