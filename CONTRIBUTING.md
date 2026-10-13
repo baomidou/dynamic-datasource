@@ -121,9 +121,19 @@ git push origin v4.6.0
 #    （附 SBOM；Release Note 需交代的事项见 4.3）
 git checkout v4.6.0
 ./gradlew cyclonedxBom
-gh release create v4.6.0 --generate-notes --latest \
+# 4a) 取 GitHub 自动生成稿作为底稿（含全部 PR 与作者）
+#     previous_tag_name 必须为真实存在的上一版 tag（用于圈定 PR 区间，替换成实际值）
+gh api repos/{owner}/{repo}/releases/generate-notes \
+  -f tag_name=v4.6.0 -f previous_tag_name=v4.50 --jq .body > notes.md
+# 4b) 融合为最终 notes 后再建 release（一个贡献者都不能丢）：
+#     人工分类亮点（升级必读在最前，含 4.3 要交代的遗留问题）→ 自动稿 What's Changed → 特别感谢
+gh release create v4.6.0 --latest --notes-file notes.md \
   build/reports/cyclonedx/bom.json#"CycloneDX SBOM (published artifacts)"
+git checkout master   # 别把工作区留在 detached HEAD
 ```
+
+> **Release notes 目标结构**：① 人工分类亮点（升级注意在最前）② 自动稿的 "What's Changed"（每个 PR/作者一行）③「特别感谢」点名本版社区 PR 作者。
+> **不要直接裸用 `gh release create --generate-notes`**：它只有 ②，会冲淡升级注意、把贡献者的名字埋进长列表——社区 PR 作者必须被显式感谢（鼓励持续提交），所以按 4a → 4b 的“取回自动稿再融合”流程走。
 
 `cyclonedxBom` 生成的是**聚合 SBOM**（`build/reports/cyclonedx/bom.json`），只包含实际会传递给
 使用方的作用域（`runtimeClasspath`/`compileClasspath`）与已发布构件；`dynamic-datasource-test-common`
