@@ -10,9 +10,10 @@ buildscript {
 
     dependencies {
         classpath("io.spring.dependency-management:io.spring.dependency-management.gradle.plugin:1.1.7")
-        // gradle-maven-publish-plugin 0.32.0 要求 JDK 11+，只在 JDK 11+ 环境下加载
-        if (JavaVersion.current() >= JavaVersion.VERSION_11) {
-            classpath("com.vanniktech:gradle-maven-publish-plugin:0.32.0")
+        // gradle-maven-publish-plugin 0.37.0 要求 JDK 17+；Gradle 9 本身已强制 JVM 17+，
+        // 该条件恒真，保留仅为防御性表达
+        if (JavaVersion.current() >= JavaVersion.VERSION_17) {
+            classpath("com.vanniktech:gradle-maven-publish-plugin:0.37.0")
         }
     }
 }
@@ -64,9 +65,9 @@ allprojects {
 subprojects {
     apply plugin: 'java-library'
 
-    // 只在 JDK 11+ 环境下应用发布插件 (gradle-maven-publish-plugin 0.32.0 要求 JDK 11+)
-    // JDK 8 环境下仅运行测试，无需发布功能
-    if (JavaVersion.current() >= JavaVersion.VERSION_11) {
+    // 只在 JDK 17+ 环境下应用发布插件（gradle-maven-publish-plugin 0.37.0 要求 JDK 17+；
+    // Gradle 9 已强制 JVM 17+，此条件恒真，保留为防御性表达）
+    if (JavaVersion.current() >= JavaVersion.VERSION_17) {
         apply plugin: 'com.vanniktech.maven.publish'
         apply plugin: 'signing'
     }
