@@ -14,6 +14,8 @@ permissions:
 
 jobs:
   welcome:
+    # 不给 dependabot 等机器人发欢迎语（它也会被算作"首次贡献者"）
+    if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
