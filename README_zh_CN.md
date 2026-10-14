@@ -344,10 +344,10 @@ public void closeTenant(String tenantId) {
 > 线程与异步、连接池参数不生效等历史高频问题均已整理为排查清单，多数问题可在此直接找到答案；
 > 确认是框架缺陷或 FAQ 未覆盖的问题，再提 issue。
 
-- **文档站 · 秀策云** — <https://doc.xiuceyun.cn>：当前最完整的配置项、集成方案与进阶用法均在此。
+- **文档站** — <https://doc.xiuceyun.cn>：完整教程、配置项、集成方案与进阶用法（中英文切换 + 版本文档；原秀策云付费内容现已全部免费开放）。
 - **Wiki（中文）** — <https://github.com/baomidou/dynamic-datasource/wiki>
 - **Wiki (English)** — <https://github.com/baomidou/dynamic-datasource/wiki/Home-English>
-  wiki 是文档后续的沉淀方向，正在逐页补齐；在对应主题迁入 wiki 之前，仍以文档站为准。
+  Wiki 聚焦 FAQ 与排障速查（从数百个历史 issue 提炼）；完整文档以文档站为准。
 - **FAQ 精选** — [@DS 不生效排查总表](https://github.com/baomidou/dynamic-datasource/wiki/DS-Not-Working-Checklist) ·
   [事务内不切换](https://github.com/baomidou/dynamic-datasource/wiki/DS-Switching-Inside-Transactions) ·
   [启动报错速查](https://github.com/baomidou/dynamic-datasource/wiki/Startup-Errors) ·

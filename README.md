@@ -364,12 +364,13 @@ public void closeTenant(String tenantId) {
 > threads/async, pool parameters not taking effect — are distilled into troubleshooting checklists; most
 > questions are answered there. File an issue only when it is a genuine bug or not covered by the FAQ.
 
-- **Documentation — 秀策云** — <https://doc.xiuceyun.cn>: the current reference for configuration keys,
-  integration recipes and advanced scenarios.
+- **Documentation** — <https://doc.xiuceyun.cn>: the complete guide — tutorials, configuration keys,
+  integrations and advanced usage, with a Chinese/English switcher and versioned docs (the former
+  paid content is now free for everyone).
 - **Wiki (English)** — <https://github.com/baomidou/dynamic-datasource/wiki/Home-English>
 - **Wiki (简体中文)** — <https://github.com/baomidou/dynamic-datasource/wiki>
-  The wiki is where documentation is headed; it is being filled in page by page, so treat the docs site
-  as authoritative until a topic shows up here.
+  The Wiki focuses on FAQ & troubleshooting checklists distilled from hundreds of historical issues;
+  treat the documentation site as the complete reference.
 - **FAQ picks** — [@DS not working checklist](https://github.com/baomidou/dynamic-datasource/wiki/DS-Not-Working-Checklist) ·
   [switching inside transactions](https://github.com/baomidou/dynamic-datasource/wiki/DS-Switching-Inside-Transactions) ·
   [startup errors](https://github.com/baomidou/dynamic-datasource/wiki/Startup-Errors) ·
