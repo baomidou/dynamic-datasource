@@ -21,6 +21,8 @@
    不接受"配置项存在但行为不一致"的半支持状态。
 4. 产线冻结不会删除任何已发布构件，历史版本在 Maven Central 永久可用。
 
+新增特性提案请先对照 [README 中的范围说明](./README.md#out-of-scope)；本项目聚焦于数据源选择与路由。
+
 ## 获取支持
 
 - **问题与缺陷**：使用 [Issue 模板](https://github.com/baomidou/dynamic-datasource/issues/new/choose) 提交，附最小复现与版本信息。

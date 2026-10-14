@@ -48,6 +48,7 @@
 ## Table of Contents
 
 - [Why this project](#why-this-project)
+- [Out of scope](#out-of-scope)
 - [Highlights](#highlights)
 - [Compatibility](#compatibility)
 - [Quick start](#quick-start)
@@ -81,6 +82,16 @@ plus GraalVM Native Image.
 > The full reference — every configuration key, connection pool and integration recipe — lives on
 > [doc.xiuceyun.cn](https://doc.xiuceyun.cn) (Chinese); the [wiki](https://github.com/baomidou/dynamic-datasource/wiki/Home-English)
 > is taking over page by page. See [Documentation](#documentation).
+
+## Out of scope
+
+dynamic-datasource chooses which `DataSource` a call uses. It deliberately does not:
+
+- Bundle or implement a connection pool. Bring your own pool and JDBC driver; this project provides integrations.
+- Enhance ORM behavior or provide a general SQL-rewriting or sharding engine. The MyBatis plugin only selects a datasource for read/write routing; use ShardingSphere for sharding.
+- Implement a distributed-transaction kernel. Seata and Atomikos are external integrations.
+- Ship a full JPMS `module-info`; the stable module-naming contract is the `Automatic-Module-Name` manifest attribute.
+- Propagate transactions across threads. Routing and transaction context are ThreadLocal-based by design.
 
 ## Highlights
 
