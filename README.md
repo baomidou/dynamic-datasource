@@ -35,6 +35,12 @@
   <img src="https://img.shields.io/badge/JDK-8%2B%20(Boot3%2F4%2017%2B)-orange.svg" alt="JDK" />
   <img src="https://img.shields.io/badge/Spring%20Boot-1.5%20~%204.x-99ccff.svg" alt="Spring Boot" />
   <img src="https://img.shields.io/badge/GraalVM%20Native-CI%20tested-4299f1.svg" alt="GraalVM Native Image" />
+  <a href="https://scorecard.dev/viewer/?uri=github.com/baomidou/dynamic-datasource">
+    <img src="https://api.securityscorecards.dev/projects/github.com/baomidou/dynamic-datasource/badge" alt="OpenSSF Scorecard" />
+  </a>
+  <a href="https://baomidou.github.io/dynamic-datasource/">
+    <img src="https://img.shields.io/badge/API%20docs-Javadoc-4c9b3c.svg" alt="Javadoc" />
+  </a>
 </p>
 
 ---
