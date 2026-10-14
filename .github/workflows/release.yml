@@ -6,6 +6,9 @@ on:
 
 permissions:
   contents: read
+  # artifact attestations（Sigstore 来源证明）：id-token 用于签发，attestations 用于上传
+  id-token: write
+  attestations: write
 
 concurrency:
   group: release-${{ github.ref }}
@@ -24,6 +27,11 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
+        with:
+          # 发布构建的公开 build scan（Develocity 免费公开版），构建性能问题可追溯
+          build-scan-publish: true
+          build-scan-terms-of-use-url: https://gradle.com/terms-of-service
+          build-scan-terms-of-use-agree: 'yes'
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -54,3 +62,29 @@ jobs:
           name: sbom-${{ github.ref_name }}
           path: build/reports/cyclonedx/bom.json
           if-no-files-found: error
+
+      # Sigstore 来源证明：证明所发布的构件（及 SBOM）确由本仓库的本次工作流构建。
+      # 消费方可对下载的构件执行 `gh attestation verify <file> --repo baomidou/dynamic-datasource`。
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-path: |
+            dynamic-datasource-creator/build/libs/*.jar
+            dynamic-datasource-spring/build/libs/*.jar
+            dynamic-datasource-spring-boot-common/build/libs/*.jar
+            dynamic-datasource-spring-boot-starter/build/libs/*.jar
+            dynamic-datasource-spring-boot3-starter/build/libs/*.jar
+            dynamic-datasource-spring-boot4-starter/build/libs/*.jar
+            dynamic-datasource-native-metadata/build/libs/*.jar
+      - name: Attest SBOM
+        uses: actions/attest-sbom@v4
+        with:
+          subject-path: |
+            dynamic-datasource-creator/build/libs/*.jar
+            dynamic-datasource-spring/build/libs/*.jar
+            dynamic-datasource-spring-boot-common/build/libs/*.jar
+            dynamic-datasource-spring-boot-starter/build/libs/*.jar
+            dynamic-datasource-spring-boot3-starter/build/libs/*.jar
+            dynamic-datasource-spring-boot4-starter/build/libs/*.jar
+            dynamic-datasource-native-metadata/build/libs/*.jar
+          sbom-path: build/reports/cyclonedx/bom.json
