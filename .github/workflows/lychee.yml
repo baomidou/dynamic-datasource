@@ -1,0 +1,30 @@
+name: Link Check
+# 每周检查文档外链（根目录的 README / CONTRIBUTING / SUPPORT / SECURITY / CODE_OF_CONDUCT 等；
+# wiki/ 是独立 git 仓库并被 .gitignore 排除，不在此检出，但其页面 URL 会作为外链一并校验）。
+# 有死链时 workflow 失败并输出明细——收到失败通知后修一轮即可。
+on:
+  schedule:
+    # 周一 02:20 UTC = 10:20 北京时间
+    - cron: '20 2 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lychee:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check links
+        uses: lycheeverse/lychee-action@v2.9.0
+        with:
+          args: >-
+            --no-progress
+            --max-concurrency 4
+            --accept 200,206,429
+            --exclude-path build
+            --exclude-path .qoder
+            './*.md'
+          fail: true

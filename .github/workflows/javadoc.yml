@@ -1,0 +1,82 @@
+name: Javadoc
+
+# 将发布模块的 API 文档发布到 GitHub Pages：https://baomidou.github.io/dynamic-datasource/
+# 只在主源码或本文件变化时重建；workflow_dispatch 可随时手动刷新。
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'dynamic-datasource-*/src/main/java/**'
+      - '.github/workflows/javadoc.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - name: Setup JDK 17 (Gradle runtime)
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Generate javadoc
+        run: ./gradlew javadoc --no-configuration-cache
+      - name: Assemble site
+        run: |
+          mkdir -p _site
+          for module in creator spring spring-boot-common spring-boot-starter spring-boot3-starter spring-boot4-starter native-metadata; do
+            dir="dynamic-datasource-$module/build/docs/javadoc"
+            if [ -d "$dir" ]; then
+              mkdir -p "_site/dynamic-datasource-$module"
+              cp -R "$dir/." "_site/dynamic-datasource-$module/"
+            fi
+          done
+          cat > _site/index.html <<'HTML'
+          <!DOCTYPE html>
+          <html lang="zh-CN">
+          <head>
+            <meta charset="UTF-8">
+            <title>dynamic-datasource API</title>
+            <style>body{font-family:system-ui,sans-serif;max-width:760px;margin:48px auto;padding:0 16px;line-height:1.8}</style>
+          </head>
+          <body>
+            <h1>dynamic-datasource Javadoc</h1>
+            <p>多数据源动态切换 · 按模块浏览 API 文档：</p>
+            <ul>
+              <li><a href="dynamic-datasource-spring/">dynamic-datasource-spring</a> — 核心：路由 / AOP / 事务</li>
+              <li><a href="dynamic-datasource-creator/">dynamic-datasource-creator</a> — 数据源创建器</li>
+              <li><a href="dynamic-datasource-spring-boot-common/">spring-boot-common</a> — 配置与装配</li>
+              <li><a href="dynamic-datasource-spring-boot-starter/">spring-boot-starter</a> — Boot 1.5 ~ 2.x</li>
+              <li><a href="dynamic-datasource-spring-boot3-starter/">spring-boot3-starter</a> — Boot 3.x</li>
+              <li><a href="dynamic-datasource-spring-boot4-starter/">spring-boot4-starter</a> — Boot 4.x</li>
+            </ul>
+            <p>Source: <a href="https://github.com/baomidou/dynamic-datasource">github.com/baomidou/dynamic-datasource</a></p>
+          </body>
+          </html>
+          HTML
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
