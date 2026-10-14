@@ -48,6 +48,7 @@
 ## 目录
 
 - [为什么选择它](#为什么选择它)
+- [不在范围内](#不在范围内)
 - [核心特性](#核心特性)
 - [版本兼容](#版本兼容)
 - [快速开始](#快速开始)
@@ -77,6 +78,16 @@
 
 > 完整文档（所有配置项、连接池适配与集成方案）在 [秀策云文档站](https://doc.xiuceyun.cn)，
 > 后续会逐页迁入 [Wiki](https://github.com/baomidou/dynamic-datasource/wiki)，详见[文档](#文档)。
+
+## 不在范围内
+
+dynamic-datasource 只决定一次调用使用哪个 `DataSource`，以下事情刻意不做：
+
+- **不内置、不实现连接池**：连接池与 JDBC 驱动请自备，本项目只提供集成。
+- **不做 ORM 增强，也不做通用的 SQL 改写或分片引擎**：MyBatis 插件只负责按读写规则切换数据源，分片请交给 ShardingSphere。
+- **不实现分布式事务内核**：Seata 与 Atomikos 属于外部集成。
+- **不提供完整的 JPMS `module-info`**：模块名的稳定契约是 manifest 中的 `Automatic-Module-Name`。
+- **不支持跨线程事务传播**：路由与事务上下文按设计基于 ThreadLocal。
 
 ## 核心特性
 
