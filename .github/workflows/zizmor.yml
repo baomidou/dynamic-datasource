@@ -1,0 +1,31 @@
+name: zizmor
+# 静态扫描 .github/workflows 自身的反模式（权限过大、表达式注入、未固定版本等），
+# 结果以 SARIF 进入 Code Scanning；只在 workflow 文件变动时触发。
+on:
+  push:
+    branches: [ master ]
+    paths: [ '.github/workflows/**' ]
+  pull_request:
+    paths: [ '.github/workflows/**' ]
+  workflow_dispatch:
+
+permissions: { }
+
+jobs:
+  zizmor:
+    name: Analyze workflows
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # zizmor 只读文件，不需要凭据
+          persist-credentials: false
+      - name: Run zizmor
+        uses: zizmorcore/zizmor-action@v0.6.4
+        with:
+          # 上传 SARIF 到 Code Scanning（默认仅输出 SVG 摘要）
+          advanced-security: true

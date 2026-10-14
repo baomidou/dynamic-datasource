@@ -1,0 +1,40 @@
+name: CodeQL
+# 代码级漏洞扫描（与 dependency-scan 的依赖漏洞互补，覆盖仓库自身代码）。
+# Java 走 autobuild：CodeQL 自动执行 Gradle 构建（toolchain JDK 8/17 由 foojay 自动供给）。
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  schedule:
+    # 周六 02:15 UTC = 10:15 北京时间
+    - cron: '15 2 * * 6'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  analyze:
+    name: Analyze java
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+      - name: Setup JDK 17 (Gradle runtime)
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: java
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v4
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:java"

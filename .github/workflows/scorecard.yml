@@ -1,0 +1,45 @@
+name: Scorecard
+# OpenSSF Scorecard：每周为供应链安全实践打分（branch protection、token 权限、
+# actions 是否固定版本、危险 workflow 模式等），SARIF 进 Code Scanning，
+# 分数同步到 scorecard.dev 可加 README 徽章。
+on:
+  branch_protection_rule:
+  schedule:
+    # 周六 01:30 UTC = 09:30 北京时间，与 dependency-scan 的时点错开
+    - cron: '30 1 * * 6'
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  analysis:
+    name: Scorecard analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      security-events: write  # 上传 SARIF
+      id-token: write         # publish_results 走 OIDC
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Run analysis
+        uses: ossf/scorecard-action@v2.5.0
+        with:
+          results_file: results.sarif
+          results_format: sarif
+          publish_results: true
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: scorecard-results
+          path: results.sarif
+          retention-days: 14
+      - name: Upload to code-scanning
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: results.sarif
