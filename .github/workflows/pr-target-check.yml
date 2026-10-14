@@ -1,0 +1,28 @@
+name: PR target check
+# 外部 PR 误把目标设为 main 时自动提醒改到 dev（PR 模板之外的第二道保障）。
+# pull_request_target 是必要用法：fork PR 需要写权限才能评论；本 workflow 不检出任何代码，
+# 事件数据经环境变量传递、不做表达式插值。
+on:
+  pull_request_target:
+    types: [ opened, edited, reopened ]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  remind:
+    # 仅当目标分支是 main 且作者不是维护者时提醒（维护者的 dev → main 发版 PR 属正常流程）
+    if: github.event.pull_request.base.ref == 'main' && github.event.pull_request.user.login != 'huayanYu'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Comment the reminder
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh pr comment "$PR_NUMBER" --repo "$REPO" --body "感谢贡献！本仓库的日常开发分支是 \`dev\`：请把本 PR 的目标分支从 \`main\` 改为 \`dev\`（标题右侧 Edit → base 分支）。改好后请忽略本条提醒。
+
+          Thanks for contributing! Please retarget this PR from \`main\` to \`dev\` — \`main\` only receives release merges from \`dev\`. You can change the base branch via Edit next to the title."
