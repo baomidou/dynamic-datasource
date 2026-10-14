@@ -340,14 +340,32 @@ public void closeTenant(String tenantId) {
 
 ## 文档
 
-- **文档站 · 秀策云** — <https://doc.xiuceyun.cn>：当前最完整的配置项、集成方案与进阶用法均在此。
+> **遇到问题？先看 [Wiki FAQ](https://github.com/baomidou/dynamic-datasource/wiki)**：`@DS` 不生效、启动报错、事务内切换、
+> 线程与异步、连接池参数不生效等历史高频问题均已整理为排查清单，多数问题可在此直接找到答案；
+> 确认是框架缺陷或 FAQ 未覆盖的问题，再提 issue。
+
+- **文档站** — <https://doc.xiuceyun.cn>：完整教程、配置项、集成方案与进阶用法（中英文切换 + 版本文档；原秀策云付费内容现已全部免费开放）。
 - **Wiki（中文）** — <https://github.com/baomidou/dynamic-datasource/wiki>
 - **Wiki (English)** — <https://github.com/baomidou/dynamic-datasource/wiki/Home-English>
-  wiki 是文档后续的沉淀方向，正在逐页补齐；在对应主题迁入 wiki 之前，仍以文档站为准。
-- **FAQ · 事务内 `@DS` 不切换数据源** — <https://github.com/baomidou/dynamic-datasource/wiki/DS-Switching-Inside-Transactions>
+  Wiki 聚焦 FAQ 与排障速查（从数百个历史 issue 提炼）；完整文档以文档站为准。
+- **FAQ 精选** — [@DS 不生效排查总表](https://github.com/baomidou/dynamic-datasource/wiki/DS-Not-Working-Checklist) ·
+  [事务内不切换](https://github.com/baomidou/dynamic-datasource/wiki/DS-Switching-Inside-Transactions) ·
+  [启动报错速查](https://github.com/baomidou/dynamic-datasource/wiki/Startup-Errors) ·
+  [线程与异步](https://github.com/baomidou/dynamic-datasource/wiki/DS-And-Threads) ·
+  [全部 FAQ](https://github.com/baomidou/dynamic-datasource/wiki)
 - **示例工程** — <https://github.com/dynamic-datasource/dynamic-datasource-samples>
 - **QQ 群**（中文交流）— [点击入群](https://shang.qq.com/wpa/qunwpa?idkey=ded31006508b57d2d732c81266dd2c26e33283f84464e2c294309d90b9674992)
 - **旧版看云文档（仅作历史参考）** — <https://www.kancloud.cn/tracy5546/dynamic-datasource>
+
+## AI 助手支持（Skill）
+
+仓库内置开放格式的 Agent Skill（[`skills/dynamic-datasource`](./skills/dynamic-datasource/SKILL.md)）。把它装进你的项目后，AI 编程助手（Qoder / Claude Code / Cursor 等）在本项目上下文中可以直接回答：**基础安装与最小配置**，以及**最常见问题的排查**——"为什么数据源切换失败 / @DS 不生效"、启动报错、事务内切换、线程与异步、连接池参数、密码加密等。
+
+安装（任选其一）：
+
+- skills CLI：`npx skills add baomidou/dynamic-datasource`
+- 手动复制：把 `skills/dynamic-datasource/` 目录复制进你项目的 `.qoder/skills/`（Qoder）或 `.claude/skills/`（Claude Code）等 AI 工具的 skills 目录
+- 或者直接把 [`SKILL.md`](./skills/dynamic-datasource/SKILL.md) 的链接发给你的 AI 助手，让它依此上下文作答
 
 ## 贡献与安全
 
