@@ -1,0 +1,38 @@
+name: Stale
+# 长期无活动的 issue/PR 自动标记并关闭，给单人维护留出呼吸空间。
+# enhancement 与 pinned 豁免（功能建议不应被自动关闭）；关闭前留 14 天缓冲。
+on:
+  schedule:
+    # 每天 01:40 UTC = 09:40 北京时间
+    - cron: '40 1 * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/stale@v11
+        with:
+          days-before-stale: 60
+          days-before-close: 14
+          exempt-issue-labels: 'enhancement,pinned'
+          stale-issue-label: 'stale'
+          operations-per-run: 60
+          stale-issue-message: |
+            这条 issue 已 60 天没有新活动，将在 14 天后自动关闭。
+            若问题仍然存在，请回复补充版本号与最小复现；若已解决，欢迎告知我们关闭。
+            This issue has been inactive for 60 days and will be closed in 14 days unless there is new activity.
+          close-issue-message: |
+            已自动关闭（长时间无活动）。问题仍存在时欢迎随时重新开启或新开 issue。
+            Closing as stale; feel free to reopen if the problem persists.
+          stale-pr-message: |
+            这个 PR 已 60 天没有新活动，将在 14 天后自动关闭。若仍在推进，请回复同步进展。
+            This PR has been inactive for 60 days and will be closed in 14 days unless there is new activity.
+          close-pr-message: |
+            已自动关闭（长时间无活动）。欢迎随时重新开启。
+            Closing as stale; feel free to reopen anytime.

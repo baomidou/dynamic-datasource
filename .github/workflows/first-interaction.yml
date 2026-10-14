@@ -1,0 +1,29 @@
+name: First interaction
+# 新人第一次提 issue/PR 时自动欢迎（双语），并向维护者发送首访汇总。
+# pull_request_target 是官方推荐用法：fork PR 的 pull_request 事件拿不到写权限，
+# 而本 action 只发评论、不检出代码，无安全面。
+on:
+  issues:
+    types: [ opened ]
+  pull_request_target:
+    types: [ opened ]
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  welcome:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/first-interaction@v3
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          issue-message: |
+            感谢你的第一条 issue！/ Thanks for opening your first issue!
+            请确认已附上：版本号、最小复现步骤与相关配置；模板不完整时我们可能会请你补充。
+          pr-message: |
+            感谢你的第一个 PR！/ Thanks for your first pull request!
+            提交前请阅读 CONTRIBUTING.md；涉及 @DS 解析、数据源切换栈语义、事务模式的改动，
+            需同时保持 v1/v3/v4 三套测试有效。

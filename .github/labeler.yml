@@ -1,0 +1,32 @@
+# actions/labeler v7 配置：按 PR 变更路径自动打标签。
+# 依赖以下已存在的标签：core / starters / tests / documentation / ci
+core:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'dynamic-datasource-spring/**'
+          - 'dynamic-datasource-creator/**'
+starters:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'dynamic-datasource-spring-boot-common/**'
+          - 'dynamic-datasource-spring-boot-starter/**'
+          - 'dynamic-datasource-spring-boot3-starter/**'
+          - 'dynamic-datasource-spring-boot4-starter/**'
+tests:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'dynamic-datasource-test-common/**'
+          - '**/src/test/**'
+          - '**/src/testFixtures/**'
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '*.md'
+ci:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.github/**'
+          - 'build.gradle'
+          - 'settings.gradle'
+          - 'gradle/**'
+          - 'gradle.properties'
