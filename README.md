@@ -379,6 +379,16 @@ public void closeTenant(String tenantId) {
 - **QQ group** (Chinese-speaking community) — [join](https://shang.qq.com/wpa/qunwpa?idkey=ded31006508b57d2d732c81266dd2c26e33283f84464e2c294309d90b9674992)
 - **Legacy docs (Kancloud, historical reference only)** — <https://www.kancloud.cn/tracy5546/dynamic-datasource>
 
+## AI assistant support (Skill)
+
+This repository ships an Agent Skill in the open `SKILL.md` format ([`skills/dynamic-datasource`](./skills/dynamic-datasource/SKILL.md)). Once installed into your project, AI coding assistants (Qoder / Claude Code / Cursor, …) can answer, in your project's context: **basic installation & minimal configuration**, and **troubleshooting for the most common problems** — "why is datasource switching failing / `@DS` not working", startup errors, switching inside transactions, threads/async, pool parameters, password encryption.
+
+Install (any one):
+
+- skills CLI: `npx skills add baomidou/dynamic-datasource`
+- Manual: copy the `skills/dynamic-datasource/` directory into your project's `.qoder/skills/` (Qoder) or `.claude/skills/` (Claude Code) directory
+- Or simply paste the [`SKILL.md`](./skills/dynamic-datasource/SKILL.md) link to your AI assistant and let it answer from this context
+
 ## Contributing, Security and License
 
 - Contributions are welcome — read [CONTRIBUTING.md](./CONTRIBUTING.md) for the Gradle/toolchain

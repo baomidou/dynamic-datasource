@@ -357,6 +357,16 @@ public void closeTenant(String tenantId) {
 - **QQ 群**（中文交流）— [点击入群](https://shang.qq.com/wpa/qunwpa?idkey=ded31006508b57d2d732c81266dd2c26e33283f84464e2c294309d90b9674992)
 - **旧版看云文档（仅作历史参考）** — <https://www.kancloud.cn/tracy5546/dynamic-datasource>
 
+## AI 助手支持（Skill）
+
+仓库内置开放格式的 Agent Skill（[`skills/dynamic-datasource`](./skills/dynamic-datasource/SKILL.md)）。把它装进你的项目后，AI 编程助手（Qoder / Claude Code / Cursor 等）在本项目上下文中可以直接回答：**基础安装与最小配置**，以及**最常见问题的排查**——"为什么数据源切换失败 / @DS 不生效"、启动报错、事务内切换、线程与异步、连接池参数、密码加密等。
+
+安装（任选其一）：
+
+- skills CLI：`npx skills add baomidou/dynamic-datasource`
+- 手动复制：把 `skills/dynamic-datasource/` 目录复制进你项目的 `.qoder/skills/`（Qoder）或 `.claude/skills/`（Claude Code）等 AI 工具的 skills 目录
+- 或者直接把 [`SKILL.md`](./skills/dynamic-datasource/SKILL.md) 的链接发给你的 AI 助手，让它依此上下文作答
+
 ## 贡献与安全
 
 - 欢迎社区贡献：Gradle/toolchain 环境准备、`nativeTest` 门禁与发布流程见 [CONTRIBUTING.md](./CONTRIBUTING.md)。
