@@ -93,6 +93,10 @@ PR 标题与 commit message 建议使用 conventional 前缀（`fix:` / `feat:` 
 
 # 4. RELEASE
 
+分支模型：`main` 为稳定发布线（默认分支，禁止 force push / 删除）；日常开发在 `dev`，
+发布时把 `dev` 合并进 `main`，版本号提交与 tag 都落在 `main`。CI / CodeQL / 依赖扫描在
+`main` 与 `dev` 上同样运行。
+
 版本号唯一来源是根目录 `gradle.properties` 的 `APP_VERSION`（当前 `4.6.0`），
 它由根 `build.gradle` 赋给所有模块的 `version`。
 
@@ -129,7 +133,7 @@ gh api repos/{owner}/{repo}/releases/generate-notes \
 #     人工分类亮点（升级必读在最前，含 4.3 要交代的遗留问题）→ 自动稿 What's Changed → 特别感谢
 gh release create v4.6.0 --latest --notes-file notes.md \
   build/reports/cyclonedx/bom.json#"CycloneDX SBOM (published artifacts)"
-git checkout master   # 别把工作区留在 detached HEAD
+git checkout main   # 别把工作区留在 detached HEAD
 ```
 
 > **Release notes 目标结构**：① 人工分类亮点（升级注意在最前）② 自动稿的 "What's Changed"（每个 PR/作者一行）③「特别感谢」点名本版社区 PR 作者。

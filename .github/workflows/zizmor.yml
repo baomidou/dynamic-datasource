@@ -3,7 +3,7 @@ name: zizmor
 # 结果以 SARIF 进入 Code Scanning；只在 workflow 文件变动时触发。
 on:
   push:
-    branches: [ master ]
+    branches: [ main, dev ]
     paths: [ '.github/workflows/**' ]
   pull_request:
     paths: [ '.github/workflows/**' ]
@@ -20,12 +20,12 @@ jobs:
       contents: read
       security-events: write
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           # zizmor 只读文件，不需要凭据
           persist-credentials: false
       - name: Run zizmor
-        uses: zizmorcore/zizmor-action@v0.6.4
+        uses: zizmorcore/zizmor-action@cc914d7f3750a2d13d75c7f184a1060aa0e9d482 # v0.6.4
         with:
           # 上传 SARIF 到 Code Scanning（默认仅输出 SVG 摘要）
           advanced-security: true

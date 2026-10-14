@@ -12,6 +12,8 @@ version: 2
 updates:
   - package-ecosystem: gradle
     directory: /
+    # 依赖更新 PR 进开发分支（main 是稳定发布线）
+    target-branch: "dev"
     schedule:
       interval: weekly
       day: saturday
@@ -38,6 +40,8 @@ updates:
 
   - package-ecosystem: github-actions
     directory: /
+    # action 版本更新同样进开发分支
+    target-branch: "dev"
     schedule:
       interval: weekly
       day: saturday

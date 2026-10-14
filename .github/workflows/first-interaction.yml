@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/first-interaction@v3
+      - uses: actions/first-interaction@1c4688942c71f71d4f5502a26ea67c331730fa4d # v3
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           issue-message: |

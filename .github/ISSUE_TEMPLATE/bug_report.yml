@@ -8,7 +8,7 @@ body:
       value: |
         请认真填写以下信息，**缺少环境信息或可复现步骤的 issue 会被关闭**。
         安全漏洞请勿在此提交，见
-        [SECURITY.md](https://github.com/baomidou/dynamic-datasource/blob/master/SECURITY.md)。
+        [SECURITY.md](https://github.com/baomidou/dynamic-datasource/blob/main/SECURITY.md)。
 
         Please fill in everything below; issues without environment info or a
         reproducer will be closed. Do NOT report security vulnerabilities here.

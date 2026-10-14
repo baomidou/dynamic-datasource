@@ -6,7 +6,7 @@ on:
     # cron 按 UTC 解释：周五 19:00 UTC = 周六 03:00 北京时间，与 dependabot.yml 的时点一致
     - cron: '0 19 * * 5'
   push:
-    branches: [ master ]
+    branches: [ main, dev ]
   workflow_dispatch:
 
 permissions:
@@ -22,9 +22,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - name: Set up JDK 17 (Gradle runtime)
-        uses: actions/setup-java@v6
+        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6
         with:
           distribution: 'temurin'
           java-version: '17'
@@ -35,7 +35,7 @@ jobs:
       - name: Generate CycloneDX SBOM
         run: ./gradlew cyclonedxBom --no-daemon
       - name: Upload SBOM
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: sbom
           path: build/reports/cyclonedx/bom.json
@@ -50,7 +50,7 @@ jobs:
       contents: read
       actions: read
       security-events: write
-    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@v2.7.0
+    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@b1d267aea5211fa648d9d442fa64b90dbdcbdd36 # v2.7.0
     with:
       # 下载上面产出的名为 sbom 的 workflow artifact（reusable workflow 会解到仓库根，
       # 因此文件名就是 bom.json），再让 osv-scanner 以 SBOM 模式扫描。

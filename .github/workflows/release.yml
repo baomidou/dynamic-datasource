@@ -18,15 +18,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - name: Set up JDK 17
-        uses: actions/setup-java@v6
+        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6
         with:
           java-version: '17'
           distribution: 'temurin'
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6
+        uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6
         with:
           # 发布构建的公开 build scan（Develocity 免费公开版），构建性能问题可追溯
           build-scan-publish: true
@@ -57,7 +57,7 @@ jobs:
       - name: Generate CycloneDX SBOM
         run: ./gradlew cyclonedxBom
       - name: Upload SBOM
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: sbom-${{ github.ref_name }}
           path: build/reports/cyclonedx/bom.json
@@ -66,7 +66,7 @@ jobs:
       # Sigstore 来源证明：证明所发布的构件（及 SBOM）确由本仓库的本次工作流构建。
       # 消费方可对下载的构件执行 `gh attestation verify <file> --repo baomidou/dynamic-datasource`。
       - name: Attest build provenance
-        uses: actions/attest-build-provenance@v4
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4
         with:
           subject-path: |
             dynamic-datasource-creator/build/libs/*.jar
@@ -77,7 +77,7 @@ jobs:
             dynamic-datasource-spring-boot4-starter/build/libs/*.jar
             dynamic-datasource-native-metadata/build/libs/*.jar
       - name: Attest SBOM
-        uses: actions/attest-sbom@v4
+        uses: actions/attest-sbom@c604332985a26aa8cf1bdc465b92731239ec6b9e # v4
         with:
           subject-path: |
             dynamic-datasource-creator/build/libs/*.jar

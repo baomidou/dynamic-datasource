@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main, dev ]
   pull_request:
-    branches: [ master ]
+    branches: [ main, dev ]
   # manual trigger for troubleshooting CI/toolchain problems without opening a PR
   workflow_dispatch:
 
@@ -28,8 +28,8 @@ jobs:
         # nativeTest 已稳定修复（#760/#788），不再用 continue-on-error 容忍失败。
         starter: [ 'dynamic-datasource-spring-boot3-starter', 'dynamic-datasource-spring-boot4-starter' ]
     steps:
-      - uses: actions/checkout@v7
-      - uses: graalvm/setup-graalvm@v1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: graalvm/setup-graalvm@27b360dbb857524eaf0b4c4cef364d38e5b4f173 # v1
         with:
           version: ${{ matrix.version }}
           distribution: 'graalvm-community'
@@ -39,7 +39,7 @@ jobs:
       # wrapper 发行版（~120MB）和 Foojay 自动供给的 toolchain JDK 不在 setup-java/setup-graalvm
       # 的 cache:gradle 范围内，每次冷 run 各付一份下载税；key 同时钉住 wrapper 配置与
       # 声明 toolchain 需求的构建脚本，变更时自动失效。
-      - uses: actions/cache@v6
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: |
             ~/.gradle/wrapper/dists
@@ -58,14 +58,14 @@ jobs:
         os: [ ubuntu-latest ]
         java-version: [ '17', '21', '25', '27' ]
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - name: Setup JDK ${{ matrix.java-version }} (Gradle runtime)
-        uses: actions/setup-java@v6
+        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6
         with:
           distribution: 'temurin'
           java-version: ${{ matrix.java-version }}
           cache: 'gradle'
-      - uses: actions/cache@v6
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: |
             ~/.gradle/wrapper/dists
@@ -82,7 +82,7 @@ jobs:
         run: ./gradlew jacocoRootReport
       - name: Upload coverage report
         if: matrix.java-version == '17'
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: coverage-jdk${{ matrix.java-version }}-${{ matrix.os }}
           path: |
@@ -98,9 +98,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - name: Review dependency changes
-        uses: actions/dependency-review-action@v5
+        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5
         with:
           comment-mode: summary
           fail-on-severity: high
