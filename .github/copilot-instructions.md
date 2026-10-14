@@ -42,6 +42,20 @@ access is required. Do not add tests that need a live MySQL/Postgres.
 Never run `publish*`/`sign*` tasks locally. Signing and Central credentials come from CI
 secrets (in-memory GPG key); do not put credentials or key rings into tracked files.
 
+## Branching and pull requests
+
+- Development happens on **`dev`**; **`main`** is the stable release line (default branch,
+  protected against force pushes and deletion, admins included). **Target pull requests at
+  `dev`** — never at `main`; `main` only receives release merges from `dev`, and PRs opened
+  against `main` by mistake get an automated reminder.
+- CI, CodeQL and the dependency scan run on both `main` and `dev`; javadoc and Scorecard run
+  on `main` only.
+- Releases: the maintainer merges `dev` into `main` (merge commit), bumps `APP_VERSION`,
+  tags `vX.Y.Z` (annotated) and pushes the tag — CI publishes to Maven Central.
+  Full procedure and release-notes rules: CONTRIBUTING §4.
+- Commit style: conventional-commit prefixes, one logical change per commit — release notes
+  are assembled from these titles.
+
 ## Conventions
 
 - **Versions**: all dependency versions live in `gradle/libs.versions.toml`. Add or update a

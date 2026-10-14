@@ -93,9 +93,18 @@ PR 标题与 commit message 建议使用 conventional 前缀（`fix:` / `feat:` 
 
 # 4. RELEASE
 
-分支模型：`main` 为稳定发布线（默认分支，禁止 force push / 删除）；日常开发在 `dev`，
-发布时把 `dev` 合并进 `main`，版本号提交与 tag 都落在 `main`。CI / CodeQL / 依赖扫描在
-`main` 与 `dev` 上同样运行。
+## 4.0 分支与贡献流程
+
+| 分支 | 定位 | 规则 |
+| --- | --- | --- |
+| `main` | 稳定发布线（默认分支） | 只接收来自 `dev` 的发版合并；禁止 force push / 删除（管理员同样受限）；发布 tag 打在这里 |
+| `dev` | 日常开发线 | **所有 PR 的目标分支**；CI / CodeQL / 依赖扫描在这里运行 |
+
+流程：分支/fork → **PR 目标选 `dev`**（误选 `main` 会被自动提醒）→ CI 全绿 + 自检清单 →
+合并进 `dev` → 维护者在发布时把 `dev` 合并进 `main`（merge commit）并打 tag。
+
+- 为什么这样分：`main` 上的任何提交都可能被外部直接引用（源码链接、发布比对），必须始终处于可发布状态。
+- 紧急修复：同样先进 `dev`；随下一次发布一起合并，不单独向 `main` 直推。
 
 版本号唯一来源是根目录 `gradle.properties` 的 `APP_VERSION`（当前 `4.6.0`），
 它由根 `build.gradle` 赋给所有模块的 `version`。

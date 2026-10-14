@@ -1,3 +1,6 @@
+> **目标分支 / Target branch：请选 `dev`**（`main` 只接收来自 dev 的发版合并，误选会被自动提醒）。
+> Please choose **`dev`** as the base branch — `main` only receives release merges from `dev`.
+
 ## 变更类型 / What kind of change does this PR introduce?
 
 - [ ] Bugfix
