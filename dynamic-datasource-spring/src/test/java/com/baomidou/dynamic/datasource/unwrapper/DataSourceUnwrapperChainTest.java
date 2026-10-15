@@ -21,10 +21,14 @@ import com.baomidou.dynamic.datasource.enums.SeataMode;
 import com.p6spy.engine.spy.P6DataSource;
 import io.seata.rm.datasource.DataSourceProxy;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import javax.sql.DataSource;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -95,19 +99,26 @@ class DataSourceUnwrapperChainTest {
     }
 
     @Test
-    void routingLifecycleUsesDiscoveredProviders() {
+    void routingLifecycleLoadsServiceProvidersOnceAndReusesThem() {
+        int initialCount = TestDataSourceUnwrapper.getInstanceCount();
         DynamicRoutingDataSource router = new DynamicRoutingDataSource(Collections.emptyList());
         CloseableDataSource replaced = mock(CloseableDataSource.class);
         CloseableDataSource removed = mock(CloseableDataSource.class);
         CloseableDataSource destroyed = mock(CloseableDataSource.class);
         router.addDataSource("other", new TestDataSourceWrapper(replaced));
+        assertThat(TestDataSourceUnwrapper.getInstanceCount()).isEqualTo(initialCount);
         router.addDataSource("other", new TestDataSourceWrapper(removed));
         verify(replaced).close();
+        assertThat(TestDataSourceUnwrapper.getInstanceCount()).isEqualTo(initialCount + 1);
+        router.setP6spy(false);
+        router.setSeata(false);
         router.removeDataSource("other");
         verify(removed).close();
+        assertThat(TestDataSourceUnwrapper.getInstanceCount()).isEqualTo(initialCount + 1);
         router.addDataSource("other", new TestDataSourceWrapper(destroyed));
         router.destroy();
         verify(destroyed).close();
+        assertThat(TestDataSourceUnwrapper.getInstanceCount()).isEqualTo(initialCount + 1);
     }
 
     @Test
@@ -128,7 +139,58 @@ class DataSourceUnwrapperChainTest {
     }
 
     @Test
+    void changingP6spyFlagAfterFirstCloseRebuildsTheCachedChain() {
+        int initialCount = TestDataSourceUnwrapper.getInstanceCount();
+        DynamicRoutingDataSource router = new DynamicRoutingDataSource(Collections.emptyList());
+        CloseableDataSource disabled = mock(CloseableDataSource.class);
+        CloseableDataSource enabled = mock(CloseableDataSource.class);
+        CloseableDataSource disabledAgain = mock(CloseableDataSource.class);
+        router.addDataSource("p6", new P6DataSource(disabled));
+        router.removeDataSource("p6");
+        verify(disabled, never()).close();
+        assertThat(TestDataSourceUnwrapper.getInstanceCount()).isEqualTo(initialCount + 1);
+
+        router.setP6spy(true);
+        router.addDataSource("p6", new P6DataSource(enabled));
+        router.removeDataSource("p6");
+        verify(enabled).close();
+        assertThat(TestDataSourceUnwrapper.getInstanceCount()).isEqualTo(initialCount + 2);
+
+        router.setP6spy(false);
+        router.addDataSource("p6", new P6DataSource(disabledAgain));
+        router.removeDataSource("p6");
+        verify(disabledAgain, never()).close();
+        assertThat(TestDataSourceUnwrapper.getInstanceCount()).isEqualTo(initialCount + 3);
+    }
+
+    @Test
+    void changingSeataFlagAfterFirstCloseRebuildsTheCachedChain() {
+        int initialCount = TestDataSourceUnwrapper.getInstanceCount();
+        DynamicRoutingDataSource router = new DynamicRoutingDataSource(Collections.emptyList());
+        CloseableDataSource disabled = mock(CloseableDataSource.class);
+        CloseableDataSource enabled = mock(CloseableDataSource.class);
+        CloseableDataSource disabledAgain = mock(CloseableDataSource.class);
+        router.addDataSource("seata", seataProxy(disabled));
+        router.removeDataSource("seata");
+        verify(disabled, never()).close();
+        assertThat(TestDataSourceUnwrapper.getInstanceCount()).isEqualTo(initialCount + 1);
+
+        router.setSeata(true);
+        router.addDataSource("seata", seataProxy(enabled));
+        router.removeDataSource("seata");
+        verify(enabled).close();
+        assertThat(TestDataSourceUnwrapper.getInstanceCount()).isEqualTo(initialCount + 2);
+
+        router.setSeata(false);
+        router.addDataSource("seata", seataProxy(disabledAgain));
+        router.removeDataSource("seata");
+        verify(disabledAgain, never()).close();
+        assertThat(TestDataSourceUnwrapper.getInstanceCount()).isEqualTo(initialCount + 3);
+    }
+
+    @Test
     void itemDatasourceStillClosesItsExplicitRealPool() {
+        int initialCount = TestDataSourceUnwrapper.getInstanceCount();
         DynamicRoutingDataSource router = new DynamicRoutingDataSource(Collections.emptyList());
         CloseableDataSource pool = mock(CloseableDataSource.class);
         CloseableDataSource proxy = mock(CloseableDataSource.class);
@@ -136,6 +198,7 @@ class DataSourceUnwrapperChainTest {
         router.removeDataSource("other");
         verify(pool).close();
         verify(proxy, never()).close();
+        assertThat(TestDataSourceUnwrapper.getInstanceCount()).isEqualTo(initialCount);
     }
 
     @Test
@@ -153,6 +216,43 @@ class DataSourceUnwrapperChainTest {
     }
 
     @Test
+    void providersRemainDiscoverableWhenTheContextClassLoaderIsNull() throws Exception {
+        DataSource pool = mock(DataSource.class);
+        TestDataSourceWrapper wrapper = new TestDataSourceWrapper(pool);
+        ClassLoader original = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(null);
+
+            assertThat(new DataSourceUnwrapperChain(false, false).unwrap(wrapper)).isSameAs(pool);
+        } finally {
+            Thread.currentThread().setContextClassLoader(original);
+        }
+    }
+
+    @Test
+    void providerDescriptorsVisibleOnlyThroughTheContextClassLoaderRemainDiscoverable(@TempDir Path directory)
+            throws Exception {
+        Path services = Files.createDirectories(directory.resolve("META-INF/services"));
+        // The provider type is parent-visible; only its service descriptor belongs to the child.
+        Files.write(services.resolve(DataSourceUnwrapper.class.getName()),
+                Collections.singletonList(ContextClassLoaderDataSourceUnwrapper.class.getName()),
+                StandardCharsets.UTF_8);
+        int initialCount = TestDataSourceUnwrapper.getInstanceCount();
+        ClassLoader original = Thread.currentThread().getContextClassLoader();
+        try (URLClassLoader context = new URLClassLoader(new URL[]{directory.toUri().toURL()},
+                DataSourceUnwrapper.class.getClassLoader())) {
+            Thread.currentThread().setContextClassLoader(context);
+
+            new DataSourceUnwrapperChain(false, false);
+
+            // The normal provider and the child-only provider each invoke the instrumented constructor.
+            assertThat(TestDataSourceUnwrapper.getInstanceCount()).isEqualTo(initialCount + 2);
+        } finally {
+            Thread.currentThread().setContextClassLoader(original);
+        }
+    }
+
+    @Test
     void optionalIntegrationJarsAreNotRequiredToLoadOrUseTheChain() throws Exception {
         URL[] urls = ((URLClassLoader) getClass().getClassLoader()).getURLs();
         ClassLoader original = Thread.currentThread().getContextClassLoader();
@@ -165,5 +265,11 @@ class DataSourceUnwrapperChainTest {
         } finally {
             Thread.currentThread().setContextClassLoader(original);
         }
+    }
+
+    private DataSourceProxy seataProxy(DataSource pool) {
+        DataSourceProxy proxy = mock(DataSourceProxy.class);
+        when(proxy.getTargetDataSource()).thenReturn(pool);
+        return proxy;
     }
 }

@@ -16,6 +16,7 @@
 package com.baomidou.dynamic.datasource.unwrapper;
 
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
+import org.springframework.util.ClassUtils;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
@@ -25,6 +26,9 @@ import java.util.ServiceLoader;
 
 /**
  * Ordered datasource unwrappers, shared by lifecycle and diagnostic consumers.
+ *
+ * @author Pika-Yalei
+ * @since 4.6.0
  */
 public class DataSourceUnwrapperChain {
 
@@ -32,7 +36,11 @@ public class DataSourceUnwrapperChain {
 
     /**
      * Retains the routing datasource's opt-in flags for the built-in integrations.
-     * Service providers are independent of those flags.
+     * Service providers are independent of those flags and are discovered once
+     * per chain using Spring's default classloader policy: the thread context
+     * classloader first, falling back to Spring's defining classloader. This
+     * preserves application-provider discovery in executable jars and child
+     * application classloaders.
      */
     public DataSourceUnwrapperChain(boolean p6spy, boolean seata) {
         if (seata) {
@@ -42,7 +50,8 @@ public class DataSourceUnwrapperChain {
             unwrappers.add(new P6SpyDataSourceUnwrapper());
         }
         try {
-            for (DataSourceUnwrapper unwrapper : ServiceLoader.load(DataSourceUnwrapper.class)) {
+            for (DataSourceUnwrapper unwrapper : ServiceLoader.load(
+                    DataSourceUnwrapper.class, ClassUtils.getDefaultClassLoader())) {
                 unwrappers.add(unwrapper);
             }
         } catch (ServiceConfigurationError e) {

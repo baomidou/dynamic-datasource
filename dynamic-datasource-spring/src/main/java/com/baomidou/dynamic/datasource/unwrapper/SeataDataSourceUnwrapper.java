@@ -22,6 +22,9 @@ import javax.sql.DataSource;
 
 /**
  * Optional Seata AT datasource proxy integration.
+ *
+ * @author Pika-Yalei
+ * @since 4.6.0
  */
 public class SeataDataSourceUnwrapper implements DataSourceUnwrapper {
 
