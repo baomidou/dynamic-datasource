@@ -4,11 +4,10 @@ on:
     tags:
       - v*
 
+# 顶层只保留读权限：id-token / attestations 只有 build job 需要（见该 job 的 permissions），
+# 留在顶层会一并授予 notify-samples job，触发 zizmor excessive-permissions。
 permissions:
   contents: read
-  # artifact attestations（Sigstore 来源证明）：id-token 用于签发，attestations 用于上传
-  id-token: write
-  attestations: write
 
 concurrency:
   group: release-${{ github.ref }}
@@ -17,6 +16,11 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # artifact attestations（Sigstore 来源证明）：id-token 用于签发，attestations 用于上传
+      id-token: write
+      attestations: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -122,6 +126,11 @@ jobs:
           # 需要对目标仓库有写权限的 PAT：classic PAT 勾 repo，或 fine-grained 给
           # Contents: Read and write（若 dispatches 返回 403 再补 Actions: write）。
           GH_TOKEN: ${{ secrets.SAMPLES_DISPATCH_TOKEN }}
+          # 一律经 env 传参，不在 run 脚本里直接做 ${{ }} 插值：version / tag 最终来自外部可控的
+          # tag 名，拼进 shell 脚本会构成模板注入面。
+          VERSION: ${{ steps.version.outputs.version }}
+          TAG: ${{ github.ref_name }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         # 注意：不要用 `-F client_payload='{"version":"..."}'`，gh 会把整段 JSON
         # 当字符串发出去，服务端报 422 "For 'properties/client_payload', ... is not an object"。
         # 嵌套字段语法 `client_payload[key]=value` 才会真正构造出 object。
@@ -129,6 +138,6 @@ jobs:
           gh api repos/dynamic-datasource/dynamic-datasource-samples/dispatches \
             -X POST \
             -F event_type=ds-released \
-            -F client_payload[version]="${{ steps.version.outputs.version }}" \
-            -F client_payload[tag]="${GITHUB_REF_NAME}" \
-            -F client_payload[run_url]="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            -F client_payload[version]="$VERSION" \
+            -F client_payload[tag]="$TAG" \
+            -F client_payload[run_url]="$RUN_URL"
