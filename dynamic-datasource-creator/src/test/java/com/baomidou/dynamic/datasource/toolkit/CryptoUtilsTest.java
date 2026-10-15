@@ -40,7 +40,7 @@ class CryptoUtilsTest {
 
     @Test
     void defaultKeyPairShouldRoundTripTextLongerThanOneBlock() throws Exception {
-        // MAX_ENCRYPT_BLOCK = 53，构造超过单块长度以覆盖分段加密/解密分支
+        // 内置默认密钥是 512 位，单块明文上限 = 64 - 11 = 53；构造超过单块长度以覆盖分段加密/解密分支
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 12; i++) {
             sb.append("dynamic-datasource");
@@ -54,7 +54,7 @@ class CryptoUtilsTest {
 
     @Test
     void customKeyPairShouldRoundTrip() throws Exception {
-        String[] keyPair = CryptoUtils.genKeyPair(512);
+        String[] keyPair = CryptoUtils.genKeyPair();
         String privateKey = keyPair[0];
         String publicKey = keyPair[1];
         assertThat(privateKey).isNotBlank();

@@ -47,7 +47,7 @@ class CryptoUtilsKeyFileTest {
 
     @Test
     void getPublicKeyByPublicKeyFileShouldReadValidX509KeyFromDisk() throws Exception {
-        byte[][] keyPair = CryptoUtils.genKeyPairBytes(512);
+        byte[][] keyPair = CryptoUtils.genKeyPairBytes();
         byte[] publicKeyBytes = keyPair[1]; // X509 encoded public key
 
         Path keyFile = tempDir.resolve("pub.key");
@@ -90,19 +90,48 @@ class CryptoUtilsKeyFileTest {
 
     @Test
     void genKeyPairBytesShouldReturnValidPair() {
-        byte[][] kp = CryptoUtils.genKeyPairBytes(512);
+        byte[][] kp = CryptoUtils.genKeyPairBytes();
         assertThat(kp.length).isEqualTo(2);
         assertThat(kp[0]).isNotEmpty(); // PKCS8 private key
         assertThat(kp[1]).isNotEmpty(); // X509 public key
     }
 
     @Test
+    void genKeyPairBytesShouldRejectWeakKeySize() {
+        assertThatThrownBy(() -> CryptoUtils.genKeyPairBytes(512))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("2048");
+        assertThatThrownBy(() -> CryptoUtils.genKeyPair(1024))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("2048");
+    }
+
+    @Test
     void genKeyPairBytesShouldProduceRoundTrippablePair() throws Exception {
-        byte[][] kp = CryptoUtils.genKeyPairBytes(512);
+        byte[][] kp = CryptoUtils.genKeyPairBytes();
         String privBase64 = Base64.byteArrayToBase64(kp[0]);
         String pubBase64 = Base64.byteArrayToBase64(kp[1]);
         String plain = "round-trip-test";
         String cipher = CryptoUtils.encrypt(privBase64, plain);
         assertThat(CryptoUtils.decrypt(pubBase64, cipher)).isEqualTo(plain);
+    }
+
+    @Test
+    void builtInDefaultKeyPairShouldStillRoundTrip() throws Exception {
+        // 内置默认密钥对（Druid 那把 512 位）必须保持可解密，否则存量配置全废
+        String plain = "root-password";
+        assertThat(CryptoUtils.decrypt(CryptoUtils.encrypt(plain))).isEqualTo(plain);
+    }
+
+    @Test
+    void longPlainTextShouldRoundTripInBlocks() throws Exception {
+        // 超出单块长度时必须分段加解密：块大小按模长推导，2048 位下不能被写死的 53/64 截断
+        String[] pairs = CryptoUtils.genKeyPair();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 100; i++) {
+            sb.append("jdbc:mysql://host-").append(i).append(":3306/db;");
+        }
+        assertThat(CryptoUtils.decrypt(pairs[1], CryptoUtils.encrypt(pairs[0], sb.toString())))
+                .isEqualTo(sb.toString());
     }
 }

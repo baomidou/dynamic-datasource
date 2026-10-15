@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
+import java.security.interfaces.RSAKey;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -33,6 +34,13 @@ import java.util.Arrays;
  * limitations under the License.
  *
  * @author alibaba
+ * <p>
+ * 实现 copy 自 Druid 的 {@code ConfigTools}，密文格式与之保持一致（私钥加密 / 公钥解密 + PKCS#1 v1.5），
+ * 以便直接沿用 Druid 生成的配置密文。
+ * <p>
+ * <b>安全模型说明</b>：这是"配置混淆"而非机密性保护——公钥即可解密，且内置的默认密钥对是 Druid
+ * 公开源码里那把 512 位 RSA，任何人都能解开用默认密钥加密的内容。生产环境请务必用
+ * {@link #genKeyPair()} 生成自己的密钥对，并把公钥配置到 {@code public-key}。
  */
 @Slf4j
 public class CryptoUtils {
@@ -41,14 +49,36 @@ public class CryptoUtils {
     private static final String DEFAULT_PRIVATE_KEY_STRING = "MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAnijqyfhag+ZuzsNH2YZDO65RAz16tBNU+nDEjMHQRNiTIp987T3updVEsDoo+ZpX7+yJZ7BHu+l9hiNZqPDkqQIDAQABAkBgErbczRIewWFaE+GXTymUHUV01Gmu7XdXUhzy6+CZkIcEnyTpUgPilGUydiIyeiY8usvWKGjFWxLoKeJDY1wBAiEA5M9uqc9XpL5uitLWHiiq7pRxhnJb/B+wZyHqLVhCLekCIQCw9D/Fsx7vHRgymWYExHvCka7w5SyWUmNzQOOKjZUIwQIhAMqbo7JaF5GZzui+qTsrZ7C7YYtb2Hf414t7TJG6hV+BAiBXuZ7r+fL6A+h9HUNQVcAtI2AhGNxT4aBgAOlNRQd/gQIgCGqaZsOdnL9624SI1DwhBt4x24q3350pWwzgfl4Kbbo=";
 
     /**
-     * 最大加密字节数，超出最大字节数需要分组加密
+     * 生成密钥对时允许的最小长度。512 位 RSA 早已可在云上廉价分解，1024 位同样不再安全。
      */
-    private static final int MAX_ENCRYPT_BLOCK = 53;
+    public static final int MIN_KEY_SIZE = 2048;
 
     /**
-     * 最大解密字节数，超出最大字节数需要分组解密
+     * 生成密钥对时使用的默认长度。
      */
-    private static final int MAX_DECRYPT_BLOCK = 64;
+    public static final int DEFAULT_KEY_SIZE = MIN_KEY_SIZE;
+
+    /**
+     * PKCS#1 v1.5 填充占用的字节数：单块明文上限 = 模长 - 11。
+     */
+    private static final int PKCS1_PADDING_SIZE = 11;
+
+    /**
+     * 512 位 RSA 的模长（字节）。Druid 原实现把块大小写死成 512 位的常量，导致 1024/2048 位密钥
+     * 在分组加解密时抛 IllegalBlockSizeException / BadPaddingException。现按密钥实际模长推导块大小，
+     * 该值仅作为拿不到模长时的兜底。
+     */
+    private static final int LEGACY_MODULUS_BYTES = 64;
+
+    /**
+     * 取密钥模长（字节），用于推导分组加解密的块大小。
+     */
+    private static int modulusBytes(Key key) {
+        if (key instanceof RSAKey) {
+            return (((RSAKey) key).getModulus().bitLength() + 7) / 8;
+        }
+        return LEGACY_MODULUS_BYTES;
+    }
 
     /**
      * 解密算法 RSA
@@ -173,6 +203,8 @@ public class CryptoUtils {
      * @throws Exception - 解密过程中的异常信息
      */
     public static String decrypt(PublicKey publicKey, String cipherText) throws Exception {
+        // codeql[java/rsa-without-oaep]: 密文格式必须与 Druid ConfigTools 兼容，
+        // 换成 OAEP 会让存量配置里的密文全部解不开；本方法的定位是配置混淆（见类注释）。
         Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         try {
             cipher.init(Cipher.DECRYPT_MODE, publicKey);
@@ -196,11 +228,12 @@ public class CryptoUtils {
         int offSet = 0;
         byte[] resultBytes = {};
         byte[] cache = {};
+        int blockSize = modulusBytes(publicKey);
         // 分段解密
         while (inputLength - offSet > 0) {
-            if (inputLength - offSet > MAX_DECRYPT_BLOCK) {
-                cache = cipher.doFinal(cipherBytes, offSet, MAX_DECRYPT_BLOCK);
-                offSet += MAX_DECRYPT_BLOCK;
+            if (inputLength - offSet > blockSize) {
+                cache = cipher.doFinal(cipherBytes, offSet, blockSize);
+                offSet += blockSize;
             } else {
                 cache = cipher.doFinal(cipherBytes, offSet, inputLength - offSet);
                 offSet = inputLength;
@@ -252,6 +285,7 @@ public class CryptoUtils {
         PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
         KeyFactory factory = KeyFactory.getInstance("RSA");
         PrivateKey privateKey = factory.generatePrivate(spec);
+        // codeql[java/rsa-without-oaep]: 与 decrypt(PublicKey, String) 成对，同样为 Druid 兼容保留 PKCS#1 v1.5。
         Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         try {
             cipher.init(Cipher.ENCRYPT_MODE, privateKey);
@@ -269,11 +303,12 @@ public class CryptoUtils {
         int offSet = 0;
         byte[] resultBytes = {};
         byte[] cache = {};
+        int blockSize = modulusBytes(privateKey) - PKCS1_PADDING_SIZE;
         // 分段加密
         while (inputLength - offSet > 0) {
-            if (inputLength - offSet > MAX_ENCRYPT_BLOCK) {
-                cache = cipher.doFinal(inputArray, offSet, MAX_ENCRYPT_BLOCK);
-                offSet += MAX_ENCRYPT_BLOCK;
+            if (inputLength - offSet > blockSize) {
+                cache = cipher.doFinal(inputArray, offSet, blockSize);
+                offSet += blockSize;
             } else {
                 cache = cipher.doFinal(inputArray, offSet, inputLength - offSet);
                 offSet = inputLength;
@@ -286,12 +321,25 @@ public class CryptoUtils {
     }
 
     /**
+     * 生成密钥对，长度取 {@link #DEFAULT_KEY_SIZE}
+     *
+     * @return byte[][] - 密钥对
+     */
+    public static byte[][] genKeyPairBytes() {
+        return genKeyPairBytes(DEFAULT_KEY_SIZE);
+    }
+
+    /**
      * 生成密钥对
      *
-     * @param keySize - 密钥对长度
+     * @param keySize - 密钥对长度，低于 {@link #MIN_KEY_SIZE} 直接拒绝（弱密钥等同于没加密）
      * @return byte[][] - 密钥对
      */
     public static byte[][] genKeyPairBytes(int keySize) {
+        if (keySize < MIN_KEY_SIZE) {
+            throw new IllegalArgumentException(
+                    "dynamic-datasource requires an RSA key size of at least " + MIN_KEY_SIZE + " bits, but got " + keySize);
+        }
         byte[][] keyPairBytes = new byte[2][];
         try {
             KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA");
@@ -307,6 +355,15 @@ public class CryptoUtils {
             throw new IllegalStateException("dynamic-datasource could not generate an RSA key pair", e);
         }
         return keyPairBytes;
+    }
+
+    /**
+     * 生成密钥对，长度取 {@link #DEFAULT_KEY_SIZE}
+     *
+     * @return String[] - Base64编码后的密钥对
+     */
+    public static String[] genKeyPair() {
+        return genKeyPair(DEFAULT_KEY_SIZE);
     }
 
     /**
