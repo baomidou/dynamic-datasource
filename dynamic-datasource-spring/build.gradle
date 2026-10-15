@@ -48,5 +48,9 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     // MasterSlaveAutoRoutingPlugin 依赖 org.apache.ibatis（主源经 compileOnly mybatis-plus 可见，
     // 但 testCompile 不继承 compileOnly），故为插件单测重新引入；仅 test 作用域，不影响发布构件。
+    testImplementation(libs.p6spy)
+    testImplementation(libs.seata.rm.datasource) {
+        exclude group: "com.alibaba", module: "druid"
+    }
     testImplementation(libs.mybatis.plus)
 }
