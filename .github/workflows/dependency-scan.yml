@@ -23,12 +23,14 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
       - name: Set up JDK 17 (Gradle runtime)
         uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6
         with:
           distribution: 'temurin'
           java-version: '17'
-          cache: 'gradle'
+          # 不启用 Gradle 缓存：本 job 只跑一次 cyclonedxBom，命中率极低却引入 cache-poisoning 面
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       # 只生成 SBOM，不跑测试：测试由 ci.yml 负责，这里要保证的是"每天有一份依赖清单可扫"

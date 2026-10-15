@@ -5,6 +5,7 @@ name: First interaction
 on:
   issues:
     types: [ opened ]
+  # zizmor: ignore[dangerous-triggers] first-interaction 只经 API 发评论，不检出也不执行 fork 代码
   pull_request_target:
     types: [ opened ]
 
