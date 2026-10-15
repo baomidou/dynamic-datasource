@@ -24,7 +24,15 @@ import javax.sql.DataSource;
  * <p>
  * Register implementations in {@code META-INF/services/} using this interface's
  * fully qualified name. Lower order values run first. Implementations must be
- * safe to load when their optional integration is absent.
+ * safe to load when their optional integration is absent. Providers must have
+ * a public no-argument constructor and be visible to the thread context
+ * classloader used when the chain is first created (or Spring's defining
+ * classloader if no context classloader is set). Instances are reused by a
+ * routing datasource and must support concurrent calls without retaining
+ * per-datasource state.
+ *
+ * @author Pika-Yalei
+ * @since 4.6.0
  */
 public interface DataSourceUnwrapper extends Ordered {
 

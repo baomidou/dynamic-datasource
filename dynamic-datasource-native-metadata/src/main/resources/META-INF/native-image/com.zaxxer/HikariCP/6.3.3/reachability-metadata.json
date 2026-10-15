@@ -17,6 +17,22 @@
         {
           "name": "close",
           "parameterTypes": []
+        },
+        {
+          "name": "getHikariPoolMXBean",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.destroyer.HikariDataSourceActiveDetector"
+      },
+      "type": "com.zaxxer.hikari.pool.HikariPool",
+      "methods": [
+        {
+          "name": "getActiveConnections",
+          "parameterTypes": []
         }
       ]
     },

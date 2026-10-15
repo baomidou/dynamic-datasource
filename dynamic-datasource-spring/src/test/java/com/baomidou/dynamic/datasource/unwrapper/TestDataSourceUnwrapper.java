@@ -16,9 +16,20 @@
 package com.baomidou.dynamic.datasource.unwrapper;
 
 import javax.sql.DataSource;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /** Loaded from META-INF/services, without changes to the routing datasource. */
 public class TestDataSourceUnwrapper implements DataSourceUnwrapper {
+
+    private static final AtomicInteger INSTANCE_COUNT = new AtomicInteger();
+
+    public TestDataSourceUnwrapper() {
+        INSTANCE_COUNT.incrementAndGet();
+    }
+
+    static int getInstanceCount() {
+        return INSTANCE_COUNT.get();
+    }
 
     @Override
     public boolean support(DataSource dataSource) {
