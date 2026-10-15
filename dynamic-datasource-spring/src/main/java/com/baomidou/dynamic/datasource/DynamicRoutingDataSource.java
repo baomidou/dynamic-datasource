@@ -36,6 +36,7 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -63,15 +64,35 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
     private String primary = "master";
     @Setter
     private Boolean strict = false;
-    @Setter
     private Boolean p6spy = false;
-    @Setter
     private Boolean seata = false;
     @Setter
     private Boolean graceDestroy = false;
+    private DataSourceUnwrapperChain dataSourceUnwrapperChain;
 
     public DynamicRoutingDataSource(List<DynamicDataSourceProvider> providers) {
         this.providers = providers;
+    }
+
+    public synchronized void setP6spy(Boolean p6spy) {
+        if (!Objects.equals(this.p6spy, p6spy)) {
+            this.p6spy = p6spy;
+            this.dataSourceUnwrapperChain = null;
+        }
+    }
+
+    public synchronized void setSeata(Boolean seata) {
+        if (!Objects.equals(this.seata, seata)) {
+            this.seata = seata;
+            this.dataSourceUnwrapperChain = null;
+        }
+    }
+
+    private synchronized DataSourceUnwrapperChain getDataSourceUnwrapperChain() {
+        if (dataSourceUnwrapperChain == null) {
+            dataSourceUnwrapperChain = new DataSourceUnwrapperChain(p6spy, seata);
+        }
+        return dataSourceUnwrapperChain;
     }
 
     /**
@@ -292,7 +313,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
             if (dataSource instanceof ItemDataSource) {
                 realDataSource = ((ItemDataSource) dataSource).getRealDataSource();
             } else {
-                realDataSource = new DataSourceUnwrapperChain(p6spy, seata).unwrap(dataSource);
+                realDataSource = getDataSourceUnwrapperChain().unwrap(dataSource);
             }
 
             if (null == realDataSource) {
