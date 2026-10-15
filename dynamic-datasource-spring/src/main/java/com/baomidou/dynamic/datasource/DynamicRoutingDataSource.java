@@ -76,8 +76,13 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
         this.providers = providers;
     }
 
+    /**
+     * 当前主数据源名称
+     *
+     * @return primary
+     */
     @Override
-    protected String getPrimary() {
+    public String getPrimary() {
         return primary;
     }
 
