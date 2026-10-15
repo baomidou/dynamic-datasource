@@ -88,3 +88,42 @@ jobs:
             dynamic-datasource-spring-boot4-starter/build/libs/*.jar
             dynamic-datasource-native-metadata/build/libs/*.jar
           sbom-path: build/reports/cyclonedx/bom.json
+
+  # 通知 samples 仓库对着"刚发布到 Central 的构件"跑全量集成测试。
+  # samples 依赖的是发布产物而非源码（见 samples/pom.xml 的 ds.version），
+  # 因此它的验收天然滞后一个发版周期；这里把滞后期压到发布后几分钟。
+  #
+  # 为什么是独立 job 而不是 build job 的最后一步：
+  #   1) 发布不可逆，本 job 失败时构件已经出去了，把整个 run 标红会误导维护者
+  #      以为发布失败 —— 故 continue-on-error，失败只作为告警；
+  #   2) 认证用的是跨仓库 PAT（SAMPLES_DISPATCH_TOKEN），与发布凭据隔离。
+  notify-samples:
+    name: Trigger samples verification
+    if: github.repository == 'baomidou/dynamic-datasource'
+    needs: build
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    timeout-minutes: 10
+    steps:
+      - name: Resolve version from tag
+        id: version
+        # tag 形如 v4.6.0，samples 需要的是 4.6.0
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+      - name: Dispatch ds-released to samples repo
+        env:
+          # 跨仓库（baomidou/* -> dynamic-datasource/*）dispatch，GITHUB_TOKEN 不够用，
+          # 需要对目标仓库有写权限的 PAT：classic PAT 勾 repo，或 fine-grained 给
+          # Contents: Read and write（若 dispatches 返回 403 再补 Actions: write）。
+          GH_TOKEN: ${{ secrets.SAMPLES_DISPATCH_TOKEN }}
+        # 注意：不要用 `-F client_payload='{"version":"..."}'`，gh 会把整段 JSON
+        # 当字符串发出去，服务端报 422 "For 'properties/client_payload', ... is not an object"。
+        # 嵌套字段语法 `client_payload[key]=value` 才会真正构造出 object。
+        run: |
+          gh api repos/dynamic-datasource/dynamic-datasource-samples/dispatches \
+            -X POST \
+            -F event_type=ds-released \
+            -F client_payload[version]="${{ steps.version.outputs.version }}" \
+            -F client_payload[tag]="${GITHUB_REF_NAME}" \
+            -F client_payload[run_url]="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

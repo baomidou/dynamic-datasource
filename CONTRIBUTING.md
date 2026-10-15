@@ -109,6 +109,12 @@ PR 标题与 commit message 建议使用 conventional 前缀（`fix:` / `feat:` 
 版本号唯一来源是根目录 `gradle.properties` 的 `APP_VERSION`（当前 `4.6.0`），
 它由根 `build.gradle` 赋给所有模块的 `version`。
 
+`release.yml` 末尾的 `notify-samples` job 会在发布成功后 `repository_dispatch` 通知
+[`dynamic-datasource/dynamic-datasource-samples`](https://github.com/dynamic-datasource/dynamic-datasource-samples)
+对着刚发布的构件跑全量集成测试，需要仓库 Secret `SAMPLES_DISPATCH_TOKEN`（对该仓库有写权限的 PAT）。
+该 job 标了 `continue-on-error`：发布不可逆且已完成，它失败只会告警、不会把发布标红，
+但 samples 会退化到靠每日定时任务发现新版本。
+
 ## 4.1 Tag 约定
 
 仓库历史上同时存在 `V1.0.0`、`v4.3.1`、`v4.50` 等形态，而 GitHub Release 标题写的是 `v4.5.0`。
