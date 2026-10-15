@@ -518,6 +518,78 @@
           "parameterTypes": []
         }
       ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceRefresher"
+      },
+      "type": "com.baomidou.dynamic.datasource.creator.DataSourceProperty",
+      "allPublicMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceRefresher"
+      },
+      "type": "com.baomidou.dynamic.datasource.creator.DatasourceInitProperties",
+      "allPublicMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceRefresher"
+      },
+      "type": "com.baomidou.dynamic.datasource.creator.druid.DruidConfig",
+      "allPublicMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceRefresher"
+      },
+      "type": "com.baomidou.dynamic.datasource.creator.hikaricp.HikariCpConfig",
+      "allPublicMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceRefresher"
+      },
+      "type": "com.baomidou.dynamic.datasource.creator.beecp.BeeCpConfig",
+      "allPublicMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceRefresher"
+      },
+      "type": "com.baomidou.dynamic.datasource.creator.dbcp.Dbcp2Config",
+      "allPublicMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceRefresher"
+      },
+      "type": "com.baomidou.dynamic.datasource.creator.atomikos.AtomikosConfig",
+      "allPublicMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceRefresher"
+      },
+      "type": "com.baomidou.dynamic.datasource.creator.c3p0.C3p0Config",
+      "allPublicMethods": true,
+      "queryAllPublicMethods": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceRefresher"
+      },
+      "type": "com.baomidou.dynamic.datasource.creator.oracleucp.OracleUcpConfig",
+      "allPublicMethods": true,
+      "queryAllPublicMethods": true
     }
   ]
 }
