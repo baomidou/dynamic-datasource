@@ -16,10 +16,14 @@
 package com.baomidou.dynamic.datasource.common.base;
 
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
+import com.baomidou.dynamic.datasource.common.lifecycle.LifecycleProxyDataSource;
 import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
 import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
 import com.baomidou.dynamic.datasource.creator.hikaricp.HikariCpConfig;
+import com.baomidou.dynamic.datasource.ds.ItemDataSource;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -27,6 +31,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Collections;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -72,6 +83,213 @@ public abstract class AbstractAddRemoveDatasourceTest {
         assertThat(ds.getDataSources().keySet()).contains("slave_1");
         ds.removeDataSource("slave_1");
         assertThat(ds.getDataSources().keySet()).doesNotContain("slave_1");
+    }
+
+    @ParameterizedTest(name = "{displayName} [customProxy={0}]")
+    @ValueSource(booleans = {false, true})
+    void removalShouldCloseTheUnderlyingPool(boolean customProxy) throws Exception {
+        DynamicRoutingDataSource routing = (DynamicRoutingDataSource) dataSource;
+        String name = "remove_" + UUID.randomUUID();
+        ItemDataSource item = createHikariDataSource(name);
+        DataSource pool = item.getRealDataSource();
+        try {
+            routing.setGraceDestroy(false);
+            routing.addDataSource(name, lifecycleDataSource(item, customProxy));
+            assertThat(isPoolClosed(pool)).isFalse();
+
+            routing.removeDataSource(name);
+
+            assertThat(routing.getDataSources()).doesNotContainKey(name);
+            assertThat(isPoolClosed(pool)).isTrue();
+        } finally {
+            removeIfPresent(routing, name);
+            closePool(pool);
+        }
+    }
+
+    @ParameterizedTest(name = "{displayName} [customProxy={0}]")
+    @ValueSource(booleans = {false, true})
+    void replacementShouldCloseOnlyTheOldUnderlyingPool(boolean customProxy) throws Exception {
+        DynamicRoutingDataSource routing = (DynamicRoutingDataSource) dataSource;
+        String name = "replace_" + UUID.randomUUID();
+        ItemDataSource oldItem = createHikariDataSource(name + "-old");
+        ItemDataSource newItem = createHikariDataSource(name + "-new");
+        DataSource oldPool = oldItem.getRealDataSource();
+        DataSource newPool = newItem.getRealDataSource();
+        DataSource replacement = lifecycleDataSource(newItem, customProxy);
+        try {
+            routing.setGraceDestroy(false);
+            routing.addDataSource(name, lifecycleDataSource(oldItem, customProxy));
+
+            routing.addDataSource(name, replacement);
+
+            assertThat(routing.getDataSources().get(name)).isSameAs(replacement);
+            assertThat(isPoolClosed(oldPool)).isTrue();
+            assertThat(isPoolClosed(newPool)).isFalse();
+            routing.removeDataSource(name);
+            assertThat(isPoolClosed(newPool)).isTrue();
+        } finally {
+            removeIfPresent(routing, name);
+            closePool(oldPool);
+            closePool(newPool);
+        }
+    }
+
+    @ParameterizedTest(name = "{displayName} [customProxy={0}]")
+    @ValueSource(booleans = {false, true})
+    void destroyShouldCloseUnderlyingPoolsImmediatelyEvenWhenGraceDestroyIsEnabled(boolean customProxy)
+            throws Exception {
+        DynamicRoutingDataSource routing = new DynamicRoutingDataSource(Collections.emptyList());
+        ItemDataSource item = createHikariDataSource("destroy-" + UUID.randomUUID());
+        DataSource pool = item.getRealDataSource();
+        try (Connection connection = pool.getConnection()) {
+            routing.setGraceDestroy(true);
+            routing.addDataSource("master", lifecycleDataSource(item, customProxy));
+            assertConnectionUsable(connection);
+
+            routing.destroy();
+
+            assertThat(isPoolClosed(pool)).isTrue();
+        } finally {
+            closePool(pool);
+        }
+    }
+
+    @ParameterizedTest(name = "{displayName} [customProxy={0}]")
+    @ValueSource(booleans = {false, true})
+    void gracefulRemovalShouldWaitForTheUnderlyingPoolsActiveConnection(boolean customProxy) throws Exception {
+        DynamicRoutingDataSource routing = (DynamicRoutingDataSource) dataSource;
+        String name = "gracefulremove_" + UUID.randomUUID();
+        ItemDataSource item = createHikariDataSource(name);
+        DataSource pool = item.getRealDataSource();
+        try {
+            routing.setGraceDestroy(true);
+            routing.addDataSource(name, lifecycleDataSource(item, customProxy));
+            try (Connection connection = pool.getConnection()) {
+                routing.removeDataSource(name);
+
+                assertThat(routing.getDataSources()).doesNotContainKey(name);
+                assertPoolRemainsOpenWhileConnectionIsActive(pool, connection);
+            }
+            awaitPoolClosed(pool);
+        } finally {
+            routing.setGraceDestroy(false);
+            removeIfPresent(routing, name);
+            closePool(pool);
+        }
+    }
+
+    @ParameterizedTest(name = "{displayName} [customProxy={0}]")
+    @ValueSource(booleans = {false, true})
+    void gracefulReplacementShouldKeepTheOldConnectionAndNewPoolUsable(boolean customProxy) throws Exception {
+        DynamicRoutingDataSource routing = (DynamicRoutingDataSource) dataSource;
+        String name = "gracefulreplace_" + UUID.randomUUID();
+        ItemDataSource oldItem = createHikariDataSource(name + "-old");
+        ItemDataSource newItem = createHikariDataSource(name + "-new");
+        DataSource oldPool = oldItem.getRealDataSource();
+        DataSource newPool = newItem.getRealDataSource();
+        DataSource replacement = lifecycleDataSource(newItem, customProxy);
+        try {
+            routing.setGraceDestroy(true);
+            routing.addDataSource(name, lifecycleDataSource(oldItem, customProxy));
+            try (Connection connection = oldPool.getConnection()) {
+                routing.addDataSource(name, replacement);
+
+                assertThat(routing.getDataSources().get(name)).isSameAs(replacement);
+                assertPoolRemainsOpenWhileConnectionIsActive(oldPool, connection);
+                assertThat(isPoolClosed(newPool)).isFalse();
+            }
+            awaitPoolClosed(oldPool);
+            assertThat(isPoolClosed(newPool)).isFalse();
+        } finally {
+            routing.setGraceDestroy(false);
+            removeIfPresent(routing, name);
+            closePool(oldPool);
+            closePool(newPool);
+        }
+    }
+
+    private ItemDataSource createHikariDataSource(String name) throws ClassNotFoundException {
+        HikariCpConfig hikari = new HikariCpConfig();
+        hikari.setMaximumPoolSize(2);
+        hikari.setMinimumIdle(0);
+        hikari.setConnectionTimeout(1000L);
+        DataSourceProperty property = new DataSourceProperty();
+        property.setHikari(hikari);
+        property.setPoolName(name);
+        property.setType(Class.forName("com.zaxxer.hikari.HikariDataSource").asSubclass(DataSource.class));
+        property.setUrl("jdbc:h2:mem:" + name);
+        property.setUsername("sa");
+        property.setPassword("");
+        property.setDriverClassName("org.h2.Driver");
+        DataSource created = dataSourceCreator.createDataSource(property);
+        assertThat(created).isInstanceOf(ItemDataSource.class);
+        ItemDataSource item = (ItemDataSource) created;
+        assertThat(item.getRealDataSource().getClass().getName()).isEqualTo("com.zaxxer.hikari.HikariDataSource");
+        return item;
+    }
+
+    private DataSource lifecycleDataSource(ItemDataSource item, boolean customProxy) {
+        if (customProxy) {
+            // This non-closing proxy can only expose the pool through the test SPI provider.
+            return new LifecycleProxyDataSource(item.getRealDataSource());
+        }
+        return item;
+    }
+
+    private void assertPoolRemainsOpenWhileConnectionIsActive(DataSource pool, Connection connection)
+            throws Exception {
+        // Observe more than one destroyer poll, so an immediate-close regression cannot pass by racing.
+        long deadline = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(300);
+        do {
+            assertThat(isPoolClosed(pool)).isFalse();
+            assertConnectionUsable(connection);
+            Thread.sleep(25L);
+        } while (System.nanoTime() < deadline);
+    }
+
+    private void assertConnectionUsable(Connection connection) throws SQLException {
+        try (Statement statement = connection.createStatement();
+             ResultSet result = statement.executeQuery("select 1")) {
+            assertThat(result.next()).isTrue();
+            assertThat(result.getInt(1)).isEqualTo(1);
+        }
+    }
+
+    private void awaitPoolClosed(DataSource pool) throws Exception {
+        // Unwrapped Hikari pools close as soon as their active connection is returned.
+        // A missing detector otherwise waits ten seconds, which must not satisfy this assertion.
+        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(5);
+        while (System.nanoTime() < deadline) {
+            if (isPoolClosed(pool)) {
+                return;
+            }
+            Thread.sleep(25L);
+        }
+        assertThat(isPoolClosed(pool)).as("underlying Hikari pool should close after its active connection returns")
+                .isTrue();
+    }
+
+    private boolean isPoolClosed(DataSource pool) throws SQLException {
+        // Probe through JDBC instead of adding a Hikari compile dependency or native reflection metadata.
+        try (Connection ignored = pool.getConnection()) {
+            return false;
+        } catch (SQLException exception) {
+            if (exception.getMessage() != null && exception.getMessage().contains("has been closed")) {
+                return true;
+            }
+            throw exception;
+        }
+    }
+
+    private void removeIfPresent(DynamicRoutingDataSource routing, String name) {
+        if (routing.getDataSources().containsKey(name)) {
+            routing.removeDataSource(name);
+        }
+    }
+
+    private void closePool(DataSource pool) throws Exception {
+        ((AutoCloseable) pool).close();
     }
 }
 

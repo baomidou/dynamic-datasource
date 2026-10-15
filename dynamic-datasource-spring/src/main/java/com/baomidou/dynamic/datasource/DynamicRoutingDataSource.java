@@ -26,15 +26,13 @@ import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
 import com.baomidou.dynamic.datasource.strategy.LoadBalanceDynamicDataSourceStrategy;
 import com.baomidou.dynamic.datasource.toolkit.DsStrUtils;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
-import com.p6spy.engine.spy.P6DataSource;
-import io.seata.rm.datasource.DataSourceProxy;
+import com.baomidou.dynamic.datasource.unwrapper.DataSourceUnwrapperChain;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
 import javax.sql.DataSource;
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -294,19 +292,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
             if (dataSource instanceof ItemDataSource) {
                 realDataSource = ((ItemDataSource) dataSource).getRealDataSource();
             } else {
-                if (seata) {
-                    if (dataSource instanceof DataSourceProxy) {
-                        DataSourceProxy dataSourceProxy = (DataSourceProxy) dataSource;
-                        realDataSource = dataSourceProxy.getTargetDataSource();
-                    }
-                }
-                if (p6spy) {
-                    if (dataSource instanceof P6DataSource) {
-                        Field realDataSourceField = P6DataSource.class.getDeclaredField("realDataSource");
-                        realDataSourceField.setAccessible(true);
-                        realDataSource = (DataSource) realDataSourceField.get(dataSource);
-                    }
-                }
+                realDataSource = new DataSourceUnwrapperChain(p6spy, seata).unwrap(dataSource);
             }
 
             if (null == realDataSource) {
