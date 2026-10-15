@@ -207,7 +207,14 @@ feature 分支 → PR(--base dev) → CI 全绿 → 维护者合并 → 维护�
 > 事件无写权限），两者均不检出代码，已加 zizmor ignore 注释。注意 zizmor 的 ignore 必须紧贴
 > `pull_request_target:` 行上方，贴在 `on:` 上方**不报错但永不生效**。
 
-### 5.4 文档
+> **陷阱：`pull_request_target` 类 workflow 生效的是默认分支（`main`）上的版本**，不是 PR base
+> 分支（`dev`）的。因此在 `dev` 上修好这类 workflow **不会立刻在 PR 上生效**，必须等
+> `dev → main` 的发版合并之后才真正修复。
+>
+> 已发生的实例：`first-interaction.yml` 的输入名由连字符改为下划线（`f297f1c`，v3 只接受
+> `repo_token`/`issue_message`/`pr_message`）修在 `dev`，而 `main` 上仍是旧版，导致此后
+> **每个 PR 的 `welcome` 检查都失败**（`Input required and not supplied: issue_message`）。
+> 详见 §12。
 
 | Workflow | 触发 | 内容 |
 | :--- | :--- | :--- |
@@ -439,6 +446,7 @@ README 的 **`Out of scope`** 章节值得单独强调：它明确写出项目**
 
 | 项 | 说明 |
 | :--- | :--- |
+| **每个 PR 的 `welcome` 检查失败** | 根因见 §5.3 的陷阱：`pull_request_target` 读**默认分支 `main`** 的 workflow，而 `first-interaction.yml` 的输入名修复（`f297f1c` 连字符→下划线）只落在 `dev`。`main` 落后 `dev` 18 个提交，**发版合并后自动修复**；若不想每个 PR 都挂红叉，需提前做一次 `dev → main` 的发布合并。修复的是 workflow 而非产品代码，不影响发布门禁 |
 | `dependency-scan` 未成为门禁 | 现在 `fail-on-vuln: false`，先把存量告警留在 Code Scanning 页面；待**存量清零后再改为 true** |
 | Scorecard 分数 | 有徽章与 SARIF，但未针对低分项做系统性整改（如 `signed-releases`、`fuzzing`、`dangerous-workflow` 细节） |
 | 覆盖率无外部徽章 | `jacocoRootReport` 只上传 artifact，未接 Codecov 等；是刻意选择（避免外部服务依赖与 token） |
