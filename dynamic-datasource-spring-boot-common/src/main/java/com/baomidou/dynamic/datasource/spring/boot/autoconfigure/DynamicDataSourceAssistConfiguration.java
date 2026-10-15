@@ -25,11 +25,15 @@ import com.baomidou.dynamic.datasource.provider.YmlDynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
 import com.baomidou.dynamic.datasource.tx.DsTxEventListenerFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 
+import javax.sql.DataSource;
 import java.util.List;
 
 /**
@@ -71,6 +75,32 @@ public class DynamicDataSourceAssistConfiguration {
         creator.setSeata(properties.getSeata());
         creator.setSeataMode(properties.getSeataMode());
         return creator;
+    }
+
+    /**
+     * 刷新编排器：始终注册，未接入 Spring Cloud 时可自行注入调用 {@link DynamicDataSourceRefresher#refresh}
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public DynamicDataSourceRefresher dynamicDataSourceRefresher(ObjectProvider<DataSource> dataSource,
+                                                                 DefaultDataSourceCreator defaultDataSourceCreator) {
+        return new DynamicDataSourceRefresher(dataSource, defaultDataSourceCreator, properties);
+    }
+
+    /**
+     * Spring Cloud 环境下可选开启的自动刷新，默认关闭以免升级后行为突变
+     */
+    @Configuration
+    @ConditionalOnClass(name = "org.springframework.cloud.context.config.annotation.RefreshScope")
+    @ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "refresh-enabled", havingValue = "true", matchIfMissing = false)
+    static class DynamicDataSourceRefreshConfiguration {
+
+        @Bean
+        @ConditionalOnMissingBean
+        public DynamicDataSourceRefreshListener dynamicDataSourceRefreshListener(DynamicDataSourceRefresher refresher,
+                                                                                DynamicDataSourceProperties properties) {
+            return new DynamicDataSourceRefreshListener(refresher, properties);
+        }
     }
 
     @Configuration

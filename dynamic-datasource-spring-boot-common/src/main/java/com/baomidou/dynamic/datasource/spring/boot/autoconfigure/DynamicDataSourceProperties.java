@@ -75,6 +75,12 @@ public class DynamicDataSourceProperties {
      */
     private Boolean graceDestroy = false;
     /**
+     * 是否开启配置中心自动刷新。
+     * 仅在 classpath 存在 Spring Cloud 的 RefreshEvent 时生效，开启后配置变更会自动重建变化的数据源。
+     * 未接入 Spring Cloud 时可直接注入 DynamicDataSourceRefresher 手动调用。
+     */
+    private Boolean refreshEnabled = false;
+    /**
      * seata使用模式，默认AT
      */
     private SeataMode seataMode = SeataMode.AT;
