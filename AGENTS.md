@@ -25,6 +25,13 @@ There is no "just this once" exception — not for a one-line change, not for a 
 not when the local build is green, not when the user says "直接推吧". If the user asks you to push
 straight to `dev`/`main`, point at this section and offer the PR route instead.
 
+This is also enforced technically, not only by convention: `dev` has branch protection requiring
+all changes to arrive through a pull request, and it applies to repository admins too, so a direct
+push is rejected by GitHub rather than by human review. It deliberately sets **zero** required
+approving reviews, because the project has a single maintainer — the author can and does merge
+their own PRs. Do not "helpfully" raise that number in the name of best practice: it would make
+the repository impossible to maintain.
+
 If you genuinely cannot open a PR (no `gh`, no push rights, offline), say so explicitly, leave the
 work in the working tree or on a branch, and hand the exact commands to the user.
 
@@ -115,3 +122,42 @@ Never run `publish*`/`sign*` tasks locally. Signing and Central credentials come
 - Security findings are **not** public issues: see `SECURITY.md`. Code scanning alerts are triaged
   in the Security tab; fix them in code or dismiss them with a written justification — do not
   silence a scanner blanket-wide to make a number go down.
+
+## 6. Negative tests must not re-create the weak pattern
+
+A test asserting "the guard rejects X" still writes the offending literal into the source tree,
+and **static analysers do not care about your intent**. Real damage that has already happened here
+(see PR #800):
+
+- `assertThatThrownBy(() -> genKeyPairBytes(512))` written to verify the new `MIN_KEY_SIZE` guard
+  was itself what kept `java/insufficient-key-size` firing. Any integer literal below 2048 flowing
+  into a key-size argument is a live alert, even inside a lambda nobody executes for real.
+- The same trap applies to SQL string concatenation in injection tests, hardcoded credentials in
+  "must reject local files" tests, and weak algorithms in "must refuse MD5" tests.
+
+Rules:
+
+1. Derive the bad value at runtime (`Integer.parseInt("512")`, a fixture file, a builder) so it is
+   not a compile-time constant, or test the boundary through the public contract instead.
+2. Say why in a comment, otherwise someone will "tidy" it back into a literal and reopen the alert.
+
+## 7. Suppression comments are a hypothesis, CI is the verdict
+
+`// codeql[rule-id]` and `# zizmor: ignore[rule-id]` are the correct way to record an accepted
+risk, but they are not reliable enough to trust blindly: in the same PR the `java/rsa-without-oaep`
+suppressions worked while `java/insufficient-key-size` silently did not. Likewise, zizmor ignore
+comments must sit immediately above the offending **key** (`pull_request_target:`), not above
+`on:` — placing them wrong produces no error, just an alert that never goes away.
+
+So before declaring a scanning fix done, confirm against the actual run:
+
+- `gh pr checks <n>` — `CodeQL`, `zizmor` and the `Test CI` matrix must all be green. `Analyze
+  workflows` passing is **not** the same as there being zero alerts; the `CodeQL`/`zizmor` status
+  checks are the ones that compare new alerts against the base.
+- `zizmor` can be installed locally (`pip3 install zizmor`) and run offline against
+  `.github/workflows/ .github/dependabot.yml`. Do it — it is much faster than a CI round trip.
+- When the numbers do not move, **re-read the alert's own reported location**; do not keep editing
+  code you assume is at fault.
+
+A green local build proves nothing about any of this: the CodeQL check once failed for three
+consecutive pushes while `./gradlew test` was green every time.
