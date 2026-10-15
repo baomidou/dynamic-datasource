@@ -1,5 +1,10 @@
 # Project instructions
 
+> **Read [`AGENTS.md`](../../AGENTS.md) first.** It is the canonical rules file for AI agents and
+> human contributors; this file mirrors it for GitHub Copilot. Its §0 is non-negotiable:
+> **never commit or push directly to `dev` or `main`** — create a `<type>/<slug>` branch off `dev`,
+> push it, and open a PR with `--base dev`. Do not merge it yourself.
+
 ## What this is
 
 `dynamic-datasource` — a Spring Boot starter that routes JDBC access across multiple

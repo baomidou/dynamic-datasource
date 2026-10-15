@@ -19,6 +19,9 @@ updates:
       day: saturday
       time: "03:00"
       timezone: Asia/Shanghai
+    # 冷却期：新版本发布后等 7 天再提，避开被投毒/撤回的发布（supply-chain 最佳实践）
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 5
     labels:
       - dependencies
@@ -47,6 +50,8 @@ updates:
       day: saturday
       time: "03:00"
       timezone: Asia/Shanghai
+    cooldown:
+      default-days: 7
     labels:
       - dependencies
     commit-message:

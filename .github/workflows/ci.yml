@@ -29,6 +29,9 @@ jobs:
         starter: [ 'dynamic-datasource-spring-boot3-starter', 'dynamic-datasource-spring-boot4-starter' ]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          # 不写 token 到 .git/config：后续步骤拿不到长期有效的凭据
+          persist-credentials: false
       - uses: graalvm/setup-graalvm@27b360dbb857524eaf0b4c4cef364d38e5b4f173 # v1
         with:
           version: ${{ matrix.version }}
@@ -59,6 +62,8 @@ jobs:
         java-version: [ '17', '21', '25', '27' ]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
       - name: Setup JDK ${{ matrix.java-version }} (Gradle runtime)
         uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6
         with:
@@ -99,6 +104,8 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
       - name: Review dependency changes
         uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5
         with:

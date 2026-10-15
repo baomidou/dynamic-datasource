@@ -19,6 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
       - name: Set up JDK 17
         uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6
         with:
@@ -32,6 +34,9 @@ jobs:
           build-scan-publish: true
           build-scan-terms-of-use-url: https://gradle.com/terms-of-service
           build-scan-terms-of-use-agree: 'yes'
+          # 发布链路不接受任何复用：关掉 Gradle 缓存以消除 cache-poisoning 面，
+          # 发布是一次性低频操作，慢一点无所谓
+          cache-disabled: true
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew

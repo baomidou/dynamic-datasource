@@ -3,6 +3,7 @@ name: PR target check
 # pull_request_target 是必要用法：fork PR 需要写权限才能评论；本 workflow 不检出任何代码，
 # 事件数据经环境变量传递、不做表达式插值。
 on:
+  # zizmor: ignore[dangerous-triggers] 本 workflow 无 checkout、无表达式插值、权限仅 pull-requests: write
   pull_request_target:
     types: [ opened, edited, reopened ]
 

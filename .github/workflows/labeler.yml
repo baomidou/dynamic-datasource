@@ -3,6 +3,7 @@ name: Labeler
 # pull_request_target 是官方推荐用法：fork PR 需要写权限才能打标签，
 # 而 labeler 只经 API 读取变更文件列表，不检出 PR 代码。
 on:
+  # zizmor: ignore[dangerous-triggers] labeler 只经 API 读变更文件列表，不检出也不执行 fork 代码
   pull_request_target:
     types: [ opened, synchronize, reopened ]
 

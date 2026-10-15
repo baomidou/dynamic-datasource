@@ -11,18 +11,23 @@ on:
     - cron: '15 2 * * 6'
   workflow_dispatch:
 
+# 顶层只给最小读权限，security-events: write 下放到需要上传 SARIF 的 job
 permissions:
   contents: read
-  security-events: write
-  actions: read
 
 jobs:
   analyze:
     name: Analyze java
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
       - name: Setup JDK 17 (Gradle runtime)
         uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6
         with:

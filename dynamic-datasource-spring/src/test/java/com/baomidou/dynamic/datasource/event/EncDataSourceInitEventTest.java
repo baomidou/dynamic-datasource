@@ -37,7 +37,7 @@ class EncDataSourceInitEventTest {
 
     @Test
     void shouldDecryptEncWrappedCredentialsWithPublicKey() throws Exception {
-        String[] keyPair = CryptoUtils.genKeyPair(512);
+        String[] keyPair = CryptoUtils.genKeyPair();
         String privateKey = keyPair[0];
         String publicKey = keyPair[1];
 
@@ -56,7 +56,7 @@ class EncDataSourceInitEventTest {
 
     @Test
     void plainValuesWithoutEncShouldPassThrough() throws Exception {
-        String[] keyPair = CryptoUtils.genKeyPair(512);
+        String[] keyPair = CryptoUtils.genKeyPair();
         String publicKey = keyPair[1];
 
         DataSourceProperty property = new DataSourceProperty();
@@ -77,8 +77,8 @@ class EncDataSourceInitEventTest {
     void decryptionFailureWithWrongKeyShouldThrowInsteadOfReturningCiphertext() throws Exception {
         // 旧实现吞异常返回密文原文：应用带着字面量 "ENC(...)" 当密码启动，
         // 报出来的是误导性的 access denied，真因（公钥不匹配/密钥长度）被埋在第一层日志。
-        String[] encKeyPair = CryptoUtils.genKeyPair(512);
-        String[] wrongKeyPair = CryptoUtils.genKeyPair(512);
+        String[] encKeyPair = CryptoUtils.genKeyPair();
+        String[] wrongKeyPair = CryptoUtils.genKeyPair();
 
         DataSourceProperty property = new DataSourceProperty();
         property.setPublicKey(wrongKeyPair[1]);
