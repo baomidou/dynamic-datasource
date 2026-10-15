@@ -343,6 +343,8 @@ public class CryptoUtils {
         byte[][] keyPairBytes = new byte[2][];
         try {
             KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA");
+            // codeql[java/insufficient-key-size]: 上方 keySize < MIN_KEY_SIZE 的校验已是运行时硬保证，
+            // CodeQL 的常量传播推导不出这个下界，故显式抑制。
             gen.initialize(keySize, new SecureRandom());
             KeyPair pair = gen.generateKeyPair();
 
