@@ -44,6 +44,42 @@ access is required. Do not add tests that need a live MySQL/Postgres.
 > 本地环境备注 / local environment note: the maintainer's shell defines `jdk17` as a shortcut
 > to switch the current JDK to 17 (`jdk8`, `jdk21` … same pattern) before running Gradle.
 
+### Running nativeTest locally (required when you touch reflection)
+
+CI's `test-graalvm-ce-ci` runs `nativeTest` for `spring-boot3-starter` / `spring-boot4-starter`;
+the GraalVM version lives in the `version` matrix of `ci.yml` (currently `25.3.4.1`,
+distribution `graalvm-community`). You can reproduce it locally with
+[sdkman](https://sdkman.io):
+
+```bash
+sdk install java 25.4.4.1+1-graalce        # CE versions carry a build number; `25.4.4.1-graalce` alone fails
+export JAVA_HOME="$HOME/.sdkman/candidates/java/25.4.4.1+1-graalce/Home"   # macOS layout: real home is Home/
+export PATH="$JAVA_HOME/bin:$PATH"
+java -version && native-image --version     # both must print
+./gradlew :dynamic-datasource-spring-boot4-starter:nativeTest
+./gradlew :dynamic-datasource-spring-boot3-starter:nativeTest
+```
+
+Each leg takes 3–5 minutes (native-image compilation dominates).
+
+Two gotchas:
+
+- **`sdk use` may not switch on macOS**: `current` can keep pointing at the old JDK. Set
+  `JAVA_HOME` to `<version>/Home` directly instead of retrying `sdk use`.
+- **Install may hang at `Cleaning up residual files...`**: a `safe-delete`-style hook that blocks
+  bulk deletion stops sdkman from clearing `~/.sdkman/tmp/Java-<version>`, and nothing lands in
+  `candidates/`. The archive is already unpacked — finish it by hand:
+
+  ```bash
+  mv ~/.sdkman/tmp/Java-25.4.4.1+1-graalce ~/.sdkman/candidates/java/25.4.4.1+1-graalce
+  ```
+
+**When it is mandatory**: anything relying on reflection (`Introspector`, `Class.getMethods()`,
+dynamic proxies) needs entries in `reachability-metadata.json` under
+`dynamic-datasource-native-metadata`. Unregistered reflection usually does **not** throw — it
+silently degrades (e.g. an empty property list), so green JVM tests prove nothing here. State in
+the PR whether you ran `nativeTest`.
+
 Never run `publish*`/`sign*` tasks locally. Signing and Central credentials come from CI
 secrets (in-memory GPG key); do not put credentials or key rings into tracked files.
 

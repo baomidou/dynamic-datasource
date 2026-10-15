@@ -74,6 +74,40 @@ required. Do not add tests that need a live MySQL/Postgres.
 > 本地环境备注 / local environment note: the maintainer's shell defines `jdk17` as a shortcut to
 > switch the current JDK to 17 (`jdk8`, `jdk21` … same pattern) before running Gradle.
 
+### 2.1 本地跑 nativeTest（改了反射相关代码必跑）
+
+CI 的 `test-graalvm-ce-ci` 会对 `spring-boot3-starter` / `spring-boot4-starter` 跑 `nativeTest`，
+GraalVM 版本见 `ci.yml` 的 `version` matrix（当前 `25.3.4.1`，distribution `graalvm-community`）。
+本地可以跑，用 [sdkman](https://sdkman.io) 装：
+
+```bash
+sdk install java 25.4.4.1+1-graalce        # CE 版本号带 build 号，光写 25.4.4.1-graalce 会报 not available
+export JAVA_HOME="$HOME/.sdkman/candidates/java/25.4.4.1+1-graalce/Home"   # macOS 布局，真身在 Home/
+export PATH="$JAVA_HOME/bin:$PATH"
+java -version && native-image --version     # 两个都要有输出
+./gradlew :dynamic-datasource-spring-boot4-starter:nativeTest
+./gradlew :dynamic-datasource-spring-boot3-starter:nativeTest
+```
+
+每腿 3~5 分钟（native-image 编译是大头），两条可以分开跑。
+
+两个坑：
+
+- **macOS 的 `sdk use` 不一定切得过去**：装完后 `current` 可能仍指向旧 JDK。直接给 `JAVA_HOME`
+  指向 `<version>/Home` 更可靠，`sdk use` 不行时别反复重试。
+- **安装可能卡在 `Cleaning up residual files...`**：若环境里有 `safe-delete` 之类的 hook 拦截批量删除，
+  sdkman 清不掉 `~/.sdkman/tmp/Java-<version>`，安装会中断且 `candidates/` 下不会留下目录。
+  此时手动接手即可，内容其实已经解包好了：
+
+  ```bash
+  mv ~/.sdkman/tmp/Java-25.4.4.1+1-graalce ~/.sdkman/candidates/java/25.4.4.1+1-graalce
+  ```
+
+**什么时候必须跑**：任何依赖反射的行为（`Introspector`、`Class.getMethods()`、动态代理）在 native 下
+都需要 `dynamic-datasource-native-metadata` 里的 `reachability-metadata.json` 注册。没注册时往往
+**不报错、只是静默退化**（例如读到空的属性列表），JVM 测试全绿也发现不了。新增/修改这类代码后，
+请在 PR 里说明是否跑过 `nativeTest`。
+
 Never run `publish*`/`sign*` tasks locally. Signing and Central credentials come from CI secrets
 (in-memory GPG key); do not put credentials or key rings into tracked files.
 
