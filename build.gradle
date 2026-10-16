@@ -216,9 +216,10 @@ allprojects {
 // 没有 test 任务，报告压根不生成，看起来像 0%；starter 模块的百分比也只反映它们自己那几个
 // 自动装配类。这里用全部模块的 test.exec 去查这三个库模块的 class，得到的才是“真实被测覆盖率”。
 //
-// 聚合范围不含三个 starter：它们按 Boot2/3/4 各自携带同名类的不同副本
-//（com.baomidou...processor.DsJakarta*Processor、*AutoConfiguration 等），
-// 放进同一个 bundle 会让 JaCoCo 直接失败：
+// 聚合范围不含三个 starter：它们仍含有按 Boot 版本隔离的同名类
+//（DynamicDataSourceAutoConfiguration、Boot2/3 的 DruidDynamicDataSourceConfiguration，
+// Boot3/4 的 DsJakarta*Processor）。共享 AOP 与 Boot2/3 metrics 配置已移入 boot-common，
+// Boot4 metrics 使用独立适配类；不要把 starter 加进同一个 bundle，除非再次确认没有重名类：
 //   java.lang.IllegalStateException: Can't add different class with same name: ...
 // Gradle 9.8 的 JacocoReport 没有 additionalGroupData（多 bundle）支持，已实测确认，
 // 所以只能限定到无重名的模块。starter 层的覆盖率看各模块自己的 jacocoTestReport。

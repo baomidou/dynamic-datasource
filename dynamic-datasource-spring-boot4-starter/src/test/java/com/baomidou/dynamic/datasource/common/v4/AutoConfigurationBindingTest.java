@@ -16,9 +16,23 @@
 package com.baomidou.dynamic.datasource.common.v4;
 
 import com.baomidou.dynamic.datasource.common.base.AbstractAutoConfigurationBindingTest;
+import com.baomidou.dynamic.datasource.processor.DsJakartaHeaderProcessor;
+import com.baomidou.dynamic.datasource.processor.DsProcessor;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Boot4 侧自动装配属性绑定场景：断言全部来自共享基类，此处仅绑定本版本的自动装配。
  */
 public class AutoConfigurationBindingTest extends AbstractAutoConfigurationBindingTest {
+
+	@Autowired
+	private DsProcessor dsProcessor;
+
+	@Test
+	void shouldUseJakartaServletNamespaceProcessor() {
+		assertThat(dsProcessor).isInstanceOf(DsJakartaHeaderProcessor.class);
+	}
 }

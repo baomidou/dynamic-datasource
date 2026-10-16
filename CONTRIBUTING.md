@@ -203,12 +203,24 @@ git checkout main   # 别把工作区留在 detached HEAD
 7. **Lombok 版本不得低于 1.18.42**，否则在 JDK 25 矩阵下编译报 `TypeTag::UNKNOWN`。
 8. 不启用 `mavenLocal()`：本地仓库构件不可复现。镜像仓库仅作加速，必须保留 Maven Central 兜底。
 9. `doc/` 下原有的 Maven→Gradle 迁移记录已删除（内容被后续重构取代），上述约束即为其存活部分。
-10. **JaCoCo 聚合报告不能把三个 starter 模块放进同一个 bundle**。它们按 Boot 2/3/4 各自携带同名
-    类的不同副本（`...processor.DsJakarta*Processor`、`*AutoConfiguration` 等），一起分析时 JaCoCo 报
-    `IllegalStateException: Can't add different class with same name`，而失败信号是含糊的
-    `Error while creating report`。Gradle 9.8 的 `JacocoReport` 没有多 bundle（`additionalGroupData`）
-    入口，所以 `jacocoRootReport` 只统计 `coverageModules` 里的无重名库模块——往这个清单里加模块前，
-    先确认它与已列模块没有同名类。
+10. **Starter 同名类审计与 JaCoCo bundle 限制**。共享配置已优先移入
+   `dynamic-datasource-spring-boot-common`；以下是三个 starter 中本次审计的同名类及处置：
+
+   | 类 | 分类 | 处置与原因 |
+   | --- | --- | --- |
+   | `DynamicDataSourceAopConfiguration` | Advisor 配置相同；处理器链按 servlet 命名空间不同 | advisor/属性配置移入 common；Boot 2、Boot 3/4 分别在 starter 主自动配置中创建 `javax` / `jakarta` 处理器链 |
+   | `DynamicDataSourcePoolMetricsAutoConfiguration` | Boot 2/3 仅有 `instanceof` 语法差异；Boot 4 的 Boot API 包名和 nullness API 不同 | Boot 2/3 实现与 Hikari binder 移入 common；Boot 4 使用独立的 `DynamicDataSourcePoolMetricsBoot4AutoConfiguration` |
+   | `DsJakartaHeaderProcessor`, `DsJakartaSessionProcessor` | Boot 3/4 源码相同，但依赖 Jakarta servlet 与对应 Spring 请求属性 API | 保留在 Boot 3/4 starter，避免 common 对 Boot 2 `javax.servlet` 基线产生链接依赖 |
+   | `DynamicDataSourceAutoConfiguration` | Boot 4 JDBC auto-configuration 包名不同；Druid 导入和顺序也不同 | 各 starter 保留各自入口配置 |
+   | `DruidDynamicDataSourceConfiguration` | Boot 2/3 的 Druid starter 包名不同；Boot 4 无此配置类 | 保留 Boot 2/3 版本 |
+
+   JaCoCo 仍不能把三个 starter 放进同一个 bundle：剩余的
+   `DynamicDataSourceAutoConfiguration`、Boot 2/3 `DruidDynamicDataSourceConfiguration` 与
+   Boot 3/4 `DsJakarta*Processor` 具有重复全限定类名，一起分析会报
+   `IllegalStateException: Can't add different class with same name`，外层错误通常只有
+   `Error while creating report`。Gradle 9.8 的 `JacocoReport` 没有多 bundle
+   (`additionalGroupData`) 入口，所以 `jacocoRootReport` 只统计 `coverageModules` 中无重名的库模块；
+   向其中添加模块前，先与现有 class 输入核对全限定类名。
 11. **仓库列表声明在 `allprojects` 而不是 `subprojects`**：根任务需要解析 `jacocoAnt`
     （`org.jacoco:org.jacoco.ant`），只在 `subprojects` 里声明会让根项目在写配置缓存时报
     `Cannot resolve external dependency ... because no repositories are defined`。同理 JaCoCo 版本
