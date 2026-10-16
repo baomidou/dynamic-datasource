@@ -16,10 +16,16 @@
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
+import com.baomidou.dynamic.datasource.processor.DsJakartaHeaderProcessor;
+import com.baomidou.dynamic.datasource.processor.DsJakartaSessionProcessor;
+import com.baomidou.dynamic.datasource.processor.DsProcessor;
+import com.baomidou.dynamic.datasource.processor.DsSpelExpressionProcessor;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -27,6 +33,8 @@ import org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Role;
+import org.springframework.context.expression.BeanFactoryResolver;
 import org.springframework.util.CollectionUtils;
 
 import javax.sql.DataSource;
@@ -72,6 +80,20 @@ public class DynamicDataSourceAutoConfiguration implements InitializingBean {
         dataSource.setSeata(properties.getSeata());
         dataSource.setGraceDestroy(properties.getGraceDestroy());
         return dataSource;
+    }
+
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    @Bean
+    @ConditionalOnMissingBean
+    public DsProcessor dsProcessor(BeanFactory beanFactory) {
+        DsProcessor headerProcessor = new DsJakartaHeaderProcessor();
+        DsProcessor sessionProcessor = new DsJakartaSessionProcessor();
+        DsSpelExpressionProcessor spelExpressionProcessor = new DsSpelExpressionProcessor();
+        spelExpressionProcessor.setBeanResolver(new BeanFactoryResolver(beanFactory));
+        spelExpressionProcessor.setAllowedSpelTypeAccess(properties.getAop().getAllowedSpelTypeAccess());
+        headerProcessor.setNextProcessor(sessionProcessor);
+        sessionProcessor.setNextProcessor(spelExpressionProcessor);
+        return headerProcessor;
     }
 
     @Override

@@ -1,4 +1,4 @@
 com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAutoConfiguration
-com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourcePoolMetricsAutoConfiguration
+com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourcePoolMetricsBoot4AutoConfiguration
 com.baomidou.dynamic.datasource.check.SeataDataSourceProxyChecker
 com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceEndpointAutoConfiguration

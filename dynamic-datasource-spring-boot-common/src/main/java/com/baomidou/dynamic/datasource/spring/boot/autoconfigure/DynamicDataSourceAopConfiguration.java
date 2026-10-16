@@ -15,37 +15,22 @@
  */
 package com.baomidou.dynamic.datasource.spring.boot.autoconfigure;
 
-import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor;
 import com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationInterceptor;
 import com.baomidou.dynamic.datasource.aop.DynamicLocalTransactionInterceptor;
-import com.baomidou.dynamic.datasource.processor.DsJakartaHeaderProcessor;
-import com.baomidou.dynamic.datasource.processor.DsJakartaSessionProcessor;
 import com.baomidou.dynamic.datasource.processor.DsProcessor;
-import com.baomidou.dynamic.datasource.processor.DsSpelExpressionProcessor;
-import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
-import com.baomidou.dynamic.datasource.strategy.DynamicDataSourceStrategy;
 import org.springframework.aop.Advisor;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Role;
-import org.springframework.context.expression.BeanFactoryResolver;
 
 /**
- * 动态数据源核心自动配置类
- *
- * @author TaoYu Kanyuxia
- * @see DynamicDataSourceProvider
- * @see DynamicDataSourceStrategy
- * @see DynamicRoutingDataSource
- * @since 1.0.0
+ * 动态数据源 AOP 自动配置
  */
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 @Configuration(proxyBeanMethods = false)
@@ -57,21 +42,6 @@ public class DynamicDataSourceAopConfiguration {
     public DynamicDataSourceAopConfiguration(DynamicDataSourceProperties properties) {
         this.properties = properties;
     }
-
-    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-    @Bean
-    @ConditionalOnMissingBean
-    public DsProcessor dsProcessor(BeanFactory beanFactory) {
-        DsProcessor headerProcessor = new DsJakartaHeaderProcessor();
-        DsProcessor sessionProcessor = new DsJakartaSessionProcessor();
-        DsSpelExpressionProcessor spelExpressionProcessor = new DsSpelExpressionProcessor();
-        spelExpressionProcessor.setBeanResolver(new BeanFactoryResolver(beanFactory));
-        spelExpressionProcessor.setAllowedSpelTypeAccess(properties.getAop().getAllowedSpelTypeAccess());
-        headerProcessor.setNextProcessor(sessionProcessor);
-        sessionProcessor.setNextProcessor(spelExpressionProcessor);
-        return headerProcessor;
-    }
-
 
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     @Bean
@@ -92,5 +62,4 @@ public class DynamicDataSourceAopConfiguration {
         DynamicLocalTransactionInterceptor interceptor = new DynamicLocalTransactionInterceptor(aopProperties.getAllowedPublicOnly());
         return new DynamicDataSourceAnnotationAdvisor(interceptor, DSTransactional.class);
     }
-
 }

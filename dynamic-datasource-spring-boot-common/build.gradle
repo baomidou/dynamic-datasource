@@ -26,7 +26,8 @@ dependencies {
     api project(":dynamic-datasource-spring")
     
     compileOnly(libs.druid)
-    compileOnly(libs.hikaricp.java7)
+    // The shared metrics binder uses MetricsTrackerFactory, unavailable in HikariCP-java7 2.4.x.
+    compileOnly("com.zaxxer:HikariCP")
     compileOnly(libs.beecp) {
         exclude group: "org.slf4j", module:"slf4j-api"
     }
