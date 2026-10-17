@@ -47,17 +47,9 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
  * SpEL is not available under the nativeTest due to
  * <a href="https://github.com/spring-projects/spring-framework/issues/29548">Explore how to make
  * StandardBeanExpressionResolver not reachable in AOT mode</a>
- * <p>
- * The configured master only gives the context a primary datasource to start with; the test replaces it with a
- * scripted database of the same name. Without one, the Boot 3/4 actuator fails at startup: creating the db health
- * contributor calls {@code isWrapperFor}, which has to resolve the primary datasource first.
  */
 @DisabledInNativeImage
-@SpringBootTest(classes = SPELApplication.class, webEnvironment = RANDOM_PORT, properties = {
-        "spring.datasource.dynamic.datasource.master.url=jdbc:h2:mem:spel_master",
-        "spring.datasource.dynamic.datasource.master.username=sa",
-        "spring.datasource.dynamic.datasource.master.driver-class-name=org.h2.Driver"
-})
+@SpringBootTest(classes = SPELApplication.class, webEnvironment = RANDOM_PORT)
 public class SPELTest {
 
     MockMvc mockMvc;
