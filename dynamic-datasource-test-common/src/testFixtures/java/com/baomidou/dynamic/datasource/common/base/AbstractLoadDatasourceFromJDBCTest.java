@@ -59,6 +59,9 @@ public abstract class AbstractLoadDatasourceFromJDBCTest {
     }
 }
 
+/**
+ * provider 登记的库都是 H2 内存库，测试连上其中任何一个都不会在构建目录之外留下数据库文件。
+ */
 @SuppressWarnings({"SqlDialectInspection", "SqlNoDataSourceInspection"})
 @SpringBootApplication(scanBasePackages = "com.baomidou.dynamic.datasource.common")
 class LoadDatasourceFromJDBCApplication {
@@ -80,7 +83,7 @@ class LoadDatasourceFromJDBCApplication {
                         "    `url`   VARCHAR(30) NULL DEFAULT NULL,\n" +
                         "    `driver`   VARCHAR(30) NULL DEFAULT NULL\n" +
                         ")");
-                statement.executeUpdate("insert into DB values ('master','sa','','jdbc:h2:~/test','org.h2.Driver')");
+                statement.executeUpdate("insert into DB values ('master','sa','','jdbc:h2:mem:test1','org.h2.Driver')");
                 statement.executeUpdate("insert into DB values ('db1','sa','','jdbc:h2:mem:test2','org.h2.Driver')");
                 statement.executeUpdate("insert into DB values ('db2','sa','','jdbc:h2:mem:test3','org.h2.Driver')");
                 statement.executeUpdate("insert into DB values ('db3','sa','','jdbc:h2:mem:test4','org.h2.Driver')");
