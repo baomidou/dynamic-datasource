@@ -46,7 +46,6 @@ dependencies {
     testCompileOnly(libs.lombok)
 
     api project(":dynamic-datasource-spring-boot-common")
-    api("org.mybatis:mybatis-spring:4.0.0")
     // GraalVM Reachability Metadata for native-image builds (resources only, no Java code)
     implementation project(":dynamic-datasource-native-metadata")
     
