@@ -15,6 +15,7 @@
  */
 package com.baomidou.dynamic.datasource.ds;
 
+import com.baomidou.dynamic.datasource.exception.CannotFindDataSourceException;
 import com.baomidou.dynamic.datasource.toolkit.DsStrUtils;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import com.baomidou.dynamic.datasource.tx.ConnectionFactory;
@@ -86,11 +87,28 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource {
         if (iface.isInstance(this)) {
             return (T) this;
         }
-        return determineDataSource().unwrap(iface);
+        return determineWrappedDataSource().unwrap(iface);
     }
 
     @Override
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
-        return (iface.isInstance(this) || determineDataSource().isWrapperFor(iface));
+        return (iface.isInstance(this) || determineWrappedDataSource().isWrapperFor(iface));
+    }
+
+    /**
+     * 解析 Wrapper 方法要委托的数据源，找不到时按 {@link java.sql.Wrapper} 的约定改抛 {@link SQLException}。
+     * <p>
+     * Spring Boot 3.2.10 / 3.3.4 起，actuator 在启动时创建 db 健康检查，会调用 {@link #isWrapperFor} 且只捕获
+     * {@link SQLException}。主库这时还没加进来的话，{@link CannotFindDataSourceException} 会让应用直接启动失败（#816）。
+     *
+     * @return 当前路由到的数据源
+     * @throws SQLException 找不到可路由的数据源
+     */
+    private DataSource determineWrappedDataSource() throws SQLException {
+        try {
+            return determineDataSource();
+        } catch (CannotFindDataSourceException e) {
+            throw new SQLException(e.getMessage(), e);
+        }
     }
 }
