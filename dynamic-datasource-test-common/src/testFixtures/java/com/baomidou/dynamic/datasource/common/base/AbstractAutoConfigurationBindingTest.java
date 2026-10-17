@@ -49,9 +49,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * 的字段类型生成绑定 hints：连接池配置类型借 {@link DynamicDataSourceProperties} 上同类型的全局字段拿到 hints，
  * {@link DatasourceInitProperties} 则只能靠 dynamic-datasource-native-metadata 补齐，缺失时 init 块在原生镜像下
  * 被静默跳过（#809）。
- * <p>
- * init 与连接池嵌套块都配在 slave_1 上而不是 master：同包 {@code LoadDatasourceFromJDBCApplication} 的 JDBC provider
- * 也会被扫描进本上下文，其同名 master 会顶替这里配置的 master（#812）。
  *
  * @author TaoYu
  */
@@ -151,12 +148,18 @@ public abstract class AbstractAutoConfigurationBindingTest {
         assertThat(slave1.getOracleUcp().getMaxPoolSize()).isEqualTo(5);
     }
 
+    /**
+     * 路由里只能有这里配置的三个库，空 key 回落到的 master 也必须连到配置的 {@code ac_master}。别的场景的启动类曾被组件扫描
+     * 带进本上下文，其 JDBC provider 加载的同名 master 顶替了这里的配置（#812）。
+     */
     @Test
-    void routingDataSourceShouldApplyPrimaryAndStrict() {
+    void routingDataSourceShouldApplyPrimaryAndStrict() throws SQLException {
         DynamicRoutingDataSource ds = (DynamicRoutingDataSource) dataSource;
+        assertThat(ds.getDataSources()).containsOnlyKeys("master", "slave_1", "slave_2");
         // primary 生效：空 key 回落到 master
-        assertThat(ds.getDataSource(null)).isNotNull();
-        assertThat(ds.getDataSource("master")).isNotNull();
+        try (Connection connection = ds.getDataSource(null).getConnection()) {
+            assertThat(connection.getMetaData().getURL()).isEqualTo("jdbc:h2:mem:ac_master");
+        }
         // strict 生效：未匹配的数据源名直接报错而非回落
         assertThatThrownBy(() -> ds.getDataSource("does-not-exist"))
                 .isInstanceOf(CannotFindDataSourceException.class);
@@ -172,7 +175,10 @@ public abstract class AbstractAutoConfigurationBindingTest {
     }
 }
 
-@SpringBootApplication(scanBasePackages = "com.baomidou.dynamic.datasource.common")
+/**
+ * 扫描范围不含各场景启动类所在的包，否则别的场景的启动类连同其 bean 会混进本场景的上下文（#812）。
+ */
+@SpringBootApplication(scanBasePackages = "com.baomidou.dynamic.datasource.common.service")
 class AutoConfigurationApplication {
     public static void main(String[] args) {
         SpringApplication.run(AutoConfigurationApplication.class, args);

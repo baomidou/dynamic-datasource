@@ -42,7 +42,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
-@SpringBootTest(classes = SPELApplication.class, webEnvironment = RANDOM_PORT)
+/**
+ * The configured master only gives the context a primary datasource to start with; the test replaces it with a
+ * scripted database of the same name. Without one, the Boot 3/4 actuator fails at startup: creating the db health
+ * contributor calls {@code isWrapperFor}, which has to resolve the primary datasource first.
+ */
+@SpringBootTest(classes = SPELApplication.class, webEnvironment = RANDOM_PORT, properties = {
+        "spring.datasource.dynamic.datasource.master.url=jdbc:h2:mem:spel_master",
+        "spring.datasource.dynamic.datasource.master.username=sa",
+        "spring.datasource.dynamic.datasource.master.driver-class-name=org.h2.Driver"
+})
 public class SPELTest {
 
     MockMvc mockMvc;
@@ -104,7 +113,12 @@ public class SPELTest {
     }
 }
 
-@SpringBootApplication(scanBasePackages = "com.baomidou.dynamic.datasource.common")
+/**
+ * The scan leaves out the packages that hold the scenarios' application classes; otherwise other scenarios and
+ * their beans would leak into this context (#812).
+ */
+@SpringBootApplication(scanBasePackages = {"com.baomidou.dynamic.datasource.common.service",
+        "com.baomidou.dynamic.datasource.common.controller"})
 class SPELApplication {
     public static void main(String[] args) {
         SpringApplication.run(SPELApplication.class, args);

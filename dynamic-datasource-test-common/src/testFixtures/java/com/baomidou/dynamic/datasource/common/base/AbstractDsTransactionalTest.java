@@ -45,10 +45,17 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
  * <p>
  * 版本无关：Boot2/3/4 的 starter 各以薄子类继承本类，跑的是同一套断言，只有加载的
  * Spring Boot 自动装配不同，从而真正验证多版本兼容性，避免逐份复制产生漂移。
+ * <p>
+ * 配置 master 是为了让上下文带着主库启动：Boot3/4 的 actuator 在启动时创建 db 健康检查，调用的 {@code isWrapperFor}
+ * 要先解析出主库，解析不到就启动失败。
  *
  * @author TaoYu
  */
-@SpringBootTest(classes = DsTransactionalApplication.class, webEnvironment = RANDOM_PORT)
+@SpringBootTest(classes = DsTransactionalApplication.class, webEnvironment = RANDOM_PORT, properties = {
+        "spring.datasource.dynamic.datasource.master.url=jdbc:h2:mem:tx_master",
+        "spring.datasource.dynamic.datasource.master.username=sa",
+        "spring.datasource.dynamic.datasource.master.driver-class-name=org.h2.Driver"
+})
 public abstract class AbstractDsTransactionalTest {
 
     @Autowired
@@ -127,7 +134,10 @@ public abstract class AbstractDsTransactionalTest {
     }
 }
 
-@SpringBootApplication(scanBasePackages = "com.baomidou.dynamic.datasource.common")
+/**
+ * 扫描范围不含各场景启动类所在的包，否则别的场景的启动类连同其 bean 会混进本场景的上下文（#812）。
+ */
+@SpringBootApplication(scanBasePackages = "com.baomidou.dynamic.datasource.common.service")
 class DsTransactionalApplication {
     public static void main(String[] args) {
         SpringApplication.run(DsTransactionalApplication.class, args);

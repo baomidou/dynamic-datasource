@@ -40,10 +40,17 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
  * 版本无关：Boot2/3/4 的 starter 各以薄子类继承本类，跑的是同一套断言。
  * 断言依据（见 tx 包实现）：REQUIRED 加入当前事务；REQUIRES_NEW / NOT_SUPPORTED 挂起外层；
  * NESTED 仅操作 savepoint（随外层提交或回滚）；SUPPORTS 无事务时自动提交；MANDATORY / NEVER 违约即抛。
+ * <p>
+ * 配置 master 是为了让上下文带着主库启动：Boot3/4 的 actuator 在启动时创建 db 健康检查，调用的 {@code isWrapperFor}
+ * 要先解析出主库，解析不到就启动失败。
  *
  * @author TaoYu
  */
-@SpringBootTest(classes = DsTransactionalApplication.class, webEnvironment = RANDOM_PORT)
+@SpringBootTest(classes = DsTransactionalApplication.class, webEnvironment = RANDOM_PORT, properties = {
+        "spring.datasource.dynamic.datasource.master.url=jdbc:h2:mem:tx_master",
+        "spring.datasource.dynamic.datasource.master.username=sa",
+        "spring.datasource.dynamic.datasource.master.driver-class-name=org.h2.Driver"
+})
 public abstract class AbstractPropagationContractTest {
 
     @Autowired

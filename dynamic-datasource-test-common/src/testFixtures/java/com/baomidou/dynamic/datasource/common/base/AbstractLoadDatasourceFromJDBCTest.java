@@ -55,15 +55,18 @@ public abstract class AbstractLoadDatasourceFromJDBCTest {
     @Test
     void testExistDataSource() {
         DynamicRoutingDataSource ds = (DynamicRoutingDataSource) dataSource;
-        assertThat(ds.getDataSources().keySet()).contains("master", "db1", "db2", "db3");
+        assertThat(ds.getDataSources()).containsOnlyKeys("master", "db1", "db2", "db3");
     }
 }
 
 /**
+ * 扫描范围不含各场景启动类所在的包，否则别的场景的启动类连同其 bean 会混进本场景的上下文（#812）。本类的 JDBC provider
+ * 就曾这样混进其他场景，顶替了它们配置的 master。
+ * <p>
  * provider 登记的库都是 H2 内存库，测试连上其中任何一个都不会在构建目录之外留下数据库文件。
  */
 @SuppressWarnings({"SqlDialectInspection", "SqlNoDataSourceInspection"})
-@SpringBootApplication(scanBasePackages = "com.baomidou.dynamic.datasource.common")
+@SpringBootApplication(scanBasePackages = "com.baomidou.dynamic.datasource.common.service")
 class LoadDatasourceFromJDBCApplication {
 
     public static void main(String[] args) {
