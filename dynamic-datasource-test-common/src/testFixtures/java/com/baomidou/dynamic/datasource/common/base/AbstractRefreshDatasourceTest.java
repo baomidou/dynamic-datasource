@@ -220,7 +220,10 @@ public abstract class AbstractRefreshDatasourceTest {
     }
 }
 
-@SpringBootApplication(scanBasePackages = "com.baomidou.dynamic.datasource.common")
+/**
+ * 扫描范围不含各场景启动类所在的包，否则别的场景的启动类连同其 bean 会混进本场景的上下文（#812）。
+ */
+@SpringBootApplication(scanBasePackages = "com.baomidou.dynamic.datasource.common.service")
 class RefreshDatasourceApplication {
 
     public static void main(String[] args) {

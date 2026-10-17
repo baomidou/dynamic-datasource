@@ -47,9 +47,17 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
  * SpEL is not available under the nativeTest due to
  * <a href="https://github.com/spring-projects/spring-framework/issues/29548">Explore how to make
  * StandardBeanExpressionResolver not reachable in AOT mode</a>
+ * <p>
+ * The configured master only gives the context a primary datasource to start with; the test replaces it with a
+ * scripted database of the same name. Without one, the Boot 3/4 actuator fails at startup: creating the db health
+ * contributor calls {@code isWrapperFor}, which has to resolve the primary datasource first.
  */
 @DisabledInNativeImage
-@SpringBootTest(classes = SPELApplication.class, webEnvironment = RANDOM_PORT)
+@SpringBootTest(classes = SPELApplication.class, webEnvironment = RANDOM_PORT, properties = {
+        "spring.datasource.dynamic.datasource.master.url=jdbc:h2:mem:spel_master",
+        "spring.datasource.dynamic.datasource.master.username=sa",
+        "spring.datasource.dynamic.datasource.master.driver-class-name=org.h2.Driver"
+})
 public class SPELTest {
 
     MockMvc mockMvc;
@@ -111,7 +119,12 @@ public class SPELTest {
     }
 }
 
-@SpringBootApplication(scanBasePackages = "com.baomidou.dynamic.datasource.common")
+/**
+ * The scan leaves out the packages that hold the scenarios' application classes; otherwise other scenarios and
+ * their beans would leak into this context (#812).
+ */
+@SpringBootApplication(scanBasePackages = {"com.baomidou.dynamic.datasource.common.service",
+        "com.baomidou.dynamic.datasource.common.controller"})
 class SPELApplication {
     public static void main(String[] args) {
         SpringApplication.run(SPELApplication.class, args);

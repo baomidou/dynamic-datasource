@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.entry;
 
 /**
  * {@code /actuator/dynamic-datasource} 端点的跨版本契约：bean 由自动装配注册（依赖各 starter 的注册
@@ -57,6 +58,10 @@ public abstract class AbstractDynamicDataSourceEndpointTest {
     @Autowired
     DataSource dataSource;
 
+    /**
+     * summary 只能列出本场景配置的 master 与 slave_1，且两者都是配置的 Hikari 池。别的场景的启动类曾被组件扫描带进本上下文，
+     * 其 JDBC provider 加载的同名 master（{@code SimpleDriverDataSource}）顶替了这里的配置（#812）。
+     */
     @Test
     @SuppressWarnings("unchecked")
     public void endpointShouldBeRegisteredAndSummarizeRouting() {
@@ -67,11 +72,10 @@ public abstract class AbstractDynamicDataSourceEndpointTest {
 
         DynamicRoutingDataSource routing = (DynamicRoutingDataSource) dataSource;
         Map<String, Object> dataSources = (Map<String, Object>) summary.get("dataSources");
-        // 输出必须与路由实际状态一致；共享测试上下文中可能还有其他 provider 加载的数据源
+        // 输出必须与路由实际状态一致
         assertThat(dataSources.keySet()).isEqualTo(routing.getDataSources().keySet());
-        assertThat(dataSources).containsKeys("master", "slave_1");
-        // 通过 ItemDataSource 拆箱后反映真实池类型（slave_1 不会被其他 provider 覆盖）
-        assertThat(dataSources.get("slave_1")).isEqualTo("HikariDataSource");
+        // 通过 ItemDataSource 拆箱后反映真实池类型
+        assertThat(dataSources).containsOnly(entry("master", "HikariDataSource"), entry("slave_1", "HikariDataSource"));
 
         Map<String, Object> groups = (Map<String, Object>) summary.get("groups");
         assertThat(groups.keySet()).isEqualTo(routing.getGroupDataSources().keySet());
