@@ -5,6 +5,7 @@ name: First interaction
 on:
   issues:
     types: [ opened ]
+  # zizmor: ignore[dangerous-triggers] first-interaction 只经 API 发评论，不检出也不执行 fork 代码
   pull_request_target:
     types: [ opened ]
 
@@ -19,13 +20,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/first-interaction@1c4688942c71f71d4f5502a26ea67c331730fa4d # v3
+      - uses: actions/first-interaction@1c4688942c71f71d4f5502a26ea67c331730fa4d # v3.1.0
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          issue-message: |
+          # v3 起输入名改为下划线（repo_token / issue_message / pr_message），
+          # 沿用连字符会被当成未知输入，然后报 "Input required and not supplied"
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          issue_message: |
             感谢你的第一条 issue！/ Thanks for opening your first issue!
             请确认已附上：版本号、最小复现步骤与相关配置；模板不完整时我们可能会请你补充。
-          pr-message: |
+          pr_message: |
             感谢你的第一个 PR！/ Thanks for your first pull request!
             提交前请阅读 CONTRIBUTING.md；涉及 @DS 解析、数据源切换栈语义、事务模式的改动，
             需同时保持 v1/v3/v4 三套测试有效。
