@@ -36,6 +36,8 @@ dependencies {
     compileOnly(libs.oracle.ucp.spring.boot.starter)
     compileOnly("com.oracle.database.jdbc:ucp:23.4.0.24.05")
     compileOnly(libs.mybatis.plus)
+    // Atomikos 配置的 @ConditionalOnClass 与 AtomikosTransactionFactory 的父类都来自 mybatis-spring
+    compileOnly(libs.mybatis.springBoot)
     // Actuator endpoint（DynamicDataSourceEndpoint）编译期依赖：三条产线共用同一份实现，
     // 注解 API 在 actuator 2.2+ ~ Boot4 之间二进制兼容，更老的 classpath 由 @ConditionalOnClass 整体跳过
     compileOnly("org.springframework.boot:spring-boot-starter-actuator")
@@ -46,4 +48,14 @@ dependencies {
     api("org.springframework.boot:spring-boot-autoconfigure")
     compileOnly("org.springframework.boot:spring-boot-configuration-processor")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+
+    // 单元测试：用 ApplicationContextRunner 校验创建器配置的 @ConditionalOnClass，版本由上方 spring-boot-2 BOM 管理。
+    // testCompile 不继承 compileOnly，故重新引入 Atomikos、MyBatis 与 mybatis-spring；仅 test 作用域，不影响发布构件。
+    testImplementation("org.springframework.boot:spring-boot-test")
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.assertj:assertj-core")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testRuntimeOnly(libs.atomikos.transactions.jdbc)
+    testImplementation(libs.mybatis.plus)
+    testImplementation(libs.mybatis.springBoot)
 }

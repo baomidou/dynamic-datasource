@@ -37,6 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 import oracle.ucp.jdbc.PoolDataSourceImpl;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.ibatis.transaction.TransactionFactory;
+import org.mybatis.spring.transaction.SpringManagedTransactionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.ApplicationContext;
@@ -150,8 +151,12 @@ public class DynamicDataSourceCreatorAutoConfiguration {
 
     /**
      * 存在Atomikos数据源时, 加入创建器
+     * <p>
+     * {@link AtomikosTransactionFactory} 继承 mybatis-spring 的 {@code SpringManagedTransactionFactory}，
+     * 而 mybatis-spring 不随本库传递，由使用方的 MyBatis / MyBatis-Plus starter 提供（#811）。
+     * 只有 Atomikos 与 MyBatis、没有 mybatis-spring 时整组跳过，否则创建事务工厂时找不到父类，启动失败。
      */
-    @ConditionalOnClass({AtomikosDataSourceBean.class, TransactionFactory.class})
+    @ConditionalOnClass({AtomikosDataSourceBean.class, TransactionFactory.class, SpringManagedTransactionFactory.class})
     @Configuration
     static class AtomikosDataSourceCreatorConfiguration {
 
