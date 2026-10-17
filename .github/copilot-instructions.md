@@ -96,6 +96,9 @@ secrets (in-memory GPG key); do not put credentials or key rings into tracked fi
   Full procedure and release-notes rules: CONTRIBUTING §4.
 - Commit style: conventional-commit prefixes, one logical change per commit — release notes
   are assembled from these titles.
+- Documentation-only direct pushes to `dev` are a **human-maintainer-only** exception
+  (`AGENTS.md` §0.1). An agent always opens a PR, even for a one-line README typo; source, tests,
+  build files and everything under `.github/` never qualify.
 
 ## Conventions
 
@@ -124,3 +127,28 @@ secrets (in-memory GPG key); do not put credentials or key rings into tracked fi
 - New/renamed configuration properties belong in `DynamicDataSourceProperties` and must be
   documented at https://doc.xiuceyun.cn (separate repository).
 - Security findings are **not** public issues: see `SECURITY.md`.
+
+## Reading state and acting on GitHub
+
+- **Never judge checks by fetching the PR page.** GitHub renders the checks panel client-side, so a
+  fetched page has no pass/fail icons — and sometimes a `favicon-failure` marker that reads like
+  "a check failed" when nothing did. Use `gh pr checks <n>`,
+  `gh pr view <n> --json statusCheckRollup`, and `gh run list --branch <branch>`.
+- Probe the token before writing anything: `gh auth status` and
+  `gh api repos/:owner/:repo --jq .permissions`. Read-only is the default for anyone who clones
+  or forks.
+- Write access is not permission. Ask before **every** comment, review, approval, label or merge,
+  and wait for an explicit yes for that action. "Reply for me" authorises a reply only.
+- When authorised, post with `gh pr review <n> --approve|--comment --body-file <file>` or
+  `gh pr comment`, and quote the exact body in your reply. Approval never authorises merging.
+- Never hardcode logins, org names or "the maintainer is X" into tracked files.
+
+## A green CI is a claim about coverage, not correctness
+
+A context that boots does not prove the path under test ran. After #812 stopped the shared test
+scenarios from scanning each other, five of them only started because a `master` datasource was
+added; that workaround kept CI green while the real defect stayed untested until #816.
+
+- If a test passes only because of configuration it never asserts on, comment it and open an issue.
+- Assert the *failing* path was reached, not merely that the context started.
+- Removing such a workaround belongs to the fix, not a later cleanup PR.

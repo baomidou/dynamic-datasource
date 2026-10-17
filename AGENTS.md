@@ -35,6 +35,25 @@ the repository impossible to maintain.
 If you genuinely cannot open a PR (no `gh`, no push rights, offline), say so explicitly, leave the
 work in the working tree or on a branch, and hand the exact commands to the user.
 
+### 0.1 The one exception: documentation-only edits by the human maintainer
+
+The maintainer may push **documentation-only** changes straight to `dev`, without a branch or a PR:
+`*.md` at the repository root (`README*`, `AGENTS.md`, `CONTRIBUTING.md`, `SECURITY.md`,
+`SUPPORT.md`, `CODE_OF_CONDUCT.md`), anything under `docs/` if such a directory appears, and
+comment/Javadoc edits that change no compiled behaviour. Nothing else qualifies — source, tests,
+`build.gradle`, `gradle/libs.versions.toml`, `native-image/` metadata and **every** file under
+`.github/` (workflows included) still go through a PR, because that is where the JDK 17/21/25/27
+matrix and `nativeTest` actually run.
+
+This exception is for the human maintainer only. **An agent still opens a PR for a one-line README
+fix**: it cannot reliably tell "docs-only" apart from "docs plus a config change buried in the same
+commit", and the PR is the only place where the request is recorded.
+
+Why the exception exists at all: with a single maintainer, a PR for a typo costs clicks and buys
+nothing — `dev` currently has zero required status checks, so the PR was never what caught the
+typo. A direct push only succeeds while `enforce_admins` is off for `dev`; never reach for a token
+that bypasses protection to get around that, and never relax `main` at all.
+
 ## 1. What this is
 
 `dynamic-datasource` — a Spring Boot starter that routes JDBC access across multiple datasources
@@ -124,6 +143,8 @@ Never run `publish*`/`sign*` tasks locally. Signing and Central credentials come
   release-notes rules: CONTRIBUTING §4.
 - Commit style: conventional-commit prefixes, one logical change per commit — release notes are
   assembled from these titles.
+- Documentation-only edits are the single exception for the human maintainer (§0.1); agents still
+  open a PR for them.
 - Do not force-push a branch that already has a PR: it destroys review comments.
 
 ## 4. Conventions
@@ -188,6 +209,11 @@ So before declaring a scanning fix done, confirm against the actual run:
 - `gh pr checks <n>` — `CodeQL`, `zizmor` and the `Test CI` matrix must all be green. `Analyze
   workflows` passing is **not** the same as there being zero alerts; the `CodeQL`/`zizmor` status
   checks are the ones that compare new alerts against the base.
+- **Never judge checks by fetching the web page.** GitHub renders the checks panel client-side: a
+  fetched page comes back without pass/fail icons — and occasionally carries a `favicon-failure`
+  marker inherited from the page template, which reads like "one check failed" when nothing did.
+  `gh pr checks <n>` and `gh pr view <n> --json statusCheckRollup` are the only reliable sources;
+  add `gh run list --branch <branch>` when you need the run-level conclusion.
 - `zizmor` can be installed locally (`pip3 install zizmor`) and run offline against
   `.github/workflows/ .github/dependabot.yml`. Do it — it is much faster than a CI round trip.
 - When the numbers do not move, **re-read the alert's own reported location**; do not keep editing
@@ -195,3 +221,37 @@ So before declaring a scanning fix done, confirm against the actual run:
 
 A green local build proves nothing about any of this: the CodeQL check once failed for three
 consecutive pushes while `./gradlew test` was green every time.
+
+## 8. Speaking for the maintainer on GitHub
+
+Probe the token first; never assume it can write, and never assume it is the maintainer's:
+
+```bash
+gh auth status
+gh api repos/:owner/:repo --jq .permissions   # admin/maintain/push all false ⇒ read-only
+```
+
+- **Read-only is the default** — anyone who clones or forks lands here. Report state with
+  `gh pr view`, `gh pr checks`, `gh run list`; do not comment, review, approve, label, close or
+  merge.
+- **Write access is still not permission.** Ask before *every* write, and wait for an explicit yes
+  for that specific action. "Reply for me" authorises a reply only — not an approval, and not a
+  merge. "Looks good" is not "approve it".
+- When authorised, post with `gh pr review <n> --approve|--comment --body-file <file>` or
+  `gh pr comment`, and reproduce the exact body in your own reply so the maintainer sees what went
+  out under their name. Approval never authorises the merge; §0 applies to admin tokens too.
+- Never hardcode logins, org names or "the maintainer is X" into tracked files. Permissions and
+  people change; the rules should not have to be rewritten when they do.
+
+## 9. A green CI is a claim about coverage, not about correctness
+
+A context that boots does not prove the path under test was exercised. Real case: after #812
+stopped the shared test scenarios from component-scanning each other, five of them only started
+because a `master` datasource was added — the workaround kept CI green while the real defect (an
+`isWrapperFor` that resolves the primary datasource) stayed untested until #816.
+
+- When a test passes only because of configuration it never asserts on, say so in a comment and
+  open an issue. A silent workaround is a coverage hole wearing a green check mark.
+- Assert that the *failing* path was actually reached (e.g. the health-contributor bean is
+  registered), not merely that the context started.
+- Removing such a workaround is part of the fix, not cleanup for a later PR.
