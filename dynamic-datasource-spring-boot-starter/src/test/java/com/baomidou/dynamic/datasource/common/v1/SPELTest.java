@@ -42,16 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
-/**
- * The configured master only gives the context a primary datasource to start with; the test replaces it with a
- * scripted database of the same name. Without one, the Boot 3/4 actuator fails at startup: creating the db health
- * contributor calls {@code isWrapperFor}, which has to resolve the primary datasource first.
- */
-@SpringBootTest(classes = SPELApplication.class, webEnvironment = RANDOM_PORT, properties = {
-        "spring.datasource.dynamic.datasource.master.url=jdbc:h2:mem:spel_master",
-        "spring.datasource.dynamic.datasource.master.username=sa",
-        "spring.datasource.dynamic.datasource.master.driver-class-name=org.h2.Driver"
-})
+@SpringBootTest(classes = SPELApplication.class, webEnvironment = RANDOM_PORT)
 public class SPELTest {
 
     MockMvc mockMvc;

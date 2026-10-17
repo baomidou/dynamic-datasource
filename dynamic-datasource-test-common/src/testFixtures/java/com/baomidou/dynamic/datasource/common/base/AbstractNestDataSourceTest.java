@@ -41,17 +41,10 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
  * 版本无关：Boot2/3/4 的 starter 各以薄子类继承本类，跑同一套断言。断言刻意使用
  * {@link Arrays#asList} / {@link Collections#singletonList} 而非 {@code List.of}，
  * 因本 fixtures 源集以 JDK8 toolchain 编译（须兼容 Boot2 线）。
- * <p>
- * 配置 master 只是为了让上下文带着主库启动，用例里会换成带建表脚本的同名库：Boot3/4 的 actuator 在启动时创建 db 健康检查，
- * 调用的 {@code isWrapperFor} 要先解析出主库，解析不到就启动失败。
  *
  * @author TaoYu
  */
-@SpringBootTest(classes = NestApplication.class, webEnvironment = RANDOM_PORT, properties = {
-        "spring.datasource.dynamic.datasource.master.url=jdbc:h2:mem:nest_master",
-        "spring.datasource.dynamic.datasource.master.username=sa",
-        "spring.datasource.dynamic.datasource.master.driver-class-name=org.h2.Driver"
-})
+@SpringBootTest(classes = NestApplication.class, webEnvironment = RANDOM_PORT)
 public abstract class AbstractNestDataSourceTest {
 
     @Autowired
