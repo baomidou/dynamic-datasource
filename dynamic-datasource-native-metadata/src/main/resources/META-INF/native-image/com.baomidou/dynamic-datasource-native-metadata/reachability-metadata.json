@@ -20,6 +20,72 @@
     },
     {
       "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.creator.DatasourceInitProperties"
+      },
+      "type": "com.baomidou.dynamic.datasource.creator.DatasourceInitProperties",
+      "fields": [
+        {
+          "name": "continueOnError"
+        },
+        {
+          "name": "data"
+        },
+        {
+          "name": "schema"
+        },
+        {
+          "name": "separator"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getData",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSchema",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSeparator",
+          "parameterTypes": []
+        },
+        {
+          "name": "isContinueOnError",
+          "parameterTypes": []
+        },
+        {
+          "name": "setContinueOnError",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setData",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setSchema",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setSeparator",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
         "typeReached": "com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor$AnnotationMethodPoint$AnnotationMethodMatcher"
       },
       "type": "com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator"

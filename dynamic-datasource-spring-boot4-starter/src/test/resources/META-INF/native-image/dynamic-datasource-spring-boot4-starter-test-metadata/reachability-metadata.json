@@ -8,6 +8,18 @@
     },
     {
       "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.common.v4.AutoConfigurationBindingTest"
+      },
+      "glob": "db/auto-configuration-binding-data.sql"
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.common.v4.AutoConfigurationBindingTest"
+      },
+      "glob": "db/auto-configuration-binding-schema.sql"
+    },
+    {
+      "condition": {
         "typeReached": "com.baomidou.dynamic.datasource.common.v4.DsTransactionalTest"
       },
       "glob": "db/ds-with-transactional.sql"
