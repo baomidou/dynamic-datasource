@@ -5,36 +5,7 @@
         "typeReached": "com.zaxxer.hikari.HikariConfig"
       },
       "type": "com.zaxxer.hikari.HikariConfig",
-      "allDeclaredFields": true,
-      "allPublicMethods": true
-    },
-    {
-      "condition": {
-        "typeReached": "com.zaxxer.hikari.HikariDataSource"
-      },
-      "type": "com.zaxxer.hikari.HikariDataSource",
-      "methods": [
-        {
-          "name": "close",
-          "parameterTypes": []
-        },
-        {
-          "name": "getHikariPoolMXBean",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "condition": {
-        "typeReached": "com.baomidou.dynamic.datasource.destroyer.HikariDataSourceActiveDetector"
-      },
-      "type": "com.zaxxer.hikari.pool.HikariPool",
-      "methods": [
-        {
-          "name": "getActiveConnections",
-          "parameterTypes": []
-        }
-      ]
+      "allDeclaredFields": true
     },
     {
       "condition": {
