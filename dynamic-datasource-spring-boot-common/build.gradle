@@ -35,7 +35,7 @@ dependencies {
     compileOnly(libs.atomikos.transactions.jdbc)
     compileOnly(libs.c3p0)
     compileOnly(libs.oracle.ucp.spring.boot.starter)
-    compileOnly("com.oracle.database.jdbc:ucp:23.4.0.24.05")
+    compileOnly(libs.oracle.ucp)
     compileOnly(libs.mybatis.plus)
     // Atomikos 配置的 @ConditionalOnClass 与 AtomikosTransactionFactory 的父类都来自 mybatis-spring
     compileOnly(libs.mybatis.springBoot)
