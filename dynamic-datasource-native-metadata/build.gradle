@@ -4,5 +4,5 @@
 //   com.baomidou/dynamic-datasource-creator          - HikariCP reflection done by dynamic-datasource-creator
 //   com.baomidou/dynamic-datasource-spring           - HikariCP reflection done by dynamic-datasource-spring
 //   com.alibaba/druid/1.2.27                         - Druid
-//   com.zaxxer/HikariCP/6.3.3                        - HikariCP
+// HikariCP's own metadata comes from oracle/graalvm-reachability-metadata.
 // See CONTRIBUTING.md for how to regenerate the metadata.

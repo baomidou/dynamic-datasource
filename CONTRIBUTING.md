@@ -37,10 +37,11 @@ cd ./dynamic-datasource/
 提供 `nativeTest`：先在 JVM 下运行单元测试（记录 `junit-platform-unique-ids*`），再把同一批测试编译为 GraalVM Native Image 执行。
 请不要使用 `io.kotest:kotest-runner-junit5-jvm:5.5.4` 等在 `test listener` mode 下 failed to discover tests 的测试库。
 
-GraalVM Reachability Metadata 位于共享子模块 `dynamic-datasource-native-metadata`：自身代码、Druid 与 HikariCP 各自独立的
+GraalVM Reachability Metadata 位于共享子模块 `dynamic-datasource-native-metadata`：自身代码与 Druid 各自独立的
 `reachability-metadata.json`，每个条目均带 `condition.typeReached` 条件，无需手动配置。
 自身代码对 HikariCP 的反射按发起调用的子模块存放，即 `com.baomidou/dynamic-datasource-creator` 与
-`com.baomidou/dynamic-datasource-spring`。
+`com.baomidou/dynamic-datasource-spring`。HikariCP 自身所需的元数据由
+https://github.com/oracle/graalvm-reachability-metadata 提供，两个 starter 的 `nativeTest` 均启用了该仓库。
 
 假设贡献者处于新的 Ubuntu 26.04 实例下：
 
