@@ -44,6 +44,16 @@ public class ConfigMergeCreator<C, T> {
 
     private final Class<T> targetClazz;
 
+    /**
+     * 合并全局配置与单个数据源的配置并转换成目标配置，单个数据源已设置的属性优先，未设置的取全局配置。
+     * <p>
+     * 全局配置可以为 {@code null}，此时只应用单个数据源的配置。连接池数据源创建器用无参构造器创建时就是这种情况，
+     * 此前读取全局配置的属性会抛出 {@link NullPointerException}（#821）。
+     *
+     * @param global 全局配置，可以为 {@code null}
+     * @param item   单个数据源的配置
+     * @return 目标配置
+     */
     @SneakyThrows
     @SuppressWarnings("unchecked")
     public T create(C global, C item) {
@@ -69,7 +79,7 @@ public class ConfigMergeCreator<C, T> {
         String name = pd.getName();
         Method readMethod = pd.getReadMethod();
         Properties itemValue = (Properties) readMethod.invoke(item);
-        Properties globalValue = (Properties) readMethod.invoke(global);
+        Properties globalValue = global == null ? null : (Properties) readMethod.invoke(global);
         Properties properties = new Properties();
         if (globalValue != null) {
             properties.putAll(globalValue);
@@ -87,7 +97,7 @@ public class ConfigMergeCreator<C, T> {
         String name = pd.getName();
         Method readMethod = pd.getReadMethod();
         Object value = readMethod.invoke(item);
-        if (value == null) {
+        if (value == null && global != null) {
             value = readMethod.invoke(global);
         }
         if (value != null) {

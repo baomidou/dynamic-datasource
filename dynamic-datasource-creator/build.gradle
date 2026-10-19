@@ -39,5 +39,20 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.assertj:assertj-core")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    // 直接创建各连接池数据源的测试（#821）：连接池在 main 里是 compileOnly，测试需要再声明一次
+    testImplementation(libs.hikaricp.java7)
+    testImplementation(libs.beecp) {
+        exclude group: "org.slf4j"
+    }
+    testImplementation(libs.commons.dbcp2)
+    // Boot 2 BOM 为 commons-dbcp2 排除了 commons-logging，与 Spring Boot 应用一样由 spring-jcl 提供
+    testRuntimeOnly("org.springframework:spring-jcl")
+    testImplementation(libs.c3p0)
+    testImplementation(libs.oracle.ucp)
+    // PoolDataSourceImpl 的方法签名引用了 ojdbc 的类型，缺少 ojdbc 时反射读取它的属性就会失败。
+    // main 里 oracle-spring-boot-starter-ucp 带的是 ojdbc11，JDK 8 加载不了，因此单独引入 ojdbc8
+    testRuntimeOnly(libs.oracle.ojdbc8)
+    testRuntimeOnly(libs.h2)
 }
 
