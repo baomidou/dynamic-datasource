@@ -14,6 +14,7 @@ h2 = "2.2.224"
 commonsDbcp2 = "2.10.0"
 atomikos = "4.0.6"
 oracleUcp = "23.4.0"
+oracleJdbc = "23.4.0.24.05"   # com.oracle.database.jdbc:ucp，JDK 8 toolchain 下编译，须为 Java 8 字节码
 hikaricp = "2.4.13"
 beeCp = "3.4.2"
 c3p0 = "0.10.1"
@@ -42,6 +43,7 @@ h2 = { module = "com.h2database:h2", version.ref = "h2" }
 commons-dbcp2 = { module = "org.apache.commons:commons-dbcp2", version.ref = "commonsDbcp2" }
 atomikos-transactions-jdbc = { module = "com.atomikos:transactions-jdbc", version.ref = "atomikos" }
 oracle-ucp-spring-boot-starter = { module = "com.oracle.database.spring:oracle-spring-boot-starter-ucp", version.ref = "oracleUcp" }
+oracle-ucp = { module = "com.oracle.database.jdbc:ucp", version.ref = "oracleJdbc" }
 hikaricp-java7 = { module = "com.zaxxer:HikariCP-java7", version.ref = "hikaricp" }
 beecp = { module = "com.github.chris2018998:beecp", version.ref = "beeCp" }
 c3p0 = { module = "com.mchange:c3p0", version.ref = "c3p0" }
