@@ -575,18 +575,6 @@
     },
     {
       "condition": {
-        "typeReached": "com.baomidou.dynamic.datasource.creator.hikaricp.HikariDataSourceCreator"
-      },
-      "type": "com.zaxxer.hikari.HikariConfig",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "condition": {
         "typeReached": "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceRefresher"
       },
       "type": "com.baomidou.dynamic.datasource.creator.DataSourceProperty",

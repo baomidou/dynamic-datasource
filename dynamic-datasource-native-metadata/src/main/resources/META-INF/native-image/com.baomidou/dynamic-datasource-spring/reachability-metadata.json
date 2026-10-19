@@ -1,0 +1,52 @@
+{
+  "reflection": [
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.destroyer.DefaultDataSourceDestroyer"
+      },
+      "type": "com.zaxxer.hikari.HikariDataSource",
+      "methods": [
+        {
+          "name": "close",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.destroyer.HikariDataSourceActiveDetector"
+      },
+      "type": "com.zaxxer.hikari.HikariDataSource",
+      "methods": [
+        {
+          "name": "getHikariPoolMXBean",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.ds.ItemDataSource"
+      },
+      "type": "com.zaxxer.hikari.HikariDataSource",
+      "methods": [
+        {
+          "name": "close",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.destroyer.HikariDataSourceActiveDetector"
+      },
+      "type": "com.zaxxer.hikari.pool.HikariPool",
+      "methods": [
+        {
+          "name": "getActiveConnections",
+          "parameterTypes": []
+        }
+      ]
+    }
+  ]
+}

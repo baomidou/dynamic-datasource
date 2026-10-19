@@ -1,0 +1,24 @@
+{
+  "reflection": [
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.creator.hikaricp.HikariDataSourceCreator"
+      },
+      "type": "com.zaxxer.hikari.HikariConfig",
+      "allPublicMethods": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.baomidou.dynamic.datasource.toolkit.ConfigMergeCreator"
+      },
+      "type": "com.zaxxer.hikari.HikariConfig",
+      "allPublicMethods": true
+    }
+  ]
+}

@@ -39,6 +39,8 @@ cd ./dynamic-datasource/
 
 GraalVM Reachability Metadata 位于共享子模块 `dynamic-datasource-native-metadata`：自身代码、Druid 与 HikariCP 各自独立的
 `reachability-metadata.json`，每个条目均带 `condition.typeReached` 条件，无需手动配置。
+自身代码对 HikariCP 的反射按发起调用的子模块存放，即 `com.baomidou/dynamic-datasource-creator` 与
+`com.baomidou/dynamic-datasource-spring`。
 
 假设贡献者处于新的 Ubuntu 26.04 实例下：
 
