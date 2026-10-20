@@ -51,6 +51,7 @@ Spring Boot 多数据源框架：用 `@DS` 注解在运行时切换数据源，�
 | 连接池参数不生效、druid 与框架的版本兼容、druid 监控页、Hikari 指标 | 同上 |
 | 密码加密 `ENC(...)`、解密报错、与 jasypt 冲突 | 同上 |
 | 事务里切库不生效、`@DSTransactional` 传播与回滚行为 | [references/transactions-and-threads.md](references/transactions-and-threads.md) |
+| Atomikos XA 跨库事务：依赖版本、`type` 配置、JTA 装配、编程式 JTA、建表坑 | [references/atomikos-xa.md](references/atomikos-xa.md) |
 | 异步/线程池里切换失效、并发串库 | 同上 |
 | 手动切换（push/poll/clear）的正确用法 | 同上 |
 | 基础安装、命名约定、`@DS` 语义、SpEL 动态 key、运行时增删数据源 | [references/getting-started.md](references/getting-started.md) |
@@ -60,4 +61,4 @@ Spring Boot 多数据源框架：用 `@DS` 注解在运行时切换数据源，�
 - **排障类问题**：先收齐"版本 + 代码位置 + 日志"三样信息，对照排查表逐项排除；不要给"猜一个、改一个"式的修复建议。
 - **涉及生产风险的建议要显式提示副作用**：如 `strict: true` 会让未匹配的 key 直接报错；`aop.allowed-spel-type-access: true` 会重新打开 SpEL 注入面（4.6 起默认关闭，CVE-2026-7045）。
 - **版本敏感**：`@DSTransactional` 的传播/回滚契约以 4.6+ 为准；druid 与框架存在历史兼容窗口（≤3.6.1 配 druid 1.2.17+ 不兼容）。
-- 官方资料（可引用给用户）：Wiki FAQ <https://github.com/baomidou/dynamic-datasource/wiki> ；文档站 <https://doc.xiuceyun.cn> ；示例工程 <https://github.com/dynamic-datasource/dynamic-datasource-samples> 。
+- 官方资料（可引用给用户）：文档站 <https://doc.xiuceyun.cn> ；示例工程 <https://github.com/dynamic-datasource/dynamic-datasource-samples> ；仓库内参考 <https://github.com/baomidou/dynamic-datasource/tree/dev/skills/dynamic-datasource/references> 。

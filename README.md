@@ -80,8 +80,7 @@ plus GraalVM Native Image.
 > does not constrain what you do afterwards. Any CRUD, any ORM, any transaction strategy.
 
 > The full reference — every configuration key, connection pool and integration recipe — lives on
-> [doc.xiuceyun.cn](https://doc.xiuceyun.cn) (Chinese); the [wiki](https://github.com/baomidou/dynamic-datasource/wiki/Home-English)
-> is taking over page by page. See [Documentation](#documentation).
+> [doc.xiuceyun.cn](https://doc.xiuceyun.cn) (Chinese and English). See [Documentation](#documentation).
 
 ## Out of scope
 
@@ -287,12 +286,18 @@ spring:
         max-pool-size: 10
       datasource:
         master:
+          # required: HikariCP has a higher creator priority and would otherwise claim
+          # this datasource and fail loading the XA class as a java.sql.Driver
+          type: com.atomikos.jdbc.AtomikosDataSourceBean
           driver-class-name: com.mysql.cj.jdbc.MysqlXADataSource
           url: jdbc:mysql://xx.xx.xx.xx:3306/dynamic
 ```
 
 Supported XA resources: MySQL (5.x and 8+), Oracle, PostgreSQL, H2; on the MyBatis side pair them with
-`AtomikosTransactionFactory`.
+`AtomikosTransactionFactory`. The [Atomikos XA guide](skills/dynamic-datasource/references/atomikos-xa.md) covers the
+Boot 3/4 dependency set (Atomikos 6 `jakarta`), transaction-manager wiring and the pitfalls, and
+[tx-atomikos-sample](https://github.com/dynamic-datasource/dynamic-datasource-samples/tree/master/spring-boot-4/tx-atomikos-sample)
+is a runnable example.
 
 ## Dynamic datasource keys
 
@@ -350,8 +355,7 @@ public void closeTenant(String tenantId) {
 - **MyBatis / MyBatis-Plus** — usable as a plain `DataSource`; `MasterSlaveAutoRoutingPlugin` gives
   pure read/write splitting with no annotation at all (`SELECT` → `slave`, everything else → `master`).
 - **Quartz** — hand the scheduler the dynamic `DataSource`; the documented recipe covers the JDBC job store.
-- **ShardingSphere / ShardingJDBC, P6spy, JNDI** — integration recipes are on the documentation site;
-  they are being migrated into the wiki step by step.
+- **ShardingSphere / ShardingJDBC, P6spy, JNDI** — integration recipes are on the documentation site.
 - **GraalVM Native Image** — reachability metadata for this project, Druid and HikariCP ships in
   `dynamic-datasource-native-metadata`; starter users pick it up through the native metadata repository.
 
@@ -370,7 +374,7 @@ public void closeTenant(String tenantId) {
 
 ## Documentation
 
-> **Facing a problem? Check the [Wiki FAQ](https://github.com/baomidou/dynamic-datasource/wiki) first.**
+> **Facing a problem? Check the [FAQ](https://doc.xiuceyun.cn/docs/faq) first.**
 > The most frequently reported issues — `@DS` not switching, startup errors, switching inside transactions,
 > threads/async, pool parameters not taking effect — are distilled into troubleshooting checklists; most
 > questions are answered there. File an issue only when it is a genuine bug or not covered by the FAQ.
@@ -378,15 +382,11 @@ public void closeTenant(String tenantId) {
 - **Documentation** — <https://doc.xiuceyun.cn>: the complete guide — tutorials, configuration keys,
   integrations and advanced usage, with a Chinese/English switcher and versioned docs (the former
   paid content is now free for everyone).
-- **Wiki (English)** — <https://github.com/baomidou/dynamic-datasource/wiki/Home-English>
-- **Wiki (简体中文)** — <https://github.com/baomidou/dynamic-datasource/wiki>
-  The Wiki focuses on FAQ & troubleshooting checklists distilled from hundreds of historical issues;
-  treat the documentation site as the complete reference.
-- **FAQ picks** — [@DS not working checklist](https://github.com/baomidou/dynamic-datasource/wiki/DS-Not-Working-Checklist) ·
-  [switching inside transactions](https://github.com/baomidou/dynamic-datasource/wiki/DS-Switching-Inside-Transactions) ·
-  [startup errors](https://github.com/baomidou/dynamic-datasource/wiki/Startup-Errors) ·
-  [threads & async](https://github.com/baomidou/dynamic-datasource/wiki/DS-And-Threads) ·
-  [all FAQs](https://github.com/baomidou/dynamic-datasource/wiki)
+- **FAQ picks** — [@DS not working checklist](https://doc.xiuceyun.cn/docs/faq/not-working) ·
+  [switching inside transactions](https://doc.xiuceyun.cn/docs/tx/basics) ·
+  [startup errors](https://doc.xiuceyun.cn/docs/faq/startup-errors) ·
+  [threads & async](https://doc.xiuceyun.cn/docs/faq/threads) ·
+  [all FAQs](https://doc.xiuceyun.cn/docs/faq)
 - **Samples** — <https://github.com/dynamic-datasource/dynamic-datasource-samples>
 - **QQ group** (Chinese-speaking community) — [join](https://shang.qq.com/wpa/qunwpa?idkey=ded31006508b57d2d732c81266dd2c26e33283f84464e2c294309d90b9674992)
 - **Legacy docs (Kancloud, historical reference only)** — <https://www.kancloud.cn/tracy5546/dynamic-datasource>

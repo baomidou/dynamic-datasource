@@ -52,7 +52,7 @@ Spring `@Transactional` 在开启时就绑定了连接（通常是 primary）；
 
 - 想在同一事务里换库：做不到（一个 Spring 事务对一个 DataSource 只绑一条连接），改用 `@DSTransactional`；
 - 典型场景（`@Transactional` 方法内调 `@DS` mapper、Spring Batch 的 Step 先开事务、Quartz/ShedLock 框架先开事务）详见
-  Wiki：[@DS 在事务内不切换数据源](https://github.com/baomidou/dynamic-datasource/wiki/DS-Switching-Inside-Transactions)。
+  文档站：[@DS 在事务内不切换数据源](https://doc.xiuceyun.cn/docs/tx/basics)。
 
 ### 3. MyBatis-Plus 调用姿势
 
@@ -117,5 +117,5 @@ public List<User> selectSlaveUsers() {
 
 ## 相关文档
 
-- Wiki：[@DS 不生效排查总表](https://github.com/baomidou/dynamic-datasource/wiki/DS-Not-Working-Checklist)（本文的完整版，带更多 issue 案例）
-- Wiki：[@DS 注解位置与 MyBatis-Plus 实践](https://github.com/baomidou/dynamic-datasource/wiki/DS-Annotation-And-MyBatis-Plus)
+- 文档站：[@DS 不生效排查总表](https://doc.xiuceyun.cn/docs/faq/not-working)（本文的完整版，带更多 issue 案例）
+- 文档站：[@DS 注解位置与 MyBatis-Plus 实践](https://doc.xiuceyun.cn/docs/faq/annotation-placement)

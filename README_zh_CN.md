@@ -76,8 +76,8 @@
 > 它只做一件事——**决定一次调用打到哪个 `DataSource` 上**——并且刻意不限制你随后做什么。任意 CRUD、
 > 任意 ORM、任意事务策略。
 
-> 完整文档（所有配置项、连接池适配与集成方案）在 [秀策云文档站](https://doc.xiuceyun.cn)，
-> 后续会逐页迁入 [Wiki](https://github.com/baomidou/dynamic-datasource/wiki)，详见[文档](#文档)。
+> 完整文档（所有配置项、连接池适配与集成方案）在 [秀策云文档站](https://doc.xiuceyun.cn)（中英文），
+> 详见[文档](#文档)。
 
 ## 不在范围内
 
@@ -276,11 +276,18 @@ spring:
         max-pool-size: 10
       datasource:
         master:
+          # 必填：Hikari 创建器优先级更高，缺省会接管该数据源并把 XA 数据源类
+          # 误当作 java.sql.Driver 加载而启动失败
+          type: com.atomikos.jdbc.AtomikosDataSourceBean
           driver-class-name: com.mysql.cj.jdbc.MysqlXADataSource
           url: jdbc:mysql://xx.xx.xx.xx:3306/dynamic
 ```
 
 已支持的 XA 资源：MySQL（5.x 与 8+）、Oracle、PostgreSQL、H2；MyBatis 环境下搭配 `AtomikosTransactionFactory` 使用。
+Boot 3/4 的依赖组合（Atomikos 6 `jakarta`）、事务管理器装配与常见坑见
+[Atomikos XA 指南](skills/dynamic-datasource/references/atomikos-xa.md)，
+可运行示例见
+[tx-atomikos-sample](https://github.com/dynamic-datasource/dynamic-datasource-samples/tree/master/spring-boot-4/tx-atomikos-sample)。
 
 ## 动态数据源 key
 
@@ -332,7 +339,7 @@ public void closeTenant(String tenantId) {
 - **MyBatis / MyBatis-Plus**：可直接作为普通 `DataSource` 使用；`MasterSlaveAutoRoutingPlugin` 无需任何
   注解即可实现纯读写分离（`SELECT` 走 `slave`，其余走 `master`）。
 - **Quartz**：把调度器的 `DataSource` 换成动态数据源，文档中的方案同时覆盖 JDBC JobStore。
-- **ShardingSphere / ShardingJDBC、P6spy、JNDI**：提供集成方案，具体写在文档站（doc.xiuceyun.cn），相关内容正在逐页迁回 wiki。
+- **ShardingSphere / ShardingJDBC、P6spy、JNDI**：提供集成方案，具体写在文档站（doc.xiuceyun.cn）。
 - **GraalVM Native Image**：本项目、Druid 与 HikariCP 的 Reachability Metadata 位于
   `dynamic-datasource-native-metadata`，starter 用户通过官方元数据仓库自动获取。
 
@@ -351,19 +358,16 @@ public void closeTenant(String tenantId) {
 
 ## 文档
 
-> **遇到问题？先看 [Wiki FAQ](https://github.com/baomidou/dynamic-datasource/wiki)**：`@DS` 不生效、启动报错、事务内切换、
+> **遇到问题？先看 [FAQ](https://doc.xiuceyun.cn/docs/faq)**：`@DS` 不生效、启动报错、事务内切换、
 > 线程与异步、连接池参数不生效等历史高频问题均已整理为排查清单，多数问题可在此直接找到答案；
 > 确认是框架缺陷或 FAQ 未覆盖的问题，再提 issue。
 
 - **文档站** — <https://doc.xiuceyun.cn>：完整教程、配置项、集成方案与进阶用法（中英文切换 + 版本文档；原秀策云付费内容现已全部免费开放）。
-- **Wiki（中文）** — <https://github.com/baomidou/dynamic-datasource/wiki>
-- **Wiki (English)** — <https://github.com/baomidou/dynamic-datasource/wiki/Home-English>
-  Wiki 聚焦 FAQ 与排障速查（从数百个历史 issue 提炼）；完整文档以文档站为准。
-- **FAQ 精选** — [@DS 不生效排查总表](https://github.com/baomidou/dynamic-datasource/wiki/DS-Not-Working-Checklist) ·
-  [事务内不切换](https://github.com/baomidou/dynamic-datasource/wiki/DS-Switching-Inside-Transactions) ·
-  [启动报错速查](https://github.com/baomidou/dynamic-datasource/wiki/Startup-Errors) ·
-  [线程与异步](https://github.com/baomidou/dynamic-datasource/wiki/DS-And-Threads) ·
-  [全部 FAQ](https://github.com/baomidou/dynamic-datasource/wiki)
+- **FAQ 精选** — [@DS 不生效排查总表](https://doc.xiuceyun.cn/docs/faq/not-working) ·
+  [事务内不切换](https://doc.xiuceyun.cn/docs/tx/basics) ·
+  [启动报错速查](https://doc.xiuceyun.cn/docs/faq/startup-errors) ·
+  [线程与异步](https://doc.xiuceyun.cn/docs/faq/threads) ·
+  [全部 FAQ](https://doc.xiuceyun.cn/docs/faq)
 - **示例工程** — <https://github.com/dynamic-datasource/dynamic-datasource-samples>
 - **QQ 群**（中文交流）— [点击入群](https://shang.qq.com/wpa/qunwpa?idkey=ded31006508b57d2d732c81266dd2c26e33283f84464e2c294309d90b9674992)
 - **旧版看云文档（仅作历史参考）** — <https://www.kancloud.cn/tracy5546/dynamic-datasource>
