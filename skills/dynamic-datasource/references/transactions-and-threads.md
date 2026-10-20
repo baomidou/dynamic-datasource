@@ -42,7 +42,20 @@ Spring `@Transactional` 的语义：**一个 DataSource 实例在一个事务中
 
 完整语义（含契约测试说明）见 Wiki：[@DSTransactional 语义边界](https://github.com/baomidou/dynamic-datasource/wiki/DSTransactional-Semantics)。
 
-## 三、线程 / 异步 / 并发
+## 三、Atomikos XA（跨库强一致，与 @DSTransactional 二选一）
+
+需要真正的分布式原子性时用 Atomikos XA（JTA 两阶段提交），与 `@DSTransactional` 是两套机制。要点：
+
+- 数据源必须显式 `type: com.atomikos.jdbc.AtomikosDataSourceBean`（Hikari 创建器优先级更高，缺省会启动失败），`driver-class-name` 指向 XA 数据源类（MySQL `com.mysql.cj.jdbc.MysqlXADataSource`、PostgreSQL `org.postgresql.xa.PGXADataSource`、H2 `org.h2.jdbcx.JdbcDataSource` 等）；
+- Boot 3/4 用 Atomikos 6 的 `jakarta` classifier，且需显式引入 `jakarta.transaction-api`（Atomikos 声明为 provided，不传递）；
+- Boot 4 不再自动装配 Atomikos 事务管理器，需自行声明 `UserTransactionManager` + `JtaTransactionManager`；
+- **多数据源 MyBatis 不要用 Spring `@Transactional`**：MyBatis-Spring 一个事务复用一个 SqlSession/连接，事务内 `@DS` 切换失效，跨库写入会集中到第一个库；改用编程式 JTA（`begin` / `commit` / `rollback`）；
+- MyBatis 侧配 `AtomikosTransactionFactory`；XA 数据源不要用 `init.schema` 建表（Atomikos 非事务连接关闭时回滚未提交 DDL）。
+
+完整指南（含参数表与可运行示例）见 Wiki：[Atomikos XA 集成指南](https://github.com/baomidou/dynamic-datasource/wiki/Atomikos-XA-Integration)，
+示例：[tx-atomikos-sample](https://github.com/dynamic-datasource/dynamic-datasource-samples/tree/master/spring-boot-4/tx-atomikos-sample)。
+
+## 四、线程 / 异步 / 并发
 
 `DynamicDataSourceContextHolder` 基于 `ThreadLocal`：
 
@@ -58,7 +71,7 @@ Spring `@Transactional` 的语义：**一个 DataSource 实例在一个事务中
 
 并发串库自查：所有 push 是否成对；拦截器/Filter 是否在异常路径也还原；是否依赖"子线程继承父线程数据源"的假设（不支持）。
 
-## 四、编程式切换（手动 push / poll）
+## 五、编程式切换（手动 push / poll）
 
 ```java
 DynamicDataSourceContextHolder.push("slave");
@@ -88,3 +101,4 @@ try {
 
 - Wiki：[@DS 在事务内不切换数据源](https://github.com/baomidou/dynamic-datasource/wiki/DS-Switching-Inside-Transactions)（含排查清单与四种方案详情）
 - Wiki：[@DSTransactional 语义边界](https://github.com/baomidou/dynamic-datasource/wiki/DSTransactional-Semantics)
+- Wiki：[Atomikos XA 集成指南](https://github.com/baomidou/dynamic-datasource/wiki/Atomikos-XA-Integration)

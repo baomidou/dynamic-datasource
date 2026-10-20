@@ -276,11 +276,18 @@ spring:
         max-pool-size: 10
       datasource:
         master:
+          # 必填：Hikari 创建器优先级更高，缺省会接管该数据源并把 XA 数据源类
+          # 误当作 java.sql.Driver 加载而启动失败
+          type: com.atomikos.jdbc.AtomikosDataSourceBean
           driver-class-name: com.mysql.cj.jdbc.MysqlXADataSource
           url: jdbc:mysql://xx.xx.xx.xx:3306/dynamic
 ```
 
 已支持的 XA 资源：MySQL（5.x 与 8+）、Oracle、PostgreSQL、H2；MyBatis 环境下搭配 `AtomikosTransactionFactory` 使用。
+Boot 3/4 的依赖组合（Atomikos 6 `jakarta`）、事务管理器装配与常见坑见
+[Atomikos XA 集成指南](https://github.com/baomidou/dynamic-datasource/wiki/Atomikos-XA-Integration)，
+可运行示例见
+[tx-atomikos-sample](https://github.com/dynamic-datasource/dynamic-datasource-samples/tree/master/spring-boot-4/tx-atomikos-sample)。
 
 ## 动态数据源 key
 

@@ -287,12 +287,18 @@ spring:
         max-pool-size: 10
       datasource:
         master:
+          # required: HikariCP has a higher creator priority and would otherwise claim
+          # this datasource and fail loading the XA class as a java.sql.Driver
+          type: com.atomikos.jdbc.AtomikosDataSourceBean
           driver-class-name: com.mysql.cj.jdbc.MysqlXADataSource
           url: jdbc:mysql://xx.xx.xx.xx:3306/dynamic
 ```
 
 Supported XA resources: MySQL (5.x and 8+), Oracle, PostgreSQL, H2; on the MyBatis side pair them with
-`AtomikosTransactionFactory`.
+`AtomikosTransactionFactory`. See the [Atomikos XA integration guide](https://github.com/baomidou/dynamic-datasource/wiki/Atomikos-XA-Integration)
+for the Boot 3/4 dependency set (Atomikos 6 `jakarta`), transaction-manager wiring and pitfalls, and
+[tx-atomikos-sample](https://github.com/dynamic-datasource/dynamic-datasource-samples/tree/master/spring-boot-4/tx-atomikos-sample)
+for a runnable example.
 
 ## Dynamic datasource keys
 
