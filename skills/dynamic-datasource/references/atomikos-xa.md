@@ -195,5 +195,5 @@ Atomikos 连接池随后连上的是同一个 JVM 内的同名内存库。
 
 ## 八、相关链接
 
+- 文档站（完整文档，含本篇的排版版）：<https://doc.xiuceyun.cn>（事务 → Atomikos XA 事务）
 - 示例工程：<https://github.com/dynamic-datasource/dynamic-datasource-samples/tree/master/spring-boot-4/tx-atomikos-sample>
-- 文档站（历史版本，含 Atomikos 说明）：<https://doc.xiuceyun.cn>

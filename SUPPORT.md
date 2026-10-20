@@ -26,9 +26,9 @@
 ## 获取支持
 
 - **问题与缺陷**：使用 [Issue 模板](https://github.com/baomidou/dynamic-datasource/issues/new/choose) 提交，附最小复现与版本信息。
-- **使用咨询**：[GitHub Discussions](https://github.com/baomidou/dynamic-datasource/discussions)（推荐）或 QQ 群（见 [Wiki 首页](https://github.com/baomidou/dynamic-datasource/wiki/Home)）。
+- **使用咨询**：[GitHub Discussions](https://github.com/baomidou/dynamic-datasource/discussions)（推荐）或 QQ 群。
 - **安全问题**：请勿开公开 Issue，按 [SECURITY.md](./SECURITY.md) 流程联系维护者。
-- **文档**：优先查 [Wiki](https://github.com/baomidou/dynamic-datasource/wiki/Home) 与 <https://doc.xiuceyun.cn>。
+- **文档**：优先查 <https://doc.xiuceyun.cn>，FAQ 速查见 <https://doc.xiuceyun.cn/docs/faq>。
 
 ## 版本节奏
 
