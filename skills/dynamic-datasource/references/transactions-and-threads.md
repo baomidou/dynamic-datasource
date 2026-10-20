@@ -52,7 +52,7 @@ Spring `@Transactional` 的语义：**一个 DataSource 实例在一个事务中
 - **多数据源 MyBatis 不要用 Spring `@Transactional`**：MyBatis-Spring 一个事务复用一个 SqlSession/连接，事务内 `@DS` 切换失效，跨库写入会集中到第一个库；改用编程式 JTA（`begin` / `commit` / `rollback`）；
 - MyBatis 侧配 `AtomikosTransactionFactory`；XA 数据源不要用 `init.schema` 建表（Atomikos 非事务连接关闭时回滚未提交 DDL）。
 
-完整指南（含参数表与可运行示例）见 Wiki：[Atomikos XA 集成指南](https://github.com/baomidou/dynamic-datasource/wiki/Atomikos-XA-Integration)，
+完整指南（含参数表与可运行示例）见同目录 [atomikos-xa.md](atomikos-xa.md)，
 示例：[tx-atomikos-sample](https://github.com/dynamic-datasource/dynamic-datasource-samples/tree/master/spring-boot-4/tx-atomikos-sample)。
 
 ## 四、线程 / 异步 / 并发
@@ -101,4 +101,4 @@ try {
 
 - Wiki：[@DS 在事务内不切换数据源](https://github.com/baomidou/dynamic-datasource/wiki/DS-Switching-Inside-Transactions)（含排查清单与四种方案详情）
 - Wiki：[@DSTransactional 语义边界](https://github.com/baomidou/dynamic-datasource/wiki/DSTransactional-Semantics)
-- Wiki：[Atomikos XA 集成指南](https://github.com/baomidou/dynamic-datasource/wiki/Atomikos-XA-Integration)
+- 仓库内：[Atomikos XA 跨库事务](atomikos-xa.md)

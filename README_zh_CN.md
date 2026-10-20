@@ -285,7 +285,7 @@ spring:
 
 已支持的 XA 资源：MySQL（5.x 与 8+）、Oracle、PostgreSQL、H2；MyBatis 环境下搭配 `AtomikosTransactionFactory` 使用。
 Boot 3/4 的依赖组合（Atomikos 6 `jakarta`）、事务管理器装配与常见坑见
-[Atomikos XA 集成指南](https://github.com/baomidou/dynamic-datasource/wiki/Atomikos-XA-Integration)，
+[Atomikos XA 指南](skills/dynamic-datasource/references/atomikos-xa.md)，
 可运行示例见
 [tx-atomikos-sample](https://github.com/dynamic-datasource/dynamic-datasource-samples/tree/master/spring-boot-4/tx-atomikos-sample)。
 

@@ -295,10 +295,10 @@ spring:
 ```
 
 Supported XA resources: MySQL (5.x and 8+), Oracle, PostgreSQL, H2; on the MyBatis side pair them with
-`AtomikosTransactionFactory`. See the [Atomikos XA integration guide](https://github.com/baomidou/dynamic-datasource/wiki/Atomikos-XA-Integration)
-for the Boot 3/4 dependency set (Atomikos 6 `jakarta`), transaction-manager wiring and pitfalls, and
+`AtomikosTransactionFactory`. The [Atomikos XA guide](skills/dynamic-datasource/references/atomikos-xa.md) covers the
+Boot 3/4 dependency set (Atomikos 6 `jakarta`), transaction-manager wiring and the pitfalls, and
 [tx-atomikos-sample](https://github.com/dynamic-datasource/dynamic-datasource-samples/tree/master/spring-boot-4/tx-atomikos-sample)
-for a runnable example.
+is a runnable example.
 
 ## Dynamic datasource keys
 
