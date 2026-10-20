@@ -133,6 +133,6 @@ spring:
 
 ## 相关文档
 
-- Wiki：[启动报错速查](https://doc.xiuceyun.cn/docs/faq/startup-errors) ·
+- 文档站：[启动报错速查](https://doc.xiuceyun.cn/docs/faq/startup-errors) ·
   [连接池常见坑](https://doc.xiuceyun.cn/docs/pool) ·
   [密码加密](https://doc.xiuceyun.cn/docs/advanced/encryption)

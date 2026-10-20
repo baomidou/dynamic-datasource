@@ -132,7 +132,7 @@ routingDataSource.removeDataSource("tenant_abc");
 
 ## 相关文档
 
-- Wiki：[@DS 不生效排查总表](https://doc.xiuceyun.cn/docs/faq/not-working) ·
+- 文档站：[@DS 不生效排查总表](https://doc.xiuceyun.cn/docs/faq/not-working) ·
   [编程式切换](https://doc.xiuceyun.cn/docs/advanced/manual-switching) ·
   [动态增删数据源](https://doc.xiuceyun.cn/docs/advanced/add-remove-datasource)
 - 示例工程：<https://github.com/dynamic-datasource/dynamic-datasource-samples>

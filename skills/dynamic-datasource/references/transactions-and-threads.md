@@ -40,7 +40,7 @@ Spring `@Transactional` 的语义：**一个 DataSource 实例在一个事务中
 3. 非 public 方法默认不生效（`aop.allowed-public-only=true`）；
 4. 与 Spring `@Transactional` 互不感知——混用要显式规划边界（外层是 Spring 事务时 `@DS` 不切换）。
 
-完整语义（含契约测试说明）见 Wiki：[@DSTransactional 语义边界](https://doc.xiuceyun.cn/docs/tx/local-tx)。
+完整语义（含契约测试说明）见文档站：[@DSTransactional 语义边界](https://doc.xiuceyun.cn/docs/tx/local-tx)。
 
 ## 三、Atomikos XA（跨库强一致，与 @DSTransactional 二选一）
 
@@ -94,11 +94,11 @@ try {
 - 需要连续对多个库操作：每个操作前分别 push/poll，或在不同的注解方法中完成；
 - 获取当前数据源：`peek()` → `routingDataSource.getDataSource(key)`。
 
-详见 Wiki：[编程式切换](https://doc.xiuceyun.cn/docs/advanced/manual-switching) ·
+详见文档站：[编程式切换](https://doc.xiuceyun.cn/docs/advanced/manual-switching) ·
 [@DS 与线程](https://doc.xiuceyun.cn/docs/faq/threads)
 
 ## 相关文档
 
-- Wiki：[@DS 在事务内不切换数据源](https://doc.xiuceyun.cn/docs/tx/basics)（含排查清单与四种方案详情）
-- Wiki：[@DSTransactional 语义边界](https://doc.xiuceyun.cn/docs/tx/local-tx)
+- 文档站：[@DS 在事务内不切换数据源](https://doc.xiuceyun.cn/docs/tx/basics)（含排查清单与四种方案详情）
+- 文档站：[@DSTransactional 语义边界](https://doc.xiuceyun.cn/docs/tx/local-tx)
 - 仓库内：[Atomikos XA 跨库事务](atomikos-xa.md)
