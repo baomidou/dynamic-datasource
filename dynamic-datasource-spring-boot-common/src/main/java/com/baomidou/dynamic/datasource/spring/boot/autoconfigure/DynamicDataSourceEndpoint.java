@@ -30,11 +30,11 @@ import java.util.Map;
 
 /**
  * 只读运维端点：暴露当前所有数据源（含运行期动态增删的）、分组构成与全局开关状态，
- * 访问路径 {@code /actuator/dynamic-datasource}（需按 actuator 惯例显式暴露）。
+ * 访问路径 {@code /actuator/dynamicdatasource}（需按 actuator 惯例显式暴露）。
  * <p>
  * 刻意不返回 URL / 用户名等连接串信息——URL 可能携带凭据，状态盘点不需要它们。
  */
-@Endpoint(id = "dynamic-datasource")
+@Endpoint(id = "dynamicdatasource")
 public class DynamicDataSourceEndpoint {
 
     private final ObjectProvider<DataSource> dataSources;
