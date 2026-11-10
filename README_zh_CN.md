@@ -56,6 +56,7 @@
 - [事务支持](#事务支持)
 - [动态数据源 key](#动态数据源-key)
 - [运行时管理能力](#运行时管理能力)
+- [异步数据源上下文](#异步数据源上下文)
 - [生态集成](#生态集成)
 - [模块划分](#模块划分)
 - [文档](#文档)
@@ -326,6 +327,36 @@ public void closeTenant(String tenantId) {
 - `grace-destroy: true`：关闭时等待（至多 10s）活跃连接释放后再强制销毁。
 - `ENC(...)` 密码加密，支持全局或单数据源 `public-key`，并以 `EncDataSourceInitEvent` 作为自定义算法（AES、SM4、KMS…）的扩展点。
 - `p6spy: true` 为数据源套上 SQL 日志代理；`seata: false` 可让单个数据源跳过 Seata 包装。
+
+## 异步数据源上下文
+
+数据源 key 基于 ThreadLocal，异步任务默认不继承。可显式包装执行器：
+
+```java
+Executor routingExecutor = DynamicDataSourceContextHolder.wrap(executor);
+DynamicDataSourceContextHolder.push("slave");
+try {
+    CompletableFuture.supplyAsync(() -> service.query(), routingExecutor);
+} finally {
+    DynamicDataSourceContextHolder.poll();
+}
+```
+
+`wrap(Executor)` 在**每次提交**时捕获完整栈；`decorate(Runnable)`、`wrap(Callable<T>)` 在包装任务时
+捕获。每次执行使用独立副本，在 finally 中恢复执行线程原栈，同线程执行、异常退出也适用。
+只有显式使用包装器的任务受影响，执行器的生命周期和拒绝策略保持原有语义。
+Spring `ThreadPoolTaskExecutor` 也可使用 `setTaskDecorator(DynamicDataSourceContextHolder::decorate)`，
+同一任务不必同时使用两种装饰方式。
+
+传播的只是数据源 **key**，不包含 Spring 事务、`@DSTransactional` xid 或 JDBC Connection；
+已经绑定到事务的连接不会因 key 改变而换库。不自动桥接 Reactor Context，也不跨进程传播。
+
+Boot 3/4 提供 JDK 21 虚拟线程测试 profile，验证任务实际运行在虚拟线程上，并验证 H2 路由和事务边界，
+不提高产物的 Java 17 基线：
+
+```sh
+./gradlew :dynamic-datasource-spring-boot3-starter:virtualThreadTest :dynamic-datasource-spring-boot4-starter:virtualThreadTest
+```
 
 ## 生态集成
 

@@ -56,6 +56,7 @@
 - [Transactions](#transactions)
 - [Dynamic datasource keys](#dynamic-datasource-keys)
 - [Runtime management](#runtime-management)
+- [Async datasource context](#async-datasource-context)
 - [Ecosystem integrations](#ecosystem-integrations)
 - [Module layout](#module-layout)
 - [Documentation](#documentation)
@@ -344,6 +345,39 @@ public void closeTenant(String tenantId) {
 - `ENC(...)` credentials with a global or per-datasource `public-key`, and `EncDataSourceInitEvent`
   as the hook for your own algorithm (AES, SM4, KMS…).
 - `p6spy: true` wraps datasources for SQL logging; `seata: false` opts a single datasource out of proxying.
+
+## Async datasource context
+
+Datasource keys are thread-local and are not inherited by async tasks. Opt in explicitly:
+
+```java
+Executor routingExecutor = DynamicDataSourceContextHolder.wrap(executor);
+DynamicDataSourceContextHolder.push("slave");
+try {
+    CompletableFuture.supplyAsync(() -> service.query(), routingExecutor);
+} finally {
+    DynamicDataSourceContextHolder.poll();
+}
+```
+
+`wrap(Executor)` captures the complete key stack on **each submission**, whereas
+`decorate(Runnable)` and `wrap(Callable<T>)` capture it when the task is wrapped. Each execution
+gets a separate copy and restores the executing thread's previous stack in `finally`, including
+inline execution and failures. Existing executors are unchanged unless you use the wrapper;
+their lifecycle and rejection policies remain those of the underlying executor. For Spring
+`ThreadPoolTaskExecutor`, `setTaskDecorator(DynamicDataSourceContextHolder::decorate)` is another
+explicit integration option; do not apply both forms of decoration to the same task.
+
+Only datasource **keys** propagate: Spring transactions, local transaction IDs and JDBC connections
+stay on their owning thread. A key cannot replace a connection already bound to a transaction.
+This is not automatic Reactor context propagation, nor propagation across process boundaries.
+
+Boot 3/4 have a JDK 21 test profile that checks actual virtual-thread execution, H2 routing and
+transaction boundaries without raising the published modules' Java 17 baseline:
+
+```sh
+./gradlew :dynamic-datasource-spring-boot3-starter:virtualThreadTest :dynamic-datasource-spring-boot4-starter:virtualThreadTest
+```
 
 ## Ecosystem integrations
 

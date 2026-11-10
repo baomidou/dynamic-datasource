@@ -1,0 +1,31 @@
+// Keep the published Boot 3/4 classes on JDK 17; only this test source set needs JDK 21.
+sourceSets {
+    virtualThreadTest {
+        compileClasspath += sourceSets.test.output + sourceSets.test.compileClasspath
+        runtimeClasspath += output + compileClasspath + sourceSets.test.runtimeClasspath
+    }
+}
+
+tasks.named('compileVirtualThreadTestJava', JavaCompile) {
+    javaCompiler = javaToolchains.compilerFor {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+    options.release = 21
+}
+
+tasks.register('virtualThreadTest', Test) {
+    description = 'Tests H2 context propagation and transaction boundaries on JDK 21 virtual threads.'
+    group = 'verification'
+    testClassesDirs = files(sourceSets.virtualThreadTest.output.classesDirs, sourceSets.test.output.classesDirs)
+    classpath = sourceSets.virtualThreadTest.runtimeClasspath
+    javaLauncher = javaToolchains.launcherFor {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+    useJUnitPlatform()
+    include '**/VirtualThreadContextPropagationTest.class'
+    include '**/DsTransactionalTest.class'
+    include '**/PropagationContractTest.class'
+    systemProperty 'spring.profiles.active', 'virtual-threads'
+    systemProperty 'spring.threads.virtual.enabled', 'true'
+    shouldRunAfter tasks.named('test')
+}
