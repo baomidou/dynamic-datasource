@@ -7,6 +7,7 @@ plugins {
 }
 
 apply plugin: 'io.spring.dependency-management'
+apply from: rootProject.file('gradle/virtual-thread-tests.gradle')
 
 java {
     // Build and test on a dedicated JDK 17 toolchain (auto-provisioned via Foojay),

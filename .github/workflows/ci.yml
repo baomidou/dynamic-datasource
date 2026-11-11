@@ -79,6 +79,9 @@ jobs:
           restore-keys: gradle-dist-${{ runner.os }}-
       - name: Build test with Gradle
         run: ./gradlew clean test
+      - name: Test virtual-thread routing and transaction boundaries
+        if: matrix.java-version == '21'
+        run: ./gradlew :dynamic-datasource-spring-boot3-starter:virtualThreadTest :dynamic-datasource-spring-boot4-starter:virtualThreadTest
       # 覆盖率只在 JDK 17 这一腿采集：矩阵各腿跑的是同一套测试，重复生成没有信息量。
       # 复用上面 test 已经写出的 build/jacoco/test.exec，jacocoRootReport 里的 test 依赖会命中
       # up-to-date，不会重跑测试。报告不入 build/check，也不接外部徽章服务。

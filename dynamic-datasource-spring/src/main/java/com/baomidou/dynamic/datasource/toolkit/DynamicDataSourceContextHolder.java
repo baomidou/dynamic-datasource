@@ -19,6 +19,9 @@ import org.springframework.core.NamedThreadLocal;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Objects;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executor;
 
 /**
  * 核心基于ThreadLocal的切换数据源工具类
@@ -92,5 +95,68 @@ public final class DynamicDataSourceContextHolder {
      */
     public static void clear() {
         LOOKUP_KEY_HOLDER.remove();
+    }
+
+    /**
+     * 包装任务，捕获当前线程的完整数据源栈，执行结束后恢复执行线程的原栈。
+     * <p>只传播数据源名称，不传播事务或连接。每次执行使用独立副本，支持任务复用。</p>
+     *
+     * @param task 待执行任务
+     * @return 在包装时捕获上下文的任务
+     */
+    public static Runnable decorate(Runnable task) {
+        Objects.requireNonNull(task, "task");
+        Deque<String> captured = new ArrayDeque<>(LOOKUP_KEY_HOLDER.get());
+        return () -> {
+            Deque<String> previous = LOOKUP_KEY_HOLDER.get();
+            install(new ArrayDeque<>(captured));
+            try {
+                task.run();
+            } finally {
+                install(previous);
+            }
+        };
+    }
+
+    /**
+     * 包装有返回值的任务，在包装时捕获完整数据源栈，执行结束后恢复原栈。
+     * <p>只传播数据源名称，不传播事务或连接。</p>
+     *
+     * @param task 待执行任务
+     * @param <T> 返回值类型
+     * @return 包装后的任务
+     */
+    public static <T> Callable<T> wrap(Callable<T> task) {
+        Objects.requireNonNull(task, "task");
+        Deque<String> captured = new ArrayDeque<>(LOOKUP_KEY_HOLDER.get());
+        return () -> {
+            Deque<String> previous = LOOKUP_KEY_HOLDER.get();
+            install(new ArrayDeque<>(captured));
+            try {
+                return task.call();
+            } finally {
+                install(previous);
+            }
+        };
+    }
+
+    /**
+     * 包装执行器，每次提交任务时捕获提交线程的数据源栈。
+     * <p>不改变执行器的生命周期、拒绝策略或事务边界。</p>
+     *
+     * @param executor 原执行器
+     * @return 传播数据源上下文的执行器
+     */
+    public static Executor wrap(Executor executor) {
+        Objects.requireNonNull(executor, "executor");
+        return task -> executor.execute(decorate(task));
+    }
+
+    private static void install(Deque<String> stack) {
+        if (stack.isEmpty()) {
+            LOOKUP_KEY_HOLDER.remove();
+        } else {
+            LOOKUP_KEY_HOLDER.set(stack);
+        }
     }
 }
